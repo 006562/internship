@@ -1,0 +1,16 @@
+[2017-08-20 17:17:04,230] ERROR Securitisation.Utilities.Common.Log4NetLogService - Get session process status list for 3bc7cd8f-7165-4f76-b0cb-2e96678e4b72 failed
+System.Data.SqlClient.SqlException (0x80131904): A transport-level error has occurred when receiving results from the server. (provider: TCP Provider, error: 0 - The specified network name is no longer available.) ---> System.ComponentModel.Win32Exception (0x80004005): The specified network name is no longer available
+   at Securitisation.Utilities.SQL.UtilSqlRunQueryADONET.RunQueryADONETByQueryString(String sQueryString, List`1 glParameters, String sConnectionString)
+   at DADP.TaskEntity.ProcessTaskHelper.GetSessionProcessStatusList(Guid SessionId)
+   at TaskProcessEngine.TaskProcessService.GetSessionProcessStatusList(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 32
+ClientConnectionId:8fd44ed7-ca51-414d-badb-3901ee5f08bb
+Error Number:64,State:0,Class:20
+[2017-08-20 17:17:33,297] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 3bc7cd8f-7165-4f76-b0cb-2e96678e4b72 failed
+System.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - The remote computer refused the network connection.) ---> System.ComponentModel.Win32Exception (0x80004005): The remote computer refused the network connection
+   at Securitisation.Utilities.SQL.UtilSqlRunQueryADONET.RunNonQueryADONETByQueryString(String sQueryString, List`1 glParameters, String sConnectionString)
+   at DADP.TaskEntity.SessionHelper.UpdateSessionStatus(Guid sessionId)
+   at BL.TaskProcessService.SessionProcessor.UpdateSessionStatus(Guid sessionId)
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.CashflowService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\CashflowService.svc.cs:line 64
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:1225,State:0,Class:20

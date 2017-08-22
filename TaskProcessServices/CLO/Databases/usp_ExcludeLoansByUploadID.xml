@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+    <Parameters>
+        <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+    </Parameters>
+    <Query>
+        <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[usp_ExcludeLoansByUploadID]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[usp_ExcludeLoansByUploadID]
+'
+exec (@vchSQL)
+
+set @vchSQL ='
+CREATE PROCEDURE [dbo].[usp_ExcludeLoansByUploadID]
+(
+	@UploadedID bigint,
+	@DimPoolId bigint,
+	@ExcludeECName nvarchar(100) 
+) 
+AS
+Begin
+ 
+ Declare @DimECID bigint
+ 
+ select @DimECID = DimECID from dbo.tblDimEC where CriteriaName = @ExcludeECName and DimPoolID = @DimPoolId
+ 
+ if @DimECId IS Not Null
+	 begin
+		
+		delete dbo.tblFactLoanECResult where DimPoolID =@DimPoolId and DimECID = @DimECId 
+		
+		Insert into dbo.tblFactLoanECResult(DimPoolID,DimLoanID,DimECID)  
+		 select @DimPoolId as DimPoolId, fl.DimLoanID as DimLoanId, @DimECId as DimECId  
+				from dbo.tblUploadedFileDetails uf (nolock)
+				inner join dbo.tblFactLoan fl (nolock) on uf.AccountNo = fl.AccountNo 
+				where uf.UploadID = @UploadedID 
+				and fl.DimPoolID = @DimPoolId  
+				and uf.Included = 0 
+                
+		update dbo.tblFactLoan set IsIncluded = 0 where DimPoolID= @DimPoolId and DimLoanID 
+			in (select DimLoanID from dbo.tblFactLoanECResult where DimPoolID = @DimPoolId and  DimECID =  @DimECId)
+        
+	 End
+else
+	Begin
+		raiserror(''''Can not find Exclude EC ID by EC Name'''',16,1)
+	End
+End'
+
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+EXEC (@BigSQL)
+
+]]>
+    </Query>
+
+</main>

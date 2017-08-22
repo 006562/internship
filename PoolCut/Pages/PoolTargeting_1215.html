@@ -1,0 +1,260 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>资产池处理</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+
+    <link href="../Contents/style.css" rel="stylesheet" />
+    <link href="../Contents/pagerlist-style.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="../pre/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../pre/font/fontello/css/fontello.css">
+    <link rel="stylesheet" type="text/css" href="../pre/index.css">
+</head>
+<body style="margin:auto;width:70%;">
+    <div class="main">
+        <h3 id="step-title" class="h3"><span class="title" id="spanPageTitle" style="font-size:30px"></span></h3>
+        <div class="form" id="AssetPoolDetailInfoForm">
+            <div class="form-body default">
+                <div class="col-12 form-group" style="margin-bottom:100px">
+                    <div class="col-2"><label style="font-size:25px">资产池名称：</label></div>
+                    <div class="col-4"><span class="poolDetail" data-name="PoolName"></span></div>
+                    <div class="col-2"><label style="font-size:25px">资产池标识：</label></div>
+                    <div class="col-4"><span class="poolDetail" data-name="PoolId"></span></div>
+                </div>
+                <!--
+                <div class="col-12 form-group">
+                    <div class="col-2"><label>资产池状态：</label></div>
+                    <div class="col-4"><span class="poolDetail" data-name="PoolStatusId"></span></div>
+                    <div class="col-2"><label>资产池类型：</label></div>
+                    <div class="col-4"><span class="poolDetail" data-name="PoolTypeId"></span></div>
+                </div>
+                <div class="col-12 form-group">
+                    <div class="col-2"><label>资产池创建方式：</label></div>
+                    <div class="col-4"><span class="poolDetail" data-name=""></span></div>
+                    <div class="col-2"><label>目标信托：</label></div>
+                    <div class="col-4"><span class="poolDetail" data-name=""></span></div>
+                </div>
+                <div class="col-12 form-group">
+                    <div class="col-2"><label>信贷源：</label></div>
+                    <div class="col-4"><span class="poolDetail" data-name=""></span></div>
+                    <div class="col-2"><label>所属信托：</label></div>
+                    <div class="col-4"><span class="poolDetail" data-name=""></span></div>
+                </div>
+                -->
+            </div>
+        </div>
+        <h3 id="step-title" class="h3"><span class="title" style="font-size:25px">商务逻辑</span></h3>
+        <div class="form" id="PoolECForm">
+            <div class="form-body default">
+                <h3 v-if="ecModel.length">
+                    <label class="virtual-label">
+                        <input type="checkbox" class="org-checkbox" id="all-input" v-model="allChecked">
+                        <span class="virtual-checkbox">
+                            <i class="virtual-icon icon-ok"></i>
+                        </span>
+                    </label>
+                    <label for="all-input">All</label>
+                    <span>({{checkedSet.length}})</span>
+                    <div class="pull-right all-wraper">
+                        <button type="button" class="btn btn-default" @click="saveCriteria">保存</button>
+                        <button type="button" class="btn btn-primary" id="btnRunTask" onclick="RerunTask()">创建子资产池</button>
+                    </div>
+                </h3>
+                <div>
+                    <div class="view-work-body">
+                        <div v-for="typeCode in CriteriaTypeCodeSet">
+                            <div class="typeCode-title">
+                                <span selectstart="return fasle" @click="typeCode.isShow=!typeCode.isShow">
+                                    {{typeCode.code}}
+                                    <i class="icon-down-dir" v-show="typeCode.isShow"></i>
+                                    <i class="icon-up-dir" v-show="!typeCode.isShow"></i>
+                                </span>
+                            </div>
+                            <div v-show="typeCode.isShow">
+                                <div class="ec-row" v-for="EC in ecModel|filterBy typeCode.code in 'CriteriaTypeCode'" v-bind:class="{mb0:$index==ecModel.length-1}">
+                                    <div class="btns-wraper" style="background-color:#f5f5f5">
+                                        <div class='desc-wraper'>
+                                            <label class="virtual-label">
+                                                <input type="checkbox" class="org-checkbox" v-bind:value="EC.CriteriaId" v-model="checkedSet">
+                                                <span class="virtual-checkbox">
+                                                    <i class="virtual-icon icon-ok-1"></i>
+                                                </span>
+                                            </label>
+                                            <span class="ec-name">{{EC.CriteriaName}}</span>
+                                            <span class="ec-desc">({{EC.CriteriaDescription}})</span>
+                                        </div>
+                                        <div class="list-wraper">
+                                            <ul class="tab-list">
+                                                <li class="list-item" v-bind:class="{active:EC.activeView=='Form'}" @click="EC.activeView='Form'">
+                                                    <span>表单视图</span>
+                                                </li>
+                                                <li class="list-item" v-bind:class="{active:EC.activeView=='Query'}" @click="refreshQuery(EC)">
+                                                    <span>查询语句</span>
+                                                </li>
+                                                <li class="list-item" v-bind:class="{active:EC.activeView=='Verification'}" @click="EC.activeView='Verification'">
+                                                    <span>校验语句</span>
+                                                </li>
+                                                <li class="list-item" @click="saveECEntities(EC)">
+                                                    <span>保存</span>
+                                                </li>
+                                            </ul>
+
+                                        </div>
+                                    </div>
+                                    <div class="content-wraper">
+                                        <table class="table table-hover view-table m0" v-show="EC.activeView=='Form'">
+                                            <tbody>
+                                                <tr v-for="row in EC.XMLSqlQueryEC.Presentation">
+                                                    <td class="textCell pl15" width="430px">{{row.RowText}}</td>
+                                                    <td class="desCell">
+                                                        <template v-for="field in row.Field">
+                                                            <select class="form-control input-group-select" v-if="field.FieldType=='ReplaceOperator'" v-model="field.Value" v-bind:disabled="!EC.IsEditable">
+                                                                <option v-for="item in field.SuggestedOperators" value="{{item.Value}}">{{item.Name}}</option>
+                                                            </select>
+                                                            <input type="text" class="input-group-box" v-if="field.FieldType=='TextBox'" v-model="field.Value" v-bind:disabled="!EC.IsEditable">
+                                                            <input type="text" class="input-group-box" v-if="field.FieldType=='DQueryDisplay'" v-model="field.Value" disabled="disabled">
+
+                                                            <label class="virtual-label mb0 mr5" v-if="field.FieldType=='CheckBox'">
+                                                                <input type="checkbox" class="org-checkbox" v-model="field.IsCheck" v-bind:disabled="!EC.IsEditable">
+                                                                <span class="virtual-checkbox">
+                                                                    <i class="virtual-icon icon-ok-1"></i>
+                                                                </span>
+                                                            </label>
+                                                            <table class="subtable table" v-if="field.FieldType=='ReplaceLookup'&&field.DataSourceType=='Static'">
+                                                                <thead v-if="field.SuggestedItems.length">
+                                                                    <tr>
+                                                                        <th>#</th>
+                                                                        <th>Name</th>
+                                                                        <th>Value</th>
+                                                                        <!--<th>Excluded</th>
+                                                                        <th>IsNew</th>-->
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr v-for="staticItem in field.SuggestedItems">
+                                                                        <td>
+                                                                            <label class="virtual-label">
+                                                                                <input type="checkbox" class="org-checkbox" v-model="staticItem.IsCheck" v-bind:disabled="!EC.IsEditable">
+                                                                                <span class="virtual-checkbox">
+                                                                                    <i class="virtual-icon icon-ok-1"></i>
+                                                                                </span>
+                                                                            </label>
+                                                                        </td>
+                                                                        <td>{{staticItem.Name}}</td>
+                                                                        <td>{{staticItem.Value}}</td>
+                                                                        <!--<td>{{staticItem.Excluded}}</td>
+                                                                        <td>{{staticItem.IsNew}}</td>-->
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <table class="subtable table" v-if="field.FieldType=='ReplaceLookup'&&field.DataSourceType=='Dynamic'">
+                                                                <thead v-if="field.SuggestedItems.length">
+                                                                    <tr>
+                                                                        <th>#</th>
+                                                                        <th>Name</th>
+                                                                        <th>Value</th>
+                                                                        <th>Excluded</th>
+                                                                        <th>IsNew</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr v-for="staticItem in field.SuggestedItems">
+                                                                        <td>
+                                                                            <label class="virtual-label">
+                                                                                <input type="checkbox" class="org-checkbox" v-model="staticItem.IsCheck" v-bind:disabled="!EC.IsEditable">
+                                                                                <span class="virtual-checkbox">
+                                                                                    <i class="virtual-icon icon-ok-1"></i>
+                                                                                </span>
+                                                                            </label>
+                                                                        </td>
+                                                                        <td>{{staticItem.Name}}</td>
+                                                                        <td>{{staticItem.Value}}</td>
+                                                                        <td>{{staticItem.Excluded}}</td>
+                                                                        <td>{{staticItem.IsNew}}</td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                            <table class="subtable table" v-if="field.FieldType=='TargetLookup'&&field.DataSourceType=='Static'">
+                                                                <thead v-if="field.SuggestedItems.length">
+                                                                    <tr>
+                                                                        <th>#</th>
+                                                                        <th>Name</th>
+                                                                        <th>CurrentValue</th>
+                                                                        <th>TargetValue</th>
+                                                                        <th>Tolerance</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    <tr v-for="staticItem in field.SuggestedItems">
+                                                                        <td>
+                                                                            <label class="virtual-label">
+                                                                                <input type="checkbox" class="org-checkbox" v-model="staticItem.IsCheck">
+                                                                                <span class="virtual-checkbox">
+                                                                                    <i class="virtual-icon icon-ok-1"></i>
+                                                                                </span>
+                                                                            </label>
+                                                                        </td>
+                                                                        <td>{{staticItem.Name}}</td>
+                                                                        <td>{{staticItem.CurrentValue}}</td>
+                                                                        <td>
+                                                                            <input type="text" v-model="staticItem.TargetValue">
+                                                                        </td>
+                                                                        <td><input type="text" v-model="staticItem.Tolerance"></td>
+                                                                    </tr>
+                                                                </tbody>
+                                                            </table>
+                                                        </template>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                        <textarea class="view-area" placeholder="Query ..." v-model="EC.ECQeury" v-bind:disabled="!EC.IsEditable" v-show="EC.activeView=='Query'"></textarea>
+                                        <textarea class="view-area" placeholder="Verification ..." v-model="EC.ECDrillthroughQuery" v-bind:disabled="!EC.IsEditable" v-show="EC.activeView=='Verification'"></textarea>
+                                        <div v-show="EC.activeView=='result'">
+                                            <table class="table table-hover">
+                                                <thead>
+                                                    <tr class="info">
+                                                        <th v-for="title in ecDataTitle">{{title}}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr v-for="ec in ecData">
+                                                        <td v-for="data in ec">
+                                                            {{data}}
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="taskIndicatorArea" style="display:none;width:480px; height:540px;">
+        <object id="TaskProcessCtl" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="display:block" width="100%" height="440px" class="ms-dlgDisable">
+            <param name="source" value="/TaskProcessEngine/ClientBin/UI.TaskProcessIndicator.xap" />
+            <param name="enablehtmlaccess" value="True" />
+        </object>
+    </div>
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/jquery-ui-latest.js"></script>
+    <link href="../Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="../Scripts/App.Global.js"></script>
+    <script src="../Scripts/common.js"></script>
+    <script src="../Scripts/PoolCutCommon.js"></script>
+    <script src="../Scripts/TaskIndicatorScript.js"></script>
+    <script src="PoolTargeting.js"></script>
+    <!--<script src="../pre/jQuery.js"></script>-->
+    <script src="../pre/vue.js"></script>
+    <script src="../pre/dataProcess.js"></script>
+    <script src="../pre/index.js"></script>
+</body>
+</html>

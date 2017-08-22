@@ -1,0 +1,272 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL  nvarchar(max)
+Declare @bigsql nvarchar(max)
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_Targeting_CalculateBucketSize]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_Targeting_CalculateBucketSize]
+'
+exec (@vchSQL)
+
+--**************************************************
+--USP_Targeting_SetupConfiguration
+--**************************************************
+Set @vchSQL ='Create Procedure [dbo].[USP_Targeting_CalculateBucketSize]
+(
+	 @DimPoolId bigint,
+   @DimECID bigint
+   
+) AS Begin SET NOCOUNT ON	
+	
+	Declare @LTargetContent varchar(100)
+	Declare @LTargetName varchar(100)
+	Declare @DimTargetId varchar(100)
+	Declare @QueryBalanceLoan nvarchar(4000)
+	Declare @IntersectPercent decimal(15,4) = 0
+	Declare @SumPercent decimal(15,4) = 0
+	Declare @MinSumPercent decimal(15,4) = -1
+	Declare @MaxIntersectPercent decimal(15,4) = 0
+	Declare @DistanceIntersectPercent decimal(15,4) = -1
+	Declare @TotalBalance decimal(15,2)
+	Declare @SumBalance decimal(15,2)
+	Declare @BalanceDistance decimal(15,2)
+	
+	Declare @TargetConfig Table(DimTargetId bigint, LTargetName varchar(500), LTargetContent varchar(500))
+	
+	Update dbo.tblTargetingConfigWorking Set Adjustment = 0
+	
+	Update	dbo.tblTargetingConfigWorking
+	Set		TargetOriginalBalance = tc.TargetOriginalBalance
+			, TargetOriginalValue = tc.TargetOriginalValue
+			, TargetValue = tc.TargetOriginalValue
+	From		dbo.tblTargetingConfigWorking tcw
+	Inner Join	dbo.tblTargetingConfig tc on tc.TargetContent = tcw.LTargetContent
+										 And tc.TargetName = tcw.LTargetName
+										 And tc.DimPoolID = tcw.DimPoolID
+                     and tc.DimECID = tcw.DimECID
+	Where		tcw.DimPoolID = @DimPoolId and tcw.DimECID = @DimECID
+	And			tcw.TargetType = ''''Bucketing''''
+	And			tcw.RTargetName is null
+	
+	Update	dbo.tblTargetingConfigWorking
+	Set		TargetOriginalBalance = tc.TargetOriginalBalance
+			, TargetOriginalValue = tc.TargetOriginalValue
+			, TargetValue = tc.TargetOriginalValue
+	From		dbo.tblTargetingConfigWorking tcw
+	Inner Join	dbo.tblTargetingConfigIntersect tc on tc.LTargetContent = tcw.LTargetContent
+												  And tc.LTargetName = tcw.LTargetName
+												  And tc.DimPoolID = tcw.DimPoolID
+												  And tc.RTargetName = tcw.RTargetName
+												  And tc.RTargetContent = tcw.RTargetContent
+                          And tc.DimECID = tcw.DimECID
+	Where		tcw.DimPoolID = @DimPoolId and tcw.DimECID = @DimECID
+	And			tcw.TargetType = ''''Bucketing''''
+	
+	While @MinSumPercent < 0 Begin
+
+		Delete @TargetConfig
+		Insert Into @TargetConfig
+		Select	DimTargetId
+				, LTargetName
+				, LTargetContent
+		From	dbo.tblTargetingConfigWorking 
+		Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+		And		TargetType = ''''Bucketing'''' 
+		And		RTargetName is null 
+		And		LTargetName <> ''''Residual''''
+			
+		DECLARE tableCursor CURSOR FOR 
+			Select DimTargetId, LTargetName, LTargetContent From @TargetConfig
+		FOR READ ONLY
+		OPEN tableCursor
+		FETCH NEXT FROM tableCursor INTO @DimTargetId, @LTargetName, @LTargetContent
+		WHILE	(@@Fetch_Status >= 0) Begin
+			
+			Set @IntersectPercent = 0
+			
+			If exists (
+			
+				Select	top 1 *
+				From	dbo.tblTargetingConfigWorking
+				Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+				And		LTargetName = @LTargetName
+				And		LTargetContent = @LTargetContent
+				And		RTargetContent is not null
+				And		RTargetName is not null
+			
+			) Begin
+			
+				Select	@IntersectPercent = SUM(TargetValue+Adjustment)
+				From	dbo.tblTargetingConfigWorking
+				Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+				And		LTargetName = @LTargetName
+				And		LTargetContent = @LTargetContent
+				And		RTargetContent is not null
+				And		RTargetName is not null
+			End
+			
+			If exists (
+			
+				Select	top 1 *
+				From	dbo.tblTargetingConfigWorking
+				Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+				And		RTargetName = @LTargetName
+				And		RTargetContent = @LTargetContent
+				And		LTargetContent is not null
+				And		LTargetName is not null
+			
+			) Begin
+			
+				Select	@IntersectPercent = @IntersectPercent + SUM(TargetValue+Adjustment)
+				From	dbo.tblTargetingConfigWorking
+				Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+				And		RTargetName = @LTargetName
+				And		RTargetContent = @LTargetContent
+				And		LTargetContent is not null
+				And		LTargetName is not null
+			
+			End
+			
+			Update	dbo.tblTargetingConfigWorking
+			Set		TargetValue = TargetConfigValue + AdjustmentConfig - @IntersectPercent
+			Where	DimTargetId = @DimTargetId
+			And		DimPoolID = @DimPoolId and DimECID = @DimECID
+			
+			FETCH NEXT FROM tableCursor INTO @DimTargetId, @LTargetName, @LTargetContent
+		END
+		CLOSE tableCursor DEALLOCATE tableCursor
+		
+		Select	@MinSumPercent = (TargetValue + Adjustment)
+				, @LTargetName = LTargetName
+				, @LTargetContent = LTargetContent
+				, @DimTargetId = DimTargetId
+		From	dbo.tblTargetingConfigWorking
+		Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+    And TargetType = ''''Bucketing''''
+		And		LTargetName <> ''''Residual''''
+		And		RTargetName is null
+		Order By (TargetValue + Adjustment)  desc
+		
+		If @MinSumPercent >= 1 Or @MinSumPercent<= -1 Begin
+			RAISERROR(''''Can not achieve bucketing targets!'''', 16, 1) 
+			Return
+		End
+		
+		If @MinSumPercent < 0 Begin
+		
+			Set @DistanceIntersectPercent = -1
+			While @DistanceIntersectPercent < 0 Begin
+			
+				Select	@MaxIntersectPercent = (TargetValue + Adjustment) 
+						, @DimTargetID = DimTargetId 
+				From	dbo.tblTargetingConfigWorking
+				Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+        And TargetType = ''''Bucketing''''
+				And		(	
+							LTargetContent = @LTargetContent
+							And		LTargetName = @LTargetName
+							And		RTargetContent is not null
+						)
+				OR		(
+							RTargetContent = @LTargetContent
+							And		RTargetName = @LTargetName
+						)
+				Order by (TargetValue + Adjustment) 
+				
+				If @MaxIntersectPercent < 0 Or @MaxIntersectPercent > 1 Begin
+					RAISERROR(''''Can not achieve bucketing targets!'''', 16, 1) 
+					Return
+				End Else Begin
+				
+						Select	@DistanceIntersectPercent = @MinSumPercent + TargetValue + Adjustment
+						From	dbo.tblTargetingConfigWorking
+						Where	DimTargetId = @DimTargetId
+						
+						If @DistanceIntersectPercent >= 1 Or @DistanceIntersectPercent <= -1 Begin
+							RAISERROR(''''Can not achieve bucketing targets!'''', 16, 1) 
+							Return
+						End
+						
+						If @DistanceIntersectPercent < 0 Begin
+						
+							Select	@MinSumPercent = @MinSumPercent + TargetValue + Adjustment
+							From	dbo.tblTargetingConfigWorking
+							Where	DimTargetId = @DimTargetId
+							
+							Update	dbo.tblTargetingConfigWorking
+							Set		Adjustment = - ( TargetValue + Adjustment )
+							Where	DimTargetId = @DimTargetId
+						
+						End Else Begin
+						
+							Update	dbo.tblTargetingConfigWorking
+							Set		Adjustment =  @MinSumPercent + Adjustment  
+							Where	DimTargetId = @DimTargetId
+						
+						End
+				End
+			End
+		End
+	End
+		
+	Select @SumPercent = SUM(TargetValue + Adjustment) 
+	From	dbo.tblTargetingConfigWorking
+	Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+	And		TargetType = ''''Bucketing''''
+	And		LTargetName <> ''''Residual''''
+	
+	Update dbo.tblTargetingConfigWorking
+	Set		TargetValue = 1 - @SumPercent
+			, Adjustment = 0
+	Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+	And		TargetType = ''''Bucketing''''
+	And		LTargetName = ''''Residual''''
+
+	Select	@TotalBalance = MIN(TargetOriginalBalance / (TargetValue+Adjustment))
+	From	dbo.tblTargetingConfigWorking
+	Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+	And		TargetType = ''''Bucketing''''
+	And		(TargetValue + Adjustment) > 0
+	
+	--***********************************************************
+	-- Keep Adjust the Balance
+	--***********************************************************
+	--Select  @BalanceDistance = MIN( TargetOriginalBalance -  @TotalBalance * (TargetValue+Adjustment))
+	--From	dbo.tblTargetingConfigWorking
+	--Where	DimPoolID = @DimPoolId
+	--And		TargetType = ''''Bucketing''''
+	
+	--While ( @BalanceDistance < -0.01 And @TotalBalance > 0 ) Begin
+		
+	--	Set @TotalBalance = @TotalBalance + @BalanceDistance
+		
+	--	Select  @BalanceDistance = MIN( TargetOriginalBalance -  @TotalBalance * (TargetValue+Adjustment))
+	--	From	dbo.tblTargetingConfigWorking
+	--	Where	DimPoolID = @DimPoolId
+	--	And		TargetType = ''''Bucketing''''
+	--End
+	
+	If @TotalBalance <= 0 Begin 
+		RAISERROR(''''Can not achieve bucketing targets!'''', 16, 1) 
+		Return
+	End
+	
+	Update	dbo.tblTargetingConfigWorking
+	Set		TargetBalance = @TotalBalance * (TargetValue+Adjustment)
+	Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+	And		TargetType = ''''Bucketing''''
+
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

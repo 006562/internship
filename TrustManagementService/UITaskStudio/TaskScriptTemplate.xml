@@ -1,0 +1,128 @@
+﻿<Scripts>
+  <VariableScript>
+    Declare @CriteriaSetCode varchar(200)
+    Declare @TaskCode varchar(200)
+    Declare @CriteriaSetCodeCategoryId bigint
+    Declare @ProcessActionCodeCategoryId bigint
+    Declare @ProcessTaskCodeCategoryId bigint
+    Declare @CriteriaSetCodeId bigint
+    Declare @CriteriaSetId bigint
+    Declare @ProcessTaskCodeId bigint
+    Declare @ActionCode varchar(200)
+    Select @ProcessActionCodeCategoryId=[CodeCategoryId] From [Task].[CodeCategory] Where [CategoryCode]='ProcessActionType'
+    Select @CriteriaSetCodeCategoryId=[CodeCategoryId] From [Task].[CodeCategory] Where [CategoryCode]='CriteriaSetType'
+    Select @ProcessTaskCodeCategoryId=[CodeCategoryId] From [Task].[CodeCategory] Where [CategoryCode]='ProcessTaskType'
+    SET @CriteriaSetId=NULL
+  </VariableScript>
+  <EcScript>
+    SET @CriteriaSetCode='{0}'
+
+    if (not exists(select 1 from [Task].[CodeDictionary] where CodeDictionaryCode=@CriteriaSetCode and CodeCategoryId=@CriteriaSetCodeCategoryId))
+    BEGIN
+      INSERT INTO [Task].[CodeDictionary]([CodeCategoryId],[CodeDictionaryCode],[Value],[ValueShort],[SequenceNo],[IsDidplayed])
+      VALUES(@CriteriaSetCodeCategoryId,@CriteriaSetCode,@CriteriaSetCode+' Form CashFlowStudio','',0,1)
+    END
+
+    Set @CriteriaSetCodeId = (select Task.GetDictionaryCodeID('CriteriaSetType',@CriteriaSetCode))
+
+    if(not exists(select 1 from [Task].[CriteriaSet] where [CriteriaSetTypeId]=@CriteriaSetCodeId))
+    BEGIN
+      INSERT INTO [Task].[CriteriaSet]([CriteriaSetTypeId])
+      VALUES(@CriteriaSetCodeId)
+    END
+
+    Set @CriteriaSetId=(select top 1 CriteriaSetId From [Task].[CriteriaSet] Where CriteriaSetTypeId=@CriteriaSetCodeId)
+
+    if(not exists(select 1 from [Task].[Criteria] where [CriteriaSetId]=@CriteriaSetId and [CriteriaTypeId]=@CriteriaSetCodeId))
+    BEGIN
+      INSERT INTO [Task].[Criteria]
+      ([CriteriaName]
+      ,[CriteriaDescription]
+      ,[CriteriaSetId]
+      ,[CriteriaTypeId]
+      ,[IsEnable]
+      ,[ECPassNo]
+      ,[XMLSqlQueryEC]
+      ,[SequenceNo]
+      ,[IsFunctionEnable]
+      ,[IsEditable])
+      VALUES(@CriteriaSetCode,
+      @CriteriaSetCode + ' From CashFlowStudio',
+      @CriteriaSetId,
+      @CriteriaSetCodeId,
+      1,
+      232,
+      N'{1}',
+      1,
+      1,
+      1
+      )
+    END
+    ELSE
+    BEGIN
+      update [Task].[Criteria]
+      SET [XMLSqlQueryEC]=N'{1}'
+      where [CriteriaSetId]=@CriteriaSetId and [CriteriaTypeId]=@CriteriaSetCodeId
+    END
+  </EcScript>
+  <TaskScript>
+    SET @TaskCode='{0}'
+
+    if (not exists(select 1 from [Task].[CodeDictionary] where CodeDictionaryCode=@TaskCode and CodeCategoryId=@ProcessTaskCodeCategoryId))
+    BEGIN
+      INSERT INTO [Task].[CodeDictionary]([CodeCategoryId],[CodeDictionaryCode],[Value],[ValueShort],[SequenceNo],[IsDidplayed])
+      VALUES(@ProcessTaskCodeCategoryId,@TaskCode,@TaskCode+' Form CashFlowStudio','',0,1)
+    END
+
+    Set @ProcessTaskCodeId = (select Task.GetDictionaryCodeID('ProcessTaskType',@TaskCode))
+
+    if(exists(select 1 from [Task].[ProcessTask] where [ProcessTaskCodeId]=@ProcessTaskCodeId))
+    BEGIN
+      Update [Task].[ProcessTask] set
+      [XMLProcessTask]=N'{1}'
+      ,[CriteriaSetId]=@CriteriaSetId
+      where [ProcessTaskCodeId]=@ProcessTaskCodeId
+    END
+    ELSE
+    BEGIN
+      INSERT INTO [Task].[ProcessTask]
+      ([ProcessTaskCodeId]
+      ,[ProcessTaskDescription]
+      ,[XMLProcessTask]
+      ,[ProcessTaskFilePath]
+      ,[IsCurrent]
+      ,[VersionNumber]
+      ,[FileCheckSum]
+      ,[TaskType]
+      ,[IsCheckOut]
+      ,[CriteriaSetId])
+      VALUES
+      (@ProcessTaskCodeId
+      ,@TaskCode+' from cashflow studio UI'
+      ,N'{1}'
+      ,NULL
+      ,1
+      ,NULL
+      ,NULL
+      ,'CashFlow'
+      ,0
+      ,@CriteriaSetId)
+    END
+    DELETE FROM [Task].[ProcessTaskArray] WHERE [ProcessTaskCodeId]=@ProcessTaskCodeId
+    DELETE FROM [Task].[ProcessTaskContext] where [ProcessTaskCodeId]=@ProcessTaskCodeId
+  </TaskScript>
+  <ActionSctipt>
+    SET @ActionCode='{0}'
+    if (not exists(select 1 from [Task].[CodeDictionary] where CodeDictionaryCode=@ActionCode and CodeCategoryId=@ProcessActionCodeCategoryId))
+    BEGIN
+      INSERT INTO [Task].[CodeDictionary]([CodeCategoryId],[CodeDictionaryCode],[Value],[ValueShort],[SequenceNo],[IsDidplayed])
+      VALUES(@ProcessActionCodeCategoryId,@ActionCode,@ActionCode+' Form CashFlowStudio','',0,1)
+    END
+  </ActionSctipt>
+  <ProcessTaskArrayScript>
+    INSERT [Task].[ProcessTaskArray] ( [ProcessTaskCodeId], [ItemName], [ItemValue], [PeriodsId]) VALUES ( @ProcessTaskCodeId, N'{0}', N'{1}', {2})
+  </ProcessTaskArrayScript>
+  <ProcessTaskContextScript>
+    INSERT [Task].[ProcessTaskContext] ( [ProcessTaskCodeId], [VariableName], [VariableValue], [VariableDataType], [IsConstant], [IsKey], [KeyIndex]) VALUES ( @ProcessTaskCodeId, N'{0}', N'{1}', N'{2}', {3}, {4}, {5})
+  </ProcessTaskContextScript>
+</Scripts>

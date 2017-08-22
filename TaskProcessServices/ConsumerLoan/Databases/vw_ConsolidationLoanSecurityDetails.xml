@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+declare @vchSQL  varchar(8000)
+Declare @vchFullSQL varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+
+/****** Object:  View [dbo].[vw_ConsolidationLoanSecurityDetails]    Script Date: 18/09/2012 16:34:22 ******/
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N''[dbo].[vw_ConsolidationLoanSecurityDetails]''))
+DROP VIEW [dbo].[vw_ConsolidationLoanSecurityDetails]
+'
+exec (@vchSQL)
+
+set @vchSQL = '
+CREATE VIEW [dbo].[vw_ConsolidationLoanSecurityDetails]
+AS
+SELECT	
+DL.OrganisationCode     			as [OrganisationCode]
+,FL.DimReportingDateId				as [ReportingDate]
+,FL.DimPoolID						as [PoolID]
+,dt.TrustID							as [TrustId]
+,FC.LTVPassNo						as [LTVPassNo]
+,FC.ConsolidationNo					as [ConsolidationNo]
+,FL.AccountNo						as [AccountNo]
+,FS.SecurityNo						as [SecurityNo]
+,case when ISNULL(FLS.DimSecurityID,0) > 0 then 1 else 0 end  as [LoanSecurityDirectLinkage]
+,FC.LoanCount						as [PostConsolidationNumberofAccounts]
+,FC.SecurityCount					as [ConsolidationSecurityCount]
+,FL.CurrentLimit					as [CurrentLimit]
+,FL.CurrentPrincipalBalance			as [CurrentPrincipalBalance]
+,FL.CurrentBalanceDistributionCode  as [CurrentBalanceDistribution]
+,FL.Seasoning						as [Seasoning]
+,FL.SeasoningDistributionCode		as [SeasoningDistribution]
+,FL.LoanStartDate					as [LoanStartDate]
+,FL.LoanMaturityDate				as [LoanMaturityDate]
+,cast(FL.IPANXExpDate as datetime)	as [NewMaturityDate]
+,case when FL.IPANXExpDate is NULL then FL.LoanMaturityDate
+when FL.LoanMaturityDate is NULL then FL.IPANXExpDate
+when FL.LoanMaturityDate > FL.IPANXExpDate Then FL.LoanMaturityDate
+else FL.IPANXExpDate end			as [IPANExpDate]
+,FL.LoanStatus						as [LoanStatus]
+,datepart(year, fl.LoanMaturityDate) as [RemainingYearofMaturity]
+,dbo.fn_GetDistributionCode(FL.DimRemainingTermDistributionID, ''''RemainingTerm'''') as [RemainingTermToMaturityDistribution]
+,DL.PaymentTypeCode					as [PaymentTypeCode]
+,DL.PaymentTypeDesc					as [PaymentTypeDesc]
+,DL.MortgageInsuranceInd			as [MortgageInsurerInd]
+,DL.MortgageInsurerCode				as [MortgageInsurerCode]
+,DL.MortgageInsurerDesc				as [MortgageInsurerDesc]
+,DL.InterestRateTypeCode			as [InterestRateTypeCode]
+,DL.InterestRateTypeDesc			as [InterestRateTypeDesc]
+,DL.ScrubbedFlag					as [ScrubbedFlag]
+,FL.FixedRateEndDate				as [FixedRateEndDate]
+,cast(datepart(year, FL.FixedRateEndDate)   as varchar) +
+case when datepart(month, FL.FixedRateEndDate) < 10  then ''''0''''+cast(datepart(month, fl.FixedRateEndDate) as varchar)
+  else cast(datepart(month, FL.FixedRateEndDate) as varchar)
+  end as [FixedRateEndDateYYYYMM]
+,datepart(year, FL.FixedRateEndDate)	as [FixedRateEndDateYYYY]
+,dbo.fn_GetDistributionCode(FL.DimFixedRateExpiryTermDistributionID, ''''FixedRateExpiryTerm'''') as [FixedRateExpiryTermDistribution]
+,FL.CurrentRate						as [CurrentRate]		
+,FL.CurrentRateDistributionCode		as [CurrentRateDistribution]	
+,DL.ProductCode						as [ProductCode]
+,DL.ProductDescription				as [ProductDescription]
+,FL.PrincipalPaidToDate				as [PrincipalPaidToDate]
+,FL.DaysInArrears					as [DaysInArrears]
+,FL.DaysInArrearsDistributionCode	as [DaysInArrearsDistribution]
+,FL.AmountOfArrears					as [AmountOfArrears]
+,FL.InterestOnlyExpiryDate			as [InterestOnlyExpiryDate]
+,FL.InterestOnlyRemainingTerm		as [InterestOnlyRemainingTerm]		
+,FL.DimInterestOnlyRemainingTermDistributionCode as [InterestOnlyRemainingTermDistribution]	
+,cast(FL.IOExpDate as datetime)		as [IOExpDate]
+,Convert(float,DateDiff(Day, Convert(datetime,Convert(varchar,FL.DimReportingDateID)), FL.IOExpDate))*12/365.25 as [RecalRemainingInterestOnlyTerm]
+,FL.PaymentAmount					as [PaymentAmount]	
+,FLS.DebtChargePosition										as [DebtChargePosition]
+,DS.PropertyTypeCode										as [PropertyTypeCode]
+,DS.PropertyTypeDesc										as [PropertyTypeDesc]
+,DS.Suburb													as [Suburb]
+,DS.PostCode												as [PostCode]
+,DS.State													as [State]
+,DS.Region													as [Region]
+,DS.CountryCode												as [CountryCode]
+,DS.Nature													as [Nature]
+,DS.OccupancyPurposeDesc									as [OccupancyPurposeDesc]
+,FS.SecurityValuationDate									as [ValuationDate]
+,DS.ValuationType											as [ValuationType]
+,FCS.SecurityRank											as [SecurityRankingSequence]
+,cast(FS.SecurityValuationAmt as decimal(15,4))				as [ValuationAmt]
+,FC.ConsolidationBalance									as [PostConsolidationBalance]	
+,FC.ConsolidationValuation									as [PostConsolidationValuation]
+,FC.ConsolidationLimitBalance								as [PostConsolidationLimitBalance]
+,FC.ConsolidationOriginalBalance							as [PostConsolidationOriginalBalance]
+,cast(FC.ConsolidationLTV as float)							as [PostConsolidationLTV]
+,dbo.fn_GetDistributionCode(FC.DimConsolidationLTVDistributionID, ''''CurrentLoanToValueRatio'''')		as [PostConsolidationLTVDistribution] 
+,cast(FC.ConsolidationLimitLTV	as float)					as [PostConsolidationLimitLTV]
+,dbo.fn_GetDistributionCode(FC.DimConsolidationLimitLTVDistributionID, ''''Current Limit Loan To Value Ratio'''')		as [PostConsolidationLimitLTVDistribution]
+,FC.ConsolidationSeasoning									as [PostConsolidationSeasoning]
+,Cast(FL.CurrentRate * FL.CurrentPrincipalBalance as Float)	as [WeightedCurrentRate]
+,FL.Seasoning * FL.CurrentPrincipalBalance					as [WeightedSeasoning]
+,FL.CurrentPrincipalBalance * FC.ConsolidationSeasoning		as [PostWeightedSeasoning]
+,FL.CurrentPrincipalBalance * FL.TermtoMaturity				as [WeightedTermToMaturity]
+,Cast(FL.CurrentPrincipalBalance * FC.ConsolidationLTV as Float)		as [PostWeightedConsolidationLTV]
+,Cast(FL.CurrentPrincipalBalance * FC.ConsolidationLimitLTV as Float)	as [PostWeightedConsolidationLimitLTV]
+,FL.DimLoanId
+,FS.DimSecurityId
+,FC.DimConsolidationId
+,FC.ConsolidationDimTrustID
+FROM  dbo.tblFactConsolidation FC (nolock)
+INNER JOIN dbo.tblFactConsolidationLoan FCL (nolock) ON FC.DimPoolId=FCL.DimPoolId And FC.DimConsolidationId=FCL.DimConsolidationId And FC.LTVPassNo=FCL.LTVPassNo
+JOIN dbo.tblFactLoan FL (nolock) ON FCL.DimLoanId=FL.DimLoanId And FCL.DimPoolId=FL.DimPoolId 
+JOIN dbo.tblDimLoan DL (nolock) ON FL.DimLoanId=DL.DimLoanId And FL.DimPoolId=DL.DimPoolId
+JOIN dbo.view_DimTrust dt on fl.DimTrustID = dt.DimTrustID
+LEFT JOIN dbo.tblFactConsolidationSecurity FCS (nolock) ON FC.DimPoolId=FCS.DimPoolId And FC.DimConsolidationId=FCS.DimConsolidationId And FC.LTVPassNo=FCS.LTVPassNo
+LEFT JOIN dbo.tblFactLoanSecurity FLS (nolock) ON FCS.DimSecurityId=FLS.DimSecurityId And FCL.DimLoanId = FLS.DimLoanId And  FCS.DimPoolId=FLS.DimPoolId And FLS.IsIncluded = 1
+LEFT JOIN dbo.tblFactSecurity FS (nolock) ON FCS.DimSecurityId = FS.DimSecurityID And FCS.DimPoolID = FS.DimPoolID
+LEFT JOIN dbo.tblDimSecurity DS (nolock) ON FS.DimSecurityID = DS.DimSecurityID And FS.DimPoolID = DS.DimPoolID
+'
+SET @vchFullSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @vchFullSQL
+EXEC (@vchFullSQL)
+
+]]>
+  </Query>
+
+</main>

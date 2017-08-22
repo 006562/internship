@@ -1,0 +1,270 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL  nvarchar(max)
+Declare @bigsql nvarchar(max)
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_Targeting_SetupConfiguration]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_Targeting_SetupConfiguration]
+'
+exec (@vchSQL)
+
+--**************************************************
+--USP_Targeting_SetupConfiguration
+--**************************************************
+Set @vchSQL ='Create Procedure [dbo].[USP_Targeting_SetupConfiguration]
+(
+	@DimPoolId bigint
+	, @DimECId bigint
+	, @BalanceColumnName nvarchar(100)
+	, @SourceLTVPassNo nvarchar(100)
+	, @ResultLTVPassNo nvarchar(100)
+) AS Begin
+
+	Set NOCOUNT ON
+	
+	Declare @xmlEC xml
+	Declare @QueryBalanceSecurity nvarchar(4000)
+	Declare @QueryBalanceLoan nvarchar(4000)
+	Declare @QueryTargetSourceSecurity nvarchar(4000)
+	Declare @QueryTargetSourceLoan nvarchar(4000)
+	Declare @TargetName nvarchar(500)
+	Declare @TargetContent nvarchar(500)
+	Declare @ResidualQuery nvarchar(500) = ''''''''
+	Declare @ResidualPercent decimal(15,4)
+	Declare @SumBalanceAmount decimal(15,2)
+	Declare @BucketingCount int = 0
+	
+	Declare @BucketSumResult table (SumBalanceAmount decimal(15,2))
+	Declare @Bucketing table(TargetName nvarchar(500), TargetContent nvarchar(500))
+	Declare @TargetConfig Table(TargetName varchar(500), TargetContent varchar(500), TargetSumQuery nvarchar(4000))
+	--****************************************************************
+	-- Build Up Configuration Table
+	--****************************************************************
+	Select	@xmlEC = EC.XMLSqlQueryEC   
+	From	dbo.tblDimEC EC
+	Where	DimPoolID = @DimPoolId
+	And		DimECID = @DimECId
+
+	Delete From dbo.tblTargetingConfig Where DimPoolID = @DimPoolId
+	Insert Into dbo.tblTargetingConfig (DimPoolID, DimECID, TargetType, TargetName, TargetContent, TargetValue, TargetTolerance)
+	Select	@DimPoolId As DimPoolId
+      , @DimECId as DimECID
+			, t.c.value(''''@TargetType[1]'''', ''''varchar(500)'''') As TargetType
+			, Case When t.c.value(''''@TargetType[1]'''', ''''varchar(500)'''') = ''''WeightedAverage'''' Then  t1.c1.value(''''@Name'''', ''''varchar(500)'''')
+			Else t.c.value(''''@TargetName[1]'''', ''''varchar(500)'''') End As TargetName
+			, t1.c1.value(''''@Name'''', ''''varchar(500)'''') As TargetContent
+			, Convert(decimal(19,6), t1.c1.value(''''@Value'''', ''''varchar(500)'''')) As TargetValue
+			--, Convert(decimal(19,6)
+			--			, Case When Len(Isnull( t1.c1.value(''''@Tolerance'''', ''''varchar(500)''''),'''''''')) = 0 Then 0.000000 
+			--			  Else t1.c1.value(''''@Tolerance'''', ''''varchar(500)'''') End )
+			--As TargetTolerance
+			, Case When Len(Isnull(t1.c1.value(''''@Tolerance'''', ''''nvarchar(19)''''),'''''''')) > 0.000000 Then Convert(decimal(19,6), t1.c1.value(''''@Tolerance'''', ''''nvarchar(19)''''))
+			  Else 0.000000 End As TargetTolerance
+	From @xmlEC.nodes(''''/main/Parameters/Parameter[@Type="TargetLookup"]'''') As t(c)
+	Cross Apply t.c.nodes(''''SelectedItems/Item'''') As t1(c1)
+	
+	--****************************************************************
+	-- Build Up Query Filter
+	--****************************************************************
+	Insert	Into @Bucketing
+	Select	TargetName, TargetContent From dbo.tblTargetingConfig 
+	Where	TargetType = ''''Bucketing''''
+	And		DimPoolID = @DimPoolId and DimECID = @DimECID
+	Select @BucketingCount = COUNT(*) From @Bucketing
+	
+	If @BucketingCount > 0 Begin
+	
+		DECLARE tableCursor CURSOR FOR 
+			Select TargetName, TargetContent From @Bucketing
+		FOR READ ONLY
+		--Open the cursor
+		OPEN tableCursor
+		--Get the first table name from the cursor
+		FETCH NEXT FROM tableCursor INTO @TargetName, @TargetContent
+		--Loop until the cursor was not able to fetch
+		WHILE	(@@Fetch_Status >= 0) Begin
+			Set @ResidualQuery += '''' And '''' + @TargetName + '''' <> '''' + '''''''''''''''' + @TargetContent + ''''''''''''''''
+			FETCH NEXT FROM tableCursor INTO @TargetName, @TargetContent
+		END
+
+		--Get rid of the cursor
+		CLOSE tableCursor
+		DEALLOCATE tableCursor
+
+		Set @QueryTargetSourceSecurity = dbo.Fun_Targeting_GetComputedQueryHeader(@BalanceColumnName, @SourceLTVPassNo, ''''ParentSource'''', @DimPoolId, @DimECId)
+		Set @QueryBalanceSecurity = dbo.Fun_Targeting_GetComputedQueryHeader(@BalanceColumnName, @SourceLTVPassNo, ''''ParentSum'''', @DimPoolId, @DimECId)
+		
+		Update dbo.tblTargetingConfig
+		Set		TargetSourceQuery	= REPLACE(	@QueryTargetSourceSecurity + @ResidualQuery
+												, TargetName + '''' <> '''' + '''''''''''''''' + TargetContent
+												, TargetName + '''' = '''' + '''''''''''''''' + TargetContent
+											  )
+				,TargetSumQuery		= REPLACE(	@QueryBalanceSecurity + @ResidualQuery
+												, TargetName + '''' <> '''' + '''''''''''''''' + TargetContent
+												, TargetName + '''' = '''' + '''''''''''''''' + TargetContent
+											)
+		Where	TargetType = ''''Bucketing''''
+		And		DimPoolID = @DimPoolId and DimECID = @DimECID
+		
+		Select	@ResidualPercent = 1 - SUM(TargetValue)
+		From	dbo.tblTargetingConfig
+		Where	TargetType = ''''Bucketing''''
+		And		DimPoolID = @DimPoolId and DimECID = @DimECID
+		
+		If ( @ResidualPercent < 0 ) Begin
+			 Raiserror(''''Can not achieve the target!'''', 16,1)
+			 Return
+		End
+		
+		--****************************************************************
+		-- Build Up Residual
+		--****************************************************************
+		Insert Into dbo.tblTargetingConfig 
+		(
+			DimPoolID
+      , DimECID
+			, TargetType
+			, TargetName
+			, TargetContent
+			, TargetValue
+			, TargetTolerance
+			, TargetSourceQuery
+			, TargetSumQuery
+		)
+		Select	@DimPoolId As DimPoolId
+        , @DimECID as DimECID
+				, ''''Bucketing''''
+				, ''''Residual''''
+				, ''''''''
+				, 1- SUM(TargetValue)
+				, 0.000000
+				, @QueryTargetSourceSecurity + @ResidualQuery
+				, @QueryBalanceSecurity + @ResidualQuery
+		From	dbo.tblTargetingConfig
+		Where	TargetType = ''''Bucketing''''
+		And		DimPoolID = @DimPoolId and DimECID = @DimECID
+	End
+	
+	Delete From dbo.tblTargetingConfigIntersect Where DimPoolID = @DimPoolId and DimECID = @DimECID
+	If @BucketingCount > 1 Begin
+		
+		Insert Into dbo.tblTargetingConfigIntersect(DimPoolId, DimECID, TargetType, LTargetName, LTargetContent, RTargetName, RTargetContent)
+		Select	@DimPoolId
+        ,lc.DimECID
+				, ''''Bucketing''''
+				, lc.TargetName
+				, lc.TargetContent
+				, rc.TargetName
+				, rc.TargetContent 
+		From	dbo.tblTargetingConfig lC
+		cross join dbo.tblTargetingConfig rC 
+		Where	lc.DimPoolID = rc.DimPoolID and lc.DimECID = rc.DimECID
+    And   lc.TargetType = ''''Bucketing''''
+		And		rc.TargetType = ''''Bucketing''''
+		And		lc.TargetName <> rc.TargetName
+		--And		lc.TargetContent <> rc.TargetContent
+		And		lc.TargetName <> ''''Residual''''
+		And		rc.TargetName <> ''''Residual''''
+		And		lc.DimTargetID < rc.DimTargetId
+    and lc.DimPoolID = @DimPoolID and lc.DimECID = @DimECID
+		order by lc.TargetName, lc.TargetContent
+		
+		Update	dbo.tblTargetingConfigIntersect
+		Set		TargetSourceQuery = REPLACE(
+										REPLACE(	@QueryTargetSourceSecurity + @ResidualQuery
+													, LTargetName + '''' <> '''' + '''''''''''''''' + LTargetContent
+													, LTargetName + '''' = '''' + '''''''''''''''' + LTargetContent
+												)
+										, RTargetName + '''' <> '''' + '''''''''''''''' + RTargetContent
+										, RTargetName + '''' = '''' + '''''''''''''''' + RTargetContent
+									)
+				,TargetSumQuery =	REPLACE(
+										REPLACE(	@QueryBalanceSecurity + @ResidualQuery
+													, LTargetName + '''' <> '''' + '''''''''''''''' + LTargetContent
+													, LTargetName + '''' = '''' + '''''''''''''''' + LTargetContent
+												)
+										, RTargetName + '''' <> '''' + '''''''''''''''' + RTargetContent
+										, RTargetName + '''' = '''' + '''''''''''''''' + RTargetContent
+									)
+		Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+	
+	End
+															
+	Execute dbo.USP_Targeting_CalculateConfigSize @DimPoolId, @SourceLTVPassNo, @BalanceColumnName, @DimECId
+		
+	Set @QueryBalanceSecurity = dbo.Fun_Targeting_GetComputedQueryHeader(@BalanceColumnName, @ResultLTVPassNo, ''''ParentSum'''', @DimPoolId, @DimECId)
+	
+  Delete From dbo.tblTargetingConfigWorking Where DimPoolID = @DimPoolId and DimECID = @DimECID
+	
+  Insert Into dbo.tblTargetingConfigWorking
+	(
+		DimPoolID
+    ,DimECID
+		, LTargetName
+		, LTargetContent
+		, RTargetName
+		, RTargetContent
+		, TargetType
+		, TargetOriginalBalance
+		, TargetOriginalValue
+		, TargetConfigValue
+		, TargetValue
+		, TargetTolerance
+		, TargetSourceQuery
+		, TargetSumQuery
+		, TargetConfigSumQuery
+	)
+
+	Select	DimPoolID
+      , DimECID
+			, TargetName
+			, TargetContent
+			, null
+			, null
+			, TargetType
+			, TargetOriginalBalance
+			, TargetOriginalValue
+			, TargetValue
+			, TargetValue
+			, TargetTolerance
+			, TargetSourceQuery
+			, REPLACE(TargetSumQuery, @SourceLTVPassNo, @ResultLTVPassNo)
+			, Case When TargetType = ''''Bucketing'''' Then @QueryBalanceSecurity + '''' And '''' + TargetName + '''' = '''' + '''''''''''''''' + TargetContent + ''''''''''''''''
+				Else '''''''' End  
+	From	dbo.tblTargetingConfig
+	Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+
+	Union All
+
+	Select	DimPoolID
+      , DimECID
+			, LTargetName
+			, LTargetContent
+			, RTargetName
+			, RTargetContent
+			, TargetType
+			, TargetOriginalBalance
+			, TargetOriginalValue
+			, TargetOriginalValue
+			, TargetOriginalValue
+			, 0.0
+			, TargetSourceQuery
+			, REPLACE(TargetSumQuery, @SourceLTVPassNo, @ResultLTVPassNo)
+			, ''''''''
+	From	dbo.tblTargetingConfigIntersect
+	Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+	
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

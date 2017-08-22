@@ -1,0 +1,770 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL nvarchar(max)
+Declare @bigsql nvarchar(max)
+set @vchSQL = 'use [' + @DBName + ']
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_Targeting_SizeExcludeResults]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_Targeting_SizeExcludeResults]
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_Targeting_LTVSeasoningExcludeResults]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_Targeting_LTVSeasoningExcludeResults]
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_Targeting_Parent]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_Targeting_Parent]
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_Targeting_ParentConsolidation]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_Targeting_ParentConsolidation]
+
+IF EXISTS ( SELECT * FROM sys.table_types WHERE name = N''TargetingSource'')
+DROP TYPE TargetingSource
+
+CREATE TYPE TargetingSource AS TABLE 
+(
+	DimID bigint not null PRIMARY KEY NONCLUSTERED
+    , WeightedLTV decimal(15,4)
+    , WeightedSeasoning decimal(15,4)
+    , BalanceAmount decimal(15,2)
+    , LTV decimal(15,4)
+    , Seasoning decimal(15,4)
+    , IsIgnore bit default 0
+)'
+exec (@vchSQL)
+
+--**************************************************
+--USP_Targeting_SizeExcludeResults
+--**************************************************
+Set @vchSQL ='Create Procedure [dbo].[USP_Targeting_SizeExcludeResults]
+(
+	 @TargetingSource TargetingSource Readonly
+	 , @TargetOriginalBalanceSize decimal(15,2)
+	 , @TargetBalanceSize decimal(15,2)
+) AS Begin
+	
+	Declare @RowBalanceAmount decimal(15,2) = 0
+	Declare @RowDimId bigint 
+	Declare @AccumulatedBalanceAmount decimal(15,2) = 0
+	Declare	@SumBalanceAmount decimal(15,2) = 0
+	Declare @TargetResult Table( DimId bigint  not null PRIMARY KEY NONCLUSTERED )
+	
+	Set @SumBalanceAmount = @TargetOriginalBalanceSize
+	If @SumBalanceAmount = 0 RAISERROR(''''Targeting Source Table had a zero Balance Amount!'''', 16, 1)
+
+	-- If the Size is 0, reduce everything or fill up nothing
+	If @TargetBalanceSize = 0 Begin
+		Select DimID From @TargetingSource Where IsIgnore = 0
+		Return
+	End
+
+	DECLARE tableCursor CURSOR FOR 
+		Select	DimID, BalanceAmount 
+		From	@TargetingSource 
+		Where	IsIgnore = 0
+		Order By NEWID()
+	FOR READ ONLY
+
+	--Open the cursor
+	OPEN tableCursor
+	--Get the first table name from the cursor
+	FETCH NEXT FROM tableCursor INTO @RowDimId, @RowBalanceAmount
+
+	--Loop until the cursor was not able to fetch
+	WHILE	(@@Fetch_Status >= 0) 
+			And	( @SumBalanceAmount - @TargetBalanceSize >= 1)
+	BEGIN
+
+		Insert into @TargetResult values (@RowDimId)
+		Set @SumBalanceAmount = @SumBalanceAmount - @RowBalanceAmount
+		
+		FETCH NEXT FROM tableCursor INTO @RowDimId, @RowBalanceAmount
+	END
+
+	--Get rid of the cursor
+	CLOSE tableCursor
+	DEALLOCATE tableCursor
+	
+	Select DimID From @TargetResult
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+
+--**************************************************
+--USP_Targeting_LTVSeasoningExcludeResults
+--**************************************************
+Set @vchSQL ='Create Procedure [dbo].[USP_Targeting_LTVSeasoningExcludeResults]
+(
+	 @TargetingSource TargetingSource Readonly
+	 , @TargetLTV decimal(15,4)
+	 , @LTVTolerance decimal(15,4)
+	 , @TargetSeasoning decimal(15,4)
+	 , @SeasoningTolerance decimal(15,4)
+) AS Begin
+	
+	Set NOCOUNT ON
+	--*****************************************
+	-- Caculate Source Consolidation Statistics
+	--*****************************************
+	Declare	@SumBalanceAmount decimal(15,2) = 0
+	Declare	@SumWeightedLTV decimal(15,4) = 0
+	-- Decimal(15,4) can not hold total SumWeightedSeasoning
+	-- Need decimal(19,4)
+	Declare	@SumWeightedSeasoning decimal(19,4) = 0
+	Declare @PopulationLTV decimal(15,4) = 0
+	Declare @PopulationSeasoning decimal(15,4) = 0
+
+	Select	@SumBalanceAmount		= SUM(BalanceAmount)  
+			, @SumWeightedLTV		= SUM(WeightedLTV)  
+			, @SumWeightedSeasoning	= SUM(WeightedSeasoning)   
+			, @PopulationLTV		= Case When SUM(BalanceAmount) = 0 Then 0
+									  Else SUM(WeightedLTV) / SUM(BalanceAmount) End
+			, @PopulationSeasoning	= Case When SUM(BalanceAmount) = 0 Then 0
+									  Else SUM(WeightedSeasoning) / SUM(BalanceAmount) End
+	From	@TargetingSource
+	
+	If @SumBalanceAmount = 0 RAISERROR(''''Targeting Source Table had a zero Balance Amount!'''', 16, 1)
+
+	--*****************************************
+	-- Populate Working Consolidation Table
+	--*****************************************
+	-- Adjustable Control Variables
+	Declare @ToleranceDegree bigint = 3
+	Declare @Iterations bigint = 2
+	Declare @LoopCount bigint = 0
+	
+	Declare	@CurrentLTV decimal(15,4) = 0
+	Declare	@CurrentSeasoning decimal(15,4) = 0
+	Declare @RowBalanceAmount decimal(15,2) = 0
+	Declare @RowWeightedLTV decimal(15,4) = 0
+	Declare @RowWeightedSeasoning decimal(15,4) = 0
+	Declare @RowDimId bigint = 0
+	
+	Declare @SeasoningFlag bit = 0
+	Declare @LTVFlag bit = 0
+	
+	Declare @TargetingResult Table
+	(
+		DimId bigint not null PRIMARY KEY NONCLUSTERED
+	)
+	Set @CurrentLTV = @PopulationLTV
+	Set @CurrentSeasoning = @PopulationSeasoning
+	
+	WHILE (@LoopCount < @Iterations ) Begin
+		Set @LTVFlag = 0
+		Set @SeasoningFlag = 0
+		
+		If ABS(@CurrentLTV - @TargetLTV) <= @LTVTolerance Begin
+			Set @LTVFlag = 1
+		End Else If  ABS(@CurrentSeasoning - @TargetSeasoning) <= @SeasoningTolerance Begin
+			Set @SeasoningFlag = 1		
+		End
+		
+		DECLARE tableCursor CURSOR FOR 
+			Select	DimID
+					, WeightedLTV
+					, WeightedSeasoning
+					, BalanceAmount
+			From	@TargetingSource
+			Where	(	(Convert(Decimal(15,2),  LTV) - @TargetLTV)*(@PopulationLTV-@TargetLTV) > 0
+						Or @LTVFlag = 1
+					)
+			And		(	(Convert(Decimal(15,0),  Seasoning) - @TargetSeasoning)*(@PopulationSeasoning-@TargetSeasoning) > 0
+						Or @SeasoningFlag = 1
+					)
+			And		Not (@LTVFlag = 1 And @SeasoningFlag = 1)
+			And		DimID Not In
+			(
+				Select Distinct DimID From @TargetingResult
+			)
+			And	IsIgnore = 0
+			Order By NEWID()
+		FOR READ ONLY
+
+		--Open the cursor
+		OPEN tableCursor
+		--Get the first table name from the cursor
+		FETCH NEXT FROM tableCursor INTO @RowDimId, @RowWeightedLTV, @RowWeightedSeasoning, @RowBalanceAmount
+
+		--Loop until the cursor was not able to fetch
+		WHILE	(@@Fetch_Status >= 0) 
+				And ( ABS(@CurrentLTV - @TargetLTV) > (@LTVTolerance/@ToleranceDegree) Or @LTVFlag = 1 ) 
+				And ( ABS(@CurrentSeasoning - @TargetSeasoning ) > (@SeasoningTolerance/@ToleranceDegree) Or @SeasoningFlag = 1 ) 
+		BEGIN
+			If (@SumBalanceAmount - @RowBalanceAmount) < 0.001 RAISERROR(''''Can not achieve the targeting for Source Table!'''', 16, 1)
+			
+			If	(	@SeasoningFlag = 0 And @LTVFlag = 1
+					And ABS((@SumWeightedLTV - @RowWeightedLTV)/(@SumBalanceAmount - @RowBalanceAmount)-@TargetLTV) < @LTVTolerance
+				)
+			Or	( @SeasoningFlag = 1 And @LTVFlag = 0
+					 And ABS ((@SumWeightedSeasoning - @RowWeightedSeasoning)/(@SumBalanceAmount - @RowBalanceAmount)- @TargetSeasoning)< @SeasoningTolerance
+				)
+			Or	( @SeasoningFlag = 0 And @LTVFlag = 0 )
+			Begin
+			
+				Insert into @TargetingResult values (@RowDimId)
+				
+				Set @SumWeightedLTV			= @SumWeightedLTV		- @RowWeightedLTV
+				Set @SumWeightedSeasoning	= @SumWeightedSeasoning - @RowWeightedSeasoning
+				Set @SumBalanceAmount		= @SumBalanceAmount		- @RowBalanceAmount
+				
+				If (@SumBalanceAmount < 0.001) RAISERROR(''''Can not achieve the targeting for Source Table!'''', 16, 1)
+				
+				Set @CurrentLTV				= @SumWeightedLTV / @SumBalanceAmount
+				Set @CurrentSeasoning		= @SumWeightedSeasoning / @SumBalanceAmount
+			End
+			
+			FETCH NEXT FROM tableCursor INTO @RowDimId, @RowWeightedLTV, @RowWeightedSeasoning, @RowBalanceAmount
+		END
+
+		--Get rid of the cursor
+		CLOSE tableCursor
+		DEALLOCATE tableCursor
+		
+		Set @LoopCount = @LoopCount + 1
+	End
+	
+	Select DimID From @TargetingResult
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+
+
+--**************************************************
+--USP_Targeting_Parent
+--**************************************************
+Set @vchSQL ='Create Procedure [dbo].[USP_Targeting_Parent]
+(
+	@DimPoolId bigint
+	, @DimECId bigint
+	, @AutoAdjust bit = 1
+	, @AdjustLoopCount bigint = 2
+	, @SourceLTVPassNo nvarchar(100)
+	, @ResultLTVPassNo nvarchar(100)
+	, @BalanceColumnName nvarchar(100)
+) AS Begin
+
+	Set NOCOUNT ON
+	
+	--******************************************************
+	-- LTV Seasoning Target Configuration
+	--******************************************************
+	Declare @TargetConfig Table
+	(
+		DimTargetId bigint
+		, TargetBalance decimal(15,2)
+		, TargetOriginalBalance decimal(15,2)
+		, TargetSourceQuery nvarchar(4000)
+	)
+	Declare @TargetResult Table(DimId bigint not null PRIMARY KEY NONCLUSTERED)
+	Declare @IntersectDetectResult Table(DimId bigint not null)
+	Declare @BucketSumResult table (SumBalanceAmount decimal(15,2))
+	Declare @TargetingSource TargetingSource
+
+	Declare @SumBalanceAmount decimal(15,2)
+	Declare @TotalBalance decimal(15,2)
+	Declare @TargetLTV decimal(15,4)
+	Declare @LTVTolerance decimal(15,4)
+	Declare @TargetSeasoning decimal(15,4)
+	Declare @SeasoningTolerance decimal(15,4)
+	Declare @LoanLTV decimal(15,4)
+	Declare @ConsolidationLTV decimal(15,4)
+	Declare @BucketingCount int = 0
+	Declare @LTVBucketingCount int = 0
+
+	Declare @DimTargetId bigint
+	Declare @TargetName varchar(500)
+	Declare @TargetSourceQuery nvarchar(4000)
+	Declare @QueryBalanceLoan nvarchar(4000)
+	Declare @TargetBalance decimal(15,2)
+	Declare @TargetOriginalBalance decimal(15,2)
+	Declare @DimLoanECId bigint
+		  
+	Select  @DimLoanECId = DimECID
+	From	dbo.tblDimEC 
+	Where	DimPoolID = @DimPoolId
+	And		CriteriaName = ''''AUS_EC41_ConsolidationLTVCriteriaLoan''''
+
+	Declare @LoopCount int = 1
+	Declare @iCount int = 0
+
+	-- Reset all adjustfactor for autoadjust
+	If @AutoAdjust = 1 Begin 
+		Set @LoopCount = @AdjustLoopCount
+		Update	dbo.tblTargetingConfigWorking
+		Set		Adjustment = 0
+		Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+	End
+
+	-- If auto adjust, run 2 time
+	-- If not auto ajust, will use the adjustfactor in the table, run only 1 time
+	While @iCount < @LoopCount Begin
+		
+		-- ***************************************************************************
+		-- Step 1. Clean Up the TargetingPass Link Loan, and Reset the Target Balance
+		-- ***************************************************************************
+		Delete From dbo.tblFactConsolidationECResult 
+		Where DimPoolID = @DimPoolId 
+		And	  LTVPassNo = @SourceLTVPassNo
+		And	  DimECID = @DimECID
+		
+		Delete From dbo.tblFactLoanECResult Where DimECID = @DimECId And DimPoolID = @DimPoolId
+		Delete From dbo.tblFactLoanECResult Where DimECID = @DimLoanECId And DimPoolID = @DimPoolId
+		EXECUTE dbo.USP_UpdateIsIncludeForECResult @DimPoolId
+		
+		-- ***************************************************************************
+		-- Step 2. Target for each bucket size
+		-- ***************************************************************************
+		Select @BucketingCount =  COUNT(*)
+		From	dbo.tblTargetingConfigWorking 
+		Where	TargetType = ''''Bucketing''''
+		And		DimPoolId  = @DimPoolId and DimECID = @DimECID
+		
+		If @BucketingCount > 0 Begin
+			EXECUTE dbo.USP_Targeting_CalculateBucketSize @DimPoolId, @DimECID
+			
+			Delete From @TargetConfig
+			Insert Into @TargetConfig (DimTargetId, TargetBalance, TargetOriginalBalance, TargetSourceQuery)
+			Select	DimTargetId, TargetBalance, TargetOriginalBalance, TargetSourceQuery 
+			From	dbo.tblTargetingConfigWorking 
+			Where	TargetType = ''''Bucketing''''
+			And		DimPoolId  = @DimPoolId and DimECID = @DimECID
+		
+			Delete From @IntersectDetectResult
+      
+			DECLARE ConfigCursor CURSOR FOR 
+				Select	DimTargetId, TargetBalance, TargetOriginalBalance, TargetSourceQuery
+				From	@TargetConfig 
+				Order BY DimTargetId
+			FOR READ ONLY
+
+			OPEN ConfigCursor
+			FETCH NEXT FROM ConfigCursor INTO @DimTargetId, @TargetBalance, @TargetOriginalBalance, @TargetSourceQuery 
+			--Loop until the cursor was not able to fetch
+			WHILE	(@@Fetch_Status >= 0)  BEGIN
+				
+				Delete From @TargetingSource
+				Insert Into @TargetingSource EXEC SP_EXECUTESQL @TargetSourceQuery
+				
+				Insert @IntersectDetectResult
+				Select Distinct DimID From @TargetingSource
+				
+				Delete From @TargetResult
+				Insert Into @TargetResult
+				EXECUTE dbo.USP_Targeting_SizeExcludeResults 
+				@TargetingSource
+				,	@TargetOriginalBalance
+				,	@TargetBalance
+				
+				Insert Into dbo.tblFactLoanECResult (DimPoolID, DimECID, DimLoanID)
+				Select	@DimPoolId As DimPoolId
+						, @DimECId As DimECId
+						, DimId As DimLoanId
+				From	@TargetResult
+				Where	DimId Not in
+				(
+					Select Distinct DimLoanId From dbo.tblFactLoanECResult Where DimPoolID = @DimPoolId And DimECID = @DimECId
+				)
+				
+				FETCH NEXT FROM ConfigCursor INTO @DimTargetId, @TargetBalance, @TargetOriginalBalance, @TargetSourceQuery 
+			END
+
+			--Get rid of the cursor
+			CLOSE ConfigCursor
+			DEALLOCATE ConfigCursor
+			
+			Insert Into dbo.tblFactLoanECResult (DimPoolID, DimECID, DimLoanID)
+			Select	Distinct @DimPoolId
+					, @DimECId
+					, DimLoanId 
+			From	dbo.tblFactConsolidation FC
+			Join	dbo.tblFactConsolidationLoan FCL on FCL.DimPoolID = FC.DimPoolID
+												    And FCL.DimConsolidationID = FC.DimConsolidationID
+												    And FCL.LTVPassNo = FC.LTVPassNo
+			Where	FC.LTVPassNo = @SourceLTVPassNo
+			And		FC.DimPoolID = @DimPoolId
+			And		FC.ConsolidationDimTrustID < 1
+			And		DimLoanId Not in
+			(
+				Select Distinct DimID From @IntersectDetectResult
+			)
+		End
+		-- ***************************************************************************
+		-- Step 3. Target for LTV and Seasoing
+		-- ***************************************************************************
+		Select	@LTVBucketingCount =  COUNT(*)
+		From	dbo.tblTargetingConfigWorking 
+		Where	TargetType = ''''WeightedAverage''''
+		And		DimPoolId  = @DimPoolId 
+		and		DimECID = @DimECID
+		
+		If @LTVBucketingCount = 2 Begin
+		
+		  Select @TargetLTV = TargetValue + ISNULL(AdjustmentConfig,0)
+				, @LTVTolerance = TargetTolerance
+		  From	dbo.tblTargetingConfigWorking
+		  Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+		  And	TargetType = ''''WeightedAverage''''
+		  And	LTargetName = ''''ConsolidationLTV''''
+
+		  Select @TargetSeasoning = TargetValue
+				, @SeasoningTolerance = TargetTolerance
+		  From	dbo.tblTargetingConfigWorking
+		  Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+		  And	TargetType = ''''WeightedAverage''''
+		  And	LTargetName = ''''Seasoning''''
+		    
+		  Set @QueryBalanceLoan = dbo.Fun_Targeting_GetComputedQueryHeader(@BalanceColumnName, @SourceLTVPassNo, ''''ParentSource_LTVSeasoning'''', @DimPoolId, @DimECId)
+		  Delete From @TargetingSource
+		  Insert Into @TargetingSource EXEC SP_EXECUTESQL @QueryBalanceLoan
+		
+		  Delete From @TargetResult
+		  Insert Into @TargetResult
+		  EXECUTE dbo.USP_Targeting_LTVSeasoningExcludeResults 
+		     @TargetingSource
+		    ,@TargetLTV
+		    ,@LTVTolerance
+		    ,@TargetSeasoning
+		    ,@SeasoningTolerance
+
+		  Insert Into dbo.tblFactLoanECResult(DimPoolID, DimECID, DimLoanID)
+		  Select @DimPoolId As DimPoolID
+				, @DimECId As DimLoanECId
+				, FCL.DimLoanId
+		  From	dbo.tblFactConsolidationLoan FCL
+		  Join	@TargetResult TR on TR.DimId = FCL.DimConsolidationID
+		  Where	DimPoolID = @DimPoolId
+		  And	LTVPassNo = @SourceLTVPassNo
+      And	FCL.DimLoanId Not IN
+		  (
+			Select Distinct DimLoanId From dbo.tblFactLoanECResult Where DimPoolID = @DimPoolId And DimECID = @DimECId
+		  )
+      
+		End
+		
+		---- ***************************************************************************
+		---- Step 4. Finalize link loan and LTV calculation
+		---- ***************************************************************************
+		EXECUTE dbo.USP_UpdateIsIncludeForECResult @DimPoolId
+		EXECUTE dbo.USP_PoolLinkLoan @DimPoolId, @ResultLTVPassNo
+		EXECUTE dbo.USP_CalculateConsolidationLTV  @DimPoolId, @ResultLTVPassNo
+		
+		---- ***************************************************************************
+		---- Step 5. If AutoAdjust, Calculate The Adjustment
+		---- ***************************************************************************
+		If @AutoAdjust = 1 And @iCount <= @LoopCount And @BucketingCount > 0 Begin
+
+			Select	@TotalBalance = SUM(FC.ConsolidationBalance)
+			From	dbo.tblFactConsolidation FC
+			Where	LTVPassNo = @ResultLTVPassNo
+			And		DimPoolID = @DimPoolId
+			
+			EXECUTE	dbo.USP_Targeting_AdjustConfigSize @DimPoolId, @TotalBalance, 0, @DimECID
+		
+		End
+		Set @iCount = @iCount + 1
+	End
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+
+--**************************************************
+--USP_Targeting_ParentConsolidation
+--**************************************************
+Set @vchSQL ='Create Procedure [dbo].[USP_Targeting_ParentConsolidation]
+(
+	@DimPoolId bigint
+	, @DimECId bigint
+	, @AutoAdjust bit = 1
+	, @AdjustLoopCount bigint = 2
+	, @SourceLTVPassNo nvarchar(100)
+	, @ResultLTVPassNo nvarchar(100)
+	, @BalanceColumnName nvarchar(100)
+) AS Begin
+
+	Set NOCOUNT ON
+	
+	--******************************************************
+	-- LTV Seasoning Target Configuration
+	--******************************************************
+	Declare @TargetConfig Table
+	(
+		DimTargetId bigint
+		, TargetBalance decimal(15,2)
+		, TargetOriginalBalance decimal(15,2)
+		, TargetSourceQuery nvarchar(4000)
+	)
+	Declare @TargetResult Table(DimId bigint not null PRIMARY KEY NONCLUSTERED)
+	Declare @IntersectDetectResult Table(DimId bigint not null)
+	Declare @BucketSumResult table (SumBalanceAmount decimal(15,2))
+	Declare @TargetingSource TargetingSource
+
+	Declare @SumBalanceAmount decimal(15,2)
+	Declare @TotalBalance decimal(15,2)
+	Declare @TargetLTV decimal(15,4)
+	Declare @LTVTolerance decimal(15,4)
+	Declare @TargetSeasoning decimal(15,4)
+	Declare @SeasoningTolerance decimal(15,4)
+	Declare @LoanLTV decimal(15,4)
+	Declare @ConsolidationLTV decimal(15,4)
+	Declare @BucketingCount int = 0
+	Declare @LTVBucketingCount int = 0
+
+	Declare @DimTargetId bigint
+	Declare @TargetName varchar(500)
+	Declare @TargetSourceQuery nvarchar(4000)
+	Declare @QueryBalanceLoan nvarchar(4000)
+	Declare @TargetBalance decimal(15,2)
+	Declare @TargetOriginalBalance decimal(15,2)
+	Declare @DimLoanECId bigint
+		  
+	Select  @DimLoanECId = DimECID
+	From	dbo.tblDimEC 
+	Where	DimPoolID = @DimPoolId
+	And		CriteriaName = ''''AUS_EC41_ConsolidationLTVCriteriaLoan''''
+  
+  If @DimLoanECId is null Begin
+	
+		Select  @DimLoanECId = DimECID
+		From	dbo.tblDimEC 
+		Where	DimPoolID = @DimPoolId
+		And		CriteriaName = ''''NZD_EC41_ConsolidationLTVCriteriaLoan''''
+	
+	End
+
+	Declare @LoopCount int = 1
+	Declare @iCount int = 0
+
+	-- Reset all adjustfactor for autoadjust
+	If @AutoAdjust = 1 Begin 
+		Set @LoopCount = @AdjustLoopCount
+		Update	dbo.tblTargetingConfigWorking
+		Set		Adjustment = 0
+		Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+	End
+
+	-- If auto adjust, run 2 time
+	-- If not auto ajust, will use the adjustfactor in the table, run only 1 time
+	While @iCount < @LoopCount Begin
+		
+		-- ***************************************************************************
+		-- Step 1. Clean Up the TargetingPass Link Loan, and Reset the Target Balance
+		-- ***************************************************************************
+		Delete From dbo.tblFactConsolidationECResult 
+		Where DimPoolID = @DimPoolId 
+		And	  LTVPassNo = @SourceLTVPassNo
+		And	  DimECID = @DimECID 
+		
+		Delete From dbo.tblFactLoanECResult 
+		Where DimPoolID = @DimPoolId
+		And	  DimECID = @DimLoanECId
+		
+		Delete From dbo.tblFactLoanECResult Where DimECID = @DimECID And DimPoolID = @DimPoolId
+		
+		EXECUTE dbo.USP_UpdateIsIncludeForECResult @DimPoolId
+		
+		-- ***************************************************************************
+		-- Step 2. Target for each bucket size
+		-- ***************************************************************************
+		Select @BucketingCount =  COUNT(*)
+		From	dbo.tblTargetingConfigWorking 
+		Where	TargetType = ''''Bucketing''''
+		And		DimPoolId  = @DimPoolId and DimECID = @DimECID
+		
+		If @BucketingCount > 0 Begin
+			EXECUTE dbo.USP_Targeting_CalculateBucketSize @DimPoolId, @DimECID
+			
+			Delete From @TargetConfig
+			Insert Into @TargetConfig (DimTargetId, TargetBalance, TargetOriginalBalance, TargetSourceQuery)
+			Select	DimTargetId, TargetBalance, TargetOriginalBalance, TargetSourceQuery 
+			From	dbo.tblTargetingConfigWorking 
+			Where	TargetType = ''''Bucketing''''
+			And		DimPoolId  = @DimPoolId 
+			And		DimECID = @DimECID
+		
+			Delete From @IntersectDetectResult
+      
+			DECLARE ConfigCursor CURSOR FOR 
+				Select	DimTargetId, TargetBalance, TargetOriginalBalance, TargetSourceQuery
+				From	@TargetConfig 
+				Order BY DimTargetId
+			FOR READ ONLY
+
+			OPEN ConfigCursor
+			FETCH NEXT FROM ConfigCursor INTO @DimTargetId, @TargetBalance, @TargetOriginalBalance, @TargetSourceQuery 
+			--Loop until the cursor was not able to fetch
+			WHILE	(@@Fetch_Status >= 0)  BEGIN
+				
+				Delete From @TargetingSource
+				Insert Into @TargetingSource EXEC SP_EXECUTESQL @TargetSourceQuery
+				
+				Insert @IntersectDetectResult
+				Select Distinct DimID From @TargetingSource
+				
+				Delete From @TargetResult
+				Insert Into @TargetResult
+				EXECUTE dbo.USP_Targeting_SizeExcludeResults 
+				@TargetingSource
+				,	@TargetOriginalBalance
+				,	@TargetBalance
+				
+				
+				Insert Into dbo.tblFactConsolidationECResult(DimPoolID, DimECID, LTVPassNo, DimConsolidationID)
+				Select  Distinct 
+						@DimPoolId As DimPoolId
+						, @DimECId As DimECId
+						, @SourceLTVPassNo As LTVPassNo	
+						, DimId As DimConsolidationID
+				From	@TargetResult
+				Where	DimId Not in
+				(
+					Select Distinct DimConsolidationId From dbo.tblFactConsolidationECResult Where DimPoolID = @DimPoolId And DimECID = @DimECId
+				)
+		  
+			    Insert Into dbo.tblFactLoanECResult(DimPoolID, DimECID, DimLoanID)
+			    Select @DimPoolId As DimPoolID
+			 		 , @DimLoanECId As DimLoanECId
+					 , FCL.DimLoanId
+			    From  dbo.tblFactConsolidationLoan FCL
+			    Join  @TargetResult TR on TR.DimId = FCL.DimConsolidationID
+			    Where DimPoolID = @DimPoolId
+			    And	  LTVPassNo = @SourceLTVPassNo
+			    And	  FCL.DimLoanId Not in
+			   (
+					Select Distinct DimLoanId From dbo.tblFactLoanECResult Where DimPoolID = @DimPoolId And DimECID = @DimECId
+			   )
+				
+			   FETCH NEXT FROM ConfigCursor INTO @DimTargetId, @TargetBalance, @TargetOriginalBalance, @TargetSourceQuery 
+			END
+
+			--Get rid of the cursor
+			CLOSE ConfigCursor
+			DEALLOCATE ConfigCursor
+			
+			Insert Into dbo.tblFactConsolidationECResult(DimPoolID, DimECID, LTVPassNo, DimConsolidationID)
+			Select  Distinct 
+					@DimPoolId As DimPoolId
+					, @DimECId As DimECId
+					, @SourceLTVPassNo As LTVPassNo	
+					, DimConsolidationId As DimConsolidationID
+			From	dbo.tblFactConsolidation FC
+			Where	FC.DimPoolID = @DimPoolId
+			And		FC.LTVPassNo = @SourceLTVPassNo
+			And		DimConsolidationId Not in
+			(
+				Select Distinct DimID From @IntersectDetectResult
+			)
+			
+			Insert Into dbo.tblFactLoanECResult (DimPoolID, DimECID, DimLoanID)
+			Select	Distinct @DimPoolId
+					, @DimLoanECId
+					, DimLoanId 
+			From	dbo.tblFactConsolidation FC
+			Join	dbo.tblFactConsolidationLoan FCL on FCL.DimPoolID = FC.DimPoolID
+												    And FCL.DimConsolidationID = FC.DimConsolidationID
+												    And FCL.LTVPassNo = FC.LTVPassNo
+			Where	FC.LTVPassNo = @SourceLTVPassNo
+			And		FC.DimPoolID = @DimPoolId
+			And		FC.ConsolidationDimTrustID < 1
+			And		FC.DimConsolidationId Not in
+			(
+				Select Distinct DimID From @IntersectDetectResult
+			)
+		End
+		-- ***************************************************************************
+		-- Step 3. Target for LTV and Seasoing
+		-- ***************************************************************************
+		Select	@LTVBucketingCount =  COUNT(*)
+		From	dbo.tblTargetingConfigWorking 
+		Where	TargetType = ''''WeightedAverage''''
+		And		DimPoolId  = @DimPoolId 
+		and		DimECID = @DimECID
+		
+		If @LTVBucketingCount = 2 Begin
+		
+		  Select @TargetLTV = TargetValue + ISNULL(AdjustmentConfig,0)
+				, @LTVTolerance = TargetTolerance
+		  From	dbo.tblTargetingConfigWorking
+		  Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+		  And	TargetType = ''''WeightedAverage''''
+		  And	LTargetName = ''''ConsolidationLTV''''
+
+		  Select @TargetSeasoning = TargetValue
+				, @SeasoningTolerance = TargetTolerance
+		  From	dbo.tblTargetingConfigWorking
+		  Where	DimPoolID = @DimPoolId and DimECID = @DimECID
+		  And	TargetType = ''''WeightedAverage''''
+		  And	LTargetName = ''''Seasoning''''
+		    
+		  Set @QueryBalanceLoan = dbo.Fun_Targeting_GetComputedQueryHeader(@BalanceColumnName, @SourceLTVPassNo, ''''ParentSource_LTVSeasoning'''', @DimPoolId, @DimECId)
+		  Delete From @TargetingSource
+		  Insert Into @TargetingSource EXEC SP_EXECUTESQL @QueryBalanceLoan
+		
+		  Delete From @TargetResult
+		  Insert Into @TargetResult
+		  EXECUTE dbo.USP_Targeting_LTVSeasoningExcludeResults 
+		     @TargetingSource
+		    ,@TargetLTV
+		    ,@LTVTolerance
+		    ,@TargetSeasoning
+		    ,@SeasoningTolerance
+
+		  Insert Into dbo.tblFactConsolidationECResult(DimPoolID, DimECID, LTVPassNo, DimConsolidationID)
+		  Select  Distinct 
+				  @DimPoolId As DimPoolId
+				, @DimECId As DimECId
+				, @SourceLTVPassNo As LTVPassNo	
+				, DimId As DimConsolidationID
+		  From	@TargetResult
+		  
+		  Insert Into dbo.tblFactLoanECResult(DimPoolID, DimECID, DimLoanID)
+		  Select @DimPoolId As DimPoolID
+				, @DimLoanECId As DimLoanECId
+				, FCL.DimLoanId
+		  From	dbo.tblFactConsolidationLoan FCL
+		  Join	@TargetResult TR on TR.DimId = FCL.DimConsolidationID
+		  Where	DimPoolID = @DimPoolId
+		  And	LTVPassNo = @SourceLTVPassNo
+      
+		End
+		
+		---- ***************************************************************************
+		---- Step 4. Finalize link loan and LTV calculation
+		---- ***************************************************************************
+		EXECUTE dbo.USP_UpdateIsIncludeForECResult @DimPoolId
+		EXECUTE dbo.USP_PoolLinkLoan @DimPoolId, @ResultLTVPassNo
+		EXECUTE dbo.USP_CalculateConsolidationLTV  @DimPoolId, @ResultLTVPassNo
+		
+		---- ***************************************************************************
+		---- Step 5. If AutoAdjust, Calculate The Adjustment
+		---- ***************************************************************************
+		If @AutoAdjust = 1 And @iCount <= @LoopCount And @BucketingCount > 0 Begin
+
+			Select	@TotalBalance = SUM(FC.ConsolidationBalance)
+			From	dbo.tblFactConsolidation FC
+			Where	LTVPassNo = @ResultLTVPassNo
+			And		DimPoolID = @DimPoolId
+			
+			EXECUTE	dbo.USP_Targeting_AdjustConfigSize @DimPoolId, @TotalBalance, 0, @DimECID
+		
+		End
+		Set @iCount = @iCount + 1
+	End
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

@@ -1,0 +1,87 @@
+<Tool Name="CashFlowAccountTransferModel">
+   <Actions>
+      <Action ActionCode="Cumulate_Carryover_Paid" ActionDisplayName="当期收入账实回补本金账" FunctionName="RunManagedMethodByPath" SequenceNo="28">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.GenericBondWaterfallPlus" DataType="String" Usage="Task" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="CreateCashFlow" DataType="String" Usage="Task" />
+      <Parameter Usage="" DataType="Int16" Value="0" SessionParameterName="CurrentPosition" Name="CurrentPosition" />
+      <Parameter Usage="" DataType="String" Value="Cumulate_Carryover_Paid" SessionParameterName="" Name="CashFlowName" />
+      </Action>
+      <Action ActionCode="Cumulate_Supplement_Paid" ActionDisplayName="当期本金账实补足收入账" FunctionName="RunManagedMethodByPath" SequenceNo="28">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.GenericBondWaterfallPlus" DataType="String" Usage="Task" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="CreateCashFlow" DataType="String" Usage="Task" />
+      <Parameter Usage="" DataType="Int16" Value="0" SessionParameterName="CurrentPosition" Name="CurrentPosition" />
+      <Parameter Usage="" DataType="String" Value="Cumulate_Supplement_Paid" SessionParameterName="" Name="CashFlowName" />
+      </Action>
+	  <Action ActionCode="InterestLeftOverToPrincipal" ActionDisplayName="收入账户剩余转本金帐户" FunctionName="RunManagedMethodByPath" SequenceNo="28">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.GenericBondWaterfallPlus" DataType="String" Usage="Task" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="CreateCashFlow" DataType="String" Usage="Task" />
+      <Parameter Usage="" DataType="Int16" Value="0" SessionParameterName="CurrentPosition" Name="CurrentPosition" />
+      <Parameter Usage="" DataType="String" Value="InterestLeftOverToPrincipal" SessionParameterName="" Name="CashFlowName" />
+    </Action>
+	  <Action ActionCode="ChinaBondFee" ActionDisplayName="代理机构（中登费）" FunctionName="RunManagedMethodByPath" SequenceNo="28">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.GenericBondWaterfallPlus" DataType="String" Usage="Task" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="CreateCashFlow" DataType="String" Usage="Task" />
+      <Parameter Usage="" DataType="Int16" Value="0" SessionParameterName="CurrentPosition" Name="CurrentPosition" />
+      <Parameter Usage="" DataType="String" Value="ChinaBondFee" SessionParameterName="" Name="CashFlowName" />
+    </Action>
+	  <Action ActionCode="BondPayment" ActionDisplayName="计算债券偿付金额" FunctionName="RunManagedMethodByPath" SequenceNo="68">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="false" DataType="String" Usage="CashFlow" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.GenericBondWaterfallPlus" DataType="String" Usage="Task" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="RunWaterfall_IncomePlus_V2" DataType="String" Usage="Task" />
+      <Parameter Usage="" DataType="Int16" Value="0" SessionParameterName="CurrentPosition" Name="CurrentPosition" />
+    </Action>
+	 <Action ActionCode="Fee_TotalPaid" ActionDisplayName="当期费用总支出" FunctionName="RunManagedMethodByPath" SequenceNo="20">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_Fee_Paid" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="Fee_TotalPaid" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+	 </Actions>
+     <Methods>
+		<main>
+    <Parameters>
+	<Parameter Name="ChinaBondFee" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="ChinaBondFee">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+    </Parameters>
+    <Query name="EC_Fee_Paid">
+
+	 double Fee_TotalPaid= 0.00;
+ foreach( String CashflowName in cashflows.Keys )
+ {
+    if( CashflowName.Contains("_Fee") &amp;&amp; CashflowName.Contains("_Paid") &amp;&amp; !CashflowName.Contains("TrustPlanAccount_Reserve"))
+	{
+		Fee_TotalPaid+=cashflows[CashflowName][CurrentPosition] ;
+	}
+}
+       return Fee_TotalPaid+ChinaBondFee;
+
+     </Query> <Presentation />
+  </main>
+	  </Methods>
+</Tool>

@@ -1,0 +1,57 @@
+﻿<configuration>
+    <system.serviceModel>
+        <bindings>
+            <basicHttpBinding>
+                <binding name="SMSEndPoint" closeTimeout="01:30:00" openTimeout="00:01:00"
+                    receiveTimeout="01:30:00" sendTimeout="01:30:00" maxBufferSize="2147483647"
+                    maxReceivedMessageSize="2147483647">
+                    <security mode="Transport" />
+                </binding>
+                <binding name="TPSEP" closeTimeout="01:30:00" openTimeout="00:01:00"
+                    receiveTimeout="01:30:00" sendTimeout="01:30:00" maxBufferSize="2147483647"
+                    maxReceivedMessageSize="2147483647">
+                    <security mode="Transport" />
+                </binding>
+                <binding name="CSEP" maxBufferSize="2147483647" maxReceivedMessageSize="2147483647">
+                    <security mode="Transport" />
+                </binding>
+            </basicHttpBinding>
+            <customBinding>
+                <binding name="SMSSilverlightEP" closeTimeout="01:30:00" openTimeout="00:01:00"
+                    receiveTimeout="01:30:00" sendTimeout="01:30:00">
+                    <binaryMessageEncoding />
+                    <httpsTransport maxReceivedMessageSize="2147483647" maxBufferSize="2147483647" />
+                </binding>
+                <binding name="TPSSilverlightEP" closeTimeout="01:30:00" openTimeout="00:01:00"
+                    receiveTimeout="01:30:00" sendTimeout="01:30:00">
+                    <binaryMessageEncoding />
+                    <httpsTransport maxReceivedMessageSize="2147483647" maxBufferSize="2147483647" />
+                </binding>
+                <binding name="CSSilverlightEP">
+                    <binaryMessageEncoding />
+                    <httpsTransport maxReceivedMessageSize="2147483647" maxBufferSize="2147483647" />
+                </binding>
+            </customBinding>
+        </bindings>
+        <client>
+            <endpoint address="https://poolcutwcf/TaskProcessServices/SessionManagementService.svc/SMSEndPoint"
+                binding="basicHttpBinding" bindingConfiguration="SMSEndPoint"
+                contract="SMSServiceReference.ISessionManagementService" name="SMSEndPoint" />
+            <endpoint address="https://poolcutwcf/TaskProcessServices/SessionManagementService.svc/SMSSilverlightEP"
+                binding="customBinding" bindingConfiguration="SMSSilverlightEP"
+                contract="SMSServiceReference.ISessionManagementService" name="SMSSilverlightEP" />
+            <endpoint address="https://poolcutwcf/TaskProcessServices/TaskProcessService.svc/TPSEP"
+                binding="basicHttpBinding" bindingConfiguration="TPSEP" contract="TPSServiceReference.ITaskProcessService"
+                name="TPSEP" />
+            <endpoint address="https://poolcutwcf/TaskProcessServices/TaskProcessService.svc/TPSSilverlightEP"
+                binding="customBinding" bindingConfiguration="TPSSilverlightEP"
+                contract="TPSServiceReference.ITaskProcessService" name="TPSSilverlightEP" />
+            <endpoint address="https://poolcutwcf/TaskProcessServices/CashflowService.svc/CSEP"
+                binding="basicHttpBinding" bindingConfiguration="CSEP" contract="CFServiceReference.ICashflowService"
+                name="CSEP" />
+            <endpoint address="https://poolcutwcf/TaskProcessServices/CashflowService.svc/CSSilverlightEP"
+                binding="customBinding" bindingConfiguration="CSSilverlightEP"
+                contract="CFServiceReference.ICashflowService" name="CSSilverlightEP" />
+        </client>
+    </system.serviceModel>
+</configuration>

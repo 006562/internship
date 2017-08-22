@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+declare @vchSQL  varchar(8000)
+Declare @vchFullSQL varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+
+/****** Object:  View [dbo].[view_DimTrust]    Script Date: 18/09/2012 16:34:22 ******/
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N''[dbo].[view_DimTrust]''))
+DROP VIEW [dbo].[view_DimTrust]
+'
+exec (@vchSQL)
+
+set @vchSQL = '
+/****** Object:  View [dbo].[view_DimTrust]    Script Date: 05/03/2012 16:34:22 ******/
+CREATE VIEW [dbo].[view_DimTrust]
+AS
+
+SELECT	DimTrustID
+		, TrustName
+		, TrustID
+FROM    DAL_SEC.dbo.tblDimTrust
+Where	DimTrustID in
+(
+	Select Distinct DimTrustID From dbo.tblFactLoan
+)
+'
+SET @vchFullSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @vchFullSQL
+EXEC (@vchFullSQL)
+
+]]>
+  </Query>
+
+</main>

@@ -1,0 +1,136 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <title></title>
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <link href="../Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="../Scripts/common.js"></script>
+    <script src="../Scripts/anyDialog.js"></script>
+    <script src="../Scripts/calendar.min.js"></script>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link rel="stylesheet" href="../Contents/common.css" />
+    <link href="../Contents/page.css" rel="stylesheet" />
+    <link href="../Contents/fontello/css/fontello.css" rel="stylesheet" />
+    <script src="../Scripts/Kendo/js/kendo.all.min.js"></script>
+    <link href="../Scripts/Kendo/styles/kendo.common-material.min.css" rel="stylesheet" />
+    <link href="../Scripts/Kendo/styles/kendo.material.min.css" rel="stylesheet" />
+    <script src="../Scripts/Kendo/js/kendo.culture.zh-CN.js"></script>
+    <script src="../Scripts/Kendo/js/kendo.messages.zh-CN.js"></script>
+    <script src="../Scripts/adminOperate.js"></script>
+    <script src="addItem.js"></script>
+    <script type="text/javascript">
+    </script>
+</head>
+<body>
+    <div id="item" class="main">
+        <div class="form-panel">
+            <div class="col-12 form-row form-horizontal">
+                <div class="col-14 form-row autoLayout-plugins">
+                    <div class="form-group">
+                        <label class="col-2 control-label">字段编号</label>
+                        <div class="col-8">
+                            <input id="itemId" type="text" data-placeholder="请选择Item..."  />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-panel">
+            <div class="col-12 form-row form-horizontal">
+                <div class="col-14 form-row autoLayout-plugins">
+                    <div class="form-group">
+                        <label class="col-2 control-label">页面编号</label>
+                        <div class="col-8">
+                            <input id="pageId" type="text" class="form-control" data-valid="Required" disabled />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-panel">
+            <div class="col-12 form-row form-horizontal">
+                <div class="col-14 form-row autoLayout-plugins">
+                    <div class="form-group">
+                        <label class="col-2 control-label">数据类型</label>
+                        <div class="col-8">
+                            <select id="dataType" class="form-control"><option></option><option>Date</option><option>Decimal</option><option>List</option><option>Select</option></select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-panel">
+            <div class="col-12 form-row form-horizontal">
+                <div class="col-14 form-row autoLayout-plugins">
+                    <div class="form-group">
+                        <label class="col-2 control-label">是否必须</label>
+                        <div class="col-4">
+                            <label><input type="radio" name="isCompulsory" id="isCompulsoryNo" /> 否</label>&nbsp;
+                            <label><input type="radio" name="isCompulsory" id="isCompulsoryYes" checked /> 是</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-panel">
+            <div class="col-12 form-row form-horizontal">
+                <div class="col-14 form-row autoLayout-plugins">
+                    <div class="form-group">
+                        <label class="col-2 control-label">Bit01</label>
+                        <div class="col-4">
+                            <label><input type="radio" name="bit01" id="bit01No" checked /> 否</label>&nbsp;
+                            <label><input type="radio" name="bit01" id="bit01Yes"  /> 是</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-panel">
+            <div class="col-12 form-row form-horizontal">
+                <div class="col-14 form-row autoLayout-plugins">
+                    <div class="form-group">
+                        <label class="col-2 control-label">Bit02</label>
+                        <div class="col-4">
+                            <label><input type="radio" name="bit02" id="bit02No" checked /> 否</label>&nbsp;
+                            <label><input type="radio" name="bit02" id="bit02Yes"/> 是</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-panel">
+            <div class="col-12 form-row form-horizontal">
+                <div class="col-14 form-row autoLayout-plugins">
+                    <div class="form-group">
+                        <label class="col-2 control-label">Bit03</label>
+                        <div class="col-4">
+                            <label><input type="radio" name="bit03" id="bit03No" checked /> 否</label>&nbsp;
+                            <label><input type="radio" name="bit03" id="bit03Yes" /> 是</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-panel">
+            <div class="col-12 form-row form-horizontal">
+                <div class="col-14 form-row autoLayout-plugins">
+                    <div class="form-group">
+                        <label class="col-2 control-label">序列编号</label>
+                        <div class="col-8">
+                            <input id="sequenceNo" class="form-control" data-valid="Required" onchange="validControlValue(this)" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-save">
+            <input id="btnSave" type="button" class="btn btn-primary" value="保存" />
+        </div>
+
+    </div>
+</body>
+</html>

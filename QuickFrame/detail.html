@@ -1,0 +1,45 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>任务详细信息</title>
+    <script src="Config/globalVariable.js"></script>
+    <script src="Scripts/jquery-1.7.2.min.js"></script>
+    <script src="Scripts/common.js"></script>
+    <script src="Scripts/roleOperate.js"></script>
+    <script src="Scripts/permission.js"></script>
+    <link href="Contents/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+        <button id="back" class="btn-primary">返回</button>
+        <table id="showDetail" class="table">
+             <tr><th>步骤编号</th><th>步骤名称</th><th>开始时间</th><th>结束时间</th><th>执行信息</th></tr>
+        </table>
+</body>
+</html>
+<script>
+    $(function () {
+        var
+            url = window.location.href;
+            schemaName = getQueryString("schemaName");
+            appDomain = schemaName;
+            serviceUrl = GlobalVariable.DataProcessServiceUrl + "CommonGetExecute?connConfig=TaskProcess&";
+            executeParams = {
+            SPName: 'usp_GetSessionDetailList', SQLParams: [
+                { Name: 'SessionId', value: getQueryString("SessionId"), DBType: 'string' }
+            ]
+        };
+
+            $("#back").click(function () {
+                window.location.href ="history.html?schemaName=" + schemaName;
+        })
+        ExecuteGetData(true, serviceUrl, appDomain, executeParams, function (data) {
+            console.log(data);
+            $.each(data, function (i, item) {
+                var tr = '<tr>';                                          
+                tr += '<td>' + item["SequenceNo"] + '</td>' + '<td>' + item["ProcessActionName"] + '</td>' + '<td>' + getStringDate(item["StartTime"]).dateFormat("yyyy-MM-dd  hh:mm:ss") + '</td>' + '<td>' +  getStringDate(item["EndTime"]).dateFormat("yyyy-MM-dd  hh:mm:ss") + '</td>' + '<td>' + item["ActionMessage"] + '</td>';
+                tr += '</tr>';
+                $("#showDetail").append(tr);                   
+            });
+        });
+    })
+</script>

@@ -1,0 +1,50 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-compatible" content="IE=edge,chrome=1">
+    <script src="../Libraries/Scripts/jquery-2.2.3.min.js"></script>
+    <script src="../Libraries/Scripts/jquery.cookie.js"></script>
+    <script src="../Libraries/Scripts/roleOperate.js"></script>
+    <script src="../Libraries/Scripts/WebProxy.js"></script>
+    <script src="../Libraries/Scripts/common.js"></script>
+    <script src="../Libraries/Scripts/workflowTypeModule.js"></script>
+    <script src="../Libraries/Scripts/anyDialog.js"></script>
+    <script src="workflowRun.js"></script>
+    <link href="../Libraries/Styles/reset.css" rel="stylesheet" />
+    <title></title>
+    <style>
+        .btn{
+            border-color: #ccc;
+            padding: 3px 5px;
+            background-color: #fff;
+            color:#777;
+            border-radius:2px;
+            float: right;
+            margin-left: 5px;
+        }
+        .btn:hover,.btn.active{
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <span class="status_tip" style="color: #545d93;font-size: 13px;">
+        当前状态：
+    </span>
+    <button id="btnWorkflowApproval" type="button" class="btn" title="审核" onclick="workflowRun.showApprovalView()">
+        <i class="icon-yiban"></i>
+    </button>
+    <button id="btnShowWorkflowDisplayer" type="button" class="btn" title="流程日志" onclick="workflowRun.getDisplayerAddress()">
+        <i class="icon-daiyue"></i>
+    </button>
+    <button id="btnCreateSession" type="button" class="btn" title="发起流程" onclick="workflowRun.createWorkFlowSession()">
+        <i class="icon-hetongqicao"></i>
+    </button>
+
+    <script type="text/javascript">
+        workflowRun.initWorkflowRunPage();
+        
+    </script>
+</body>
+</html>

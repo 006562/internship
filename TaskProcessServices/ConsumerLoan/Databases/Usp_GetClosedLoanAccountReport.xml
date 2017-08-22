@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(max)
+Declare @bigsql varchar(max)
+
+set @vchSQL = 'use [' + @DBName + ']  
+/****** Object:  StoredProcedure [dbo].[Usp_GetClosedLoanAccountReport]    Script Date: 07/03/2012 13:06:16 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[Usp_GetClosedLoanAccountReport]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[Usp_GetClosedLoanAccountReport]
+'
+exec (@vchSQL)
+
+set @vchSQL ='CREATE PROCEDURE [dbo].[Usp_GetClosedLoanAccountReport]  
+	@PoolId  varchar(10)
+
+AS  
+
+BEGIN  
+
+SET NOCOUNT ON
+
+declare @SourcePoolId bigint
+
+select @SourcePoolId = DimSourcePoolId
+from tblDimPool
+where DimPoolID = @PoolId
+
+select fl.DimPoolId, fl.DimReportingDateID, dl.AccountNo, dt.TrustID, fl.CurrentPrincipalBalance, fl.LoanMaturityDate, fl.LoanCloseDate, dl.LoanStatus
+from tblDimLoan dl
+inner join tblFactLoan fl on dl.DimPoolID = fl.DimPoolID
+                             and dl.DimLoanID = fl.DimLoanID
+left outer join view_DimTrust dt on fl.DimTrustID = dt.DimTrustID
+where dl.DimPoolID = @SourcePoolId and fl.IsIncluded = 1
+      and dl.AccountNo not in (select dl.AccountNo
+                               from tblDimLoan dl
+                               inner join tblFactLoan fl on dl.DimPoolID = fl.DimPoolID
+                                                            and dl.DimLoanID = fl.DimLoanID
+                               where dl.DimPoolID = @PoolId and fl.IsIncluded = 1)
+UNION
+
+select fl.DimPoolId, fl.DimReportingDateID, dl.AccountNo, dt.TrustID, fl.CurrentPrincipalBalance, fl.LoanMaturityDate, fl.LoanCloseDate, dl.LoanStatus
+from tblDimLoan dl
+inner join tblFactLoan fl on dl.DimPoolID = fl.DimPoolID and fl.IsIncluded = 1
+                             and dl.DimLoanID = fl.DimLoanID
+left outer join view_DimTrust dt on fl.DimTrustID = dt.DimTrustID
+where dl.DimPoolID = @PoolId and dl.LoanStatus = ''''CLOSE''''
+   
+END
+
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

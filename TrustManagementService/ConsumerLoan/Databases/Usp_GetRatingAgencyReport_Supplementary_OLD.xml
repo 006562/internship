@@ -1,0 +1,495 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL  varchar(max)
+Declare @bigsql varchar(max)
+
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[Usp_GetRatingAgencyReport_Supplementary_OLD]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[Usp_GetRatingAgencyReport_Supplementary_OLD]
+'
+exec (@vchSQL)
+
+--**************************************************
+--USP_GetRatingAgencyReport
+--**************************************************
+Set @vchSQL ='CREATE PROCEDURE [dbo].[Usp_GetRatingAgencyReport_Supplementary_OLD]  
+  
+	
+	@PoolId  varchar(10)				
+,	@LTVPassNo varchar(10)	
+,	@PivotCount  tinyint		
+
+  
+AS  
+  
+BEGIN  
+
+SET NOCOUNT ON
+  
+-- Temp table to hold security details  
+CREATE TABLE #Security_Details (  Security_Order  int  
+         , DimSecurityId  int  
+         , SecurityNo    int
+         , PropertyTypeDesc varchar(200)
+         , PostCode varchar(10)
+         , Suburb  varchar(50)
+         , CountryCode   varchar(50)
+         , Region  varchar(50)
+         , Nature  varchar(20)
+         , OccupancyPurposeDesc varchar(50)
+         , SecurityValuationAmt decimal(19,6)
+         , ValuationType    varchar(20)
+         , SecurityValuationDate datetime
+         , Security_Valid_Invalid_flag int
+                 
+         )  
+           
+  
+CREATE UNIQUE CLUSTERED INDEX IDX_Sec_Details ON #Security_Details(Security_Order,DimSecurityId)           
+  
+-- Temp table to hold  pivoted keys  
+  
+DECLARE @SQL_PivotKeyTable nvarchar(MAX)  
+DECLARE @LoopCount tinyint  
+
+--IE: added to drop temp table if it exists
+IF OBJECT_ID(''''tempdb..##Pivoted_Keys'''') IS NOT NULL
+BEGIN
+ Drop table ##Pivoted_Keys 
+END
+  
+-- Initialise Loop counter  
+SET @LoopCount = 1  
+  
+-- Initialise SQL  
+SET @SQL_PivotKeyTable =
+''''CREATE TABLE ##Pivoted_Keys 
+(	 DimPoolId varchar(20)
+	,DimReportingDateId int
+	,OrganisationCode varchar(10)
+	,DimTrustId varchar(20)
+	,DimConsolidationId bigint
+	,AccountNo varchar(20)
+	,IPANXIOExpDate datetime
+	,IPANXExpDate datetime
+	,InterestOnlyExpiryDate datetime
+	,CurrentLimit decimal(15,2)
+	,CurrentPrincipalBalance decimal(15,2)
+	,CurrentLoanBalance decimal(15,2)
+	,OriginalLoanBalance decimal(15,0)
+	,LoanMaturityDate datetime
+	,LoanStartDate  datetime
+	,LoanCloseDate  datetime
+	,OriginalTerm int
+	,RevisedOriginalTerm decimal(15,4)
+	,RemainingTerm decimal(15,4)
+	,ProductCode varchar(20)
+	,ProductDescription varchar(300)
+	,InterestRateTypeCode varchar(20)
+	,CurrentRate decimal(15,5)
+	,PaymentTypeCode varchar(20)
+	,PaymentAmount decimal(15,2)
+	,MortgageInsuranceInd varchar(20)
+	,MortgageInsurerCode varchar(20)
+	,FixedRateEndDate datetime
+	,AmountOfArrears decimal(15,2)
+	,DaysInArrears decimal(15,2)
+	,ConsolidationBalance decimal(19,6)
+	,ConsolidationValuation decimal(19,6)
+	,ConsolidationLTV decimal(19,6)
+	,ConsolidationLimitLTV decimal(19,6)
+	,SecurityCount bigint
+	,LoanCount bigint
+''''  
+  
+WHILE @LoopCount < @PivotCount + 1  
+  
+ BEGIN  
+   
+  SET @SQL_PivotKeyTable = @SQL_PivotKeyTable + ''''  
+  , DimSecurityId_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''  int  ''''  
+  
+  -- Increment Loop  
+  SET @LoopCount = @LoopCount + 1  
+   
+ END  
+  
+-- Close off query  
+SET @SQL_PivotKeyTable = @SQL_PivotKeyTable + '''')''''  
+  
+-- Create temp table  
+EXECUTE sp_executesql @SQL_PivotKeyTable  
+  
+-- Create insert query  
+  
+SET @SQL_PivotKeyTable = ''''INSERT INTO ##Pivoted_Keys  
+  
+ SELECT 
+	DimPoolId
+	,DimReportingDateId
+	,OrganisationCode
+	,DimTrustId
+	,DimConsolidationId
+	,AccountNo
+	,IPANXIOExpDate 
+	,IPANXExpDate 
+	,InterestOnlyExpiryDate
+	,CurrentLimit
+	,CurrentPrincipalBalance
+	,CurrentLoanBalance
+	,OriginalLoanBalance
+	,LoanMaturityDate
+	,LoanStartDate
+	,LoanCloseDate
+	,OriginalTerm
+	,RevisedOriginalTerm
+	,RemainingTerm
+	,ProductCode
+	,ProductDescription
+	,InterestRateTypeCode
+	,CurrentRate
+	,PaymentTypeCode
+	,PaymentAmount 
+	,MortgageInsuranceInd 
+	,MortgageInsurerCode 
+	,FixedRateEndDate
+	,AmountOfArrears 
+	,DaysInArrears
+	,ConsolidationBalance
+	,ConsolidationValuation
+	,ConsolidationLTV
+	,ConsolidationLimitLTV
+	,SecurityCount
+	,LoanCount
+ 
+''''  
+  
+-- Reset Loop counter  
+SET @LoopCount = 1  
+  
+  
+WHILE @LoopCount < @PivotCount + 1  
+  
+ BEGIN  
+   
+  SET @SQL_PivotKeyTable = @SQL_PivotKeyTable + ''''  
+  , ['''' + CAST(@LoopCount AS nvarchar(3)) + '''']''''  
+   
+  -- Increment Loop  
+  SET @LoopCount = @LoopCount + 1  
+  
+ END   
+  
+
+  SET @SQL_PivotKeyTable  = @SQL_PivotKeyTable + '''' FROM  
+  
+  (  
+  
+   /* Pivot out security data */  
+   SELECT  
+   fc.DimPoolId
+   ,fc.DimReportingDateId
+   ,dl.OrganisationCode
+   ,fl.DimTrustId
+   ,fc.DimConsolidationId
+   ,fl.AccountNo
+   ,fl.IPANXIOExpDate 
+	,fl.IPANXExpDate 
+   ,fl.InterestOnlyExpiryDate
+   ,fl.CurrentLimit
+   ,fl.CurrentPrincipalBalance
+   ,fl.CurrentLoanBalance
+   ,fl.OriginalLoanBalance
+   ,fl.LoanMaturityDate
+   ,fl.LoanStartDate
+   ,fl.LoanCloseDate
+   ,fl.OriginalTerm
+   ,fl.RevisedOriginalTerm
+   ,fl.RemainingTerm
+   ,dl.ProductCode
+   ,dl.ProductDescription
+   ,dl.InterestRateTypeCode
+   ,fl.CurrentRate
+   ,dl.PaymentTypeCode
+   ,fl.PaymentAmount 
+   ,dl.MortgageInsuranceInd 
+   ,dl.MortgageInsurerCode
+   ,fl.FixedRateEndDate
+   ,fl.AmountOfArrears 
+   ,fl.DaysInArrears
+   ,fc.ConsolidationBalance
+   ,fc.ConsolidationValuation
+   ,fc.ConsolidationLTV
+   ,fc.ConsolidationLimitLTV 
+   ,fc.SecurityCount
+   ,fc.LoanCount
+   ,fs.DimSecurityID  
+  ,ROW_NUMBER() OVER (PARTITION BY fls.DimLoanID ORDER BY fs.SecurityValuationAmt DESC,fs.SecurityNo DESC) AS Security_Order   
+ FROM dbo.tblFactConsolidation FC INNER JOIN dbo.tblFactConsolidationLoan FCL 
+         ON FC.DimPoolId=FCL.DimPoolId 
+         And FC.DimConsolidationId=FCL.DimConsolidationId 
+         And FC.LTVPassNo=FCL.LTVPassNo
+JOIN dbo.tblFactLoan FL 
+         ON FCL.DimLoanId=FL.DimLoanId 
+         And FCL.DimPoolId=FL.DimPoolId 
+JOIN dbo.tblDimLoan DL 
+         ON FL.DimLoanId=DL.DimLoanId 
+         And FL.DimPoolId=DL.DimPoolId
+Left JOIN dbo.tblFactLoanSecurity FLS 
+         ON DL.DimPoolId=FLS.DimPoolId 
+         And DL.DimLoanId=FLS.DimLoanId 
+Left JOIN dbo.tblFactSecurity FS 
+         ON FLS.DimSecurityId = FS.DimSecurityID 
+         And FLS.DimPoolID = FS.DimPoolID
+
+
+   WHERE fc.DimPoolId = '''' + CAST(@PoolId AS nvarchar(8)) + ''''  
+   AND  fc.LTVPassNo = '''''''''''' + @LTVPassNo + ''''''''''''  
+  ) Security_Data  
+	
+  PIVOT  
+  
+  (  
+   MAX(DimSecurityID) 
+   FOR Security_Order IN (''''  
+  
+   
+  
+
+   
+-- Reset Loop counter  
+SET @LoopCount = 1  
+  
+  
+WHILE @LoopCount < @PivotCount + 1  
+  
+ BEGIN  
+   
+  IF @LoopCount = 1  
+    
+   SET @SQL_PivotKeyTable = @SQL_PivotKeyTable + ''''  
+    ['''' + CAST(@LoopCount AS nvarchar(3)) + '''']''''  
+      
+  ELSE  
+     
+   SET @SQL_PivotKeyTable = @SQL_PivotKeyTable + ''''  
+   , ['''' + CAST(@LoopCount AS nvarchar(3)) + '''']''''  
+     
+  -- Increment Loop  
+  SET @LoopCount = @LoopCount + 1  
+  
+ END     
+  
+SET @SQL_PivotKeyTable  = @SQL_PivotKeyTable + '''') ) Security_Data_Pivot''''  
+  
+-- Create temp table
+EXECUTE sp_executesql @SQL_PivotKeyTable  
+print @SQL_PivotKeyTable
+  
+-- Load temp table per Security  
+  
+-- Reset Loop counter  
+SET @LoopCount = 1  
+  
+DECLARE @SQLText nvarchar(MAX)  
+  
+WHILE @LoopCount < @PivotCount + 1  
+  
+ BEGIN  
+    
+ SET @SQLText = ''''   
+          
+ INSERT INTO #Security_Details    
+(Security_Order  
+         , DimSecurityId  
+         , SecurityNo    
+         , PropertyTypeDesc 
+         , PostCode 
+         , Suburb  
+         , CountryCode   
+         , Region  
+         , Nature  
+         , OccupancyPurposeDesc
+         , SecurityValuationAmt
+         , ValuationType 
+         , SecurityValuationDate 
+         , Security_Valid_Invalid_flag
+        
+        )                
+       
+    SELECT '''' + CAST(@LoopCount AS varchar(3)) + '''' AS Security_Order  
+    ,  pk.DimSecurityId  
+    ,  fs.SecurityNo
+    ,  ds.PropertyTypeDesc
+    ,  ds.PostCode
+    ,  ds.Suburb
+    ,  ds.CountryCode
+    ,  ds.Region
+    ,  ds.Nature
+    ,  ds.OccupancyPurposeDesc
+    ,  fs.SecurityValuationAmt 
+    ,  ds.ValuationType
+    ,  fs.SecurityValuationDate
+	,  case fs.IsIncluded WHEN 0  THEN 0
+              else 1 
+       end
+    
+    
+   -- DISTINCT required as Securities may appear against more than one loan  
+   FROM 
+   (	SELECT DISTINCT pk_all.DimSecurityId_'''' + CAST(@LoopCount AS varchar(3)) + '''' AS DimSecurityId  
+		FROM ##Pivoted_Keys pk_all  
+		WHERE pk_all.DimSecurityId_'''' + CAST(@LoopCount AS varchar(3)) + '''' IS NOT NULL 
+	) pk  
+        
+   -- Security  
+   JOIN tblDimSecurity ds 
+                ON ds.DimSecurityID = pk.DimSecurityId  
+   JOIN tblFactSecurity fs 
+                ON fs.DimSecurityID = pk.DimSecurityId  
+				And fs.DimPoolId=ds.DimPoolId
+   -- Filter by Date and Organisation  
+  WHERE fs.DimPoolId='''' + CAST(@PoolId AS varchar(3)) 
+  
+     
+ EXEC sp_executesql @SQLText  
+  
+ SET @LoopCount = @LoopCount + 1  
+  
+END  
+ 
+ -- Final results query  
+  
+SET @SQLText = ''''  
+SELECT '''' + CAST(@PoolId AS varchar(8)) + '''' AS [PoolID]  
+,pk.DimReportingDateId
+,pk.OrganisationCode
+,pk.DimTrustId
+,pk.DimConsolidationId
+,pk.AccountNo
+,pk.IPANXIOExpDate 
+,pk.IPANXExpDate 
+,pk.InterestOnlyExpiryDate
+,pk.CurrentLimit
+,pk.CurrentPrincipalBalance
+,pk.CurrentLoanBalance
+,pk.OriginalLoanBalance
+,pk.LoanMaturityDate
+,pk.LoanStartDate
+,pk.LoanCloseDate
+,pk.OriginalTerm
+,pk.RevisedOriginalTerm
+,pk.RemainingTerm
+,pk.ProductCode
+,pk.ProductDescription
+,pk.InterestRateTypeCode
+,pk.CurrentRate
+,pk.PaymentTypeCode
+,pk.PaymentAmount 
+,pk.MortgageInsuranceInd 
+,pk.MortgageInsurerCode
+,pk.FixedRateEndDate
+,pk.AmountOfArrears 
+,pk.DaysInArrears 
+,pk.ConsolidationBalance
+,pk.ConsolidationValuation
+,pk.ConsolidationLTV
+,pk.ConsolidationLimitLTV
+,pk.SecurityCount
+,pk.LoanCount
+
+''''  
+  
+-- Reset Loop counter  
+SET @LoopCount = 1  
+  
+WHILE @LoopCount < @PivotCount + 1  
+  
+ BEGIN  
+  if @LoopCount=1
+  begin
+  SET @SQLText = @SQLText + ''''
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.SecurityNo    AS MainSecurity''''  + ''''_Security_Nbr  
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.PropertyTypeDesc    AS MainSecurity''''  + ''''_Property_Type_desc  
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.PostCode    AS MainSecurity'''' +  ''''_Pcode 
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.Suburb    AS MainSecurity'''' + ''''_Suburb 
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.CountryCode    AS MainSecurity'''' + ''''_CountryCode 
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.Region    AS MainSecurity''''+ ''''_Region 
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.Nature    AS MainSecurity''''+ ''''_Nature 
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.OccupancyPurposeDesc    AS MainSecurity''''+ ''''_OccupancyPurposeDesc 
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.SecurityValuationAmt    AS MainSecurity'''' +  ''''_Valuation_Amt
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.ValuationType    AS MainSecurity'''' +  ''''_Valuation_Type
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.SecurityValuationDate    AS MainSecurity'''' +  ''''_Valuation_Date
+ ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.Security_Valid_Invalid_flag    AS MainSecurity'''' +  ''''_Valid_Invalid_Flag''''
+  
+  
+
+end
+  else
+  begin
+  SET @SQLText = @SQLText + ''''
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.SecurityNo    AS Security_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''_Security_Nbr  
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.PropertyTypeDesc    AS Security_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''_Property_Type_desc  
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.PostCode    AS Security_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''_Pcode 
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.Suburb    AS Security_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''_Suburb 
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.CountryCode    AS Security_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''_CountryCode 
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.Region    AS Security_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''_Region 
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.Nature    AS Security_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''_Nature 
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.OccupancyPurposeDesc    AS Security_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''_OccupancyPurposeDesc
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.SecurityValuationAmt    AS Security_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''_Valuation_Amt
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.ValuationType    AS Security_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''_Valuation_Type
+  ,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.SecurityValuationDate    AS Security_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''_Valuation_Date
+,  s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.Security_Valid_Invalid_flag    AS Security_'''' + CAST(@LoopCount AS nvarchar(3)) + ''''_Valid_Invalid_flag''''
+  
+  
+
+ end
+
+
+
+  
+  -- Increment Loop  
+  SET @LoopCount = @LoopCount + 1  
+  
+ END   
+
+SET @SQLText = @SQLText + ''''  
+FROM ##Pivoted_Keys pk 
+''''  
+  
+-- Reset Loop counter  
+SET @LoopCount = 1  
+  
+WHILE @LoopCount < @PivotCount + 1  
+  
+ BEGIN  
+   
+  SET @SQLText = @SQLText + ''''  
+  -- Security '''' + CAST(@LoopCount AS nvarchar(3)) + ''''  
+  LEFT JOIN #Security_Details s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''  
+  ON   pk.DimSecurityId_'''' + CAST(@LoopCount AS nvarchar(3)) + '''' = s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.DimSecurityId  
+  AND   s'''' + CAST(@LoopCount AS nvarchar(3)) + ''''.Security_Order = '''' + CAST(@LoopCount AS nvarchar(3)) + ''''  
+  	  
+''''  
+   
+  -- Increment Loop  
+  SET @LoopCount = @LoopCount + 1  
+  
+ END   
+  	set @SQLText = @SQLText + '''' order by DimConsolidationID''''
+	EXEC sp_executesql @SQLText
+
+    END  ;
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

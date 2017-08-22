@@ -1,0 +1,21 @@
+模板组装顺序
+
+    1）CashFlowBaseModel
+
+    2）CashFlowAccountCollectionModel               直接全部解析，不需要动态生成 ( 此模板的内容为本金回收款/利息回收款 等汇总信息） 
+
+    3）CashFlowFeeModel                                         需要根据实际的费用个数动态解析(此模板的内容为 “费用的应付金额”  和 “费用实付金额”）
+
+    4）CashFlowAllocationBondDueModel              需要根据实际的证券个数动态解析 （此模板的内容为 “证券的应付金额” 和 “实付金额”）
+
+    5）CashFlowAccountTransferModel                    直接全部解析，不需要动态生成 （此模板的内容为： 账户互转情况 和计算费用偿付的Action)
+
+    6)  CashFlowFeeModel_Leftover                           需要根据实际的费用个数动态解析 (此模板的内容为 “费用的未付金额）
+
+    7）CashFlowAllocationBondPaidModel              需要根据实际的证券个数动态解析 （此模板的内容为 “证券的每份分配“等）
+
+    8）CashFlowAllocationBondSummaryModel      直接全部解析，不需要动态生成（此模板的内容为 “优先级总分配”等）
+
+    9）CashFlowAccountBalanceModel                     直接全部解析，不需要动态生成（此模板的内容为 “账户结束余额”等）
+
+    8）和 9）其实可以合并成同一个 

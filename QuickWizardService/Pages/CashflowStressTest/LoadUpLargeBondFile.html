@@ -1,0 +1,196 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>大额债权类资产上传文件</title>
+	
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />    
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    <link href="css/common.css" rel="stylesheet" />
+    <style type="text/css">       
+        .align-right { text-align: right; }
+        .category .col-12 { min-height: 38px; }
+        .center { text-align: center; }
+    </style>
+	
+	<script src="js/jquery.min.js"></script>
+    <script src="js/App.Global.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/asyncBoxDialog.js"></script>
+    <script type="text/javascript">
+        $(function(){
+			//debugger;
+			registerEvent();
+		});
+		function registerEvent(){
+			$('#btnUpload').click(function () {
+				var trustId=38;//getQueryString('tid');
+				var accountNo=getQueryString('ano');
+				var fileKind = $('#fileKind').val();
+				var filePath = $('#filePath').val();
+				var fileName = filePath.substring(filePath.lastIndexOf('\\') + 1);
+				fileName=trustId+'-'+accountNo+'-'+fileName;
+				var fileType = fileName.substring(fileName.lastIndexOf('.') + 1);
+				if (fileType !== 'xls' && fileType !== 'xlsx') {
+					alert('上传文件不是XLS或XLSX类型');
+					return;
+				}			
+				var fileData = document.getElementById('filePath').files[0];
+				var fileFolder='AssetFileList';
+				var uploadTime=(new Date).dateFormat('yyyy-MM-dd hh:mm:ss');  //(new Date).dateFormat('yyyyMMddhhmmss');
+				UploadFile(fileName,fileFolder, fileData,function(fileFullPathObj){
+					var fileFullPath=fileFullPathObj.FileUploadResult
+					SaveAssetFileList(trustId,accountNo,fileKind,fileName,fileFullPath,uploadTime,function(r){
+						if(r==0){
+							alertMsg('上传成功！');
+							//window.closeDialog();//关闭窗口
+							// dialog.destroy();
+							//self.onClose();
+						}
+					})		
+				});
+			});
+			
+		}
+		function dialog() {
+			this.width = 500;
+			this.height = 400;
+			this.title = '';
+			this.url = '';
+			this.html = '';
+			this.button = '';
+			this.dragable = false;
+			this.status = null;
+			this.onCallback = function () { },
+			this.onClose = function () { },
+			this.onSuccess = function () { },
+			this.parentDom = null;
+			this.isMaskClickToClose = true;
+			this.onMaskClick = function () { };
+		}
+		dialog.destroy = function () {
+			//alert('destroy');
+			$("#modal-layout").fadeOut('fast', function () {
+				$("#modal-mask").remove();
+				$("#modal-layout").remove();
+			})
+		}
+		function getQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;
+		}
+		
+		function UploadFile(fileName, fileFolder,fileData, fnCallback) {
+			var svcUrl = GlobalVariable.AppServiceUrl + 'FileUpload?fileName={0}&fileFolder={1}'.format(encodeURIComponent(fileName),encodeURIComponent(fileFolder)); 
+			$.ajax({
+				url: svcUrl,
+				type: 'POST',
+				data: fileData,
+				cache: false,
+				dataType: 'json',
+				processData: false, // Don't process the files
+				//contentType: "application/octet-stream", // Set content type to false as jQuery will tell the server its a query string request
+				success: function (response) {
+					var sourceData;
+					if (typeof response == 'string')
+						sourceData = JSON.parse(response);
+					else
+						sourceData = response;
+					if (fnCallback) fnCallback(sourceData);
+				},
+				error: function (data) {
+					alert('File upload failed!');
+				}
+			});
+		}
+		function SaveAssetFileList(TrustId,AccountNo,FileKind,FileName,FileFullPath,UploadTime,callback){
+			var executeParam = { SPName: 'TrustManagement.usp_SaveAssetFileList', SQLParams: [] };
+			executeParam.SQLParams.push({ Name: 'TrustId', Value: TrustId, DBType: 'int' });
+			executeParam.SQLParams.push({ Name: 'AccountNo', Value: AccountNo, DBType: 'string' });
+			executeParam.SQLParams.push({Name:'FileKind',Value:FileKind,DBType:'string'});
+			executeParam.SQLParams.push({Name:'FileName',Value:FileName,DBType:'string'});
+			executeParam.SQLParams.push({Name:'FileFullPath',Value:FileFullPath,DBType:'string'});
+			executeParam.SQLParams.push({Name:'UploadTime',Value:UploadTime,DBType:'string'});
+			var serviceUrl = GlobalVariable.AppServiceUrl + 'CommonGet?exeParams=' + encodeURIComponent(JSON.stringify(executeParam));
+			$.ajax({
+            url: serviceUrl,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            success: function (data) {
+                console.log(data);
+                var json = jQuery.parseJSON(data);
+                callback(json);
+            },
+            error: function (data) {
+                alert('SaveAssetFileList Error !');
+            }
+        });
+		}
+		function alertMsg(text, status) {
+			var alert_tip = $('#alert-tip'),
+				icon = (status) ? 'icon-warning' : 'icon-roundcheck';
+			if (!alert_tip[0]) {
+				var $alert = $('<div id="alert-tip" class="alert_tip am-scale-up"/>');
+				var $temp = $('<div class="alert_content">' +
+								'<i class="icon ' + icon + '"></i>' +
+								'<p>' + text + '</p>' +
+							'</div>');
+				$temp.appendTo($alert);
+				$alert.appendTo(document.body);
+				setTimeout(function () {
+					$('#alert-tip').fadeOut(function () {
+						$(this).remove();
+					});
+				}, 1000);
+			}
+		}
+		function Close(){	
+			//window.closeDialog();
+			window.close();
+		}
+
+		
+    </script>
+    
+</head>
+<body>
+	<div id="divUpload" class="content padding20">
+        <div class="col-12 form-row mb15">
+            <div class="form-group col-12">
+                <label class="col-3 control-label" >文件类型：</label>
+                <div class="col-9">
+                    <select id="fileKind" class="form-control" onclick="">
+                       <option>请选择文件类型...</option>
+					   <option>文件类型A</option>
+					   <option>文件类型B</option>
+					   <option>文件类型C</option>
+					   <option>文件类型D</option> 
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 form-row mb15">
+            <div class="form-group col-12">
+                <label class="col-3 control-label"> 单笔资产文件：</label>
+                <div class="col-9">
+                    <input type="file" id="filePath" class="form-control" accept=" .xls,.xlsx" />
+                </div>
+            </div>
+        </div>
+        <div class="col-12 form-row mb15">
+            <div class="form-group col-12">
+                <label class="col-3 control-label"> </label>
+                <div class="col-12 form-save pull-right align-right">
+					<button type="button" id="btnUpload" class="btn btn-primary"><span>上传</span></button>
+					<button type="button" id="btnCancel" class="btn btn-primary" onClick="Close();"><span>取消</span></button>
+					
+                </div>
+            </div>
+        </div>
+    </div>		
+</body>
+</html>

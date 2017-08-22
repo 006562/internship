@@ -1,0 +1,75 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <title data-bind="text: Language.Title"></title>
+    <link rel="stylesheet" href="Contents/bootstrap.css" />
+    <link rel="stylesheet" href="Contents/model.css" />
+    <script src="Scripts/jquery-1.7.2.min.js"></script>
+    <script src="Scripts/jquery.cookie.js"></script>
+    <script src="Scripts/knockout-3.4.0.js"></script>
+    <script src="Scripts/knockout.mapping-latest.js"></script>
+    <script src="Scripts/dataOperate.js"></script>
+    <script src="Scripts/common.js"></script>
+    <script type="text/javascript">
+        var set;
+        var myModel = {
+            Language: {},
+        }
+        function getLanguage(set) {
+            var zh_CN = { SwitchLang: "Switch to English", Title: "生成DAL数据库",
+                TabTitle: "生成DAL数据库", TabTitle01: "生成数据库", TabText01: "生成白条或信贷工厂数据库"};
+            var en_US = { SwitchLang: "切换至中文", Title: "Generate DAL Database",
+                TabTitle: "Generate DAL Database", TabTitle01: "Generate Database",  TabText01: "Complete pool settings"};
+            switch (set) {
+                case "zh-CN":
+                    return zh_CN;
+                case "en-US":
+                    return en_US;
+            }
+        }
+        
+        set = getQueryString("set");
+        if(set == null) {
+            set=$.cookie('set'); 
+            if(set == null ) {
+                set = 'zh-CN';
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div class="page">
+        <div class="aside">
+            <div class="step-box">
+                <div class="step-head">
+                    <div class="step-menu"><i class="icon icon-list"></i></div>
+                    <h2><span data-bind="text:Language.TabTitle"></span></h2>
+                </div>
+                <ul class="main-page-nav">
+                    <li class="active" data-url="Pages/GenerateDB.html" data-mid="12" data-pid="27"><!--9,24-->
+                        <span class="no">1</span>
+                        <span class="flag"><i class="icon icon-right"></i></span>
+                        <h3 class="step-title"><span data-bind="text:Language.TabTitle01"></span></h3>
+                        <p class="step-text"><span data-bind="text:Language.TabText01"></span></p>
+                    </li>
+                </ul>                
+            </div>
+        </div>
+        <div class="work">
+            <button type="button" id="SwitchLang" onclick="switchLang()"><span data-bind="text:Language.SwitchLang"></span></button>
+            <iframe src="" frameborder="0"></iframe>
+        </div>
+    </div>
+<style type="text/css">
+    #SwitchLang { background:none;
+                  border:none;
+                  position:fixed;
+                  top:15px;
+                  right:20px; }
+</style>
+    <script src="MainPageIFrameSetting.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+[2017-08-08 16:15:51,635] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 85bab288-1fa6-4142-bba1-026d7734968b failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Exception: Source=To Supplimentary; Error Code=-1071636471; Error Description=SSIS Error Code DTS_E_OLEDBERROR.  An OLE DB error has occurred. Error code: 0x80004005.
+An OLE DB record is available.  Source: "Microsoft SQL Server Native Client 10.0"  Hresult: 0x80004005  Description: "The statement has been terminated.".
+An OLE DB record is available.  Source: "Microsoft SQL Server Native Client 10.0"  Hresult: 0x80004005  Description: "Violation of PRIMARY KEY constraint 'PK_tblCustomerSupplimentary'. Cannot insert duplicate key in object 'dbo.tblCustomerSupplimentary'. The duplicate key value is (-1, 2, 2, 64, 2016-09-30, 1).".
+
+Source=To Supplimentary; Error Code=-1071607767; Error Description=SSIS Error Code DTS_E_INDUCEDTRANSFORMFAILUREONERROR.  The "OLE DB Destination.Inputs[OLE DB Destination Input]" failed because error code 0xC020907B occurred, and the error row disposition on "OLE DB Destination.Inputs[OLE DB Destination Input]" specifies failure on error. An error occurred on the specified object of the specified component.  There may be error messages posted before this with more information about the failure.
+
+Source=To Supplimentary; Error Code=-1073450974; Error Description=SSIS Error Code DTS_E_PROCESSINPUTFAILED.  The ProcessInput method on component "OLE DB Destination" (25) failed with error code 0xC0209029 while processing input "OLE DB Destination Input" (38). The identified component returned an error from the ProcessInput method. The error is specific to the component, but the error is fatal and will cause the Data Flow task to stop running.  There may be error messages posted before this with more information about the failure.
+
+
+   at BL.TaskProcessService.OperationProvider.RunSSIS(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63

@@ -1,0 +1,7 @@
+[2017-08-11 16:36:53,734] ERROR Securitisation.Utilities.Common.Log4NetLogService - Create session failed
+System.Data.SqlClient.SqlException (0x80131904): Connection Timeout Expired.  The timeout period elapsed while attempting to consume the pre-login handshake acknowledgement.  This could be because the pre-login handshake failed or the server was unable to respond back in time.  The duration spent while attempting to connect to this server was - [Pre-Login] initialization=1933; handshake=7265;  ---> System.ComponentModel.Win32Exception (0x80004005): The wait operation timed out
+   at Securitisation.Utilities.SQL.UtilSqlRunQueryADONET.RunQueryADONETByQueryString(String sQueryString, List`1 glParameters, String sConnectionString)
+   at DADP.TaskEntity.SessionHelper.GetSession(String SessionName)
+   at TaskProcessEngine.SessionManagementService.CreateSessionByTaskCode(String applicationDomain, String sessionVariable, String taskCode) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\SessionManagementService.svc.cs:line 100
+ClientConnectionId:e21aa0a4-5e39-426d-88e1-c339f2219bf0
+Error Number:-2,State:0,Class:11

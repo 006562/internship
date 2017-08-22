@@ -1,0 +1,121 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+
+    <title>Golden Stand View Index</title>
+
+    <link href="bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="bower_components/metisMenu/dist/metisMenu.min.css" rel="stylesheet" />
+    <!-- Custom CSS -->
+    <link href="css/gs-admin-2.css" rel="stylesheet" />
+    <!-- Custom Fonts -->
+    <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <!-- AsyncBox css -->
+    <link href="bower_components/asyncbox/skins/default.css" rel="stylesheet" />
+    <!--[if lt IE 9]>
+        <script src="js/html5shiv.js"></script>
+        <script src="js/respond.min.js"></script>
+    <![endif]-->
+</head>
+
+<body>
+    <div id="wrapper">
+        <div id="tabs" class="nav-tabs">
+            <ul id="ribbonTabUl" class="nav nav-pills tabs">
+            </ul>
+        </div>
+        <div id="main">
+            <iframe id="iframeMainContent" name="iframeMainContent" frameborder="0" scrolling="no" src="../TrustManagement/TrustList/TrustList.html" style="width:100%;height:100%;"></iframe>
+        </div>
+    </div>
+
+    <div id="taskIndicatorArea" style="display:none;width:440px; height:440px;">
+        <object id="TaskProcessCtl" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="display:block" width="100%" height="440px" class="ms-dlgDisable">
+            <param name="source" value="/TaskProcessEngine/ClientBin/UI.TaskProcessIndicator.xap" />
+            <param name="enablehtmlaccess" value="True" />
+        </object>
+    </div>
+
+    <!-- jQuery -->
+    <script src="js/jquery-1.12.1.min.js"></script>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+    <!-- AsyncBox JavaScript -->
+    <script src="bower_components/asyncbox/asyncbox.js"></script>
+    <!-- Custom Theme JavaScript -->
+    <script src="js/gs-admin-2.js"></script>
+    <script src="js/gs-admin-2.pages.js"></script>
+    <script src="../TrustManagement/wcfProxy.js"></script>
+    <script src="../Config/GlobalVariable.js"></script>
+    <script src="../TrustManagement/Common/Scripts/common.js"></script>
+    <script src="../TrustManagement/Common/Scripts/jquery-ui-latest.js"></script>
+    <link href="../TrustManagement/Common/Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="js/permission.js"></script>
+    <script type="text/javascript">
+        //Global Indicator
+        var sessionID, taskCode;
+        var clientName = 'TaskProcess';
+        var IndicatorAppDomain = 'Task';
+        function InitParams() {
+        }
+        var IsSilverlightInitialized = false;
+        function InitParams() {
+            if (!IsSilverlightInitialized) {
+                IsSilverlightInitialized = true;
+            }
+            document.getElementById("TaskProcessCtl").Content.SL_Agent.InitParams(sessionID, IndicatorAppDomain, taskCode, clientName);
+            clientName = 'TaskProcess';
+        }
+
+        function PopupTaskProcessIndicatorTM() {
+            $("#taskIndicatorArea").dialog({
+                modal: true,
+                dialogClass: "TaskProcessDialogClass",
+                closeText: "",
+                //closeOnEscape:false,
+                height: 485,
+                width: 470,
+                close: function (event, ui) {
+                    window.location.reload();
+                }, // refresh report repository while close the task process screen.
+                //open: function (event, ui) { $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide(); },
+                title: "任务处理"
+            });
+        }
+
+        var TaskProcessWProxy = (function () {
+            function createSessionShowTask(appDomain, sessionVariables, taskCode, clientNameCur) {
+                if (!clientNameCur) { alert('请传递cientName'); return; }
+                clientName = clientNameCur;
+                var wProxy = new webProxy();
+                var sContext = {
+                    appDomain: appDomain,
+                    sessionVariables: sessionVariables,
+                    taskCode: taskCode
+                };
+
+                wProxy.createSessionByTaskCode(sContext, function (response, success) {
+                    sessionID = response;
+                    taskCode = taskCode;
+                    IndicatorAppDomain = 'Task';
+
+                    if (IsSilverlightInitialized) {
+                        InitParams();
+                    }
+
+                    if (success)
+                        PopupTaskProcessIndicatorTM();
+                });
+            }
+
+            return { CreateSessionShowTask: createSessionShowTask }
+        })();
+    </script>
+
+</body>
+
+</html>

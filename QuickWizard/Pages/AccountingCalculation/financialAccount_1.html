@@ -1,0 +1,302 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <title>会计核算-账套管理</title>
+    <link rel="stylesheet" href="../../Contents/bootstrap.css" />
+    <link rel="stylesheet" href="../../Contents/model.css" />
+    <link href="../../Scripts/jquery-ui.css" rel="stylesheet" />
+    <link href="../../Scripts/Kendo/styles/kendo.common-material.min.css" rel="stylesheet" />
+    <link href="../../Scripts/Kendo/styles/kendo.material.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../Contents/NewModel.css" />
+    <link href="../TransactionManagement/viewTransaction.css" rel="stylesheet" />
+
+    <script src="../../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../../Scripts/jquery-ui.min.js"></script>
+    <script src="../../Scripts/Kendo/js/kendo.all.min.js"></script>
+    <script src="../../Scripts/Kendo/js/kendo.messages.zh-CN.js"></script>
+    <script src="../../Scripts/Kendo/js/kendo.culture.zh-CN.js"></script>
+    <script src="../../Scripts/dataOperate.js"></script>
+    <script src="../../Scripts/common.js"></script>
+    <script type="text/javascript" src="../../model.js"></script>
+    <script src="https://cdn.bootcss.com/html5shiv/3.7/html5shiv-printshiv.js"></script>
+    <style>
+        .manager-content {
+            margin: 0;
+            padding: 0;
+        }
+
+        header, .btnItem, .btnItemSave {
+            padding: 10px 10px;
+        }
+
+        .title-transaction {
+            font-size: 14px;
+            font-weight: bolder;
+        }
+
+        .transaction-navTitle {
+            font-size: 12px;
+            color: #5a77a9;
+        }
+
+        .btnItemCRUD {
+            padding: 5px 10px 10px 10px;
+        }
+
+        .main {
+            display: none;
+        }
+
+        .ui-dialog {
+            width: 80% !important;
+        }
+
+        .row {
+            margin: 0;
+            padding: 0 10px;
+            height: auto !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="row manager-content" id="app">
+        <header><span class="title-transaction">会计核算</span> > <span class="transaction-navTitle">账套管理</span></header>
+        <section class="btnItemCRUD row">
+            <div class="bs-example col-6" data-example-id="single-button-dropdown">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary dropdown-toggle" aria-haspopup="true" aria-expanded="false" id="Add">新建 <span class="caret"></span></button>
+                </div><!-- /btn-group -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-success dropdown-toggle" aria-haspopup="true" aria-expanded="false" id="Edit">编辑 <span class="caret"></span></button>
+                </div><!-- /btn-group -->
+                <div class="btn-group">
+                    <button type="button" class="btn btn-danger dropdown-toggle" aria-haspopup="true" aria-expanded="false" id="Delete">删除 <span class="caret"></span></button>
+                </div><!-- /btn-group -->
+            </div>
+            <div class="col-6">
+                <div class="input-group pull-right" style="display:inline-block">
+                    账套号：
+                    <input type="number" id="BookNo" style="display:inline-block;line-height:25px;" aria-describedby="basic-addon2">
+                    <button type="button" id="BookNoBtn" class="btn btn-primary">检索</button>
+
+                </div>
+            </div>
+        </section>
+        <section>
+            <div id="grid"></div>
+        </section>
+        <section class="btnItemSave"></section>
+
+
+        <div id="EditDetails" title="编辑" style="width:100%; height:100%;">
+            <div class="main" id="EditDetailsDiv">
+                <div class="tab-columns">
+                    <button class="btn btn-active" type="button" data-col="2">
+                        <span class="bs bs2"></span>
+                        <span class="bs bs2"></span>
+                    </button>
+                    <button class="btn" type="button" data-col="3">
+                        <span class="bs bs1"></span>
+                        <span class="bs bs1"></span>
+                        <span class="bs bs1"></span>
+                    </button>
+                </div>
+                <h3 class="h3" id="step-title"><span class="title" data-bind="text:Language.ProductInfo">账套管理</span></h3>
+                <div class="form-panel">
+                    <div class="col-12 form-row form-horizontal" data-bind="">
+                        <!-- ko if: IsDisplay -->
+                        <div class="col-6 form-row autoLayout-plugins">
+                            <div class="form-group">
+                                <label class="col-4 control-label" data-bind="">账套号</label>
+                                <div class="col-6">
+                                    <span data-bind="renderControl:ItemId"><input class="form-control" id="AccountSetNo" type="text" data-bind="" data-valid=" Required"></span>
+                                </div>
+                                <!-- ko  if: IsNew --><!-- /ko -->
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: IsDisplay -->
+                        <div class="col-6 form-row autoLayout-plugins">
+                            <div class="form-group">
+                                <label class="col-4 control-label" data-bind="text:ItemAliasValue">账套名称</label>
+                                <div class="col-6">
+                                    <span data-bind="renderControl:ItemId"><input class="form-control" id="AccountSetName" type="text" data-bind="" data-valid=" Required"></span>
+                                </div>
+                                <!-- ko  if: IsNew --><!-- /ko -->
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: IsDisplay -->
+                        <div class="col-6 form-row autoLayout-plugins">
+                            <div class="form-group">
+                                <label class="col-4 control-label" data-bind="text:ItemAliasValue">备注</label>
+                                <div class="col-6">
+                                    <span data-bind="renderControl:ItemId"><input class="form-control" id="Remark" type="text" data-bind="" data-valid=" Required"></span>
+                                </div>
+                                <!-- ko  if: IsNew --><!-- /ko -->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="form-save">
+                    <input class="btn btn-primary" id="save" onclick="saveItem()" type="button" value="保存信息" data-bind="value:Language.BtnSave">
+                </div>
+            </div>
+        </div>
+        <div id="AddDetails" title="增加" style="width:100%; height:100%;">
+            <div class="main" id="AddDetailsDiv">
+                <div class="tab-columns">
+                    <button class="btn btn-active" type="button" data-col="2">
+                        <span class="bs bs2"></span>
+                        <span class="bs bs2"></span>
+                    </button>
+                    <button class="btn" type="button" data-col="3">
+                        <span class="bs bs1"></span>
+                        <span class="bs bs1"></span>
+                        <span class="bs bs1"></span>
+                    </button>
+                </div>
+                <h3 class="h3" id="step-title"><span class="title" data-bind="text:Language.ProductInfo">对价分配</span></h3>
+                <div class="form-panel">
+                    <div class="col-12 form-row form-horizontal" data-bind="">
+                        <!-- ko if: IsDisplay -->
+                        <div class="col-6 form-row autoLayout-plugins">
+                            <div class="form-group">
+                                <label class="col-4 control-label" data-bind="">账套号</label>
+                                <div class="col-6">
+                                    <span data-bind="renderControl:ItemId"><input class="form-control" id="AccountSetNo1" type="text" data-bind="" data-valid=" Required"></span>
+                                </div>
+                                <!-- ko  if: IsNew --><!-- /ko -->
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: IsDisplay -->
+                        <div class="col-6 form-row autoLayout-plugins">
+                            <div class="form-group">
+                                <label class="col-4 control-label" data-bind="text:ItemAliasValue">账套名称</label>
+                                <div class="col-6">
+                                    <span data-bind="renderControl:ItemId"><input class="form-control" id="AccountSetName1" type="text" data-bind="" data-valid=" Required"></span>
+                                </div>
+                                <!-- ko  if: IsNew --><!-- /ko -->
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: IsDisplay -->
+                        <div class="col-6 form-row autoLayout-plugins">
+                            <div class="form-group">
+                                <label class="col-4 control-label" data-bind="text:ItemAliasValue">备注</label>
+                                <div class="col-6">
+                                    <span data-bind="renderControl:ItemId"><input class="form-control" id="Remark1" type="text" data-bind="" data-valid=" Required"></span>
+                                </div>
+                                <!-- ko  if: IsNew --><!-- /ko -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-save">
+                    <input class="btn btn-primary" id="save" onclick="saveItemAdd()" type="button" value="保存信息" data-bind="value:Language.BtnSave">
+                </div>
+            </div>
+        </div>
+        <div id="DeleteDetails" title="编辑" style="width:100%; height:100%;">
+            <div class="main" id="DeleteDetailsDiv">
+                <div class="tab-columns">
+                    <button class="btn btn-active" type="button" data-col="2">
+                        <span class="bs bs2"></span>
+                        <span class="bs bs2"></span>
+                    </button>
+                    <button class="btn" type="button" data-col="3">
+                        <span class="bs bs1"></span>
+                        <span class="bs bs1"></span>
+                        <span class="bs bs1"></span>
+                    </button>
+                </div>
+                <h3 class="h3" id="step-title"><span class="title" data-bind="text:Language.ProductInfo">账套管理</span></h3>
+                <div class="form-panel">
+
+                    <div class="col-12 form-row form-horizontal" data-bind="">
+                        <!-- ko if: IsDisplay -->
+                        <div class="col-6 form-row autoLayout-plugins">
+                            <div class="form-group">
+                                <label class="col-4 control-label" data-bind="">账套号</label>
+                                <div class="col-6">
+                                    <span data-bind="renderControl:ItemId"><input class="form-control" onchange="validControlValue(this)" type="text" data-bind="" data-valid=" Required" data-valid="disabled"></span>
+                                </div>
+                                <!-- ko  if: IsNew --><!-- /ko -->
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: IsDisplay -->
+                        <div class="col-6 form-row autoLayout-plugins">
+                            <div class="form-group">
+                                <label class="col-4 control-label" data-bind="text:ItemAliasValue">账套名称</label>
+                                <div class="col-6">
+                                    <span data-bind="renderControl:ItemId"><input class="form-control" onchange="validControlValue(this)" type="text" data-bind="value: ItemValue" data-valid=" Required"></span>
+                                </div>
+                                <!-- ko  if: IsNew --><!-- /ko -->
+                            </div>
+                        </div>
+                        <!-- /ko -->
+                        <!-- ko if: IsDisplay -->
+                        <div class="col-6 form-row autoLayout-plugins">
+                            <div class="form-group">
+                                <label class="col-4 control-label" data-bind="text:ItemAliasValue">备注</label>
+                                <div class="col-6">
+                                    <span data-bind="renderControl:ItemId"><input class="form-control" onchange="validControlValue(this)" type="text" data-bind="value: ItemValue" data-valid=" Required"></span>
+                                </div>
+                                <!-- ko  if: IsNew --><!-- /ko -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-save">
+                    <input class="btn btn-primary" id="save" onclick="saveItem()" type="button" value="保存信息" data-bind="value:Language.BtnSave">
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.bootcss.com/vue/2.1.10/vue.js"></script>
+    <script src="financialAccount_1.js"></script>
+    <script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            data1: [],
+        },
+        methods: {
+            test: function () {
+            }
+        }
+
+    })
+    </script>
+    <!--保存编辑数据，用于更新-->
+    <script>
+    function saveItem() {
+        var no = document.getElementById('AccountSetNo').value;
+        var name = document.getElementById('AccountSetName').value;
+        var remark = document.getElementById('Remark').value;
+        DataOperate.UpdateAccountSet(no, name, remark, UpdateAccountSetCB);
+
+    }
+    function UpdateAccountSetCB() {
+        console.log(111);
+    }
+    </script>
+    <!--保存新建数据-->
+    <script>
+        function saveItemAdd() {
+            var no = document.getElementById('AccountSetNo1').value;
+            var name = document.getElementById('AccountSetName1').value;
+            var remark = document.getElementById('Remark1').value;
+            DataOperate.NewAccountSet(no, name, remark, UpdateAccountSetCB);
+        }
+        function UpdateAccountSetCB() {
+            alert("b保存成功！")
+        }
+    </script>
+</body>
+</html>

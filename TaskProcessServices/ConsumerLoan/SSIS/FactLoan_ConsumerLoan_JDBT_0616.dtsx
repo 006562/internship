@@ -1,0 +1,3101 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/5/2015 9:01:37 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GS2106CNVDV003"
+  DTS:CreatorName="DEV\gslocaladmin"
+  DTS:DTSID="{58EFC580-AFB8-4657-B2B4-2CE52301A94E}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="FactLoan_ConsumerLoan_JDBT"
+  DTS:PackageType="5"
+  DTS:VersionBuild="197"
+  DTS:VersionGUID="{B6CAC1E7-EA69-4318-80AE-4FD8C67660AE}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Cache Connection Manager]"
+      DTS:CreationName="CACHE"
+      DTS:DTSID="{60C27F7B-7464-4B4D-B5F9-5905DF992C69}"
+      DTS:ObjectName="Cache Connection Manager">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager>
+          <DTS:CacheColumns>
+            <DTS:CacheColumn
+              DTS:DataType="3"
+              DTS:ObjectName="DimLoanID"
+              DTS:DTSID="{125B22D0-70ED-4780-9EB3-C9798D39DA83}"
+              DTS:CreationName="" />
+            <DTS:CacheColumn
+              DTS:DataType="130"
+              DTS:Length="100"
+              DTS:IndexPosition="1"
+              DTS:ObjectName="AccountNo"
+              DTS:DTSID="{792ECEE7-C158-4E90-8A29-CC787A7794B7}"
+              DTS:CreationName="" />
+          </DTS:CacheColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[mssql.SFM_DAL_CLO]"
+      DTS:CreationName="OLEDB"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{95B74DDD-F7A2-4870-AE8E-88DB25499343}"
+      DTS:ObjectName="mssql.SFM_DAL_CLO">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::C_DAL_CLO_DB]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=mssql;Initial Catalog=SFM_DAL_ConsumerLoan;Provider=SQLNCLI10.1;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[mssql.SFM_Staging]"
+      DTS:CreationName="OLEDB"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{92057B01-4AAB-46CC-979D-C8EE948C62CF}"
+      DTS:ObjectName="mssql.SFM_Staging">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::C_STAGING_DB]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=mssql;Initial Catalog=SFM_STAGING;Provider=SQLNCLI10.1;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{3FDF59D1-85EF-480F-BD93-EC83F223C29D}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="BusinessDate">
+      <DTS:VariableValue
+        DTS:DataType="8">2016-05-05</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8633D987-5102-47A3-BA00-6E1DC303C505}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Data Source=&quot; + @[User::DAL_CLO_SERVER] + &quot;;Initial Catalog=&quot;+@[User::DAL_CLO_DB] +&quot;;Provider=SQLNCLI10.1;Integrated Security=SSPI;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_DAL_CLO_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=mssql;Initial Catalog=SFM_DAL_ConsumerLoan;Provider=SQLNCLI10.1;Integrated Security=SSPI;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D06463F4-8AB0-4316-BE60-8D9A1E66148F}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_Organisation">
+      <DTS:VariableValue
+        DTS:DataType="8">JD</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{65C05499-8E23-480B-AE8A-D33C5F2C2C4B}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Data Source=&quot; + @[User::STAGING_SERVER]  + &quot;;Initial Catalog=&quot;+ @[User::STAGING_DB] +&quot;;Provider=SQLNCLI10.1;Integrated Security=SSPI;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_STAGING_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=mssql;Initial Catalog=SFM_STAGING;Provider=SQLNCLI10.1;Integrated Security=SSPI;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A9456CE2-61AF-46CB-B7FE-02B9A3345C9E}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DAL_CLO_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">SFM_DAL_ConsumerLoan</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{3EDF5990-01D7-4263-885D-3F9A363BB79F}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DAL_CLO_SERVER">
+      <DTS:VariableValue
+        DTS:DataType="8">mssql</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B9CF84CA-9B25-4BFB-AE35-F5C4AEDFF37E}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;select AccountNo, DimLoanID &#xA;from dbo.tblDimLoan &#xA;where cast( &quot;+ &quot;'&quot;+@[User::BusinessDate]+&quot;'&quot;+&quot;  as date) between RowStartDate and IsNull(RowEndDate,'9999-12-31') and DimOrganisationID=&quot;+ @[User::OrganisationId]+&quot; order by  AccountNo ASC&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Extract">
+      <DTS:VariableValue
+        DTS:DataType="8">select AccountNo, DimLoanID 
+from dbo.tblDimLoan 
+where cast( '2016-05-05'  as date) between RowStartDate and IsNull(RowEndDate,'9999-12-31') and DimOrganisationID=2 order by  AccountNo ASC</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{BB00E8AB-BF8F-409A-AD55-9DE1A038C12F}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;select TrustId,TrustCode&#xA;from [TrustManagement].[Trust]&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ExtractTrust">
+      <DTS:VariableValue
+        DTS:DataType="8">select TrustId,TrustCode
+from [TrustManagement].[Trust]</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{384583D7-91D8-4391-BF51-FE3739EEB7B4}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;EXEC GetOrganisationIdByCode &quot;+&quot;'&quot;+ @[User::C_Organisation]   +&quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="GetOrganisationId">
+      <DTS:VariableValue
+        DTS:DataType="8">EXEC GetOrganisationIdByCode 'JD'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{74E03D0E-82E1-419C-87EB-A3D976811F44}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Organisation">
+      <DTS:VariableValue
+        DTS:DataType="8">JD</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{77115B72-3E45-48F5-9B4B-057ADD8C2C5F}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="OrganisationId">
+      <DTS:VariableValue
+        DTS:DataType="8">2</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{43A3592E-D2BD-4D6E-BD8B-0DD2F3DE6E4A}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceId">
+      <DTS:VariableValue
+        DTS:DataType="3">1</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{80F036F0-085C-4FEB-B211-C3176EFA1C2B}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="STAGING_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">SFM_STAGING</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{85A557BA-3CE5-4313-AACF-A8AA755F157B}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="STAGING_SERVER">
+      <DTS:VariableValue
+        DTS:DataType="8">mssql</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{5DBA2AEA-AFEB-433D-9E00-9F758654FEE4}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;DELETE FROM  dbo.tblFactLoan where DimReportingDateID = cast(CONVERT(nvarchar(10),CAST('&quot;+ @[User::BusinessDate] +&quot;'  as DATE), 112)  as int)&quot; + &quot; and DimOrganisationId = &quot; + &quot;'&quot; + @[User::OrganisationId] + &quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_DeleteStatement">
+      <DTS:VariableValue
+        DTS:DataType="8">DELETE FROM  dbo.tblFactLoan where DimReportingDateID = cast(CONVERT(nvarchar(10),CAST('2016-05-05'  as DATE), 112)  as int) and DimOrganisationId = '2'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{45071809-7B88-4C42-A273-B7C1ABC7B7DA}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;exec usp_FactLoanEnrichment '&quot;+ @[User::BusinessDate] +&quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_EnrichmentStatement">
+      <DTS:VariableValue
+        DTS:DataType="8">exec usp_FactLoanEnrichment '2016-05-05'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{2AE9C32E-DDD1-45DE-91F1-6EFC5F84BED4}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;EXEC [dbo].[usp_GetFactLoan_JDBT]   &quot; +  &quot;'&quot; + @[User::BusinessDate] + &quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_GetFactLoanStatement">
+      <DTS:VariableValue
+        DTS:DataType="8">EXEC [dbo].[usp_GetFactLoan_JDBT]   '2016-05-05'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{504BC0D0-7CC1-42DC-AB6C-707C8EF97E76}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;EXEC [dbo].[usp_GetFactLoan_JDBT1]   &quot; +  &quot;'&quot; + @[User::BusinessDate] + &quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_GetFactLoanStatement1">
+      <DTS:VariableValue
+        DTS:DataType="8">EXEC [dbo].[usp_GetFactLoan_JDBT1]   '2016-05-05'</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Create Index"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{D594EA68-7D62-407A-8659-632C239A9DC7}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Create Index"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{92057B01-4AAB-46CC-979D-C8EE948C62CF}"
+          SQLTask:SqlStatementSource="IF NOT EXISTS(select * from sysindexes where id=object_id('Transactional.JD_Baitiao') and name='NonClusteredIndex-20160516-175201')&#xA;BEGIN&#xA;&#x9;CREATE NONCLUSTERED INDEX [NonClusteredIndex-20160516-175201] ON [Transactional].[JD_Baitiao]&#xA;(&#xA;&#x9;[LoanAccountNo] ASC&#xA;)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)&#xA;END" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Delete existing data"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Delete existing data"
+      DTS:DTSID="{C1037787-3739-4FA9-AA86-1048B41327EC}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Delete existing data">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Delete existing data\Delete existing data from target table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{C8672832-1E5E-4C16-BE8F-BD2BD81520C2}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Delete existing data from target table"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; Microsoft SQL Server 2008; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{95B74DDD-F7A2-4870-AE8E-88DB25499343}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::V_DeleteStatement" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Delete existing data\Get OrganisationId by code"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{52244C44-920B-4B39-BFA9-A740F7C210F7}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get OrganisationId by code"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{95B74DDD-F7A2-4870-AE8E-88DB25499343}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::GetOrganisationId"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="DimOrganisationID"
+                SQLTask:DtsVariableName="User::OrganisationId" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Delete existing data.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{8F3B0138-C0FA-4A38-AEC1-F23B3D099A78}"
+          DTS:From="Package\Delete existing data\Get OrganisationId by code"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Delete existing data\Delete existing data from target table" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Drop Index"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{C07028D8-2F2F-419A-839F-E02ED4702D79}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Drop Index"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{92057B01-4AAB-46CC-979D-C8EE948C62CF}"
+          SQLTask:SqlStatementSource="DROP INDEX [NonClusteredIndex-20160516-175201] ON [Transactional].[JD_Baitiao]" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\FactLoanEnrichment"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:DelayValidation="True"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{D539D0CC-669F-4D84-A5CF-A44CA7A81722}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="FactLoanEnrichment"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{95B74DDD-F7A2-4870-AE8E-88DB25499343}"
+          SQLTask:SqlStmtSourceType="Variable"
+          SQLTask:SqlStatementSource="User::V_EnrichmentStatement" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Get FactLoan"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{EC35F4DA-1FA4-4868-8C9B-429F37379455}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Get FactLoan"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Get FactLoan\Data Conversion"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\Get FactLoan\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Get FactLoan\Data Conversion.Inputs[Data Conversion Input].Columns[LoanAccountNo]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="LoanAccountNo"
+                      cachedSortKeyPosition="1"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanAccountNo]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Get FactLoan\Data Conversion.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\Get FactLoan\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LoanAccountNo]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="100"
+                      lineageId="Package\Get FactLoan\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LoanAccountNo]"
+                      name="Copy of LoanAccountNo"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanAccountNo]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Get FactLoan\Data Conversion.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\Get FactLoan\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Get FactLoan\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\Get FactLoan\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\Get FactLoan\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationID]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="1"
+                      lineageId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationID]"
+                      name="DimOrganisationID"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">@[User::OrganisationId]</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">@[User::OrganisationId]</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output].Columns[DataSourceID]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output].Columns[DataSourceID]"
+                      name="DataSourceID"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">@[User::SourceId]</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">@[User::SourceId]</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="2"
+                      lineageId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]"
+                      name="OrganisationCode"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">@[User::Organisation]</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">@[User::Organisation]</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output].Columns[BusinessDate]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="10"
+                      lineageId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output].Columns[BusinessDate]"
+                      name="BusinessDate"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">@[User::BusinessDate]</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">@[User::BusinessDate]</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\Get FactLoan\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Get FactLoan\Lookup Plus"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="Lookup multiple values in a reference dataset by using exact matching.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+              description="Lookup multiple values in a reference dataset by using exact matching."
+              name="Lookup Plus">
+              <properties>
+                <property
+                  dataType="System.String"
+                  name="LookupMetadataXml"
+                  typeConverter="NOTBROWSABLE">&lt;lookups&gt;&lt;lookup inputColumn="TrustCode" onNull="0" noMatch="0"&gt;&lt;result name="TrustId" /&gt;&lt;reference connectionType="OLEDB" runtimeConnectionName="Connection1" sourceType="Query" source="select TrustId,TrustCode&amp;#xD;&amp;#xA;from [TrustManagement].[Trust]" keyColumn="TrustCode" valueColumn="TrustId" /&gt;&lt;/lookup&gt;&lt;/lookups&gt;</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.LookupPlus, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Get FactLoan\Lookup Plus.Connections[Connection1]"
+                  connectionManagerID="Package.ConnectionManagers[mssql.SFM_DAL_CLO]"
+                  connectionManagerRefId="Package.ConnectionManagers[mssql.SFM_DAL_CLO]"
+                  description="mssql.SFM_DAL_CLO"
+                  name="Connection1" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Get FactLoan\Lookup Plus.Inputs[Input]"
+                  name="Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Get FactLoan\Lookup Plus.Inputs[Input].Columns[TrustCode]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="TrustCode"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[TrustCode]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Get FactLoan\Lookup Plus.Outputs[Output]"
+                  name="Output"
+                  synchronousInputId="Package\Get FactLoan\Lookup Plus.Inputs[Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Lookup Plus.Outputs[Output].Columns[TrustId]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\Lookup Plus.Outputs[Output].Columns[TrustId]"
+                      name="TrustId" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Get FactLoan\Merge Join"
+              componentClassID="Microsoft.MergeJoin"
+              contactInfo="Merge Join;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Combine two sorted data flows into one using the FULL, LEFT, or INNER join. We recommend this transformation when data flows can be sorted at their sources."
+              name="Merge Join"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the type of join to perform."
+                  name="JoinType"
+                  typeConverter="JoinType">2</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the number of columns in the ordering key."
+                  name="NumKeyColumns">1</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the null values are treated as equal values."
+                  name="TreatNullsAsEqual">true</property>
+                <property
+                  dataType="System.Int32"
+                  description="Indicates the requested maximum buffers per input before blocking."
+                  name="MaxBuffersPerInput">5</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input]"
+                  hasSideEffects="true"
+                  name="Merge Join Left Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[LoanAccountNo]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="LoanAccountNo"
+                      cachedSortKeyPosition="1"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanAccountNo]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[DimReportingDateID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="DimReportingDateID"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[DimReportingDateID]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[CurrentRate]"
+                      cachedDataType="numeric"
+                      cachedName="CurrentRate"
+                      cachedPrecision="19"
+                      cachedScale="4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[CurrentRate]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[LoanStartDate]"
+                      cachedDataType="dbDate"
+                      cachedName="LoanStartDate"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanStartDate]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[LoanMaturityDate]"
+                      cachedDataType="dbDate"
+                      cachedName="LoanMaturityDate"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanMaturityDate]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[LoanEndDate]"
+                      cachedDataType="dbDate"
+                      cachedName="LoanEndDate"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanEndDate]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[ApprovalAmount]"
+                      cachedDataType="numeric"
+                      cachedName="ApprovalAmount"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[ApprovalAmount]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[CurrentPrincipalBalance]"
+                      cachedDataType="numeric"
+                      cachedName="CurrentPrincipalBalance"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[CurrentPrincipalBalance]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[ScheduledBalance]"
+                      cachedDataType="numeric"
+                      cachedName="ScheduledBalance"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[ScheduledBalance]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[ArrearsAmount]"
+                      cachedDataType="numeric"
+                      cachedName="ArrearsAmount"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[ArrearsAmount]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[ArrearsAmount1]"
+                      cachedDataType="numeric"
+                      cachedName="ArrearsAmount1"
+                      cachedPrecision="1"
+                      cachedScale="1"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[ArrearsAmount1]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[FeeOutstanding]"
+                      cachedDataType="numeric"
+                      cachedName="FeeOutstanding"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[FeeOutstanding]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[DaysInArrears]"
+                      cachedDataType="numeric"
+                      cachedName="DaysInArrears"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[DaysInArrears]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[LoanTerm]"
+                      cachedDataType="numeric"
+                      cachedName="LoanTerm"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanTerm]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[RemainingTerm]"
+                      cachedDataType="numeric"
+                      cachedName="RemainingTerm"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[RemainingTerm]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[TimesInArrears]"
+                      cachedDataType="i4"
+                      cachedName="TimesInArrears"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[TimesInArrears]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[HistoricalDaysInArrears]"
+                      cachedDataType="i4"
+                      cachedName="HistoricalDaysInArrears"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[HistoricalDaysInArrears]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[MaxDaysInArrears]"
+                      cachedDataType="i4"
+                      cachedName="MaxDaysInArrears"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[MaxDaysInArrears]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[TrustCode]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="TrustCode"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[TrustCode]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[LoanStatusCode]"
+                      cachedDataType="wstr"
+                      cachedLength="5"
+                      cachedName="LoanStatusCode"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanStatusCode]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[DataLineageId]"
+                      cachedDataType="guid"
+                      cachedName="DataLineageId"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[DataLineageId]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[UserAddress]"
+                      cachedDataType="wstr"
+                      cachedLength="20"
+                      cachedName="UserAddress"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[UserAddress]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[UserStatus]"
+                      cachedDataType="i4"
+                      cachedName="UserStatus"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[UserStatus]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+                <input
+                  refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Right Input]"
+                  hasSideEffects="true"
+                  name="Merge Join Right Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Right Input].Columns[AccountNo]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="AccountNo"
+                      cachedSortKeyPosition="1"
+                      lineageId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Output].Columns[AccountNo]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Right Input].Columns[DimLoanID]"
+                      cachedDataType="i4"
+                      cachedName="DimLoanID"
+                      lineageId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Output].Columns[DimLoanID]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output]"
+                  isSorted="true"
+                  name="Merge Join Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[DimReportingDateID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[DimReportingDateID]"
+                      name="DimReportingDateID">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[DimReportingDateID]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanAccountNo]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanAccountNo]"
+                      name="LoanAccountNo"
+                      sortKeyPosition="1">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[LoanAccountNo]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[CurrentRate]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[CurrentRate]"
+                      name="CurrentRate"
+                      precision="19"
+                      scale="4">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[CurrentRate]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanStartDate]"
+                      dataType="dbDate"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanStartDate]"
+                      name="LoanStartDate">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[LoanStartDate]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanMaturityDate]"
+                      dataType="dbDate"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanMaturityDate]"
+                      name="LoanMaturityDate">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[LoanMaturityDate]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanEndDate]"
+                      dataType="dbDate"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanEndDate]"
+                      name="LoanEndDate">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[LoanEndDate]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[ApprovalAmount]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[ApprovalAmount]"
+                      name="ApprovalAmount"
+                      precision="15"
+                      scale="4">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[ApprovalAmount]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[CurrentPrincipalBalance]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[CurrentPrincipalBalance]"
+                      name="CurrentPrincipalBalance"
+                      precision="15"
+                      scale="4">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[CurrentPrincipalBalance]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[ScheduledBalance]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[ScheduledBalance]"
+                      name="ScheduledBalance"
+                      precision="15"
+                      scale="4">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[ScheduledBalance]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[ArrearsAmount]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[ArrearsAmount]"
+                      name="ArrearsAmount"
+                      precision="15"
+                      scale="4">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[ArrearsAmount]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[ArrearsAmount1]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[ArrearsAmount1]"
+                      name="ArrearsAmount1"
+                      precision="1"
+                      scale="1">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[ArrearsAmount1]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[FeeOutstanding]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[FeeOutstanding]"
+                      name="FeeOutstanding"
+                      precision="15"
+                      scale="4">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[FeeOutstanding]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[DaysInArrears]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[DaysInArrears]"
+                      name="DaysInArrears"
+                      precision="15"
+                      scale="4">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[DaysInArrears]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanTerm]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanTerm]"
+                      name="LoanTerm"
+                      precision="15"
+                      scale="4">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[LoanTerm]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[RemainingTerm]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[RemainingTerm]"
+                      name="RemainingTerm"
+                      precision="15"
+                      scale="4">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[RemainingTerm]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[TimesInArrears]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[TimesInArrears]"
+                      name="TimesInArrears">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[TimesInArrears]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[HistoricalDaysInArrears]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[HistoricalDaysInArrears]"
+                      name="HistoricalDaysInArrears">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[HistoricalDaysInArrears]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[MaxDaysInArrears]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[MaxDaysInArrears]"
+                      name="MaxDaysInArrears">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[MaxDaysInArrears]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[TrustCode]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[TrustCode]"
+                      name="TrustCode">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[TrustCode]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanStatusCode]"
+                      dataType="wstr"
+                      length="5"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanStatusCode]"
+                      name="LoanStatusCode">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[LoanStatusCode]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[DataLineageId]"
+                      dataType="guid"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[DataLineageId]"
+                      name="DataLineageId">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[DataLineageId]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[UserAddress]"
+                      dataType="wstr"
+                      length="20"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[UserAddress]"
+                      name="UserAddress">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[UserAddress]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[UserStatus]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[UserStatus]"
+                      name="UserStatus">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input].Columns[UserStatus]}</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[DimLoanID]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[DimLoanID]"
+                      name="DimLoanID">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="The input column associated with this output column"
+                          name="InputColumnID">#{Package\Get FactLoan\Merge Join.Inputs[Merge Join Right Input].Columns[DimLoanID]}</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Get FactLoan\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[tblFactLoan]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Get FactLoan\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[mssql.SFM_DAL_CLO]"
+                  connectionManagerRefId="Package.ConnectionManagers[mssql.SFM_DAL_CLO]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DimLoanID]"
+                      cachedDataType="i4"
+                      cachedName="DimLoanID"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimLoanID]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[DimLoanID]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DimReportingDateID]"
+                      cachedCodepage="1252"
+                      cachedDataType="str"
+                      cachedLength="20"
+                      cachedName="DimReportingDateID"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimReportingDateID]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[DimReportingDateID]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CurrentRate]"
+                      cachedDataType="numeric"
+                      cachedName="CurrentRate"
+                      cachedPrecision="19"
+                      cachedScale="4"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CurrentRate]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[CurrentRate]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanStartDate]"
+                      cachedDataType="dbDate"
+                      cachedName="LoanStartDate"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanStartDate]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanStartDate]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanMaturityDate]"
+                      cachedDataType="dbDate"
+                      cachedName="LoanMaturityDate"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanMaturityDate]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanMaturityDate]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ApprovalAmount]"
+                      cachedDataType="numeric"
+                      cachedName="ApprovalAmount"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ApprovalAmount]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[ApprovalAmount]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CurrentPrincipalBalance]"
+                      cachedDataType="numeric"
+                      cachedName="CurrentPrincipalBalance"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CurrentPrincipalBalance]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[CurrentPrincipalBalance]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ScheduledBalance]"
+                      cachedDataType="numeric"
+                      cachedName="ScheduledBalance"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ScheduledBalance]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[ScheduledBalance]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ArrearsAmount]"
+                      cachedDataType="numeric"
+                      cachedName="ArrearsAmount"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsAmount]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[ArrearsAmount]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ArrearsAmount1]"
+                      cachedDataType="numeric"
+                      cachedName="ArrearsAmount1"
+                      cachedPrecision="1"
+                      cachedScale="1"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsAmount1]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[ArrearsAmount1]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[FeeOutstanding]"
+                      cachedDataType="numeric"
+                      cachedName="FeeOutstanding"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FeeOutstanding]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[FeeOutstanding]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DaysInArrears]"
+                      cachedDataType="numeric"
+                      cachedName="DaysInArrears"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DaysInArrears]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[DaysInArrears]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanTerm]"
+                      cachedDataType="numeric"
+                      cachedName="LoanTerm"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanTerm]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanTerm]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[RemainingTerm]"
+                      cachedDataType="numeric"
+                      cachedName="RemainingTerm"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RemainingTerm]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[RemainingTerm]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TimesInArrears]"
+                      cachedDataType="i4"
+                      cachedName="TimesInArrears"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TimesInArrears]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[TimesInArrears]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[HistoricalDaysInArrears]"
+                      cachedDataType="i4"
+                      cachedName="HistoricalDaysInArrears"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[HistoricalDaysInArrears]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[HistoricalDaysInArrears]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MaxDaysInArrears]"
+                      cachedDataType="i4"
+                      cachedName="MaxDaysInArrears"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MaxDaysInArrears]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[MaxDaysInArrears]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanStatusCode]"
+                      cachedDataType="wstr"
+                      cachedLength="5"
+                      cachedName="LoanStatusCode"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanStatusCode]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanStatusCode]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DataLineageId]"
+                      cachedDataType="guid"
+                      cachedName="DataLineageId"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DataLineageId]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[DataLineageId]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TrustCode]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="TrustCode"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TrustID]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[TrustCode]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanEndDate]"
+                      cachedDataType="dbDate"
+                      cachedName="LoanEndDate"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanCloseDate]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[LoanEndDate]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DataSourceID]"
+                      cachedDataType="i4"
+                      cachedName="DataSourceID"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DataSourceID]"
+                      lineageId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output].Columns[DataSourceID]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of LoanAccountNo]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="Copy of LoanAccountNo"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AccountNo]"
+                      lineageId="Package\Get FactLoan\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of LoanAccountNo]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DimOrganisationID]"
+                      cachedDataType="wstr"
+                      cachedLength="1"
+                      cachedName="DimOrganisationID"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimOrganisationID]"
+                      lineageId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationID]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[OrganisationCode]"
+                      cachedDataType="wstr"
+                      cachedLength="2"
+                      cachedName="OrganisationCode"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OrganisationCode]"
+                      lineageId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[BusinessDate]"
+                      cachedDataType="wstr"
+                      cachedLength="10"
+                      cachedName="BusinessDate"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ReportingDate]"
+                      lineageId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output].Columns[BusinessDate]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TrustId]"
+                      cachedDataType="i4"
+                      cachedName="TrustId"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimTrustID]"
+                      lineageId="Package\Get FactLoan\Lookup Plus.Outputs[Output].Columns[TrustId]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[UserAddress]"
+                      cachedDataType="wstr"
+                      cachedLength="20"
+                      cachedName="UserAddress"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[UserAddress]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[UserAddress]" />
+                    <inputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[UserStatus]"
+                      cachedDataType="i4"
+                      cachedName="UserStatus"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[UserStatus]"
+                      lineageId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output].Columns[UserStatus]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AccountNo]"
+                      dataType="wstr"
+                      length="100"
+                      name="AccountNo" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CardNo]"
+                      dataType="wstr"
+                      length="100"
+                      name="CardNo" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimLoanID]"
+                      dataType="i4"
+                      name="DimLoanID" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TrustID]"
+                      dataType="wstr"
+                      length="50"
+                      name="TrustID" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimTrustID]"
+                      dataType="i4"
+                      name="DimTrustID" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DataSourceID]"
+                      dataType="i4"
+                      name="DataSourceID" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimDataSourceID]"
+                      dataType="i4"
+                      name="DimDataSourceID" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OrganisationCode]"
+                      dataType="wstr"
+                      length="3"
+                      name="OrganisationCode" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimOrganisationID]"
+                      dataType="i4"
+                      name="DimOrganisationID" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ReportingDate]"
+                      dataType="dbDate"
+                      name="ReportingDate" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimReportingDateID]"
+                      dataType="i4"
+                      name="DimReportingDateID" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanCloseDate]"
+                      dataType="dbTimeStamp"
+                      name="LoanCloseDate" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimLoanCloseDateID]"
+                      dataType="i4"
+                      name="DimLoanCloseDateID" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanMaturityDate]"
+                      dataType="dbTimeStamp"
+                      name="LoanMaturityDate" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimLoanMaturityDateID]"
+                      dataType="i4"
+                      name="DimLoanMaturityDateID" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanStartDate]"
+                      dataType="dbTimeStamp"
+                      name="LoanStartDate" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimLoanStartDateID]"
+                      dataType="i4"
+                      name="DimLoanStartDateID" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ApprovalAmount]"
+                      dataType="numeric"
+                      name="ApprovalAmount"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CurrentPrincipalBalance]"
+                      dataType="numeric"
+                      name="CurrentPrincipalBalance"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CurrentRate]"
+                      dataType="numeric"
+                      name="CurrentRate"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DaysInArrears]"
+                      dataType="numeric"
+                      name="DaysInArrears"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InterestDaysInArrears]"
+                      dataType="numeric"
+                      name="InterestDaysInArrears"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RemainingTerm]"
+                      dataType="numeric"
+                      name="RemainingTerm"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WeightedOriginalTerm]"
+                      dataType="numeric"
+                      name="WeightedOriginalTerm"
+                      precision="20"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WeightedCurrentRate]"
+                      dataType="numeric"
+                      name="WeightedCurrentRate"
+                      precision="20"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WeightedSeasoning]"
+                      dataType="numeric"
+                      name="WeightedSeasoning"
+                      precision="20"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[WeightedTermToMaturity]"
+                      dataType="numeric"
+                      name="WeightedTermToMaturity"
+                      precision="20"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ScheduledBalance]"
+                      dataType="numeric"
+                      name="ScheduledBalance"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Seasoning]"
+                      dataType="numeric"
+                      name="Seasoning"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TermtoMaturity]"
+                      dataType="numeric"
+                      name="TermtoMaturity"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DataLineageId]"
+                      dataType="guid"
+                      name="DataLineageId" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DateCreated]"
+                      dataType="dbTimeStamp"
+                      name="DateCreated" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsAmount]"
+                      dataType="numeric"
+                      name="ArrearsAmount"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsAmount1]"
+                      dataType="numeric"
+                      name="ArrearsAmount1"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsAmount2]"
+                      dataType="numeric"
+                      name="ArrearsAmount2"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsInterestInBalanceSheet]"
+                      dataType="numeric"
+                      name="ArrearsInterestInBalanceSheet"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsInterestOutOfBalanceSheet]"
+                      dataType="numeric"
+                      name="ArrearsInterestOutOfBalanceSheet"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsPenaltyBalance]"
+                      dataType="numeric"
+                      name="ArrearsPenaltyBalance"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CompoundInterestBalance]"
+                      dataType="numeric"
+                      name="CompoundInterestBalance"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanTerm]"
+                      dataType="numeric"
+                      name="LoanTerm"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FeeOutstanding]"
+                      dataType="numeric"
+                      name="FeeOutstanding"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FormalitiesChargeRate]"
+                      dataType="numeric"
+                      name="FormalitiesChargeRate"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ServiceChargeRate]"
+                      dataType="numeric"
+                      name="ServiceChargeRate"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanStatusCode]"
+                      dataType="wstr"
+                      length="50"
+                      name="LoanStatusCode" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TimesInArrears]"
+                      dataType="i4"
+                      name="TimesInArrears" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[HistoricalDaysInArrears]"
+                      dataType="i4"
+                      name="HistoricalDaysInArrears" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MaxDaysInArrears]"
+                      dataType="i4"
+                      name="MaxDaysInArrears" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[UserStatus]"
+                      dataType="i4"
+                      name="UserStatus" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[UserAddress]"
+                      dataType="wstr"
+                      length="255"
+                      name="UserAddress" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Get FactLoan\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Get FactLoan\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">EXEC [dbo].[usp_GetFactLoan_JDBT]   '2016-05-05'</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::V_GetFactLoanStatement</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Get FactLoan\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[mssql.SFM_Staging]"
+                  connectionManagerRefId="Package.ConnectionManagers[mssql.SFM_Staging]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output]"
+                  isSorted="true"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[DimReportingDateID]"
+                      codePage="1252"
+                      dataType="str"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[DimReportingDateID]"
+                      length="20"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[DimReportingDateID]"
+                      name="DimReportingDateID"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanAccountNo]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanAccountNo]"
+                      length="50"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanAccountNo]"
+                      name="LoanAccountNo"
+                      sortKeyPosition="1"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[CurrentRate]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[CurrentRate]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[CurrentRate]"
+                      name="CurrentRate"
+                      precision="19"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanStartDate]"
+                      dataType="dbDate"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanStartDate]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanStartDate]"
+                      name="LoanStartDate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanMaturityDate]"
+                      dataType="dbDate"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanMaturityDate]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanMaturityDate]"
+                      name="LoanMaturityDate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanEndDate]"
+                      dataType="dbDate"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanEndDate]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanEndDate]"
+                      name="LoanEndDate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[ApprovalAmount]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ApprovalAmount]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[ApprovalAmount]"
+                      name="ApprovalAmount"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[CurrentPrincipalBalance]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[CurrentPrincipalBalance]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[CurrentPrincipalBalance]"
+                      name="CurrentPrincipalBalance"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[ScheduledBalance]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ScheduledBalance]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[ScheduledBalance]"
+                      name="ScheduledBalance"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[ArrearsAmount]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ArrearsAmount]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[ArrearsAmount]"
+                      name="ArrearsAmount"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[ArrearsAmount1]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ArrearsAmount1]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[ArrearsAmount1]"
+                      name="ArrearsAmount1"
+                      precision="1"
+                      scale="1"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[FeeOutstanding]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[FeeOutstanding]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[FeeOutstanding]"
+                      name="FeeOutstanding"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[DaysInArrears]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[DaysInArrears]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[DaysInArrears]"
+                      name="DaysInArrears"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanTerm]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanTerm]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanTerm]"
+                      name="LoanTerm"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[RemainingTerm]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[RemainingTerm]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[RemainingTerm]"
+                      name="RemainingTerm"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[TimesInArrears]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[TimesInArrears]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[TimesInArrears]"
+                      name="TimesInArrears"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[HistoricalDaysInArrears]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[HistoricalDaysInArrears]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[HistoricalDaysInArrears]"
+                      name="HistoricalDaysInArrears"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[MaxDaysInArrears]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[MaxDaysInArrears]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[MaxDaysInArrears]"
+                      name="MaxDaysInArrears"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[TrustCode]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[TrustCode]"
+                      length="50"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[TrustCode]"
+                      name="TrustCode"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanStatusCode]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanStatusCode]"
+                      length="5"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanStatusCode]"
+                      name="LoanStatusCode"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[DataLineageId]"
+                      dataType="guid"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[DataLineageId]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[DataLineageId]"
+                      name="DataLineageId"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[UserAddress]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[UserAddress]"
+                      length="20"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[UserAddress]"
+                      name="UserAddress"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[UserStatus]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[UserStatus]"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].Columns[UserStatus]"
+                      name="UserStatus"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[DimReportingDateID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      name="DimReportingDateID" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanAccountNo]"
+                      dataType="wstr"
+                      length="50"
+                      name="LoanAccountNo" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[CurrentRate]"
+                      dataType="numeric"
+                      name="CurrentRate"
+                      precision="19"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanStartDate]"
+                      dataType="dbDate"
+                      name="LoanStartDate" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanMaturityDate]"
+                      dataType="dbDate"
+                      name="LoanMaturityDate" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanEndDate]"
+                      dataType="dbDate"
+                      name="LoanEndDate" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ApprovalAmount]"
+                      dataType="numeric"
+                      name="ApprovalAmount"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[CurrentPrincipalBalance]"
+                      dataType="numeric"
+                      name="CurrentPrincipalBalance"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ScheduledBalance]"
+                      dataType="numeric"
+                      name="ScheduledBalance"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ArrearsAmount]"
+                      dataType="numeric"
+                      name="ArrearsAmount"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ArrearsAmount1]"
+                      dataType="numeric"
+                      name="ArrearsAmount1"
+                      precision="1"
+                      scale="1" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[FeeOutstanding]"
+                      dataType="numeric"
+                      name="FeeOutstanding"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[DaysInArrears]"
+                      dataType="numeric"
+                      name="DaysInArrears"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanTerm]"
+                      dataType="numeric"
+                      name="LoanTerm"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[RemainingTerm]"
+                      dataType="numeric"
+                      name="RemainingTerm"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[TimesInArrears]"
+                      dataType="i4"
+                      name="TimesInArrears" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[HistoricalDaysInArrears]"
+                      dataType="i4"
+                      name="HistoricalDaysInArrears" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[MaxDaysInArrears]"
+                      dataType="i4"
+                      name="MaxDaysInArrears" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[TrustCode]"
+                      dataType="wstr"
+                      length="50"
+                      name="TrustCode" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanStatusCode]"
+                      dataType="wstr"
+                      length="5"
+                      name="LoanStatusCode" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[DataLineageId]"
+                      dataType="guid"
+                      name="DataLineageId" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[UserAddress]"
+                      dataType="wstr"
+                      length="20"
+                      name="UserAddress" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[UserStatus]"
+                      dataType="i4"
+                      name="UserStatus" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[DimReportingDateID]"
+                      codePage="1252"
+                      dataType="str"
+                      length="20"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[DimReportingDateID]"
+                      name="DimReportingDateID" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanAccountNo]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanAccountNo]"
+                      name="LoanAccountNo" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[CurrentRate]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[CurrentRate]"
+                      name="CurrentRate"
+                      precision="19"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanStartDate]"
+                      dataType="dbDate"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanStartDate]"
+                      name="LoanStartDate" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanMaturityDate]"
+                      dataType="dbDate"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanMaturityDate]"
+                      name="LoanMaturityDate" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanEndDate]"
+                      dataType="dbDate"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanEndDate]"
+                      name="LoanEndDate" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ApprovalAmount]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ApprovalAmount]"
+                      name="ApprovalAmount"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[CurrentPrincipalBalance]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[CurrentPrincipalBalance]"
+                      name="CurrentPrincipalBalance"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ScheduledBalance]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ScheduledBalance]"
+                      name="ScheduledBalance"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ArrearsAmount]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ArrearsAmount]"
+                      name="ArrearsAmount"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ArrearsAmount1]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ArrearsAmount1]"
+                      name="ArrearsAmount1"
+                      precision="1"
+                      scale="1" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[FeeOutstanding]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[FeeOutstanding]"
+                      name="FeeOutstanding"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[DaysInArrears]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[DaysInArrears]"
+                      name="DaysInArrears"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanTerm]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanTerm]"
+                      name="LoanTerm"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[RemainingTerm]"
+                      dataType="numeric"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[RemainingTerm]"
+                      name="RemainingTerm"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[TimesInArrears]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[TimesInArrears]"
+                      name="TimesInArrears" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[HistoricalDaysInArrears]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[HistoricalDaysInArrears]"
+                      name="HistoricalDaysInArrears" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[MaxDaysInArrears]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[MaxDaysInArrears]"
+                      name="MaxDaysInArrears" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[TrustCode]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[TrustCode]"
+                      name="TrustCode" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanStatusCode]"
+                      dataType="wstr"
+                      length="5"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanStatusCode]"
+                      name="LoanStatusCode" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[UserAddress]"
+                      dataType="wstr"
+                      length="20"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[UserAddress]"
+                      name="UserAddress" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[UserStatus]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[UserStatus]"
+                      name="UserStatus" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[DataLineageId]"
+                      dataType="guid"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[DataLineageId]"
+                      name="DataLineageId" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Get FactLoan\OLE DB Source 1"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source 1"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[tblDimLoan]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::Extract</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Get FactLoan\OLE DB Source 1.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[mssql.SFM_DAL_CLO]"
+                  connectionManagerRefId="Package.ConnectionManagers[mssql.SFM_DAL_CLO]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Output]"
+                  isSorted="true"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Output].Columns[AccountNo]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Output].ExternalColumns[AccountNo]"
+                      length="100"
+                      lineageId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Output].Columns[AccountNo]"
+                      name="AccountNo"
+                      sortKeyPosition="1"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Output].Columns[DimLoanID]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Output].ExternalColumns[DimLoanID]"
+                      lineageId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Output].Columns[DimLoanID]"
+                      name="DimLoanID"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Output].ExternalColumns[DimLoanID]"
+                      dataType="i4"
+                      name="DimLoanID" />
+                    <externalMetadataColumn
+                      refId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Output].ExternalColumns[AccountNo]"
+                      dataType="wstr"
+                      length="100"
+                      name="AccountNo" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[AccountNo]"
+                      dataType="wstr"
+                      length="100"
+                      lineageId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[AccountNo]"
+                      name="AccountNo" />
+                    <outputColumn
+                      refId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[DimLoanID]"
+                      dataType="i4"
+                      lineageId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[DimLoanID]"
+                      name="DimLoanID" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Get FactLoan.Paths[Data Conversion Output]"
+              endId="Package\Get FactLoan\Lookup Plus.Inputs[Input]"
+              name="Data Conversion Output"
+              startId="Package\Get FactLoan\Data Conversion.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\Get FactLoan.Paths[Derived Column Output]"
+              endId="Package\Get FactLoan\Data Conversion.Inputs[Data Conversion Input]"
+              name="Derived Column Output"
+              startId="Package\Get FactLoan\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\Get FactLoan.Paths[Merge Join Output]"
+              endId="Package\Get FactLoan\Derived Column.Inputs[Derived Column Input]"
+              name="Merge Join Output"
+              startId="Package\Get FactLoan\Merge Join.Outputs[Merge Join Output]" />
+            <path
+              refId="Package\Get FactLoan.Paths[OLE DB Source Output]"
+              endId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Left Input]"
+              name="OLE DB Source Output"
+              startId="Package\Get FactLoan\OLE DB Source.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\Get FactLoan.Paths[OLE DB Source Output1]"
+              endId="Package\Get FactLoan\Merge Join.Inputs[Merge Join Right Input]"
+              name="OLE DB Source Output"
+              startId="Package\Get FactLoan\OLE DB Source 1.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\Get FactLoan.Paths[Output]"
+              endId="Package\Get FactLoan\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Output"
+              startId="Package\Get FactLoan\Lookup Plus.Outputs[Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\update FactDates"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{95337A85-A88E-4D0A-B743-B98B92E20E21}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="update FactDates"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{95B74DDD-F7A2-4870-AE8E-88DB25499343}"
+          SQLTask:SqlStatementSource="declare @DimReportingDate date =?&#xA;declare @DimOrganisationID int =?&#xA;&#xA;if(@DimReportingDate not in (select (CONVERT(varchar(20),DimReportingDateID,112)) from [dbo].[tblFactDates] &#xA;where [DimOrganisationId]=@DimOrganisationID))&#xA;begin&#xA;&#x9;insert into [dbo].[tblFactDates]&#xA;&#x9;values(@DimReportingDate,cast(CONVERT(varchar(20),@DimReportingDate,112) as int),@DimOrganisationID)&#xA;end" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@BusinessDate"
+            SQLTask:DtsVariableName="User::BusinessDate"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="7"
+            SQLTask:ParameterSize="0" />
+          <SQLTask:ParameterBinding
+            SQLTask:ParameterName="@OrganisationId"
+            SQLTask:DtsVariableName="User::OrganisationId"
+            SQLTask:ParameterDirection="Input"
+            SQLTask:DataType="3"
+            SQLTask:ParameterSize="1" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 10]"
+      DTS:CreationName=""
+      DTS:DTSID="{9D481A15-3472-403B-91DD-FA11B24153EE}"
+      DTS:From="Package\Get FactLoan"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 10"
+      DTS:To="Package\Drop Index" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 11]"
+      DTS:CreationName=""
+      DTS:DTSID="{26209DCE-3503-42DD-88AA-535A93DFE711}"
+      DTS:From="Package\Drop Index"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 11"
+      DTS:To="Package\update FactDates" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 12]"
+      DTS:CreationName=""
+      DTS:DTSID="{59F0FAEB-F9D2-4A78-8BDB-D6F826B7D846}"
+      DTS:From="Package\update FactDates"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 12"
+      DTS:To="Package\FactLoanEnrichment" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 8]"
+      DTS:CreationName=""
+      DTS:DTSID="{7824948B-27B7-423A-9596-1B9B8148E63A}"
+      DTS:From="Package\Delete existing data"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 8"
+      DTS:To="Package\Create Index" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 9]"
+      DTS:CreationName=""
+      DTS:DTSID="{F797D984-8A82-40F7-835B-784409E1BBEC}"
+      DTS:From="Package\Create Index"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 9"
+      DTS:To="Package\Get FactLoan" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="140,42"
+          Id="Package\Create Index"
+          TopLeft="579,244" />
+        <NodeLayout
+          Size="236,44"
+          Id="Package\Delete existing data\Delete existing data from target table"
+          TopLeft="59.5,120" />
+        <NodeLayout
+          Size="208,42"
+          Id="Package\Delete existing data\Get OrganisationId by code"
+          TopLeft="78.5,28" />
+        <EdgeLayout
+          Id="Package\Delete existing data.PrecedenceConstraints[Constraint]"
+          TopLeft="180,70">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50"
+              Start="0,0"
+              End="0,42.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.924528301886795"
+          IsExpanded="True"
+          PanelSize="362,219"
+          Size="362,263"
+          Id="Package\Delete existing data"
+          TopLeft="113,31" />
+        <NodeLayout
+          Size="132,42"
+          Id="Package\Drop Index"
+          TopLeft="867,356" />
+        <NodeLayout
+          Size="174,42"
+          Id="Package\FactLoanEnrichment"
+          TopLeft="545,693" />
+        <NodeLayout
+          Size="141,42"
+          Id="Package\Get FactLoan"
+          TopLeft="781,279" />
+        <NodeLayout
+          Size="161,42"
+          Id="Package\update FactDates"
+          TopLeft="861,489" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 10]"
+          TopLeft="851.5,321">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="81.5,35"
+              Start="0,0"
+              End="81.5,27.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,13.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,13.5"
+                    Point2="0,17.5"
+                    Point3="4,17.5" />
+                  <mssgle:LineSegment
+                    End="77.5,17.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="77.5,17.5"
+                    Point2="81.5,17.5"
+                    Point3="81.5,21.5" />
+                  <mssgle:LineSegment
+                    End="81.5,27.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 11]"
+          TopLeft="933,398">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="8.5,91"
+              Start="0,0"
+              End="8.5,83.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,41.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,41.5"
+                    Point2="0,45.5"
+                    Point3="4,45.5" />
+                  <mssgle:LineSegment
+                    End="4.5,45.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="4.5,45.5"
+                    Point2="8.5,45.5"
+                    Point3="8.5,49.5" />
+                  <mssgle:LineSegment
+                    End="8.5,83.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 12]"
+          TopLeft="941.5,531">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-281.833333333333,162"
+              Start="0,0"
+              End="-281.833333333333,154.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,92.3143507972665" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,92.3143507972665"
+                    Point2="0,96.3143507972665"
+                    Point3="-4,96.3143507972665" />
+                  <mssgle:LineSegment
+                    End="-277.833333333333,96.3143507972665" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-277.833333333333,96.3143507972665"
+                    Point2="-281.833333333333,96.3143507972665"
+                    Point3="-281.833333333333,100.314350797266" />
+                  <mssgle:LineSegment
+                    End="-281.833333333333,154.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 8]"
+          TopLeft="475,162.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="104,102.5"
+              Start="0,0"
+              End="96.5,102.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="48,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="48,0"
+                    Point2="52,0"
+                    Point3="52,4" />
+                  <mssgle:LineSegment
+                    End="52,98.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="52,98.5"
+                    Point2="52,102.5"
+                    Point3="56,102.5" />
+                  <mssgle:LineSegment
+                    End="96.5,102.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 9]"
+          TopLeft="719,265">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="62,35"
+              Start="0,0"
+              End="54.5,35">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="27,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="27,0"
+                    Point2="31,0"
+                    Point3="31,4" />
+                  <mssgle:LineSegment
+                    End="31,31" />
+                  <mssgle:CubicBezierSegment
+                    Point1="31,31"
+                    Point2="31,35"
+                    Point3="35,35" />
+                  <mssgle:LineSegment
+                    End="54.5,35" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Get FactLoan">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="171,42"
+          Id="Package\Get FactLoan\OLE DB Destination"
+          TopLeft="882,124" />
+        <NodeLayout
+          Size="135,42"
+          Id="Package\Get FactLoan\Lookup Plus"
+          TopLeft="751,213" />
+        <NodeLayout
+          Size="154,42"
+          Id="Package\Get FactLoan\Derived Column"
+          TopLeft="668,286" />
+        <NodeLayout
+          Size="150,42"
+          Id="Package\Get FactLoan\OLE DB Source"
+          TopLeft="319,51" />
+        <NodeLayout
+          Size="159,42"
+          Id="Package\Get FactLoan\OLE DB Source 1"
+          TopLeft="563,47" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\Get FactLoan\Data Conversion"
+          TopLeft="918,274" />
+        <EdgeLayout
+          Id="Package\Get FactLoan.Paths[Output]"
+          TopLeft="818.5,213">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="149,-47"
+              Start="0,0"
+              End="149,-39.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-19.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-19.5"
+                    Point2="0,-23.5"
+                    Point3="4,-23.5" />
+                  <mssgle:LineSegment
+                    End="145,-23.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="145,-23.5"
+                    Point2="149,-23.5"
+                    Point3="149,-27.5" />
+                  <mssgle:LineSegment
+                    End="149,-39.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Get FactLoan.Paths[Derived Column Output]"
+          TopLeft="822,307">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="96,-12"
+              Start="0,0"
+              End="88.5,-12">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="44,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="44,0"
+                    Point2="48,0"
+                    Point3="48,-4" />
+                  <mssgle:LineSegment
+                    End="48,-8" />
+                  <mssgle:CubicBezierSegment
+                    Point1="48,-8"
+                    Point2="48,-12"
+                    Point3="52,-12" />
+                  <mssgle:LineSegment
+                    End="88.5,-12" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Get FactLoan.Paths[Data Conversion Output]"
+          TopLeft="918,289.333333333333">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-32,-55.3333333333333"
+              Start="0,0"
+              End="-24.5,-55.3333333333333">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-9.50458715596329,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-9.50458715596329,0"
+                    Point2="-13.5045871559633,0"
+                    Point3="-13.5045871559633,-4" />
+                  <mssgle:LineSegment
+                    End="-13.5045871559633,-51.3333333333333" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-13.5045871559633,-51.3333333333333"
+                    Point2="-13.5045871559633,-55.3333333333333"
+                    Point3="-17.5045871559633,-55.3333333333333" />
+                  <mssgle:LineSegment
+                    End="-24.5,-55.3333333333333" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="130,42"
+          Id="Package\Get FactLoan\Merge Join"
+          TopLeft="507,254" />
+        <EdgeLayout
+          Id="Package\Get FactLoan.Paths[OLE DB Source Output]"
+          TopLeft="394,93">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="178,161"
+              Start="0,0"
+              End="178,153.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,76.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,76.5"
+                    Point2="0,80.5"
+                    Point3="4,80.5" />
+                  <mssgle:LineSegment
+                    End="174,80.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="174,80.5"
+                    Point2="178,80.5"
+                    Point3="178,84.5" />
+                  <mssgle:LineSegment
+                    End="178,153.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Get FactLoan.Paths[OLE DB Source Output1]"
+          TopLeft="642.5,89">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-50.1666666666666,165"
+              Start="0,0"
+              End="-50.1666666666666,157.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,93.7963525835867" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,93.7963525835867"
+                    Point2="0,97.7963525835867"
+                    Point3="-4,97.7963525835867" />
+                  <mssgle:LineSegment
+                    End="-46.1666666666666,97.7963525835867" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-46.1666666666666,97.7963525835867"
+                    Point2="-50.1666666666666,97.7963525835867"
+                    Point3="-50.1666666666666,101.796352583587" />
+                  <mssgle:LineSegment
+                    End="-50.1666666666666,157.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Get FactLoan.Paths[Merge Join Output]"
+          TopLeft="637,275">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="31,32"
+              Start="0,0"
+              End="23.5,32">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="11.5,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="11.5,0"
+                    Point2="15.5,0"
+                    Point3="15.5,4" />
+                  <mssgle:LineSegment
+                    End="15.5,28" />
+                  <mssgle:CubicBezierSegment
+                    Point1="15.5,28"
+                    Point2="15.5,32"
+                    Point3="19.5,32" />
+                  <mssgle:LineSegment
+                    End="23.5,32" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Get FactLoan\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Get FactLoan\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Get FactLoan\OLE DB Source 1">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

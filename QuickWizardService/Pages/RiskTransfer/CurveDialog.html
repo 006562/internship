@@ -1,0 +1,279 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <title>page1</title>
+    <link href="../../Contents/bootstrap.css" rel="stylesheet" />
+    <style type="text/css">
+        .fixed-table-loading { display: none; }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">Configuration Loading...</p>
+    </div>
+    <div id="page_main_container" class="main-dialog">
+        <div class="col-12 form-row form-horizontal" data-bind="foreach:Fields()">
+            <!--ko if: (UIType()=='Select')-->
+            <div class="col-6 form-row autoLayout-plugins">
+                <div class="form-group">
+                    <label data-bind="text:Text" class="col-5 control-label"></label>
+                    <div class="col-6">
+                        <select type="text" class="form-control" data-bind="attr:{id: Code}, foreach:Options()">
+                            <option data-bind="text:Text, attr: { value: Value}"></option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <!--/ko-->
+            <!--ko if: (UIType()=='Input')-->
+            <div class="col-6 form-row autoLayout-plugins">
+                <div class="form-group">
+                    <label data-bind="text:Text" class="col-5 control-label"></label>
+                    <div class="col-6">
+                        <input type="text" class="form-control" data-bind="attr:{id: Code, disabled: Disabled}, value: Value" />
+                    </div>
+                </div>
+            </div>
+            <!--/ko-->
+        </div>
+
+        <div class="form-save pull-right">
+            <button class="btn btn-primary" onclick="Clear()" data-bind="text: DisplayText.Clear"></button>
+            <button class="btn btn-primary" onclick="RefreshCurve()" data-bind="text: DisplayText.Refresh"></button>
+            <button class="btn btn-primary" onclick="Save()" data-bind="text: DisplayText.Save"></button>
+        </div>
+
+        <table class="table table-bordered" id="tblRates"></table>
+        <div id="divRatesChart" style="width:830px"></div>
+
+    </div>
+    <textarea id="textArea" rows="5" style="width:0px !important; height:0px !important; position:absolute; top:-100px; left:-100px;"></textarea>
+
+    <script src="../../Scripts/jquery.min.js"></script>
+    <script src="../../Scripts/App.Global.js"></script>
+    <script src="../../Scripts/knockout-3.4.0.js"></script>
+    <script src="../../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../../Scripts/jquery.cookie.js"></script>
+    <script src="../../Scripts/common.js"></script>
+    <script src="../../Scripts/highcharts.js"></script>
+    <script src="../../Scripts/highcharts_exporting.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap-table.min.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap-table-edit.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap-select.js"></script>
+    <script src="../../Scripts/asyncBoxDialog.js"></script>
+    <script>
+        var dataModel = {
+            'zh-CN': {
+                Fields: [
+                    {
+                        Text: '参数生成方式', Code: 'ArgsGenerateWay', UIType: 'Select', Value: '', Disabled: false
+                        , Options: [{ Text: '常数法', Value: 'Constant' }, { Text: '指数法', Value: 'Exponent' }]
+                    },
+                    { Text: '违约率', Code: 'SpecificRate', UIType: 'Input', Value: '', Disabled: true },
+                    { Text: '期数', Code: 'Periods', UIType: 'Input', Value: '6', Disabled: false }
+                ],
+                DisplayText: {
+                    Refresh: "刷新曲线", Save: "保存数据", PreCurve: '预估违约率曲线', Percent: '百分比(%)', Clear: '清除'
+                }
+            },
+            'en-US': {
+                Fields: [
+                    {
+                        Text: 'Parameter Build Mode', Code: 'ArgsGenerateWay', UIType: 'Select', Value: '', Disabled: false
+                        , Options: [{ Text: '', Value: '' }, { Text: 'Constant', Value: 'Constant' }, { Text: 'Exponent', Value: 'Exponent' }]
+                    },
+                    { Text: 'Default Rate', Code: 'SpecificRate', UIType: 'Input', Value: '', Disabled: true },
+                    { Text: 'Periods', Code: 'Periods', UIType: 'Input', Value: '6', Disabled: false }
+                ],
+                DisplayText: {
+                    Refresh: "Refresh Curve", Save: "Save Data", PreCurve: 'Prediction Default Curve', Percent: 'Percent(%)', Clear: 'Clear'
+                }
+            }
+        };
+        var viewModel;
+        var set;
+        var currentPeriod = 6;
+        var currentWay = '';
+        $(function () {
+            var rcvData = GSDialog.GetData();
+            if (!rcvData) { return; }
+
+            set = getLanguageSet();
+
+            var itemCode = rcvData.ItemCode;
+            var itemValue = rcvData.ItemValue;
+            if (itemCode == 'PP') {
+                dataModel[set].Fields[1].Text = (set == GlobalVariable.Language_CN) ? '早偿率' : 'Prepayment Rate';
+                dataModel[set].DisplayText.PreCurve = (set == GlobalVariable.Language_CN) ? '预估早偿率曲线' : 'Prediction Prepayment Curve';
+            }
+            dataModel[set].Fields[1].Value = itemValue;
+
+            viewModel = ko.mapping.fromJS(dataModel[set]);
+            ko.applyBindings(viewModel, $('#page_main_container').get(0));
+
+            currentPeriod = chartOperation.Init(itemValue, currentPeriod);
+            viewModel.Fields()[2].Value(currentPeriod);
+
+            $('#loading').fadeOut();
+        });
+
+        function RefreshCurve() {
+
+            var $period = $('#Periods');
+            if ($period.val() == '') {
+                $period.addClass('red-border');
+                return;
+            }
+            //$way.removeClass('red-border');
+            $period.removeClass('red-border');
+
+            var rateValue = '';
+            $way = $('#ArgsGenerateWay');
+            if (currentWay != $way.val() || currentPeriod != $period.val()) {
+                rateValue = $('#tblRates tbody tr td:first').text();
+
+                currentPeriod = chartOperation.Init(rateValue, $period.val(), $way.val());
+                currentWay = $way.val();
+            } else {
+                rateValue = [];
+                $('#tblRates tbody tr td').each(function () {
+                    rateValue.push($(this).text());
+                });
+                chartOperation.Init(rateValue.join(','), currentPeriod, currentWay);
+            }
+        }
+        function Save() {
+            var result = { isSave: true, data: $('#SpecificRate').val() }
+            GSDialog.Close(result);
+        }
+        function Clear() {
+            viewModel.Fields()[1].Disabled(false);
+            viewModel.Fields()[1].Value(0);
+            chartOperation.Init('0', currentPeriod);
+        }
+
+        var chartOperation = {
+            ChartData: [],
+            Periods: 0,
+
+            Init: function (rateValue, dftPeriods, way) {
+                this.Periods = dftPeriods;
+                this.ChartData = rateValue.split(',');
+
+                if (this.ChartData.length > 1) {//已保存数组
+                    this.Periods = this.ChartData.length;
+                } else {//尚未保存数组，仅为单个值
+                    this.DataFill(rateValue, way);
+                }
+
+                this.TableInit();
+                this.DrawChart();
+                $('#SpecificRate').val(this.ChartData.join(','));
+                return this.Periods;
+            }
+            , DataFill: function (rate, way) {
+                this.ChartData = [];
+                if (way == 'Exponent') {
+                    for (var i = 0; i < this.Periods; i++) {/*方法二：次方概率*/
+                        var localRate = (1 - Math.pow(1 - (rate / this.Periods), i + 1)).toFixed(3);
+                        this.ChartData.push(localRate);
+                    }
+                } else {
+                    for (var i = 0; i < this.Periods; i++) {/*方法一：衡定概率*/
+                        var localRate = parseFloat(rate).toFixed(3);
+                        this.ChartData.push(localRate);
+                    }
+                }
+            }
+            , TableInit: function () {
+                var tblThs = [];
+                var tblCol = {};
+
+                for (var i = 0; i < this.Periods; i++) {
+                    var fieldName = "ColumnValue_" + i;
+
+                    var th = { field: fieldName, title: i + 1, align: 'center' }
+                    tblThs.push(th);
+                    tblCol[fieldName] = this.ChartData[i];
+                }
+
+                $('#tblRates').bootstrapTable('destroy');
+                $('#tblRates').bootstrapTable({
+                    editable: true,//开启编辑模式
+                    clickToSelect: false,
+                    columns: tblThs,
+                    data: [tblCol]
+                });
+                //$('#tblRates').bootstrapTable("refresh");
+            }
+            , DrawChart: function () {
+                var self = this;
+                var cates = [];
+                var seriesData = [];
+                for (var i = 0; i < self.Periods; i++) {
+                    cates.push(i + 1);
+                    var y = parseFloat(self.ChartData[i]);
+                    seriesData.push(y)
+                }
+                $('#divRatesChart').highcharts({
+                    chart: { type: 'line' },
+                    title: { text: dataModel[set].DisplayText.PreCurve },
+                    subtitle: { text: '' },
+                    xAxis: { categories: cates },
+                    yAxis: { title: { text: dataModel[set].DisplayText.Percent } },
+                    tooltip: {
+                        enabled: false,
+                        formatter: function () {
+                            return '<b>' + this.series.name + '</b>' + this.x + ': ' + this.y;
+                        }
+                    },
+                    plotOptions: { line: { dataLabels: { enabled: true }, enableMouseTracking: false } },
+                    series: [{ name: ' ', data: seriesData }]
+                });
+            }
+        };
+
+        $(window).bind("keydown", function () { cellkeydown(event); });
+        function cellkeydown(event) {
+            if (event.ctrlKey && event.keyCode == 86) {
+                var $el = $(event.srcElement);
+                if ($el.parents('#tblRates').length < 1) {
+                    return;
+                }
+
+                var ss = document.getElementById("textArea");
+                ss.focus();
+                ss.select();
+                setTimeout("dealwithData()", 50);                
+            }
+        }
+        function dealwithData(event) {
+            var ss = document.getElementById("textArea");
+            ss.blur();            
+
+            var str = ss.value;
+            var rows = str.split(/[\n\f\r]/)
+            var rowCells;
+            if (rows && rows.length > 0) {
+                rowCells = rows[0].split(/[\t]/);
+            }
+            //for (i = 0; i < arr.length; i++) {
+            //    rowCells = arr[i].split(/[\t]/);
+            //}
+
+            if (rowCells && rowCells.length) {
+                $.each(rowCells, function (i, v) {
+                    var selector = '#tblRates .editable-select input[type="text"]:nth(' + i + ')';
+                    $(selector).val(v);
+                });
+            }
+        }
+    </script>
+</body>
+</html>

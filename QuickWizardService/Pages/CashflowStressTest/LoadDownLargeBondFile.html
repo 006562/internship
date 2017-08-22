@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>大额债权类资产下载文件</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<script src="js/jquery.min.js"></script>
+    <script src="js/App.Global.js"></script>
+    <link href="css/bootstrap.css" rel="stylesheet" />
+    
+    <script type="text/javascript">
+		var trustId=38;//getQueryString('tid');
+		var accountNo=getQueryString('ano');
+		$(function(){
+			
+			GetAssetFileList(trustId,accountNo,function(data){
+				var html='';
+				$.each(data,function(i,d){
+					html+='<tr><td>'+d.TrustCode+'</td><td>'+d.AccountNo+'</td><td>'+d.FileKind+'</td><td>'+
+					d.FileName+'</td><td>'+d.UploadTime+'</td><td><a href="/ProjectWizard/Files/AssetFileList/'+d.FileName+'">点击下载</a></td></tr>'
+				});
+				$("#LoadDownList").html(html);
+			});
+		
+		});
+		function GetAssetFileList(TrustId,AccountNo,callback){
+			var executeParam = { SPName: 'TrustManagement.usp_GetAssetFileList', SQLParams: [] };
+			executeParam.SQLParams.push({ Name: 'TrustId', Value: TrustId, DBType: 'int' });
+			executeParam.SQLParams.push({ Name: 'AccountNo', Value: AccountNo, DBType: 'string' });			
+			var serviceUrl = GlobalVariable.AppServiceUrl + 'CommonGet?exeParams=' + encodeURIComponent(JSON.stringify(executeParam));
+			$.ajax({
+            url: serviceUrl,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            success: function (data) {
+                console.log(data);
+                var json = jQuery.parseJSON(data);
+                callback(json);
+            },
+            error: function (data) {
+                alert('SaveAssetFileList Error !');
+            }
+			});
+		}
+		function getQueryString(name) {
+			var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+			var r = window.location.search.substr(1).match(reg);
+			if (r != null) return unescape(r[2]);
+			return null;
+		}
+        
+    </script>
+    <style>
+        .nominheight {
+            min-height: inherit !important;
+        }
+
+        .rowNoPadding {
+            padding: 5px 5px !important;
+            line-height: 1em !important;
+        }
+    </style>
+</head>
+<body>
+    <br />
+    <br />
+    <div >
+        <table class="table" >
+                    <tr>
+                        <th>专项计划标识</th>
+						<th>合同编号</th>
+						<th>文件类型</th>
+						<th>文件名</th>					
+						<th>上传时间</th>	
+						<th>操作</th>
+                    </tr>
+              </thead>
+             <tbody id="LoadDownList" >
+			
+				
+             </tbody>
+        </table>
+    </div> 
+</body>		
+</html>
+
+
+

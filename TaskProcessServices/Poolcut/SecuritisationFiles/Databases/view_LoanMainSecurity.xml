@@ -1,0 +1,47 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N''[dbo].[View_LoanMainSecurity]''))
+DROP VIEW [dbo].[View_LoanMainSecurity]
+'
+exec (@vchSQL)
+
+set @vchSQL ='CREATE VIEW [dbo].[View_LoanMainSecurity] 
+AS
+	Select	Distinct FCL.DimPoolID
+		, FCL.DimConsolidationID
+		, FCL.LTVPassNo
+		, FCL.DimLoanId
+		, ISNULL(CMS.DimSecurityId, 0) As DimSecurityId
+		, FC.ConsolidationDimTrustId
+	From		dbo.tblFactConsolidationLoan FCL (nolock)
+	Inner Join	dbo.tblFactConsolidation FC (nolock) On FC.DimConsolidationID = FCL.DimConsolidationId
+										   And FC.DimPoolId = FCL.DimPoolId
+										   And FC.LTVPassNo = FCL.LTVPassNo	
+	Left Join
+	(
+		Select	Distinct DimConsolidationID
+				, DimPoolId
+				, DimSecurityID
+				, LTVPassNo
+		From    dbo.tblFactConsolidationSecurity FCS (nolock)
+		Where SecurityRank = 1
+	)As CMS on CMS.DimPoolID = FCL.DimPoolID
+	   And CMS.LTVPassNo = FCL.LTVPassNo
+	   And CMS.DimConsolidationID = FCL.DimConsolidationID	
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

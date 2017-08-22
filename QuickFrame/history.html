@@ -1,0 +1,128 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="Scripts/jquery-ui.css" rel="stylesheet" />
+    <link href="Scripts/Kendo/styles/kendo.common-material.min.css" rel="stylesheet" />
+    <link href="Scripts/Kendo/styles/kendo.material.min.css" rel="stylesheet" /> 
+    <script src="Config/globalVariable.js"></script>
+    <script src="Scripts/jquery-1.7.2.min.js"></script>
+    <script src="Scripts/Kendo/js/kendo.all.min.js"></script>
+    <script src="Scripts/Kendo/js/kendo.culture.zh-CN.js"></script>
+    <script src="Scripts/Kendo/js/kendo.messages.zh-CN.js"></script>
+    <script src="Scripts/common.js"></script>
+    <script src="Scripts/kendoGridModel.js"></script>   
+    <script src="Scripts/roleOperate.js"></script> 
+    <script src="Scripts/permission.js"></script>
+    <style type="text/css">
+        html {
+            padding: 0;
+        }
+
+        body {
+            padding: 0;
+            margin: 0;
+            font: 12px/1.5 'Microsoft Yahei',tahoma,arial,\5b8b\4f53;
+        }
+
+        .div-nav {
+            height: 50px;
+            background-color: #293C4D;
+            font-family: PingFang SC, Lantinghei SC, Microsoft Yahei, Hiragino Sans GB, Microsoft Sans Serif, WenQuanYi Micro Hei, sans;
+        }
+        .schemaLink {
+            padding-left: 10px;
+            color: rgba(255, 255, 255, 0.5);
+            line-height:50px;
+            font-size: 16px;
+        }
+        a:hover {
+            cursor: pointer;
+            color: rgba(255,255,255,0.95);
+        }
+    </style>
+</head>
+<body>
+    <div  class="div-nav">
+        <a class="schemaLink" value="task">存续期管理</a>
+        <a class="schemaLink" value="consumerLoan">资产池中心</a>
+    </div>
+        <div id="grid"></div>
+</body>
+</html>
+<script type="text/javascript">
+    $(function () {
+        var                                             //声明变量
+            userName = RoleOperate.cookieName();
+            isAdmin = false;
+            filter = '';
+            schemaName = getQueryString("schemaName") ? getQueryString("schemaName") : 'task';
+            kendoGrid = new kendoGridModel(540);
+            TaskResultCodeTrans=function (result, SessionId) {
+                switch (result) {
+                    case "Failed":
+                        return addUrl("错误信息");
+                    case "Completed":
+                        return  addUrl("完成");
+                    case "ToBeContinued":
+                        return  addUrl("未完成");
+                    default:
+                        return result;
+                }
+                function addUrl(desc) {
+                    var viewPageUrl = 'detail.html?sessionId=' + SessionId+"&schemaName="+schemaName;
+                    var html = '<a href="' + viewPageUrl + '">'+desc+'</a>'
+                    return html;
+                }
+            }
+          
+            $(".schemaLink").click(function () {
+                schemaName = $(this).attr("value");
+                prepare();
+                kendoGrid.RunderGrid();
+            })        
+                var prepare = function () {
+                kendoGrid.Init({
+                    renderOptions: {
+                        columns: [
+                              { template: '#=SNO#', title: '编号', width: '7%', headerAttributes: { "class": "table-header-cell", style: "text-align: center" }, attributes: { "class": "table-cell", style: "text-align: center" } }
+                            , { field: "UserId", title: '操作用户', width: "15%", headerAttributes: { "class": "table-header-cell", style: "text-align: center" }, attributes: { "class": "table-cell", style: "text-align: center" } }
+                            , { field: "TaskCode", title: '任务代码', width: "24%", headerAttributes: { "class": "table-header-cell", style: "text-align: center" }, attributes: { "class": "table-cell", style: "text-align: center" } }
+                            , { field: "TaskDesc", title: '任务描述', width: "24%", headerAttributes: { "class": "table-header-cell", style: "text-align: center" }, attributes: { "class": "table-cell", style: "text-align: center" } }
+                            , { field: "StartTime", title: '开始时间', template: '#=StartTime?getStringDate(StartTime).dateFormat("yyyy-MM-dd  hh:mm:ss"):""#', width: "15%", headerAttributes: { "class": "table-header-cell", style: "text-align: center" }, attributes: { "class": "table-cell", style: "text-align: center" } }
+                            , { field: "SessionStatusDesc", title: '执行结果', template: '#=TaskResultCodeTrans(SessionStatusDesc,SessionId)#', width: "15%", headerAttributes: { "class": "table-header-cell", style: "text-align: center" }, attributes: { "class": "table-cell", style: "text-align: center" } }
+                        ]
+                    }
+                    , dataSourceOptions: {
+                          otherOptions: {
+                            orderby: "StartTime"
+                          , appDomain: schemaName
+                          , connConfig: "TaskProcess"
+                          , executeParamType: 'extend'
+                          , defaultfilter: filter
+                          , executeParam: function () {
+                          var result = {
+                              SPName: 'usp_GetSessionListWithPager', SQLParams: [
+                           ]
+                           };
+                           return result;
+                           }
+                         }
+                      }
+                    })
+                  }
+
+            RoleOperate.getRolesByUserName(userName, function (data) {  //检查用户是否是管理员
+            $.each(data, function (i,item) {
+                if (item.IsRoot) {                   
+                    isAdmin = true;
+                }
+            })
+            console.log("用户名称" + userName);
+            console.log("是否为管理员" + isAdmin);
+            filter = isAdmin ? null : 'and userid =' + "'" + userName + "'";
+            prepare();
+            kendoGrid.RunderGrid();
+        })
+   })
+</script>

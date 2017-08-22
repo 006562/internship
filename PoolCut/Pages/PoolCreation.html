@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>基础资产池</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+
+    <link href="../Contents/style.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="main">
+        <div class="form" id="AssetPoolCreationForm" style="border-top:1px solid #ededed;">
+            <div class="form-body default">
+                <div class="form-panel drop">
+                    <div class="col-12 form-group">
+                        <div class="col-3"><label>资产池名称：</label></div>
+                        <div class="col-9">
+                            <input type="text" id="txtPoolName" class="form-control" data-valid="required" />
+                        </div>
+                    </div>
+                    <div class="col-12 form-group">
+                        <div class="col-3"><label>针对机构：</label></div>
+                        <div class="col-9">
+                            <select class="form-control" id="OrganisationCode"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 form-group">
+                        <div class="col-3"><label>资产类型</label></div>
+                        <div class="col-9">
+                            <select class="form-control" id="AssetType"></select>
+                        </div>
+                    </div>
+
+                    <div class="col-12 form-group">
+                        <div class="col-3"><label>报告日期：</label></div>
+                        <div class="col-9">
+                            <input type="text" id="txtRDate" class="form-control date-plugins" data-valid="required date" />
+                        </div>
+                    </div>
+                    <div class="col-12 form-group">
+                        <div class="col-3"><label>专项计划</label></div>
+                        <div class="col-9">
+                            <select class="form-control" id="TrustId"></select>
+                        </div>
+                    </div>
+                    <div class="col-12 form-group" style="display:none">
+                        <div class="col-3"><label>资产池类型：</label></div>
+                        <div class="col-9">
+                            <select id="selPoolType" class="form-control">
+                                <option value="PoolBase">基础资产池</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-12 form-group" style="display:none">
+                        <div class="col-3"><label>创建方式：</label></div>
+                        <div class="col-9">
+                            <select id="selPoolCutType" class="form-control">
+                                <option value="New">创建新资产池</option>
+                                <option value="TopUp">创建循环结构资产池</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3 buttons pull-right">
+                    <button type="button" class="btn btn-primary" title="创建" onclick="CreatePool()">创建</button>
+                    <button type="button" class="btn btn-default" title="取消" onclick="CancelCreation()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/common.js"></script>
+    <script src="../Scripts/calendar.min.js"></script>
+    <script src="../UIFrame/js/gs-admin-2.pages.js"></script>
+    <script src="../Scripts/App.Global.js"></script>
+    <script src="../Scripts/PoolCutCommon.js"></script>
+    <script>
+        $(function () {
+            $('.date-plugins').date_input();
+            $('#AssetPoolCreationForm .form-control').change(function () {
+                CommonValidation.ValidControlValue($(this));
+            });
+
+            var executeParam = { SPName: 'dbo.usp_GetDimOrganisationID', SQLParams: [] };
+            var executeParams = encodeURIComponent(JSON.stringify(executeParam));
+            var serviceUrl = GlobalVariable.PoolCutServiceURL + 'CommonGet?connName=PoolCut_Database&exeParams=' + executeParams;
+            CallWCFSvc(serviceUrl, true, 'GET', function (data) {
+                var $sel = $('#OrganisationCode')
+                var options = '';
+                $.each(data, function (i, v) {
+                    options += '<option value="{0}">{1}</options>'.format(v.DimOrganisationID, v.OrganisationDesc);
+                });
+                $sel.append(options);
+            });
+			
+			var executeParam = { SPName: 'dbo.usp_GetDimAssetID', SQLParams: [] };
+            var executeParams = encodeURIComponent(JSON.stringify(executeParam));
+            var serviceUrl = GlobalVariable.PoolCutServiceURL + 'CommonGet?connName=PoolCut_Database&exeParams=' + executeParams;
+            CallWCFSvc(serviceUrl, true, 'GET', function (data) {
+                var $sel = $('#AssetType')
+                var options = '';
+                $.each(data, function (i, v) {
+                    options += '<option value="{0}">{1}</options>'.format(v.DimAssetTypeID, v.AssetTypeDesc);
+                });
+                $sel.append(options);
+            });
+
+            var executeParam = { SPName: 'TrustManagement.usp_GetTrusts', SQLParams: [] };
+            executeParam.SQLParams.push({ Name: 'language', Value: 'zh-cn', DBType: 'string' });
+            var executeParams = encodeURIComponent(JSON.stringify(executeParam));
+            var serviceUrl = GlobalVariable.PoolCutServiceURL + 'CommonGet?connName=PoolCut_Database&exeParams=' + executeParams;
+            CallWCFSvc(serviceUrl, true, 'GET', function (data) {
+                var $sel = $('#TrustId')
+                var options = '';
+                $.each(data, function (i, v) {
+                    options += '<option value="{0}">{1}</options>'.format(v.TrustId, v.TrustName);
+                });
+                $sel.append(options);
+            });
+
+        });
+        function CreatePool() {
+            var isFormFieldsAllValid = true;
+            $('#AssetPoolCreationForm .form-control').each(function () {
+                if (!CommonValidation.ValidControlValue($(this))) isFormFieldsAllValid = false;
+            });
+
+            if (!isFormFieldsAllValid)
+                return false;
+
+            var tpi = new parent.TaskProcessIndicatorHelper();
+
+            tpi.AddVariableItem('PoolName', $('#txtPoolName').val(), 'String', 1, 1, 1);
+            tpi.AddVariableItem('DimOrganisationId', $('#OrganisationCode').val(), 'String', 1, 1);
+			tpi.AddVariableItem('DimAssetTypeId', $('#AssetType').val(), 'String', 1, 1);
+            tpi.AddVariableItem('DimReportingDateId', $('#txtRDate').val().replace(/-/g, ''), 'String', 1);
+            tpi.AddVariableItem('PoolType', $('#selPoolType').val(), 'String', 1);
+            tpi.AddVariableItem('PoolCutTypeCode', $('#selPoolCutType').val(), 'String', 1);
+            tpi.AddVariableItem('SoldUnSoldTypeCode', 'OnlyUnsold', 'String', 1);
+            tpi.AddVariableItem('TargetTrust', '', 'String', 1);
+            tpi.AddVariableItem('SourceTrust', $('#TrustId').val(), 'String', 1);
+            tpi.AddVariableItem('UserName', '0#.w|dev\\gslocaladmin', 'String', 1);
+            tpi.AddVariableItem('Overlap', 'true', 'String', 1);
+            tpi.AddVariableItem('ConfigSqlConnection', 'Server=DAL_SEC;Database=DAL_SEC_PoolConfig;Trusted_Connection=True;', 'String', 1);
+
+            tpi.ShowIndicator('ConsumerLoan', 'ConsumerLoanPoolBaseInit');
+        }
+        function CancelCreation() {
+            GSDialog.Close(0);
+        }
+    </script>
+</body>
+</html>

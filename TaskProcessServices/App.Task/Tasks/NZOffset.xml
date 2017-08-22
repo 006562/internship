@@ -1,0 +1,37 @@
+﻿<Task>
+  <Action ActionCode="FileCopySPtoFS" ActionDisplayName="Move file from SP" FunctionName="RunSSIS" SequenceNo="1">
+    <Parameter Name="SSISPackagePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\App.Task\SSIS\FileCopySPtoFS.dtsx" DataType="String" Usage="Task" />
+    <Parameter Name="LogPath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\App.Task\Logs" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="SPFileLocationURL" SessionParameterName="SourceFileURL" Value="" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="TargetFileLocation" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\App.Task\Working" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="TargetFileName" SessionParameterName="" Value="NZOffset.txt" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="ActionMessage" SessionParameterName="" Value="" DataType="" String="" Usage="SSISPackageVariable" />
+  </Action>
+  <Action ActionCode="FileLoadToDB" ActionDisplayName="Load File to Working Table" FunctionName="RunSSIS" SequenceNo="2">
+    <Parameter Name="SSISPackagePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\App.Task\SSIS\Injection.OffsetIndicator.dtsx" DataType="String" Usage="Task" />
+    <Parameter Name="LogFilePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\App.Task\Logs" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="SourceFilePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\App.Task\Working\" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="SourceFileName" SessionParameterName="" Value="NZOffset.txt" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="SessionID" SessionParameterName="" Value="" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="OLEDBConnString_DAL_SEC" SessionParameterName="" Value="Data Source=DAL_SEC;Initial Catalog=DAL_SEC;Provider=SQLNCLI10.1;Integrated Security=SSPI;" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="C_TDM_Staging_DB" SessionParameterName="" Value="Data Source=TDM_Staging;Initial Catalog=TDM_Staging;Provider=SQLNCLI10.1;Integrated Security=SSPI;" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="DimReportingDateID" SessionParameterName="ReportingDate" Value="" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="DimOrganisationID" SessionParameterName="" Value="4" DataType="int" Usage="SSISPackageVariable" />
+    <Parameter Name="ActionMessage" SessionParameterName="" Value="" DataType="" String="" Usage="SSISPackageVariable" />
+  </Action>
+  <Action ActionCode="UpdateOffsetLoan" ActionDisplayName="Update Offset Loan Indicator" FunctionName="RunSP" SequenceNo="3">
+    <Parameter Name="SPName" SessionParameterName="" Value="usp_UpdateOffsetIndicator" DataType="String" Usage="Task" />
+    <Parameter Name="DimReportingDateID" SessionParameterName="ReportingDate" Value="" DataType="BigInt" Usage="SQLParameter" />
+    <Parameter Name="DimOrganisationID" SessionParameterName="" Value="4" DataType="BigInt" Usage="SQLParameter" />
+    <Parameter Name="ConnectionString" SessionParameterName="" Value="Data Source=DAL_SEC;Initial Catalog=DAL_SEC;Integrated Security=SSPI;" DataType="String" Usage="Task" />
+  </Action>
+  <Action ActionCode="GenerateReport" ActionDisplayName="GenerateReport" FunctionName="GenerateReport" SequenceNo="4">
+    <Parameter Name="ReportDefinitionPath" SessionParameterName="" Value="http://securitisation.tsydev.treasury.westpac.com.au/Trust%20Management%20Reports/Offset Indicator/Offset Indicator Report.rdl" DataType="string" Usage="Task" />
+    <Parameter Name="ReportFormat" SessionParameterName="" Value="PDF" DataType="string" Usage="Task" />
+    <Parameter Name="ReportName" SessionParameterName="" Value="OffSetIndicator" DataType="string" Usage="Task" />
+    <Parameter Name="DimOrganisationId" SessionParameterName="" Value="4" DataType="Int" Usage="ReportParameter" />
+    <Parameter Name="DimReportingDateId" SessionParameterName="ReportingDate" Value="" DataType="Int" Usage="ReportParameter" />
+    <Parameter Name="SharePointLibrarySiteURL" SessionParameterName="" Value="http://securitisation.tsydev.treasury.westpac.com.au/" DataType="string" Usage="Task" />
+    <Parameter Name="SharePointLibraryTitle" SessionParameterName="" Value="Scheduled Reports" DataType="string" Usage="Task" />
+  </Action>
+</Task>

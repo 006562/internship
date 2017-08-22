@@ -1,0 +1,103 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+
+    <title data-bind="text: PageTitle"></title>
+
+    <link rel="stylesheet" href="Contents/bootstrap.css" />
+    <link rel="stylesheet" href="Contents/model.css" />
+    <link rel="stylesheet" href="Scripts/jquery-ui.css" />
+
+    <script src="Scripts/jquery.min.js"></script>
+    <script src="/QuickFrame/Scripts/jquery.cookie.js"></script>
+    <script src="/QuickFrame/Scripts/roleOperate.js"></script>
+    <script src="Scripts/permission.js"></script>
+</head>
+<body>
+    <div class="page">
+        <div class="aside">
+            <div class="step-box">
+                <div class="step-head">
+                    <div class="step-menu"><i class="icon icon-list"></i></div>
+                    <h2><span data-bind="text: ModuleTitle"></span></h2>
+                </div>
+                <div class="step" data-bind="foreach: Steps">
+                    <a data-bind="attr: { class: ($index() == 0 ? 'active' : ''), itemIndex: $index(), pageCode: Code }" onclick="qwFrame.ChangeSetp(this)">
+                        <span class="no" data-bind="text: ($index()+1)"></span>
+                        <span class="flag"><i class="icon icon-right"></i></span>
+                        <h3 class="step-title"><span data-bind="text: Title"></span></h3>
+                        <p class="step-text"><span data-bind="text: Description"></span></p>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <!--ko if: ShowRibbon-->
+        <div class="ribbon">
+            <div class="frame-stepswitch">
+                <button type="button" id="btnBack" onclick="qwFrame.StepNext(-1)" class="btn btn-default" disabled="disabled">
+                    <i class="icon icon-back"></i><span data-bind="text:Back"></span>
+                </button>
+                <button type="button" id="btnNext" onclick="qwFrame.StepNext(1)" class="btn btn-primary">
+                    <span data-bind="text:Next"></span><i class="icon icon-right"></i>
+                </button>
+            </div>
+            <div class="frame-columns">
+                <button type="button" class="btn btn-active" onclick="qwFrame.ChangeLayoutsColumns(this, 2)">
+                    <span class="bs bs2"></span>
+                    <span class="bs bs2"></span>
+                </button>
+                <button type="button" class="btn" onclick="qwFrame.ChangeLayoutsColumns(this, 3)">
+                    <span class="bs bs1"></span>
+                    <span class="bs bs1"></span>
+                    <span class="bs bs1"></span>
+                </button>
+            </div>
+            <div class="switch-lang">
+                <button type="button" onclick="switchLang()"><span data-bind="text: Switcher"></span></button>
+            </div>
+        </div>
+        <!--/ko-->
+        <div class="work" data-bind="foreach: Steps">
+            <iframe frameborder="0" data-bind="attr:{src: LinkUrl, class: ($index() == 0 ? '' : 'hidden'), id: 'mainContentDisplayer_'+$index()}"></iframe>
+        </div>        
+    </div>
+
+    <div id="taskIndicatorArea" style="display:none;width:480px; height:540px;">
+        <object id="TaskProcessCtl" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="display:block" width="100%" height="440px" class="ms-dlgDisable">
+            <param name="source" value="/TaskProcessEngine/ClientBin/UI.TaskProcessIndicator.xap" />
+            <param name="enablehtmlaccess" value="True" />
+        </object>
+    </div>
+
+    <script src="Scripts/App.Global.js"></script>
+    <script src="Scripts/jquery.cookie.js"></script>
+    <script src="Scripts/jquery-ui.min.js"></script>
+    <script src="Scripts/knockout-3.4.0.js"></script>
+    <script src="Scripts/knockout.mapping-latest.js"></script>
+    <script src="Scripts/dataOperate.js"></script>
+    <script src="Scripts/common.js"></script>
+    <script src="Scripts/TaskIndicatorScript.js"></script>
+    <script src="Scripts/QuickWizard.FrameEnhance.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //设置当前页面浏览器tab页处显示标题
+            qwFrame.SetPageTitle(GlobalVariable.Language_CN, 'Enhancement');
+            qwFrame.SetPageTitle(GlobalVariable.Language_EN, 'Enhancement');
+            //设置当前页面模块名称（左侧导航处大标题）
+            qwFrame.SetModuleTitle(GlobalVariable.Language_CN, 'Enhancement');
+            qwFrame.SetModuleTitle(GlobalVariable.Language_EN, 'Enhancement');
+
+            //注册当前模块的步骤页面（左侧导航各步骤）
+            qwFrame.RegisterStep(GlobalVariable.Language_CN, 'PageCode1', '资产概况', '资产概况和模板选择', 'Pages/Enhancement/page1.html');
+            qwFrame.RegisterStep(GlobalVariable.Language_EN, 'PageCode1', 'Asset Summary', 'Asset sumary and template choice', 'Pages/Enhancement/page1.html');
+            qwFrame.RegisterStep(GlobalVariable.Language_CN, 'PageCode2', '层级初设定', '层级初设定', 'Pages/Enhancement/page2.html');
+            qwFrame.RegisterStep(GlobalVariable.Language_EN, 'PageCode2', '层级初设定', '层级初设定', 'Pages/Enhancement/page2.html');
+
+            //当前页面数据绑定
+            qwFrame.PageDataBind(false);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,19 @@
+﻿<Task>
+  <Action ActionCode="FileCopySPtoFS" ActionDisplayName="Move file from SP" FunctionName="RunSSIS" SequenceNo="1">
+    <Parameter Name="SSISPackagePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\SSIS\FileCopySPtoFS.dtsx" DataType="String" Usage="Task" />
+    <Parameter Name="LogPath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="SPFileLocationURL" SessionParameterName="SourceFileURL" Value="" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="TargetFileLocation" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\Working" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="TargetFileName" SessionParameterName="SessionId" Value="" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="ActionMessage" SessionParameterName="" Value="" DataType="" String="" Usage="SSISPackageVariable" />
+  </Action>
+  <Action ActionCode="RBALoadTrustExt" ActionDisplayName="Load trust Extension info" FunctionName="RunSSIS" SequenceNo="2">
+    <Parameter Name="SSISPackagePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\SSIS\DimTrustExt.dtsx" DataType="String" Usage="Task" />
+    <Parameter Name="LogFilePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs\" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="SourceFilePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\Working\" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="SourceFileName" SessionParameterName="SessionId" Value="" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="SessionID" SessionParameterName="SessionId" Value="" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="OLEDBConnString_DAL_SEC" SessionParameterName="" Value="Data Source=DAL_SEC;Initial Catalog=DAL_SEC;Provider=SQLNCLI10.1;Integrated Security=SSPI;" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="ActionMessage" SessionParameterName="" Value="" DataType="" String="" Usage="SSISPackageVariable" />
+  </Action>
+</Task>

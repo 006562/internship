@@ -1,0 +1,29 @@
+﻿<Task>
+    <Action ActionCode="FileCopySPtoFS" ActionDisplayName="Move file from SP" FunctionName="RunSSIS" SequenceNo="1">
+        <Parameter Name="SSISPackagePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\SSIS\FileCopySPtoFS.dtsx" DataType="String" Usage="Task" />
+        <Parameter Name="LogPath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs\" DataType="String" Usage="SSISPackageVariable" />
+        <Parameter Name="SPFileLocationURL" SessionParameterName="SourceFileURL" Value="" DataType="String" Usage="SSISPackageVariable" />
+        <Parameter Name="TargetFileLocation" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\Working" DataType="String" Usage="SSISPackageVariable" />
+        <Parameter Name="TargetFileName" SessionParameterName="SessionId" Value="" DataType="String" Usage="SSISPackageVariable" />
+        <Parameter Name="ActionMessage" SessionParameterName="" Value="" DataType="" Usage="SSISPackageVariable" />
+    </Action>
+    <Action ActionCode="RBALoanDynamicSecurity" ActionDisplayName="Load dynamic security data" FunctionName="RunSSIS" SequenceNo="2">
+        <Parameter Name="SSISPackagePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\SSIS\FactBondPayment.dtsx" DataType="String" Usage="Task" />
+        <Parameter Name="LogFilePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs\" DataType="String" Usage="SSISPackageVariable" />
+        <Parameter Name="SourceFilePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\Working\" DataType="String" Usage="SSISPackageVariable" />
+        <Parameter Name="SourceFileName" SessionParameterName="SessionId" Value="" DataType="String" Usage="SSISPackageVariable" />
+        <Parameter Name="SessionID" SessionParameterName="SessionId" Value="" DataType="String" Usage="SSISPackageVariable" />
+        <Parameter Name="OLEDBConnString_DAL_SEC" SessionParameterName="" Value="Data Source=DAL_SEC;Initial Catalog=DAL_SEC;Provider=SQLNCLI10.1;Integrated Security=SSPI;" DataType="String" Usage="SSISPackageVariable" />
+        <Parameter Name="ActionMessage" SessionParameterName="" Value="" DataType="" Usage="SSISPackageVariable" />
+    </Action>
+    <Action ActionCode="GenerateReport" ActionDisplayName="GenerateSecurityReport" FunctionName="GenerateSecurityReport" SequenceNo="3">
+        <Parameter Name="ReportDefinitionPath" SessionParameterName="" Value="https://poolcutsp/rba/RS/RBA_Security_Report.rdl" DataType="string" Usage="Task" />
+        <Parameter Name="ReportFormat" SessionParameterName="" Value="EXCEL" DataType="string" Usage="Task" />
+        <Parameter Name="ReportName" SessionParameterName="ReportName" Value="" DataType="string" Usage="Task" />
+        <Parameter Name="TrustID" SessionParameterName="TrustID" Value="" DataType="string" Usage="ReportParameter" />
+        <Parameter Name="DimReportingDateID" SessionParameterName="DimReportingDateID" Value="" DataType="Int" Usage="ReportParameter" />
+        <Parameter Name="SharePointLibrarySiteURL" SessionParameterName="" Value="https://poolcutsp/rba/" DataType="string" Usage="Task" />
+        <Parameter Name="SharePointLibraryTitle" SessionParameterName="" Value="RBA Report Centre" DataType="string" Usage="Task" />
+        <Parameter Name="SharePointLibraryFolder" SessionParameterName="SharePointLibraryFolder" Value="" DataType="string" Usage="Task" />
+    </Action>
+</Task>

@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL  nvarchar(max)
+Declare @bigsql nvarchar(max)
+
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[fn_IsCriteriaIncludedIntoPoolFunction]'') AND type in (N''FN'', N''IF'', N''TF'', N''FS'', N''FT''))
+DROP FUNCTION [dbo].[fn_IsCriteriaIncludedIntoPoolFunction]
+'
+exec (@vchSQL)
+
+--**************************************************
+--fn_IsCriteriaIncludedIntoPoolFunction
+--**************************************************
+Set @vchSQL ='CREATE FUNCTION [dbo].[fn_IsCriteriaIncludedIntoPoolFunction]
+(
+	-- Add the parameters for the function here
+  @PoolFunctionName nvarchar(200),
+	@CriteriaSetId bigint,
+	@CriteriaName nvarchar(200) 
+)
+RETURNS bit
+AS
+BEGIN
+
+	-- Add the T-SQL statements to compute the return value here
+	declare @IsIncluded bit
+	
+	If exists (select 1 from tblPoolFunctionToECMapping
+             where PoolFunctionName = PoolFunctionName and CriteriaSetId = CriteriaSetId and CriteriaName = @CriteriaName)
+     set @IsIncluded = 1
+  else
+     set @IsIncluded = 0
+	
+	-- Return the result of the function
+	RETURN @IsIncluded
+
+END
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

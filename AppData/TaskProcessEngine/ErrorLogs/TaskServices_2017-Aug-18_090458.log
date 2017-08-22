@@ -1,0 +1,10 @@
+[2017-08-18 09:04:58,310] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 1e61c9cc-a2e4-45aa-9c50-b53bdb223410 failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentNullException: Value cannot be null.
+Parameter name: Can not find [DefaultCurve] from Session Context Array.
+The given key was not present in the dictionary.
+   at DADP.CashFlowStudioEntity.CashFlowInputProvider.InitSessionContextArrayFromMemory(String sSessionId, String sConnectionString, String sAppDomain, Dictionary`2& sessionContext, Dictionary`2& sessionContextArray)
+   --- End of inner exception stack trace ---
+   at BL.TaskProcessService.CashFlowProvider.RunManagedMethodByPath(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.CashflowService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\CashflowService.svc.cs:line 64

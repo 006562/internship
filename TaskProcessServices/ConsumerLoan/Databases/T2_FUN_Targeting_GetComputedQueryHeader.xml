@@ -1,0 +1,260 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL  nvarchar(max)
+Declare @bigsql nvarchar(max)
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[Fun_Targeting_GetComputedQueryHeader]'') AND type in (N''FN'', N''IF'', N''TF'', N''FS'', N''FT''))
+DROP FUNCTION [dbo].[Fun_Targeting_GetComputedQueryHeader]
+'
+exec (@vchSQL)
+
+--**************************************************
+--Fun_Targeting_GetComputedQueryHeader
+--**************************************************
+Set @vchSQL ='CREATE FUNCTION [dbo].[Fun_Targeting_GetComputedQueryHeader]
+(
+	@BalanceColumnName nvarchar(100) 
+	,@LTVPassNo nvarchar(100) 
+	,@QueryType nvarchar(100) 
+	,@DimPoolId bigint
+	,@DimECId bigint
+)
+RETURNS nvarchar(4000) AS BEGIN
+
+	Declare @QueryReslut nvarchar(4000) = ''''''''
+	Declare @CriteriaTableTypeCode nvarchar(100)=''''''''
+	
+	Select	@CriteriaTableTypeCode = CriteriaTableTypeCode
+	From	dbo.tblDimEC
+	Where	DimECID = @DimECId
+	And		DimPoolID = @DimPoolId
+	
+	--****************************************************************
+	-- Summary Section
+	--****************************************************************
+	If @QueryType = ''''SumBalanceLoan'''' Begin
+	
+		Set @QueryReslut  = 
+		'''' Declare @LTVPassNo nvarchar(100) = '''''''''''' + @LTVPassNo + ''''''''''''
+		  Declare @DimPoolId  bigint = '''' + CONVERT(Varchar(10), @DimPoolId) + 
+		'''' 
+		Select		SUM(''''+@BalanceColumnName+'''') As BalanceAmount
+		From		dbo.tblFactConsolidationLoan FCL
+		Inner Join	dbo.tblFactLoan FL On FCL.DimPoolId = FL.DimPoolId
+									  And FCL.DimLoanId = FL.DimLoanId
+		Inner Join	dbo.tblDimLoan DL on FL.DimLoanID = DL.DimLoanId
+                                     and FL.DimPoolID = DL.DimPoolID
+		Where	FCL.LTVPassNo = @LTVPassNo
+		And		FCL.DimPoolID = @DimPoolId''''
+	End
+
+	If @QueryType = ''''SumBalanceLoanSecurity'''' Begin
+
+		Set @QueryReslut = 
+		'''' Declare @LTVPassNo nvarchar(100) = '''''''''''' + @LTVPassNo + ''''''''''''
+		  Declare @DimPoolId  bigint = '''' + CONVERT(Varchar(10), @DimPoolId) + 
+		'''' 
+		Select		SUM(''''+@BalanceColumnName+'''') As BalanceAmount
+		From		dbo.tblFactLoan FL
+		Inner Join	dbo.tblDimLoan DL on FL.DimLoanID = DL.DimLoanId
+                                     and FL.DimPoolID = DL.DimPoolID
+		Inner Join	dbo.View_LoanMainSecurity LMS on FL.DimLoanID = LMS.DimLoanId
+												 And FL.DimPoolID = LMS.DimPoolID
+												 And LMS.LTVPassNo = @LTVPassNo
+		Inner Join	dbo.tblDimSecurity DS on DS.DimSecurityID = LMS.DimSecurityId
+                                         and DS.DimPoolId = LMS.DimPoolId
+		Where		FL.DimPoolID = @DimPoolId''''
+
+	End
+	
+	If @QueryType = ''''ParentSum'''' Begin
+		Set @QueryReslut = 
+		'''' Declare @LTVPassNo nvarchar(100) = '''''''''''' + @LTVPassNo + ''''''''''''
+		  Declare @DimPoolId  bigint = '''' + CONVERT(Varchar(10), @DimPoolId) + 
+		'''' 
+		Select		SUM(''''+@BalanceColumnName+'''') As BalanceAmount
+		From		dbo.tblFactLoan FL
+		Inner Join	dbo.tblDimLoan DL on FL.DimLoanID = DL.DimLoanId
+                                     and FL.DimPoolID = DL.DimPoolID
+		Inner Join	dbo.View_LoanMainSecurity LMS on FL.DimLoanID = LMS.DimLoanId
+												 And FL.DimPoolID = LMS.DimPoolID
+												 And LMS.LTVPassNo = @LTVPassNo
+		Inner Join	dbo.tblDimSecurity DS on DS.DimSecurityID = LMS.DimSecurityId
+                                         and DS.DimPoolId = LMS.DimPoolId
+		Where		FL.DimPoolID = @DimPoolId''''
+	End
+	
+	--****************************************************************
+	-- Bucketing Source
+	--****************************************************************
+	If @CriteriaTableTypeCode = ''''dbo.tblFactLoanECResult'''' And @QueryType = ''''ParentSource'''' Begin
+		
+		Set @QueryReslut = 
+		'''' Declare @LTVPassNo nvarchar(100) = '''''''''''' + @LTVPassNo + ''''''''''''
+		  Declare @DimPoolId  bigint = '''' + CONVERT(Varchar(10), @DimPoolId) + 
+		'''' 
+		Select	FL.DimLoanID As DimId
+				, FL.LoanProportionalLTV * ''''+@BalanceColumnName+'''' As WeightedLTV
+				, FL.Seasoning * ''''+@BalanceColumnName+'''' As WeightedSeasoning
+				, ''''+@BalanceColumnName+'''' As BalanceAmount
+				, FL.LoanProportionalLTV As LTV
+				, Seasoning As Seasoning
+				, Case When LMS.ConsolidationDimTrustId > 0 Then 1 Else 0 End As IsIgnore
+		From		dbo.tblFactLoan FL
+		Inner Join	dbo.tblDimLoan DL on FL.DimLoanID = DL.DimLoanId
+                                     and FL.DimPoolID = DL.DimPoolID
+		Inner Join	dbo.View_LoanMainSecurity LMS on FL.DimLoanID = LMS.DimLoanId
+												 And FL.DimPoolID = LMS.DimPoolID
+												 And LMS.LTVPassNo = @LTVPassNo
+		Inner Join	dbo.tblDimSecurity DS on DS.DimSecurityID = LMS.DimSecurityId
+                                         and DS.DimPoolId = LMS.DimPoolId
+		Where		FL.DimPoolID = @DimPoolId''''
+		
+	
+	End
+	
+	If @CriteriaTableTypeCode = ''''dbo.tblFactConsolidationECResult'''' And @QueryType = ''''ParentSource'''' Begin
+		
+		Set @QueryReslut = 
+		'''' Declare @LTVPassNo nvarchar(100) = '''''''''''' + @LTVPassNo + ''''''''''''
+		  Declare @DimPoolId  bigint = '''' + CONVERT(Varchar(10), @DimPoolId) + 
+		'''' 
+		Select	Distinct 
+				DimId
+				, WeightedLTV 
+				, WeightedSeasoning
+				, BalanceAmount
+				, LTV
+				, Seasoning
+				, IsIgnore
+		From	dbo.View_FactConsolidation DL
+		Join	dbo.View_ConsolidationMainSecurity CMS on CMS.DimConsolidationID = DL.DimId
+													  And CMS.DimPoolId = DL.DimPoolID
+													  And CMS.LTVPassNo = DL.LTVPassNo
+		Join	dbo.tblDimSecurity DS on DS.DimSecurityID = CMS.DimSecurityId
+                                     and DS.DimPoolId = CMS.DimPoolId
+		Where	DL.DimPoolID = @DimPoolId 
+		And		DL.LTVPassNo = @LTVPassNo''''
+	
+	End
+	
+	If @QueryType = ''''WeightedLoanLTV'''' Begin
+	
+		Set @QueryReslut =
+		'''' Declare @LTVPassNo nvarchar(100) = '''''''''''' + @LTVPassNo + ''''''''''''
+		  Declare @DimPoolId  bigint = '''' + CONVERT(Varchar(10), @DimPoolId) + 
+		'''' 
+		Select Sum(''''+@BalanceColumnName+'''' * FL.LoanProportionalLTV)  As WeightedLoanLTV
+		From	dbo.tblFactLoan FL
+		Join	dbo.tblFactConsolidationLoan FCL on FCL.DimPoolID = FL.DimPoolID
+												And FCL.DimLoanId = FL.DimLoanID
+												And FCL.LTVPassNo = @LTVPassNo
+		Where	FL.DimPoolID = @DimPoolId
+		''''
+	End
+	
+	--****************************************************************
+	-- LTV Seasoning Source
+	--****************************************************************
+	If @QueryType = ''''ParentSource_LTVSeasoning'''' Begin
+		Set @QueryReslut =
+		'''' Declare @LTVPassNo nvarchar(100) = '''''''''''' + @LTVPassNo + ''''''''''''
+		  Declare @DimPoolId  bigint = '''' + CONVERT(Varchar(10), @DimPoolId) + ''''
+		  Declare @DimECId bigint = '''' + CONVERT(Varchar(10), @DimECId) + 
+		''''
+		Select	Distinct 
+				FC.DimConsolidationID As DimId
+				, FC.ConsolidationLTV * FC.ConsolidationBalance As WeightedLTV 
+				, FC.ConsolidationSeasoning * FC.ConsolidationBalance As WeightedSeasoning
+				, FC.ConsolidationBalance As BalanceAmount
+				, FC.ConsolidationLTV As LTV
+				, FC.ConsolidationSeasoning As Seasoning
+				, Case When FC.ConsolidationDimTrustID > 0 Then 1 Else 0 End As IsIgnore
+		From	dbo.tblFactConsolidation FC
+		Where	FC.DimPoolID = @DimPoolId 
+		And		FC.LTVPassNo = @LTVPassNo
+		And		FC.DimConsolidationID Not In
+		(
+			Select	Distinct DimConsolidationID 
+			From	dbo.tblFactConsolidationECResult 
+			Where	DimECID = @DimECId 
+			And		DimPoolID = @DimPoolId
+			And		LTVPassNo = @LTVPassNo
+		)
+		''''
+	End
+	
+	--****************************************************************
+	-- Size Source
+	--****************************************************************
+	If @QueryType = ''''Size_Consolidation'''' Begin
+		Set @QueryReslut =
+		'''' Declare @LTVPassNo nvarchar(100) = '''''''''''' + @LTVPassNo + ''''''''''''
+		  Declare @DimPoolId  bigint = '''' + CONVERT(Varchar(10), @DimPoolId) + ''''
+		  Declare @DimECId bigint = '''' + CONVERT(Varchar(10), @DimECId) + 
+		''''
+		Select	Distinct 
+				FC.DimConsolidationID As DimId
+				, FC.ConsolidationLTV * FC.ConsolidationBalance As WeightedLTV 
+				, FC.ConsolidationSeasoning * FC.ConsolidationBalance As WeightedSeasoning
+				, FC.ConsolidationBalance As BalanceAmount
+				, FC.ConsolidationLTV As LTV
+				, FC.ConsolidationSeasoning As Seasoning
+				, Case When FC.ConsolidationDimTrustID > 0 Then 1 Else 0 End As IsIgnore
+		From	dbo.tblFactConsolidation FC
+		Join	dbo.tblFactConsolidationLoan FCL on FCL.DimPoolID = FC.DimPoolID
+												And FCL.DimConsolidationID = FC.DimConsolidationID
+												And FCL.LTVPassNo = FC.LTVPassNo
+		Where	FC.DimPoolID = @DimPoolId 
+		And		FC.LTVPassNo = @LTVPassNo
+		And		FCL.DimLoanID Not In
+		(
+			Select Distinct DimLoanID From dbo.tblFactLoanECResult Where DimECID = @DimECId And DimPoolID = @DimPoolId
+		)
+		''''
+	End
+	
+	If @QueryType = ''''Size_Loan'''' Begin
+		Set @QueryReslut =
+		'''' Declare @LTVPassNo nvarchar(100) = '''''''''''' + @LTVPassNo + ''''''''''''
+		  Declare @DimPoolId  bigint = '''' + CONVERT(Varchar(10), @DimPoolId) + ''''
+		  Declare @DimECId bigint = '''' + CONVERT(Varchar(10), @DimECId) + 
+		''''
+		Select	FL.DimLoanID As DimId
+				, FL.LoanProportionalLTV * ''''+@BalanceColumnName+'''' As WeightedLTV
+				, FL.Seasoning * ''''+@BalanceColumnName+'''' As WeightedSeasoning
+				, ''''+@BalanceColumnName+'''' As BalanceAmount
+				, FL.LoanProportionalLTV As LTV
+				, Seasoning As Seasoning
+				, Case When FL.DimTrustID > 0 Then 1 Else 0 End As IsIgnore
+		From	dbo.tblFactConsolidation FC
+		Join	dbo.tblFactConsolidationLoan FCL on FCL.DimPoolID = FC.DimPoolID
+												And FCL.DimConsolidationID = FC.DimConsolidationID
+												And FCL.LTVPassNo = FC.LTVPassNo
+		Join	dbo.tblFactLoan FL on FL.DimPoolID = FCL.DimPoolID
+								  And FL.DimLoanId = FCL.DimLoanID
+		
+		Where	FC.DimPoolID = @DimPoolId 
+		And		FC.LTVPassNo = @LTVPassNo
+		And		FL.DimLoanID Not In
+		(
+			Select Distinct DimLoanID From dbo.tblFactLoanECResult Where DimECID = @DimECId And DimPoolID = @DimPoolId
+		)
+		''''
+	End
+	
+	Return @QueryReslut
+END
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

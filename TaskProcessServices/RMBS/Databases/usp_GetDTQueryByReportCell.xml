@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+/****** Object:  StoredProcedure [dbo].[usp_GetDTQueryByReportCell]    Script Date: 07/03/2012 13:06:16 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[usp_GetDTQueryByReportCell]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[usp_GetDTQueryByReportCell]
+'
+exec (@vchSQL)
+
+set @vchSQL ='
+CREATE PROCEDURE [dbo].[usp_GetDTQueryByReportCell]
+	@DimName nvarchar(200),
+	@MeasureName nvarchar(200),
+	@DTActionTypeCode nvarchar(200)
+
+AS
+   SET NOCOUNT ON
+   
+   select Q.* 
+   from tblDrillThroughQueryReportCell C
+   inner join tblDrillThroughQuery Q on C.DrillThroughQueryId = Q.DTQueryID
+   where C.DimensionName = @DimName and
+         C.MeasureName = @MeasureName and
+         C.ActionTypeCode = @DTActionTypeCode and
+         C.IsEnabled = 1'
+         
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

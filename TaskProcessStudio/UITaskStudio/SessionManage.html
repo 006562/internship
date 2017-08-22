@@ -1,0 +1,225 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Cashflow studio Powered by Goldenstand.">
+    <meta http-equiv="X-UA-compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="../Libraries/Styles/normalize.css">
+    <link rel="stylesheet" href="../Libraries/Styles/common.css">
+    <link rel="stylesheet" href="../Libraries/Styles/animate.css">
+    <link rel="stylesheet" href="../Libraries/Styles/codemirror.css">
+    <link rel="stylesheet" href="../Libraries/Fonts/fontello/css/fontello.css">
+    <link href="Styles/cashflow.css" rel="stylesheet" />
+    <link href="Styles/session.css" rel="stylesheet" />
+    <title>SessionManage</title>
+
+</head>
+
+<body id="layout">
+    <mainview v-ref:mainviews></mainview>
+    <script type="text/x-template" id="mainview">
+        <div class="panel-sessions">
+            <div class="panel-grid">
+                <table>
+                    <thead class="font14">
+                        <tr>
+                            <th width="330px">SessionID</th>
+                            <th width="330px">SessionName</th>
+                            <th width="300px">TaskCode</th>
+                            <th width="180px">SessionStatus</th>
+                            <th width="180px">StartTime</th>
+                            <th width="160px">Operator</th>
+                        </tr>
+                    </thead>
+                    <tbody v-for="session in sessions">
+                        <tr class="font12">
+                            <th>{{session.SessionId}}</th>
+                            <th>{{session.SessionName}}</th>
+                            <th>{{session.TaskCode}}</th>
+                            <th>{{session.SessionStatusDesc}}</th>
+                            <th>{{dateFormat(session.StartTime)}}</th>
+                            <th>
+                                <button type="button" id="ribbon_PopXMLTaskProcess" class="btn btn-default btn-small" data-balloon="Open XML Code" data-balloon-pos="up" @click="popXMLTaskProcess(session.TaskCode)">
+                                    <i class="icon-file-code" style="color: rgba(46, 109, 164, 1)"></i>
+                                </button>
+                                <button type="button" id="ribbon_PopVariableWindow" class="btn btn-default btn-small" data-balloon="Open Variable" data-balloon-pos="up" @click="popVariableWindow(session.SessionId)">
+                                    <i class="icon-doc-text" style="color: rgba(46, 109, 164, 1)"></i>
+                                </button>
+                                <button type="button" id="ribbon_PopSessionRunWindow" class="btn btn-default btn-small" data-balloon="Open Session" data-balloon-pos="up" @click="popSessionRunWindow(session)">
+                                    <i class="icon-window" style="color: rgba(46, 109, 164, 1)"></i>
+                                </button>
+                                <button type="button" id="ribbon_DeleteSession" class="btn btn-default btn-small" data-balloon="Delete Session" data-balloon-pos="up" @click="popDeleteSession(session.SessionId)">
+                                    <i class="icon-cancel" style="color: rgba(46, 109, 164, 1)"></i>
+                                </button>
+                            </th>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div id="panel-pager" class="panel-pager font12">
+                <ul>
+                    <li>共{{total}}记录</li>
+                    <li>{{ (page-1) * pageSize +1 }} - {{page * pageSize}}</li>
+                    <li v-if="page < Math.ceil(total / pageSize)"><a href='javascript:void(0);' @click="page = page + 1"> 下一页 </a></li>
+                    <li v-if="page > 1"><a href='javascript:void(0);' @click="page = page - 1"> 上一页 </a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div id="divActionList"  v-show="showActions" transition="modal">
+            <div class="ground-header">
+                <div class="header-title">
+                    Actions
+                </div>
+                <div class="header-colse">
+                    <a href="javascript:void(0);" @click="popActionWindow()"><i class="icon-cancel" style="color:white"></i></a>
+                </div>
+            </div>
+            <div class="ground-body">
+                    <div class="panel-grid-action"> 
+                        <input type="button" id="btnRunTask" value="运 行" style="line-height: 20px;width: 100px;border:1px solid #ddd;margin-bottom: 5px;" @click="runTask" />
+                        <input type="button" value="刷 新" style="line-height: 20px;width: 100px;border:1px solid #ddd;margin-bottom: 5px;" @click="popRefresh" />
+                        <div id="scrollTable">
+                            <table class="thead">
+                                <col width="250px"></col>
+                                <col width="350px"></col>
+                                <col width="200px"></col>
+                                <col width="200px"></col>
+                                <col width="100px"></col>
+                                <col></col>
+                                <tbody>
+                                    <tr>
+                                        <th noborder>代码</th>
+                                        <th>步骤</th>
+                                        <th>运行时间</th>
+                                        <th>状态</th>
+                                        <th>XML</th>
+                                        <th>消息</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <div>
+                                <table class="tbody">
+                                    <col width="250px"></col>
+                                    <col width="350px"></col>
+                                    <col width="200px"></col>
+                                    <col width="200px"></col>
+                                    <col width="100px"></col>
+                                    <col></col>
+                                    <tbody>
+                                        <tr v-for="action in actions">
+                                            <td noborder><input value="{{action.ProcessActionCode}}" style="border:none;width:245px" readonly="readonly" unselectable="on"  /> </td>
+                                            <td><input value="{{action.ProcessActionName}}" style="border:none;width:345px" readonly="readonly" unselectable="on" /></td>
+                                            <td><input value="{{action.RunTime}}" style="border:none;width:195px" readonly="readonly" unselectable="on" /></td>
+                                            <td><input value="{{action.ProcessActionStatus}}" style="border:none;width:195px" readonly="readonly" unselectable="on" /></td>
+                                            <td>
+                                                <a href="javascript:void(0)" @click="popXMLProcessAction(action.XMLProcessAction)">
+                                                    <i class="icon-file-code" style="color: rgba(46, 109, 164, 1)"></i>
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a href="javascript:void(0)" @click="popMessageBox(action.ActionMessage)">
+                                                    <i class="icon-info" style="color: rgba(46, 109, 164, 1)"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+         </div>
+
+        <div calss="panel-variable" id="divVariableList">
+            <dl>
+                <dt>VariableName</dt>
+                <dd>VariableValue</dd>
+            </dl>
+            <ul>
+                <li v-for="var in variables">
+                    <span>{{var.VariableName}} </span>
+                    <span>{{var.VariableValue}} </span>
+                </li>
+            </ul>
+        </div>
+
+        <div  class="modal-mask" v-show="showActionXml" transition="modal">
+            <div class="modal-wrapper">
+                <div id="actionXml" class="modal-container">
+                    <h3>Editting Action XML</h3>
+                    <a href="javascript:void(0);" class="close" @click="showActionXml = false"><i class="icon-cancel"></i></a>
+                    <textarea id="txtActionXml" name="txtActionXml">{{xmlProcessAction}}</textarea>
+                    <div class="modal-bottom">
+                        <!--<button type="button" @click="apply" class="btn btn-apply">Apply</button>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div  class="modal-mask" v-show="showTaskXml" transition="modal">
+            <div class="modal-wrapper">
+                <div id="taskXml" class="modal-container">
+                    <h3>Editting Task XML</h3>
+                    <a href="javascript:void(0);" class="close" @click="showTaskXml = false"><i class="icon-cancel"></i></a>
+                    <textarea id="txtTaskXml" name="txtTaskXml">{{xmlProcessTask}}</textarea>
+                    <div class="modal-bottom">
+                        <!--<button type="button" @click="apply" class="btn btn-apply">Apply</button>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="taskIndicatorArea">
+            <object id="TaskProcessCtl" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="display:block" width="100%" height="440px" class="ms-dlgDisable">
+                <param name="source" value="/TaskProcessEngine/ClientBin/UI.TaskProcessIndicator.xap" />
+                <param name="enablehtmlaccess" value="True" />
+            </object>
+        </div>
+    </script>
+
+    <script src="../Libraries/Scripts/common.js"></script>
+    <script src="../Libraries/Scripts/loading.js"></script>
+    <script type="text/javascript">
+        var appDomain = getUrlParam("appDomain");
+
+
+        var sessionID, taskCode;
+        var clientName = 'Task';
+        var IndicatorAppDomain = appDomain;
+        var IsSilverlightInitialized = false;
+
+        if (appDomain) {
+            clientName = appDomain.toUpperCase() == 'TASK' ? 'TaskProcess' : 'CashFlowProcess';
+        }
+
+        function InitParams() {
+            if (!IsSilverlightInitialized) {
+                IsSilverlightInitialized = true;
+            }
+            document.getElementById("TaskProcessCtl").Content.SL_Agent.InitParams(sessionID, IndicatorAppDomain, taskCode, clientName);
+        }
+
+        require(['jquery-2.2.3.min', 'vue'], function () {
+            require(['codemirror', 'webProxy', 'dataProcess', 'anyDialog'], function () {
+                // 配置项目文件加载路径
+                config.path = 'Scripts/';
+                // 载入所有模块
+                require(['viewSessionManage'], function () {
+                    var that = this;
+                    var mainview = use('viewSessionManage');  //.component()
+                    // 初始化一个Vue的实例
+                    var app = new Vue({
+                        el: '#layout',
+                        data: config.data,
+                        components: {
+                            'mainview': mainview
+                        }
+                    });
+                });
+            })
+        });
+    </script>
+</body>
+
+</html>

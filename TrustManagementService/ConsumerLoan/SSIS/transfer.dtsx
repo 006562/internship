@@ -1,0 +1,1181 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="8/11/2017 11:28:23 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="CD17D-6165-SYW"
+  DTS:CreatorName="DEVE\yiwushi"
+  DTS:DTSID="{387B889B-40D4-427E-BCBD-1C6F8339E7E1}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="transfer"
+  DTS:PackageType="5"
+  DTS:VersionBuild="33"
+  DTS:VersionGUID="{70958ABE-1CD3-41D9-801E-05228BCBADE1}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[CD17D-6165-SYW\MSSQL.QuickWizard]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{5AC90061-2BF6-4511-B0F9-3A29B511862F}"
+      DTS:ObjectName="CD17D-6165-SYW\MSSQL.QuickWizard">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=CD17D-6165-SYW\MSSQL;Initial Catalog=QuickWizard;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Excel Connection Manager 1]"
+      DTS:CreationName="EXCEL+"
+      DTS:DTSID="{9DFA19C2-487F-4DA2-86FA-F94F979454FC}"
+      DTS:ObjectName="Excel Connection Manager 1">
+      <DTS:ObjectData>
+        <ConnectionManager
+          ConnectionString="ExcelFilePath=C:\Users\yiwushi\Desktop\transfer.xlsx;FormatType=Auto;Recalculate=False;RetainSameConnection=True;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Excel Connection Manager 2]"
+      DTS:CreationName="EXCEL+"
+      DTS:DTSID="{CF5D40ED-33DA-4234-AD49-E3577FD35257}"
+      DTS:ObjectName="Excel Connection Manager 2">
+      <DTS:ObjectData>
+        <ConnectionManager
+          ConnectionString="ExcelFilePath=C:\Users\yiwushi\Desktop\数据\transfer.xlsx;FormatType=Auto;Recalculate=False;RetainSameConnection=True;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables />
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Sequence Container"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{59337DE3-2820-4315-8487-328C26A8812E}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Sequence Container">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\Data Flow Task"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{7995A7CD-10B2-4AFF-B494-9093E94D4CA5}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Data Flow Task"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Sequence Container\Data Flow Task\Derived Column 1"
+                  componentClassID="Microsoft.DerivedColumn"
+                  contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+                  name="Derived Column 1"
+                  usesDispositions="true">
+                  <inputs>
+                    <input
+                      refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input]"
+                      description="Input to the Derived Column Transformation"
+                      name="Derived Column Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input].Columns[TrustCode]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="TrustCode"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TrustCode]"
+                          truncationRowDisposition="FailComponent"
+                          usageType="readWrite">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_STR,50,1252)#{Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TrustCode]}</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_STR,50,1252)TrustCode</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input].Columns[AccountNo]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="AccountNo"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]"
+                          truncationRowDisposition="FailComponent"
+                          usageType="readWrite">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_STR,100,1252)#{Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]}</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_STR,100,1252)AccountNo</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input].Columns[PoolDBName]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="PoolDBName"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PoolDBName]"
+                          truncationRowDisposition="FailComponent"
+                          usageType="readWrite">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_STR,100,1252)#{Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PoolDBName]}</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_STR,100,1252)PoolDBName</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input].Columns[StartDate]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="StartDate"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[StartDate]"
+                          truncationRowDisposition="FailComponent"
+                          usageType="readWrite">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_DBDATE)#{Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[StartDate]}</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_DBDATE)StartDate</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input].Columns[MaturityDate]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="MaturityDate"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[MaturityDate]"
+                          truncationRowDisposition="FailComponent"
+                          usageType="readWrite">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_DBDATE)#{Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[MaturityDate]}</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_DBDATE)MaturityDate</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input].Columns[TransferDate]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="TransferDate"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TransferDate]"
+                          truncationRowDisposition="FailComponent"
+                          usageType="readWrite">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_DBDATE)#{Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TransferDate]}</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_DBDATE)TransferDate</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input].Columns[CurrentPrincipalBalance]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="CurrentPrincipalBalance"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CurrentPrincipalBalance]"
+                          truncationRowDisposition="FailComponent"
+                          usageType="readWrite">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_DECIMAL,2)#{Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CurrentPrincipalBalance]}</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_DECIMAL,2)CurrentPrincipalBalance</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input].Columns[DealSum]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="DealSum"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DealSum]"
+                          truncationRowDisposition="FailComponent"
+                          usageType="readWrite">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_DECIMAL,2)#{Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DealSum]}</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_DECIMAL,2)DealSum</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input].Columns[TheorySum]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="TheorySum"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TheorySum]"
+                          truncationRowDisposition="FailComponent"
+                          usageType="readWrite">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_DECIMAL,2)#{Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TheorySum]}</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_DECIMAL,2)TheorySum</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input].Columns[FactSum]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="FactSum"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FactSum]"
+                          truncationRowDisposition="FailComponent"
+                          usageType="readWrite">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_DECIMAL,2)#{Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FactSum]}</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_DECIMAL,2)FactSum</property>
+                          </properties>
+                        </inputColumn>
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input].Columns[DivisionName]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="DivisionName"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DivisionName]"
+                          truncationRowDisposition="FailComponent"
+                          usageType="readWrite">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">(DT_NTEXT)#{Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DivisionName]}</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">(DT_NTEXT)DivisionName</property>
+                          </properties>
+                        </inputColumn>
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Outputs[Derived Column Output]"
+                      description="Default Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      name="Derived Column Output"
+                      synchronousInputId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input]">
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Outputs[Derived Column Error Output]"
+                      description="Error Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Derived Column Error Output"
+                      synchronousInputId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Sequence Container\Data Flow Task\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Sequence Container\Data Flow Task\Derived Column 1.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Sequence Container\Data Flow Task\Excel Source Plus"
+                  componentClassID="Microsoft.ManagedComponentHost"
+                  contactInfo="Extracts data from Excel worksheet.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+                  description="Extracts data from Excel worksheet."
+                  name="Excel Source Plus"
+                  usesDispositions="true">
+                  <properties>
+                    <property
+                      dataType="System.Null"
+                      name="ComponentObject"
+                      typeConverter="NOTBROWSABLE" />
+                    <property
+                      dataType="System.String"
+                      description="Source Excel worksheet."
+                      expressionType="Notify"
+                      name="Worksheet"
+                      typeConverter="CozyRoc.SqlServer.SSIS.TableEditor, CozyRoc.SSISPlus.UI.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">transfer</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Specifies first row contains column names."
+                      name="FirstRowHasColumnName">true</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies source worksheet region."
+                      expressionType="Notify"
+                      name="Region">1, 2, 11, -1</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies output type."
+                      name="OutputType"
+                      typeConverter="CozyRoc.SqlServer.SSIS.ExcelSource+OutputTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">0</property>
+                    <property
+                      dataType="System.String"
+                      name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.ExcelSource, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Connections[EXCEL+]"
+                      connectionManagerID="Package.ConnectionManagers[Excel Connection Manager 2]"
+                      connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager 2]"
+                      description="COZYROC Excel Connection Manager"
+                      name="EXCEL+" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output]"
+                      name="Excel Source Plus Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TrustCode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[TrustCode]"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TrustCode]"
+                          name="TrustCode"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[AccountNo]"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]"
+                          name="AccountNo"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PoolDBName]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[PoolDBName]"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PoolDBName]"
+                          name="PoolDBName"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[StartDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[StartDate]"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[StartDate]"
+                          name="StartDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[MaturityDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[MaturityDate]"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[MaturityDate]"
+                          name="MaturityDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TransferDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[TransferDate]"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TransferDate]"
+                          name="TransferDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CurrentPrincipalBalance]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CurrentPrincipalBalance]"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CurrentPrincipalBalance]"
+                          name="CurrentPrincipalBalance"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DealSum]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[DealSum]"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DealSum]"
+                          name="DealSum"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TheorySum]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[TheorySum]"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TheorySum]"
+                          name="TheorySum"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FactSum]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[FactSum]"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FactSum]"
+                          name="FactSum"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DivisionName]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[DivisionName]"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DivisionName]"
+                          name="DivisionName"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[TrustCode]"
+                          dataType="wstr"
+                          length="250"
+                          name="TrustCode" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[AccountNo]"
+                          dataType="wstr"
+                          length="250"
+                          name="AccountNo" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[PoolDBName]"
+                          dataType="wstr"
+                          length="250"
+                          name="PoolDBName" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[StartDate]"
+                          dataType="wstr"
+                          length="250"
+                          name="StartDate" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[MaturityDate]"
+                          dataType="wstr"
+                          length="250"
+                          name="MaturityDate" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[TransferDate]"
+                          dataType="wstr"
+                          length="250"
+                          name="TransferDate" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CurrentPrincipalBalance]"
+                          dataType="wstr"
+                          length="250"
+                          name="CurrentPrincipalBalance" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[DealSum]"
+                          dataType="wstr"
+                          length="250"
+                          name="DealSum" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[TheorySum]"
+                          dataType="wstr"
+                          length="250"
+                          name="TheorySum" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[FactSum]"
+                          dataType="wstr"
+                          length="250"
+                          name="FactSum" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[DivisionName]"
+                          dataType="wstr"
+                          length="250"
+                          name="DivisionName" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output]"
+                      isErrorOut="true"
+                      name="Excel Source Plus Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[TrustCode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[TrustCode]"
+                          name="TrustCode"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[AccountNo]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[AccountNo]"
+                          name="AccountNo"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[PoolDBName]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[PoolDBName]"
+                          name="PoolDBName"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[StartDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[StartDate]"
+                          name="StartDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[MaturityDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[MaturityDate]"
+                          name="MaturityDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[TransferDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[TransferDate]"
+                          name="TransferDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CurrentPrincipalBalance]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CurrentPrincipalBalance]"
+                          name="CurrentPrincipalBalance"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[DealSum]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[DealSum]"
+                          name="DealSum"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[TheorySum]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[TheorySum]"
+                          name="TheorySum"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[FactSum]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[FactSum]"
+                          name="FactSum"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[DivisionName]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[DivisionName]"
+                          name="DivisionName"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Sequence Container\Data Flow Task\OLE DB Destination"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="OLE DB Destination"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[QuickWizard].[TransferProperty]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">0</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[CD17D-6165-SYW\MSSQL.QuickWizard]"
+                      connectionManagerRefId="Package.ConnectionManagers[CD17D-6165-SYW\MSSQL.QuickWizard]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TrustCode]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="TrustCode"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TrustCode]"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TrustCode]" />
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[AccountNo]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="AccountNo"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AccountNo]"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]" />
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PoolDBName]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="PoolDBName"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PoolDBName]"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PoolDBName]" />
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[StartDate]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="StartDate"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[StartDate]"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[StartDate]" />
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MaturityDate]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="MaturityDate"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MaturityDate]"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[MaturityDate]" />
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TransferDate]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="TransferDate"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TransferDate]"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TransferDate]" />
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CurrentPrincipalBalance]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="CurrentPrincipalBalance"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CurrentPrincipalBalance]"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CurrentPrincipalBalance]" />
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DealSum]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="DealSum"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DealSum]"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DealSum]" />
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TheorySum]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="TheorySum"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TheorySum]"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TheorySum]" />
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[FactSum]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="FactSum"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FactSum]"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FactSum]" />
+                        <inputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DivisionName]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="DivisionName"
+                          externalMetadataColumnId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DivisionName]"
+                          lineageId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DivisionName]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TrustCode]"
+                          dataType="wstr"
+                          length="50"
+                          name="TrustCode" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AccountNo]"
+                          dataType="wstr"
+                          length="100"
+                          name="AccountNo" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PoolDBName]"
+                          dataType="wstr"
+                          length="200"
+                          name="PoolDBName" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[StartDate]"
+                          dataType="dbDate"
+                          name="StartDate" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MaturityDate]"
+                          dataType="dbDate"
+                          name="MaturityDate" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TransferDate]"
+                          dataType="dbDate"
+                          name="TransferDate" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CurrentPrincipalBalance]"
+                          dataType="numeric"
+                          name="CurrentPrincipalBalance"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DealSum]"
+                          dataType="numeric"
+                          name="DealSum"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TheorySum]"
+                          dataType="numeric"
+                          name="TheorySum"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FactSum]"
+                          dataType="numeric"
+                          name="FactSum"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DivisionName]"
+                          dataType="wstr"
+                          length="100"
+                          name="DivisionName" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Sequence Container\Data Flow Task.Paths[Derived Column Output]"
+                  endId="Package\Sequence Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  name="Derived Column Output"
+                  startId="Package\Sequence Container\Data Flow Task\Derived Column 1.Outputs[Derived Column Output]" />
+                <path
+                  refId="Package\Sequence Container\Data Flow Task.Paths[Excel Source Plus Output]"
+                  endId="Package\Sequence Container\Data Flow Task\Derived Column 1.Inputs[Derived Column Input]"
+                  name="Excel Source Plus Output"
+                  startId="Package\Sequence Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\delete exist data"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{940FD040-BE36-42B5-8C42-7D1E9DB84F4B}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="delete exist data"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{5AC90061-2BF6-4511-B0F9-3A29B511862F}"
+              SQLTask:SqlStatementSource="delete FROM [QuickWizard].[QuickWizard].[TransferProperty]" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\Execute usp_ToDisplay"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{27E80CD4-BDD1-4552-AB48-32642B61428A}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Execute usp_ToDisplay"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{5AC90061-2BF6-4511-B0F9-3A29B511862F}"
+              SQLTask:SqlStatementSource="  delete FROM [QuickWizard].[QuickWizard].[TransferPropertyDisplay]&#xA;EXEC [QuickWizard].[usp_ToDisplay]" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Sequence Container.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{EA8EA10E-4772-435C-ABD5-B2E299754A04}"
+          DTS:From="Package\Sequence Container\delete exist data"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Sequence Container\Data Flow Task" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Sequence Container.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{C8610FFC-E17C-4372-BCB2-05BD6CA63AF0}"
+          DTS:From="Package\Sequence Container\Data Flow Task"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Sequence Container\Execute usp_ToDisplay" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="150.4,41.6"
+          Id="Package\Sequence Container\Data Flow Task"
+          TopLeft="30.2857184799349,83.0588259060079" />
+        <NodeLayout
+          Size="163.2,41.6"
+          Id="Package\Sequence Container\delete exist data"
+          TopLeft="22.9714344394451,2.9176481656137" />
+        <NodeLayout
+          Size="172.8,41.6"
+          Id="Package\Sequence Container\Execute usp_ToDisplay"
+          TopLeft="21.8285772771251,152.470590182902" />
+        <EdgeLayout
+          Id="Package\Sequence Container.PrecedenceConstraints[Constraint]"
+          TopLeft="105.02857645969,44.5176481656137">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,38.5411777403942"
+              Start="0,0"
+              End="0,31.0411777403942">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.0411777403942" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Sequence Container.PrecedenceConstraints[Constraint 1]"
+          TopLeft="106.85714787853,124.658825906008">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,27.8117642768936"
+              Start="0,0"
+              End="0,20.3117642768936">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,20.3117642768936" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="254.4,296"
+          Size="254.4,339.2"
+          Id="Package\Sequence Container"
+          TopLeft="321.714291193048,53.8352948726667" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Sequence Container\Data Flow Task">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="160,41.6"
+          Id="Package\Sequence Container\Data Flow Task\Excel Source Plus"
+          TopLeft="157.142859818984,15.294117861553" />
+        <NodeLayout
+          Size="163.2,41.6"
+          Id="Package\Sequence Container\Data Flow Task\Derived Column 1"
+          TopLeft="155.428574075504,90.5411777403941" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\Sequence Container\Data Flow Task\OLE DB Destination"
+          TopLeft="149.142859682745,185.364708482023" />
+        <EdgeLayout
+          Id="Package\Sequence Container\Data Flow Task.Paths[Derived Column Output]"
+          TopLeft="235.885716879125,132.141177740394">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,53.2235307416289"
+              Start="0,0"
+              End="0,45.7235307416289">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,45.7235307416289" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Sequence Container\Data Flow Task.Paths[Excel Source Plus Output]"
+          TopLeft="237.085716947244,56.894117861553">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,33.647059878841"
+              Start="0,0"
+              End="0,26.147059878841">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.147059878841" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+	<Parameters>
+		<Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+	</Parameters>
+	<Query>
+    <![CDATA[
+declare @vchSQL  varchar(8000)
+set @vchSQL = 'use [' + @DBName + ']
+
+/****** Object:  Table [dbo].[tblFactLoanECResult]    Script Date: 05/03/2012 16:34:22 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tblFactLoanECResult]'') AND type in (N''U''))
+DROP TABLE [dbo].[tblFactLoanECResult]
+
+/****** Object:  Table [dbo].tblFactLoanECResult]    Script Date: 05/03/2012 16:34:22 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+SET ANSI_PADDING ON
+
+CREATE TABLE [dbo].[tblFactLoanECResult](
+	[DimPoolID] [bigint] NOT NULL,
+	[DimLoanID] [bigint] NOT NULL,
+	[DimECID] [bigint] NOT NULL,
+ CONSTRAINT [PK_tblFactLoanECResult] PRIMARY KEY CLUSTERED 
+(
+	[DimPoolID] ASC,
+	[DimLoanID] ASC,
+	[DimECID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON, FILLFACTOR = 70) ON [PRIMARY]
+) ON [PRIMARY]'
+
+exec (@vchSQL)
+
+]]>
+  </Query>
+
+</main>

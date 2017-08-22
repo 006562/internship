@@ -1,0 +1,208 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+    <title>交易现金流信息</title>
+    <!--<link rel="stylesheet" href="../Common/css/trustWizard.css" />-->
+    <link href="/TrustManagementService/TrustManagement/TrustFollowUp/css/trustFollowUp.css" rel="stylesheet" />
+    <link href="/TrustManagementService/TrustManagement/Common/Scripts/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="/TrustManagementService/Config/GlobalVariable.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/calendar.min.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/jquery-ui-latest.js" type="text/javascript"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/knockout-3.4.0.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/knockout.mapping-latest.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/knockout.binding.rendercontrol.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/common.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/anyDialog.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/format.number.js"></script>
+    <script src="/TrustManagementService/Clients/HNGTrust/TrustWizard/TrustTransactionInput.js"></script>
+    <!--<script src="/TrustManagementService/TrustManagement/TrustWizard/TrustTransactionInput.js"></script>-->
+    <!--<script src="/TrustManagementService/UIFrame/js/gs-admin-2.pages.js"></script>-->
+
+    <script type="text/javascript">
+        function RemoveColButtomSHClick(obj) {
+                var $this = $(obj);
+                if ($this.text().indexOf("显示")>=0){
+                    self.RemoveColButtomSH(true);
+                    $this.text("隐藏删除按钮");
+                }
+                else{
+                    self.RemoveColButtomSH(false);
+                    $this.text("显示删除按钮");
+                }
+        }
+        function RemoveColButtomSH(show) {
+            var sytles = document.CSSStyleSheet ? document.CSSStyleSheet : document.styleSheets;
+            $.each(sytles, function (i, sheet) {
+                if (sheet.href.indexOf("trustFollowUp.css") > -1) {
+                    var rs = sheet.cssRules ? sheet.cssRules : sheet.rules;
+                    $.each(rs, function (j, cssRule) {
+                        if (cssRule.selectorText && cssRule.selectorText.indexOf(".btn") > -1 && cssRule.selectorText.indexOf(".btn-remove") > -1) {
+                            if (show == true) {
+                                cssRule.style.display = "inline-block";
+                            } else {
+                                cssRule.style.display = "none";
+                            }
+                            return false;
+                        }
+                    });
+                    return false;
+                }
+            });
+        }
+        function dataFormat() {
+            var $control = $(this);
+            var mf = new window.NumberFormatUtils();
+            if (!(/(^[0-9]+,)|(\.\.)/.test($control.val())))
+            {
+                var formatResult = mf.formatMoney($control.val(), "auto");
+                $control.val(formatResult);
+            }
+        }
+        $(function () {
+            RemoveColButtomSH(false);
+            $(".dataFormat").blur(dataFormat)
+            .trigger("blur");
+        })
+    </script>
+	<style type="text/css">
+	.marginb6{margin-bottom:6px !important;}
+	.marginb8{margin-bottom:8px !important;}
+	.paddingt3{padding-top: 3px !important;}
+    .paddingb0{padding-bottom: 0px !important;}
+	#TrustTransactionInputTarget
+	{
+		//background-color:blue;
+		margin:20px 10% 20px 20%;
+		padding:10px 20px;
+	}
+	#label1
+	{
+		background-color:rgba(64, 120, 215, 1);
+		color:white;
+	}
+	</style>
+</head>
+<body>
+    <div class="body-container form nobottom" style="padding:10px 20px;">
+        <div class="main" id="TrustTransactionInputDiv">
+            <div class="pull-right">
+                <a href="javascript:void(0);" onclick="RemoveColButtomSHClick(this);">显示删除按钮</a>
+            </div>
+            <h3 class="h3" style="font-size: 100%;">
+                <span class="title paddingb0">交易现金流信息</span>
+            </h3>
+            <div class="form-panel drop nobottom paddingt3">
+                <div class="form-panel drop list-filters paddingt3">
+                    <div class="col-109">
+                        <div class="col-3 form-group marginb6">
+                            <div class="col-8" id="TrustTransactionInputTarget1">
+
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-plus" onclick="TrustTransactionInput.AddTransaction(this);"><i class="icon icon-add"></i></button>
+                            </div>
+                        </div>
+                        <div class="col-3 form-group marginb6">
+                            <div class="col-5">
+                                <label>兑付日期：</label>
+                            </div>
+                            <div class="col-5">
+                                <select class="filter eq form-control" id="TransactionDate" onchange="TrustTransactionInput.InitData();"></select>
+                            </div>
+                        </div>
+                        <div class="col-3 form-group marginb6">
+                            <div class="col-3">
+                                <label>客户：</label>
+                            </div>
+                            <div class="col-7">
+                                <input type="text" class="filter like form-control" id="InputSource" data-valid="required" />
+                            </div>
+                        </div>
+                        <div class="col-1 form-group marginb6">
+                            <button type="button" class="btn btn-primary btn-sm" id="SaveTransactionInput" onclick="TrustTransactionInput.SaveTransactionInputClick();">保存</button>
+                        </div>
+                    </div>
+                    <div class="pull-left">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="TrustTransactionInput.Syfpjs();">收益分配计算</button>
+                    </div>
+                </div>
+            </div>
+            <div id="divDataList" class="list-container">
+                <div class="form nobottom">
+                    <div class="form-body" style="display:block;">
+                        <div class="form-panel item">
+                            <div class="col-9"  data-bind="foreach:DataList" id="TrustTransactionInputTarget">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <di style="display:none;" id="TrustTransactionInputTemplate1">
+            <select class="form-control" data-bind="foreach:UnDataList">
+                <option data-bind="text:Name,attr:{dataIndex: $index}"></option>
+            </select>
+        </di>
+        <div style="display:none;" id="TrustTransactionInputTemplate">
+            <div class="col-12" data-bind="attr:{dataIndex: $index}">
+                <div class="col-12 form-group autoLayout-plugins marginb8">
+                    <div class="col-4">
+                        <label data-bind="text: Name" id="label1"></label>
+                    </div>
+                    <div class="col-6">
+                        <div class="col-11">
+                            <input type="text" class="form-control dataFormat" data-bind="value:Amount" data-valid="required decimal" />
+                        </div>
+                    </div>
+                    <!--ko if: Code() =="TrustPlanAccount_Principal_Collected"-->
+                    <div class="col-2 field-details">
+                        <i class="icon icon-help" style="margin-top: 4px;display: block;color:#4174cb;"></i>
+                        <div class="field-detail-box">
+                            若不区分收入账与本金账，则所有资金均作为利息回收款，请将回收款数值填入此项
+                        </div>
+                    </div>
+                    <!--/ko-->
+                    <!--ko if: Code() =="TopUpDifference_ToInterest_Input"-->
+                    <div class="col-2 field-details">
+                        <i class="icon icon-help" style="margin-top: 4px;display: block;color:#4174cb;"></i>
+                        <div class="field-detail-box">
+                            循环购买的资产在循环购买基准日到循环购买日的利息回收款(如有)
+                        </div>
+                    </div>
+                    <!--/ko-->
+                    <!--ko if: Code() =="TopUpDifference_ToPrincipal_Input"-->
+                    <div class="col-2 field-details">
+                        <i class="icon icon-help" style="margin-top: 4px;display: block;color:#4174cb;"></i>
+                        <div class="field-detail-box">
+                            循环购买的资产在循环购买基准日到循环购买日的本金回收款(如有)
+                        </div>
+                    </div>
+                    <!--/ko-->
+                </div>
+                <div class="col-6 form-group autoLayout-plugins marginb8">
+                    <div class="col-4">
+                        <!--
+                        <label>是否自动计算</label>
+                            -->
+                    </div>
+                    <div class="col-4">
+                        <div class="col-11">
+                            <!--
+                            <input type="checkbox" data-bind="checked:ToPaid" />
+                                -->
+                        </div>
+                    </div>
+                    <div class="col-2" data-bind="if:!IsCompulsory()">
+                        <button type="button" class="btn btn-remove" onclick="TrustTransactionInput.RemoveTransaction(this);"><i class="icon icon-remove"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

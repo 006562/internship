@@ -1,0 +1,73 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <link href="../../Contents/bootstrap.css" rel="stylesheet" />
+</head>
+<body>
+
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">Configuration Loading...</p>
+    </div>
+
+    <div id="page_main_container" class="main">
+        <div class="main-sections" data-bind="foreach: Sections">
+            <div class="main-section" data-bind="attr:{sectionIndex: $index(), id: Identity}">
+                <h3 class="h3"><span class="title" data-bind="text: Title"></span></h3>
+
+                <div class="form-panel" data-bind="template: { name: Templ, data: FieldsSetting }"></div>
+
+                <div class="form-save" data-bind="foreach: Buttons">
+                    <button data-bind="text: Text, attr:{'class': Class, 'onclick':Click}"></button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-customize">
+            <table id="tbTemplates" class="table table-bordered hidden"></table>
+        </div>
+    </div>
+
+    <script type="text/html" id="qw_KO_TabView">
+        <ul class="nav nav-tabs" data-bind="foreach: Tabs">
+            <li data-bind="css: {active: $index()==0}, attr:{itemIndex: $index()}">
+                <a data-bind="attr:{href: '#'+TabId()}, text: TabTitle "></a>
+            </li>
+        </ul>
+        <div class="tab-content" data-bind="foreach: Tabs">
+            <div class="tab-pane" data-bind="attr:{id: TabId()}, css: {active: $index()==0}">
+                <div class="col-12 form-row form-horizontal" data-bind="foreach:Fields">
+                    <div class="col-6 form-row autoLayout-plugins">
+                        <div class="form-group">
+                            <div class="col-4 control-label">
+                                <label data-bind="text:ItemAliasValue"></label>
+                            </div>
+                            <div class="col-6">
+                                <span data-bind="renderControl2: ItemCode"></span>
+                            </div>
+                            <!--<button type="button" onclick="sdvOperation.RemoveOptionalField(this)" class="btn btn-remove"><i class="icon icon-remove"></i></button>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+
+    <script src="../../Scripts/jquery.min.js"></script>
+    <script src="../../Scripts/jquery.cookie.js"></script>
+    <script src="../../Scripts/App.Global.js"></script>
+    <script src="../../Scripts/common.js"></script>
+    <script src="../../Scripts/calendar.min.js"></script>
+    <script src="../../Scripts/knockout-3.4.0.js"></script>
+    <script src="../../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../../Scripts/renderControl.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap-table.min.js"></script>
+    <script src="../../Scripts/dataOperate.js"></script>
+    <script src="page1.js"></script>
+
+</body>
+</html>

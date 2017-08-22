@@ -1,0 +1,140 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL  varchar(max)
+Declare @bigsql varchar(max)
+
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[Usp_Report_IncludeExcludeLoanSummary]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[Usp_Report_IncludeExcludeLoanSummary]
+'
+exec (@vchSQL)
+
+--**************************************************
+--Usp_Report_FailedLoanSummary
+--**************************************************
+Set @vchSQL ='CREATE PROCEDURE [dbo].[Usp_Report_IncludeExcludeLoanSummary]  
+	@DimPoolId  bigint
+AS BEGIN  
+	
+	SET NOCOUNT ON
+	Declare @ColumnList TABLE (	ColumnName	nvarchar(500) )
+	Declare @SqlCMDHeader nvarchar(max)
+	Declare @strColumnList nvarchar(max)=''''''''
+	Declare @strColumn nvarchar(500)=''''''''
+	Declare @UploadId bigint 
+	Select  @UploadId = UploadId From dbo.tblDimPool Where DimPoolID = @DimPoolId
+
+	Insert Into @ColumnList
+	Select	'''',['''' + Ltrim(Rtrim(CriteriaName)) + '''']'''' 
+	From	dbo.tblDimEC 
+	Where	DimPoolID = @DimPoolId
+	And		IsEnabled = 1
+	And		CriteriaName Not In
+	(	''''ECT1_Targeting_Parent'''',''''ECT2_Targeting_Size'''',''''LoansInclusion'''')
+	And		CriteriaTableTypeCode = ''''dbo.tblFactLoanECResult''''
+	Order By DimECID
+
+	DECLARE tableCursor CURSOR FOR 
+		Select * From @ColumnList
+	FOR READ ONLY
+	--Open the cursor
+	OPEN tableCursor
+	--Get the first table name from the cursor
+	FETCH NEXT FROM tableCursor INTO @strColumn
+
+	--Loop until the cursor was not able to fetch
+	WHILE (@@Fetch_Status >= 0) BEGIN
+		Set @strColumnList = @strColumnList + @strColumn
+		FETCH NEXT FROM tableCursor INTO @strColumn
+	END
+
+	--Get rid of the cursor
+	CLOSE tableCursor
+	DEALLOCATE tableCursor
+
+	Set @strColumnList = RIGHT(@strColumnList, LEN(@strColumnList) - 1)
+
+	Set @SqlCMDHeader =''''
+	SELECT	AccountNo
+			, IsInclude
+			, IsAuditLoan
+			, IsInPool
+			, CurrentPrincipalBalance
+			, #ECColumns#
+	From
+	(
+		Select	ufd.AccountNo
+				, ufd.AuditLoan as IsAuditLoan
+				, Case	When ufd.Included = 1 then ''''''''Include''''''''
+						When ufd.Included = 0 then ''''''''Exclude''''''''
+						Else ''''''''UNK'''''''' End As IsInclude
+				, FL.CurrentPrincipalBalance
+				, Case	When FL.IsIncluded = 1 then ''''''''In''''''''
+						Else ''''''''Not In'''''''' End As IsInPool
+				, Ltrim(Rtrim(EC.CriteriaName)) As CriteriaName
+		From		dbo.tblUploadedFileDetails ufd
+		Left Join	dbo.tblFactLoan FL On FL.DimPoolID = #PoolID#
+									  And FL.AccountNo = ufd.AccountNo
+		Left Join	dbo.tblFactLoanECResult FLEC ON	FLEC.DimPoolID = FL.DimPoolID
+												And FLEC.DimLoanID = FL.DimLoanID
+		Left Join	dbo.tblDimEC EC on EC.DimPoolID = FLEC.DimPoolID
+								   And EC.DimECID = FLEC.DimECID
+		Where	ufd.UploadID = #UploadId#
+		And		ufd.AuditLoan <> 1
+		
+		Union
+		
+		Select	ufd.AccountNo
+				, ufd.AuditLoan as IsAuditLoan
+				, Case	When ufd.Included = 1 then ''''''''Include''''''''
+						When ufd.Included = 0 then ''''''''Exclude''''''''
+						Else ''''''''UNK'''''''' End As IsInclude
+				, FL.CurrentPrincipalBalance
+				, Case	When FL.IsIncluded = 1 then ''''''''In''''''''
+						Else ''''''''Not In'''''''' End As IsInPool
+				, Ltrim(Rtrim(EC.CriteriaName)) As CriteriaName
+		From		dbo.tblUploadedFileDetails ufd
+		Left Join	dbo.tblFactLoan FL On FL.DimPoolID = #PoolID#
+									  And FL.AccountNo = ufd.AccountNo
+		Left Join	dbo.tblFactIncludedAuditLoanECResult FLEC ON FLEC.DimPoolID = FL.DimPoolID 
+															 And FLEC.DimLoanID = FL.DimLoanID
+		Left Join	dbo.tblDimEC EC on EC.DimPoolID = FLEC.DimPoolID
+								   And EC.DimECID = FLEC.DimECID
+		Where	ufd.UploadID = #UploadId#
+		And		ufd.AuditLoan = 1
+	
+	
+	) LoanECResult
+
+	PIVOT
+	(
+		Count(CriteriaName)	-- Note this MAX is the MAX of a single value so no issue
+		FOR CriteriaName IN 
+		(
+			#ECColumns#
+		)
+	)LoanECResult_Pivot -- Pivot Table
+	Order By IsInclude,  IsAuditLoan, IsInPool, AccountNo   
+	''''
+
+	Set @SqlCMDHeader = REPLACE(@SqlCMDHeader, ''''#ECColumns#'''', @strColumnList)
+	Set @SqlCMDHeader = REPLACE(@SqlCMDHeader, ''''#PoolID#'''', CONVERT(nvarchar(10), @DimPoolId))
+	Set @SqlCMDHeader = REPLACE(@SqlCMDHeader, ''''#UploadId#'''', CONVERT(nvarchar(10), @UploadId))
+
+	EXEC sp_executesql @SqlCMDHeader
+	
+
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

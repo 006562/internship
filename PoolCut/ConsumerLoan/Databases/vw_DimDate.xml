@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+declare @vchSQL  varchar(8000)
+Declare @vchFullSQL varchar(8000)
+set @vchSQL = 'use [' + @DBName + ']
+
+/****** Object:  View [dbo].[vw_DimDate]    Script Date: 09/19/2012 17:29:31 ******/
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N''[dbo].[vw_DimDate]''))
+DROP VIEW [dbo].[vw_DimDate]
+'
+exec (@vchSQL)
+
+set @vchSQL = '
+/****** Object:  View [dbo].[vw_DimDate]    Script Date: 09/19/2012 17:12:34 ******/
+CREATE VIEW [dbo].[vw_DimDate]
+AS
+
+SELECT D.DimDateID
+		, D.FullDate
+		, D.DateName
+		, D.MonthName
+		, D.CalendarYear
+		, D.CalendarYearMonth
+		, D.Lineage_ID
+		, D.DateCreated
+		, ''''Not Applicable'''' as DisplayCalendarYear
+		, ''''Not Applicable'''' as DisplayCalendarMonth
+FROM	DAL_SEC.dbo.tblDimDate d WITH (NOLOCK)
+Where   D.CalendarYear <= 1900
+union
+SELECT	D.DimDateID
+		, D.FullDate
+		, D.DateName
+		, D.MonthName
+		, D.CalendarYear
+		, D.CalendarYearMonth
+		, D.Lineage_ID
+		, D.DateCreated
+		, CONVERT(varchar,d.CalendarYear) as DisplayCalendarYear
+		, d.CalendarYearMonth as DisplayCalendarYearMonth
+FROM	DAL_SEC.dbo.tblDimDate d WITH (NOLOCK)
+Where   D.CalendarYear > 1900
+
+'
+
+SET @vchFullSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @vchFullSQL
+EXEC (@vchFullSQL)
+
+]]>
+  </Query>
+
+</main>

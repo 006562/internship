@@ -1,0 +1,121 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>preview</title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link href="../Contents/common.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../Scripts/calendar.min.js"></script>
+    <script src='../Scripts/common.js'></script>
+    <script src='../Scripts/dataOperate.js'></script>
+    <script src="../Scripts/format.number.js"></script>
+    <script src='../Scripts/renderControl.js'></script>
+
+    <script src="../Scripts/magic/magic.core.js"></script>
+    <link href="../Scripts/magic/magic.dialog.css" rel="stylesheet" />
+    <script src="../Scripts/magic/magic.dialog.js"></script>
+   
+    <script>
+        function iframePage(self) {
+            var content = $(self).contents();
+            setTimeout(function () {
+                var mainheight = content.find("html").height() + 20;
+                $(self).height(mainheight);
+            },2000)
+        }
+    </script>
+
+    <style>
+        #TrustPreviewDiv {
+            margin: 20px auto;
+            width: 900px;
+        }
+
+        #btnSave {
+            margin: 0 auto;
+            width: 1000px;
+            padding-top: 10px;
+            border-top: 1px solid #ccc;
+        }
+
+        #sign {
+            width: 800px;
+            margin: 0 auto;
+            padding-top:50px;
+            border-top: 1px solid #ccc;
+            text-align: right;
+            font-size: 14px;
+        }
+
+        .person {
+            margin: 25px 0;
+        }
+
+        .person > input {
+            width: 160px;
+            font-size: 14px;
+            text-indent: 1em;
+            border: none;
+            border-bottom: 1px solid #ccc;     
+        }    
+
+        .signDate {
+            margin: 25px 0 25px;
+        }
+
+        .signDate input {
+            width: 50px;
+            font-size: 14px;
+            text-align: center;
+            border: none;
+        }    
+    </style>
+
+</head>
+<body>
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">加载配置中...</p>
+    </div>
+
+    <div id="TrustPreviewDiv" data-bind="foreach:Urls">
+        <iframe data-bind="attr: { src: $data }"  onload="iframePage(this)" width="100%" height="200" frameborder="0" scrolling="no"></iframe>
+    </div>
+    <div id="sign">
+        <div class="person">
+            <label>团队负责人:</label>&nbsp;
+            <input type="text" />
+        </div>
+        <div class="person">
+            <label>项目负责人:</label>&nbsp;
+            <input type="text" />
+        </div>
+        <div class="signDate">
+            <input type="text" name="name" />&nbsp;
+            <label>年</label>
+            <input type="text" name="name" />
+            <label>月</label>
+            <input type="text" name="name" />
+            <label>日</label>
+        </div>
+    </div>
+    <div id="btnSave" class="form-button text-center pb20">
+        <button id="print" type="button" class="btn btn-primary pl15 pr15">打 印</button>
+    </div>
+
+    <script>
+            
+        $("#print").click(function () {
+            $("#btnSave").hide();
+            window.print();
+            $("#btnSave").show();
+        })
+    </script>
+        
+    <script src="./preview.js"></script>
+</body>
+</html>

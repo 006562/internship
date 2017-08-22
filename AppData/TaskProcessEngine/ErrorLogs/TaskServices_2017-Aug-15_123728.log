@@ -1,0 +1,105 @@
+[2017-08-15 12:37:28,951] ERROR Securitisation.Utilities.Common.Log4NetLogService - Update session process status failed for 94d10b7f-a856-4820-bb87-081847632267
+System.Data.SqlClient.SqlException (0x80131904): ActionCode "PrepareSessionVariables" does not exist for the SessionId "94D10B7F-A856-4820-BB87-081847632267"
+   at Securitisation.Utilities.SQL.UtilSqlRunQueryADONET.RunNonQueryADONETByQueryString(String sQueryString, List`1 glParameters, String sConnectionString)
+   at DADP.TaskEntity.ProcessTaskHelper.UpdateSessionProcessStatus(Guid SessionId, SessionProcessStatus sps)
+   at TaskProcessEngine.TaskProcessService.UpdateSessionProcessStatus(Guid sessionId, String applicationDomain, SessionProcessStatusDC spsdc) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 130
+ClientConnectionId:250afdc0-d8f6-4353-9dab-4e3b503f3dac
+Error Number:50000,State:1,Class:16
+[2017-08-15 12:37:32,141] ERROR Securitisation.Utilities.Common.Log4NetLogService - Update session process status failed for 94d10b7f-a856-4820-bb87-081847632267
+System.Data.SqlClient.SqlException (0x80131904): ActionCode "PrepareSessionVariables" does not exist for the SessionId "94D10B7F-A856-4820-BB87-081847632267"
+   at Securitisation.Utilities.SQL.UtilSqlRunQueryADONET.RunNonQueryADONETByQueryString(String sQueryString, List`1 glParameters, String sConnectionString)
+   at DADP.TaskEntity.ProcessTaskHelper.UpdateSessionProcessStatus(Guid SessionId, SessionProcessStatus sps)
+   at TaskProcessEngine.TaskProcessService.UpdateSessionProcessStatus(Guid sessionId, String applicationDomain, SessionProcessStatusDC spsdc) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 130
+ClientConnectionId:250afdc0-d8f6-4353-9dab-4e3b503f3dac
+Error Number:50000,State:1,Class:16
+[2017-08-15 12:37:36,346] ERROR Securitisation.Utilities.Common.Log4NetLogService - Update session process status failed for 94d10b7f-a856-4820-bb87-081847632267
+System.Data.SqlClient.SqlException (0x80131904): ActionCode "PrepareSessionVariables" does not exist for the SessionId "94D10B7F-A856-4820-BB87-081847632267"
+   at Securitisation.Utilities.SQL.UtilSqlRunQueryADONET.RunNonQueryADONETByQueryString(String sQueryString, List`1 glParameters, String sConnectionString)
+   at DADP.TaskEntity.ProcessTaskHelper.UpdateSessionProcessStatus(Guid SessionId, SessionProcessStatus sps)
+   at TaskProcessEngine.TaskProcessService.UpdateSessionProcessStatus(Guid sessionId, String applicationDomain, SessionProcessStatusDC spsdc) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 130
+ClientConnectionId:250afdc0-d8f6-4353-9dab-4e3b503f3dac
+Error Number:50000,State:1,Class:16
+[2017-08-15 13:30:02,601] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 6b0cf3a7-dc05-4584-bc25-91916162064d failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentException: E:\TSSWCFServices\PoolCut\ConsumerLoan\Databases\CreateDatabase.xml has an exception: Windows NT user or group 'dev\gslocaladmin' not found. Check the name again.
+User or role 'dev\gslocaladmin' does not exist in this database.
+   at BL.TaskProcessService.OperationProvider.RunXmlQuery(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-15 13:30:48,362] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 6b0cf3a7-dc05-4584-bc25-91916162064d failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentException: E:\TSSWCFServices\PoolCut\ConsumerLoan\Databases\CreateDatabase.xml has an exception: Windows NT user or group 'dev\gslocaladmin' not found. Check the name again.
+User or role 'dev\gslocaladmin' does not exist in this database.
+   at BL.TaskProcessService.OperationProvider.RunXmlQuery(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-15 13:36:51,444] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 5abe9a88-fe17-4f71-85e7-899f6c2a6936 failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Exception: Source=DataFlow Task; Error Code=-1071636471; Error Description=SSIS Error Code DTS_E_OLEDBERROR.  An OLE DB error has occurred. Error code: 0x80004005.
+An OLE DB record is available.  Source: "Microsoft SQL Server Native Client 10.0"  Hresult: 0x80004005  Description: "The statement has been terminated.".
+An OLE DB record is available.  Source: "Microsoft SQL Server Native Client 10.0"  Hresult: 0x80004005  Description: "Violation of PRIMARY KEY constraint 'PK_tblFactLoanCustomer'. Cannot insert duplicate key in object 'dbo.tblFactLoanCustomer'. The duplicate key value is (26325171, 24559037, 2, 1, 64, 20160701, 1).".
+
+Source=DataFlow Task; Error Code=-1071607767; Error Description=SSIS Error Code DTS_E_INDUCEDTRANSFORMFAILUREONERROR.  The "Inserting the Working table.Inputs[OLE DB Destination Input]" failed because error code 0xC020907B occurred, and the error row disposition on "Inserting the Working table.Inputs[OLE DB Destination Input]" specifies failure on error. An error occurred on the specified object of the specified component.  There may be error messages posted before this with more information about the failure.
+
+Source=DataFlow Task; Error Code=-1073450974; Error Description=SSIS Error Code DTS_E_PROCESSINPUTFAILED.  The ProcessInput method on component "Inserting the Working table" (33) failed with error code 0xC0209029 while processing input "OLE DB Destination Input" (46). The identified component returned an error from the ProcessInput method. The error is specific to the component, but the error is fatal and will cause the Data Flow task to stop running.  There may be error messages posted before this with more information about the failure.
+
+
+   at BL.TaskProcessService.OperationProvider.RunSSIS(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-15 13:38:13,568] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 5abe9a88-fe17-4f71-85e7-899f6c2a6936 failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Exception: Source=DataFlow Task; Error Code=-1071636471; Error Description=SSIS Error Code DTS_E_OLEDBERROR.  An OLE DB error has occurred. Error code: 0x80004005.
+An OLE DB record is available.  Source: "Microsoft SQL Server Native Client 10.0"  Hresult: 0x80004005  Description: "The statement has been terminated.".
+An OLE DB record is available.  Source: "Microsoft SQL Server Native Client 10.0"  Hresult: 0x80004005  Description: "Violation of PRIMARY KEY constraint 'PK_tblFactLoanCustomer'. Cannot insert duplicate key in object 'dbo.tblFactLoanCustomer'. The duplicate key value is (26325171, 24559037, 2, 1, 64, 20160701, 1).".
+
+Source=DataFlow Task; Error Code=-1071607767; Error Description=SSIS Error Code DTS_E_INDUCEDTRANSFORMFAILUREONERROR.  The "Inserting the Working table.Inputs[OLE DB Destination Input]" failed because error code 0xC020907B occurred, and the error row disposition on "Inserting the Working table.Inputs[OLE DB Destination Input]" specifies failure on error. An error occurred on the specified object of the specified component.  There may be error messages posted before this with more information about the failure.
+
+Source=DataFlow Task; Error Code=-1073450974; Error Description=SSIS Error Code DTS_E_PROCESSINPUTFAILED.  The ProcessInput method on component "Inserting the Working table" (33) failed with error code 0xC0209029 while processing input "OLE DB Destination Input" (46). The identified component returned an error from the ProcessInput method. The error is specific to the component, but the error is fatal and will cause the Data Flow task to stop running.  There may be error messages posted before this with more information about the failure.
+
+
+   at BL.TaskProcessService.OperationProvider.RunSSIS(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-15 13:49:17,381] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for bca2b62e-9703-4774-ab09-620340c315dd failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentException: E:\TSSWCFServices\PoolCut\ConsumerLoan\Databases\CreateDatabase.xml has an exception: Windows NT user or group 'dev\gslocaladmin' not found. Check the name again.
+User or role 'dev\gslocaladmin' does not exist in this database.
+   at BL.TaskProcessService.OperationProvider.RunXmlQuery(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-15 13:50:08,361] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for bca2b62e-9703-4774-ab09-620340c315dd failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentException: E:\TSSWCFServices\PoolCut\ConsumerLoan\Databases\CreateDatabase.xml has an exception: Windows NT user or group 'dev\gslocaladmin' not found. Check the name again.
+User or role 'dev\gslocaladmin' does not exist in this database.
+   at BL.TaskProcessService.OperationProvider.RunXmlQuery(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-15 13:57:24,417] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for bca2b62e-9703-4774-ab09-620340c315dd failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentException: E:\TSSWCFServices\PoolCut\ConsumerLoan\Databases\CreateDatabase.xml has an exception: Windows NT user or group 'dev\gslocaladmin' not found. Check the name again.
+User or role 'dev\gslocaladmin' does not exist in this database.
+   at BL.TaskProcessService.OperationProvider.RunXmlQuery(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-15 14:14:39,118] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for bca2b62e-9703-4774-ab09-620340c315dd failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentException: E:\TSSWCFServices\PoolCut\ConsumerLoan\Databases\CreateDatabase.xml has an exception: Windows NT user or group 'dev\gslocaladmin' not found. Check the name again.
+User or role 'dev\gslocaladmin' does not exist in this database.
+   at BL.TaskProcessService.OperationProvider.RunXmlQuery(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-15 14:15:16,697] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for bca2b62e-9703-4774-ab09-620340c315dd failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentException: E:\TSSWCFServices\PoolCut\ConsumerLoan\Databases\CreateDatabase.xml has an exception: Windows NT user or group 'dev\gslocaladmin' not found. Check the name again.
+User or role 'dev\gslocaladmin' does not exist in this database.
+   at BL.TaskProcessService.OperationProvider.RunXmlQuery(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-15 14:17:25,015] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for bca2b62e-9703-4774-ab09-620340c315dd failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentException: E:\TSSWCFServices\PoolCut\ConsumerLoan\Databases\CreateDatabase.xml has an exception: Windows NT user or group 'dev\gslocaladmin' not found. Check the name again.
+User or role 'dev\gslocaladmin' does not exist in this database.
+   at BL.TaskProcessService.OperationProvider.RunXmlQuery(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63

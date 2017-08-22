@@ -1,0 +1,81 @@
+﻿
+<Tool Name="CashFlowAllocation5tranchesModel">
+  <Actions>
+    <Action ActionCode="TrustPlanAccount_Principal_ClosingBalance" ActionDisplayName="本金分账户结束余额" FunctionName="RunManagedMethodByPath" SequenceNo="100">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TrustPlanAccount_Principal_ClosingBalance" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TrustPlanAccount_Principal_ClosingBalance" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="TrustPlanAccount_Interest_ClosingBalance" ActionDisplayName="收入分账户结束余额" FunctionName="RunManagedMethodByPath" SequenceNo="101">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TrustPlanAccount_Interest_ClosingBalance" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TrustPlanAccount_Interest_ClosingBalance" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="TrustPlanAccount_ClosingBalance" ActionDisplayName="信托账户结束余额" FunctionName="RunManagedMethodByPath" SequenceNo="99">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TrustPlanAccount_ClosingBalance" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TrustPlanAccount_ClosingBalance" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+   </Actions>
+  <Methods>
+     <main>
+      <Parameters>
+        <Parameter Name="TrustPlanAccount_Principal_AvailableAmt" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="TrustPlanAccount_Principal_AvailableAmt">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TrustPlanAccount_Principal_ClosingBalance">
+        return TrustPlanAccount_Principal_AvailableAmt ;
+      </Query>
+      <Presentation />
+    </main>
+      <main>
+      <Parameters>
+        <Parameter Name="TrustPlanAccount_Interest_AvailableAmt" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="TrustPlanAccount_Interest_AvailableAmt">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TrustPlanAccount_Interest_ClosingBalance">
+        return TrustPlanAccount_Interest_AvailableAmt;
+      </Query>
+      <Presentation />
+    </main>
+	 <main>
+      <Parameters>
+        <Parameter Name="TrustPlanAccount_Principal_ClosingBalance" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="TrustPlanAccount_Principal_ClosingBalance">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="TrustPlanAccount_Interest_ClosingBalance" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="TrustPlanAccount_Interest_ClosingBalance">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TrustPlanAccount_ClosingBalance">
+        return TrustPlanAccount_Principal_ClosingBalance + TrustPlanAccount_Interest_ClosingBalance;
+      </Query>
+      <Presentation />
+    </main>
+    </Methods>
+</Tool>

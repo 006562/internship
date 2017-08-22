@@ -1,0 +1,219 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="10/10/2015 3:14:33 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GS2106CNVDV002"
+  DTS:CreatorName="CORPCN\m0004"
+  DTS:DTSID="{26DF4A0B-9B14-4836-88B2-AFC1922AC52F}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="PoolCutCreation"
+  DTS:PackageType="5"
+  DTS:VersionBuild="25"
+  DTS:VersionGUID="{FA47E832-393F-4EF2-83E4-4D2E11988C8C}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[DAL_SEC.DAL_SEC_PoolConfig]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{32931C24-EE35-4C89-AC9D-D732FF3A1539}"
+      DTS:ObjectName="DAL_SEC.DAL_SEC_PoolConfig">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=DAL_SEC;Initial Catalog=DAL_SEC_PoolConfig;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[DAL_SEC.TaskProcess]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{996FFB2F-0981-46AB-B1ED-B1399B49FE5F}"
+      DTS:ObjectName="DAL_SEC.TaskProcess">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=DAL_SEC;Initial Catalog=TaskProcess;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[PoolCutCreation]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{E4D4DEFB-FD7B-4939-8399-D9AD3C8413E7}"
+      DTS:ObjectName="PoolCutCreation">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::LogPath] + @[System::PackageName] + "_" +  (DT_WSTR, 4)DATEPART("yyyy", @[System::StartTime]) + RIGHT("0" + (DT_WSTR, 2)DATEPART("mm", @[System::StartTime]), 2) + RIGHT("0" + (DT_WSTR, 2)DATEPART("dd", @[System::StartTime]), 2) + RIGHT("0" + (DT_WSTR, 2)DATEPART("hh", @[System::StartTime]), 2) + RIGHT("0" + (DT_WSTR, 2)DATEPART("mi", @[System::StartTime]), 2) + RIGHT("0" + (DT_WSTR, 2)DATEPART("ss", @[System::StartTime]), 2)  +  ".log"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:FileUsageType="1"
+          DTS:ConnectionString="E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs\PoolCutCreation_20151116201714.log" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:LogProviders>
+    <DTS:LogProvider
+      DTS:ConfigString="PoolCutCreation"
+      DTS:CreationName="Microsoft.LogProviderTextFile"
+      DTS:Description="Writes log entries for events to a CSV file"
+      DTS:DTSID="{84C8D38C-E871-48A5-84FF-244BE85BD83B}"
+      DTS:ObjectName="SSIS log provider for Text files">
+      <DTS:ObjectData>
+        <InnerObject />
+      </DTS:ObjectData>
+    </DTS:LogProvider>
+  </DTS:LogProviders>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{0EB15ED7-3231-478E-87B1-D9B8D54AA183}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="LogPath">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs\</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{09D1DFE8-497F-4D43-BFF9-9AA82F09897F}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="OLEDBConnString_DAL_SEC_Poolconfig">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=DAL_SEC;Initial Catalog=DAL_SEC_PoolConfig;Provider=SQLNCLI10.1;Integrated Security=SSPI;Auto Translate=False;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{463C00AD-6A25-480D-84AF-DD722B51484F}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="OLEDBConnString_TakeProcess">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=DAL_SEC;Initial Catalog=TaskProcess;Provider=SQLNCLI10.1;Integrated Security=SSPI;Auto Translate=False;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{10043DF6-16E6-4DCE-850B-A130865EC391}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SessionId">
+      <DTS:VariableValue
+        DTS:DataType="8">DF8EA515-0C33-45D6-9EDC-018778E25FE9</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:LoggingOptions
+    DTS:FilterKind="0"
+    DTS:LoggingMode="1">
+    <DTS:Property
+      DTS:DataType="8"
+      DTS:Name="EventFilter">2,7,OnError,13,OnInformation</DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnError"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnInformation"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:SelectedLogProviders>
+      <DTS:SelectedLogProvider
+        DTS:InstanceID="{84C8D38C-E871-48A5-84FF-244BE85BD83B}" />
+    </DTS:SelectedLogProviders>
+  </DTS:LoggingOptions>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Pool Status"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{9C52F0F5-1542-4A72-A9B4-21FF61586E8D}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Pool Status">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Pool Status\Check Parent Pool Status"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{6FDDAD73-B812-4AAC-A5BC-602799D59678}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Check Parent Pool Status"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:LoggingOptions
+            DTS:FilterKind="0" />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{996FFB2F-0981-46AB-B1ED-B1399B49FE5F}"
+              SQLTask:SqlStatementSource="Declare @sessionId uniqueidentifier = ?&#xA;Declare @poolDBName nvarchar(200)&#xA;Declare @parentPoolId bigint&#xA;Declare @status nvarchar(30) = ''&#xA;&#xA;Set @poolDBName = (Select VariableValue from [CLO].SessionContext nolock where SessionId=@sessionId and VariableName='PoolDBName')&#xA;Set @parentPoolId = (Select VariableValue from [CLO].SessionContext nolock where Sessionid=@sessionId and VariableName='ParentPoolId')&#xA;&#xA;select @status= [CLO].[GetDictonaryCodeByCodeId]('SessionStatusType',s.SessionStatusCodeId)&#xA;from [CLO].Session s (nolock)&#xA;join [CLO].SessionContext sc (nolock) on s.SessionId=sc.SessionId&#xA;join [CLO].SessionContext sc1 (nolock) on sc.SessionId = sc1.SessionId&#xA;where sc.VariableName='PoolId' and sc.VariableValue=@parentPoolId&#xA;and sc1.VariableName='PoolDBName' and sc1.VariableValue=@poolDBName&#xA;&#xA;&#xA;&#xA;if (@status != 'Completed' and @status != '')&#xA;RAISERROR('Error: Parent Pool is not completed', 16,1)" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="0"
+                SQLTask:DtsVariableName="User::SessionId"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="100" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        <NodeLayout
+          Size="196.8,41.6"
+          Id="Package\Pool Status\Check Parent Pool Status"
+          TopLeft="25.7142879233068,79.4352969146518" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="245.6,204"
+          Size="245.6,247.2"
+          Id="Package\Pool Status"
+          TopLeft="104.000001771109,76.4705893077653" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

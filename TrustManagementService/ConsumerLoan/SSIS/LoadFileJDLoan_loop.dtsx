@@ -1,0 +1,2054 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/4/2015 1:45:33 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GS2106CNVDV009"
+  DTS:CreatorName="DEV\gslocaladmin"
+  DTS:DTSID="{3A0A89C1-A1CC-4AE1-8368-FB3161C4532A}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="LoadFileGZLoan"
+  DTS:PackageType="5"
+  DTS:VersionBuild="105"
+  DTS:VersionGUID="{C5549E81-0402-48F2-A098-E156BD74CCC3}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Excel Connection Manager 1]"
+      DTS:CreationName="EXCEL+"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{01977F7D-D89D-423A-8854-AB5445437A1C}"
+      DTS:ObjectName="Excel Connection Manager 1">
+      <DTS:PropertyExpression
+        DTS:Name="ExcelFilePath">@[User::SourceFile_Path]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <ConnectionManager
+          ConnectionString="ExcelFilePath=E:\Shared\data_1.xlsx;FormatType=Auto;Recalculate=False;RetainSameConnection=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[LogPath]"
+      DTS:CreationName="FILE"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{EDA29ADF-CB87-4ABB-A7F8-76730591F6AB}"
+      DTS:ObjectName="LogPath">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::LogPath] + @[System::PackageName] + "_" +  (DT_WSTR, 4)DATEPART("yyyy", @[System::StartTime]) + RIGHT("0" + (DT_WSTR, 2)DATEPART("mm", @[System::StartTime]), 2) + RIGHT("0" + (DT_WSTR, 2)DATEPART("dd", @[System::StartTime]), 2) + RIGHT("0" + (DT_WSTR, 2)DATEPART("hh", @[System::StartTime]), 2) + RIGHT("0" + (DT_WSTR, 2)DATEPART("mi", @[System::StartTime]), 2) + RIGHT("0" + (DT_WSTR, 2)DATEPART("ss", @[System::StartTime]), 2)  +  ".log"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:FileUsageType="1"
+          DTS:ConnectionString="E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs\LoadFileGZLoan_20160405142444.log" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[MSSQL.SFM_Staging]"
+      DTS:CreationName="OLEDB"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{A6DAD322-33FA-4FD8-8AFE-FE600F632E7C}"
+      DTS:ObjectName="MSSQL.SFM_Staging">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::OLEDBConnString]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=MSSQL;Initial Catalog=SFM_Staging ;Provider=SQLNCLI10.1;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:LogProviders>
+    <DTS:LogProvider
+      DTS:ConfigString="LogPath"
+      DTS:CreationName="Microsoft.LogProviderTextFile"
+      DTS:Description="Writes log entries for events to a CSV file"
+      DTS:DTSID="{2021C870-E943-41A5-923F-FFCA932AA448}"
+      DTS:ObjectName="SSIS log provider for Text files">
+      <DTS:ObjectData>
+        <InnerObject />
+      </DTS:ObjectData>
+    </DTS:LogProvider>
+  </DTS:LogProviders>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{059D66E2-0E6F-4F42-9EF0-0E090FE9352C}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="BusinessDate">
+      <DTS:VariableValue
+        DTS:DataType="7">2/2/2015</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4D4EF26E-58A3-49EF-B816-528DF9B8F1DE}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DBName_Staging">
+      <DTS:VariableValue
+        DTS:DataType="8">SFM_Staging</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D15BBE78-FE7F-4756-9197-ADF1C8132B6D}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DBServer">
+      <DTS:VariableValue
+        DTS:DataType="8">MSSQL</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4AB4D528-2034-4AF7-9025-C378C47B0CF3}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="fileExists">
+      <DTS:VariableValue
+        DTS:DataType="11">-1</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4C3A963B-2E92-4446-A229-CC75686911A0}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="LogPath">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs\</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DBDFB2A7-3C98-4556-AFAB-DF1512D83206}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Data Source=&quot; + @[User::DBServer] + &quot;;Initial Catalog=&quot; +@[User::DBName_Staging] + &quot; ;Provider=SQLNCLI10.1;Integrated Security=SSPI;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="OLEDBConnString">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=MSSQL;Initial Catalog=SFM_Staging ;Provider=SQLNCLI10.1;Integrated Security=SSPI;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{5CBC278C-C6F1-4C37-87DD-84D1AD8AA691}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::SourceFilePath]  + @[User::SourceFileName]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceConnection">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\temp\JD_Loans.xlsx</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{29A83D81-BFF1-4284-B5BB-B914BD849BE2}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceFileName">
+      <DTS:VariableValue
+        DTS:DataType="8">JD_Loans.xlsx</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8209FDC5-4FE1-4193-9956-A4F53E6194AB}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceFilePath">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\temp\</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{61BA370C-2AD4-4E55-90BC-B642490A2F11}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceFile_Path">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\Shared\data_1.xlsx</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:LoggingOptions
+    DTS:FilterKind="0"
+    DTS:LoggingMode="1">
+    <DTS:Property
+      DTS:DataType="8"
+      DTS:Name="EventFilter">2,7,OnError,13,OnInformation</DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnError"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnInformation"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:SelectedLogProviders>
+      <DTS:SelectedLogProvider
+        DTS:InstanceID="{2021C870-E943-41A5-923F-FFCA932AA448}" />
+    </DTS:SelectedLogProviders>
+  </DTS:LoggingOptions>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Sequence Container"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{51266DEA-ADE6-4E70-BC9F-E2AF5C4AFC95}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Sequence Container">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\Execute SQL Task"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{5ED58986-4A6C-4CC6-9420-9A7A9A7A24F4}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Execute SQL Task"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:LoggingOptions
+            DTS:FilterKind="0" />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{A6DAD322-33FA-4FD8-8AFE-FE600F632E7C}"
+              SQLTask:BypassPrepare="False"
+              SQLTask:SqlStatementSource="delete from [Transactional].[ConsumerLoans]&#xA;where BusinessDate=?" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@BusinessDate"
+                SQLTask:DtsVariableName="User::BusinessDate"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="7"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\Foreach Loop Container"
+          DTS:CreationName="STOCK:FOREACHLOOP"
+          DTS:DelayValidation="True"
+          DTS:Description="Foreach Loop Container"
+          DTS:DTSID="{397714FC-C7F3-463E-B53B-67FBC45F1F78}"
+          DTS:ExecutableType="STOCK:FOREACHLOOP"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Foreach Loop Container">
+          <DTS:ForEachEnumerator
+            DTS:CreationName="Microsoft.ForEachFileEnumerator"
+            DTS:DTSID="{04857706-2655-462C-B82F-89583190E268}"
+            DTS:ObjectName="{04857706-2655-462C-B82F-89583190E268}">
+            <DTS:ObjectData>
+              <ForEachFileEnumeratorProperties>
+                <FEFEProperty
+                  Folder="E:\Shared\" />
+                <FEFEProperty
+                  FileSpec="data_*.xlsx" />
+                <FEFEProperty
+                  FileNameRetrievalType="0" />
+                <FEFEProperty
+                  Recurse="0" />
+              </ForEachFileEnumeratorProperties>
+            </DTS:ObjectData>
+          </DTS:ForEachEnumerator>
+          <DTS:Variables>
+            <DTS:Variable
+              DTS:CreationName=""
+              DTS:DTSID="{B40A81E1-ABF4-4DB3-BFB3-EF0DBCC2D6B8}"
+              DTS:IncludeInDebugDump="2345"
+              DTS:Namespace="User"
+              DTS:ObjectName="File_Path">
+              <DTS:VariableValue
+                DTS:DataType="8"
+                xml:space="preserve"></DTS:VariableValue>
+            </DTS:Variable>
+          </DTS:Variables>
+          <DTS:Executables>
+            <DTS:Executable
+              DTS:refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task"
+              DTS:CreationName="Microsoft.Pipeline"
+              DTS:Description="Data Flow Task"
+              DTS:DTSID="{DFEBBDC8-123A-4F16-A1F4-73247E34351A}"
+              DTS:ExecutableType="Microsoft.Pipeline"
+              DTS:LocaleID="-1"
+              DTS:ObjectName="Data Flow Task"
+              DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+              <DTS:Variables />
+              <DTS:LoggingOptions
+                DTS:FilterKind="0" />
+              <DTS:ObjectData>
+                <pipeline
+                  version="1">
+                  <components>
+                    <component
+                      refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split"
+                      componentClassID="Microsoft.ConditionalSplit"
+                      contactInfo="Conditional Split;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                      description="Routes data rows to different outputs depending on the content of the data. Use conditions (SSIS expressions) to specify which rows are routed. For example, separate records that need to be cleaned from those that are ready to be loaded or route only a subset of records."
+                      name="Conditional Split"
+                      usesDispositions="true">
+                      <inputs>
+                        <input
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Inputs[Conditional Split Input]"
+                          description="Input to the Conditional Split Transformation"
+                          name="Conditional Split Input">
+                          <inputColumns>
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Inputs[Conditional Split Input].Columns[LoanCustomerId]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="LoanCustomerId"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanCustomerId]" />
+                          </inputColumns>
+                          <externalMetadataColumns />
+                        </input>
+                      </inputs>
+                      <outputs>
+                        <output
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Outputs[NonEmptyRows]"
+                          description="Output 1 of the Conditional Split Transformation"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          exclusionGroup="1"
+                          name="NonEmptyRows"
+                          synchronousInputId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Inputs[Conditional Split Input]"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Specifies the expression. This expression version uses lineage identifiers instead of column names."
+                              name="Expression">![ISNULL](#{Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanCustomerId]})</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Specifies the friendly version of the expression. This expression version uses column names."
+                              expressionType="Notify"
+                              name="FriendlyExpression">!ISNULL(LoanCustomerId)</property>
+                            <property
+                              dataType="System.Int32"
+                              description="Specifies the position of the condition in the list of conditions that the transformation evaluates. The evaluation order is from the lowest to the highest value."
+                              name="EvaluationOrder">0</property>
+                          </properties>
+                          <externalMetadataColumns />
+                        </output>
+                        <output
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Outputs[Conditional Split Default Output]"
+                          description="Default Output of the Conditional Split Transformation"
+                          exclusionGroup="1"
+                          name="Conditional Split Default Output"
+                          synchronousInputId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Inputs[Conditional Split Input]">
+                          <properties>
+                            <property
+                              dataType="System.Boolean"
+                              name="IsDefaultOut">true</property>
+                          </properties>
+                          <externalMetadataColumns />
+                        </output>
+                        <output
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Outputs[Conditional Split Error Output]"
+                          description="Error Output of the Conditional Split Transformation"
+                          exclusionGroup="1"
+                          isErrorOut="true"
+                          name="Conditional Split Error Output"
+                          synchronousInputId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Inputs[Conditional Split Input]">
+                          <outputColumns>
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                              dataType="i4"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorCode]"
+                              name="ErrorCode"
+                              specialFlags="1" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                              dataType="i4"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Outputs[Conditional Split Error Output].Columns[ErrorColumn]"
+                              name="ErrorColumn"
+                              specialFlags="2" />
+                          </outputColumns>
+                          <externalMetadataColumns />
+                        </output>
+                      </outputs>
+                    </component>
+                    <component
+                      refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion"
+                      componentClassID="Microsoft.DataConvert"
+                      contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                      description="Data Conversion"
+                      name="Data Conversion"
+                      usesDispositions="true">
+                      <inputs>
+                        <input
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion.Inputs[Data Conversion Input]"
+                          name="Data Conversion Input">
+                          <externalMetadataColumns />
+                        </input>
+                      </inputs>
+                      <outputs>
+                        <output
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion.Outputs[Data Conversion Output]"
+                          exclusionGroup="1"
+                          name="Data Conversion Output"
+                          synchronousInputId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion.Inputs[Data Conversion Input]">
+                          <externalMetadataColumns />
+                        </output>
+                        <output
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion.Outputs[Data Conversion Error Output]"
+                          exclusionGroup="1"
+                          isErrorOut="true"
+                          name="Data Conversion Error Output"
+                          synchronousInputId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion.Inputs[Data Conversion Input]">
+                          <outputColumns>
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                              dataType="i4"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                              name="ErrorCode"
+                              specialFlags="1" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                              dataType="i4"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                              name="ErrorColumn"
+                              specialFlags="2" />
+                          </outputColumns>
+                          <externalMetadataColumns />
+                        </output>
+                      </outputs>
+                    </component>
+                    <component
+                      refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column"
+                      componentClassID="Microsoft.DerivedColumn"
+                      contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                      description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+                      name="Derived Column"
+                      usesDispositions="true">
+                      <inputs>
+                        <input
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Inputs[Derived Column Input]"
+                          description="Input to the Derived Column Transformation"
+                          name="Derived Column Input">
+                          <externalMetadataColumns />
+                        </input>
+                      </inputs>
+                      <outputs>
+                        <output
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Output]"
+                          description="Default Output of the Derived Column Transformation"
+                          exclusionGroup="1"
+                          name="Derived Column Output"
+                          synchronousInputId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Inputs[Derived Column Input]">
+                          <outputColumns>
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[BusinessDate]"
+                              dataType="date"
+                              errorOrTruncationOperation="Computation"
+                              errorRowDisposition="FailComponent"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[BusinessDate]"
+                              name="BusinessDate"
+                              truncationRowDisposition="FailComponent">
+                              <properties>
+                                <property
+                                  containsID="true"
+                                  dataType="System.String"
+                                  description="Derived Column Expression"
+                                  name="Expression">@[BusinessDate]</property>
+                                <property
+                                  containsID="true"
+                                  dataType="System.String"
+                                  description="Derived Column Friendly Expression"
+                                  expressionType="Notify"
+                                  name="FriendlyExpression">@BusinessDate</property>
+                              </properties>
+                            </outputColumn>
+                          </outputColumns>
+                          <externalMetadataColumns />
+                        </output>
+                        <output
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Error Output]"
+                          description="Error Output of the Derived Column Transformation"
+                          exclusionGroup="1"
+                          isErrorOut="true"
+                          name="Derived Column Error Output"
+                          synchronousInputId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Inputs[Derived Column Input]">
+                          <outputColumns>
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                              dataType="i4"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                              name="ErrorCode"
+                              specialFlags="1" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                              dataType="i4"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                              name="ErrorColumn"
+                              specialFlags="2" />
+                          </outputColumns>
+                          <externalMetadataColumns />
+                        </output>
+                      </outputs>
+                    </component>
+                    <component
+                      refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus"
+                      componentClassID="Microsoft.ManagedComponentHost"
+                      contactInfo="Extracts data from Excel worksheet.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+                      description="Extracts data from Excel worksheet."
+                      name="Excel Source Plus"
+                      usesDispositions="true">
+                      <properties>
+                        <property
+                          dataType="System.Null"
+                          name="ComponentObject"
+                          typeConverter="NOTBROWSABLE" />
+                        <property
+                          dataType="System.String"
+                          description="Source Excel worksheet."
+                          expressionType="Notify"
+                          name="Worksheet"
+                          typeConverter="CozyRoc.SqlServer.SSIS.TableEditor, CozyRoc.SSISPlus.UI.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">Sheet1</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Specifies first row contains column names."
+                          name="FirstRowHasColumnName">true</property>
+                        <property
+                          dataType="System.String"
+                          description="Specifies source worksheet region."
+                          expressionType="Notify"
+                          name="Region">1, 1, -1, -1</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies output type."
+                          name="OutputType"
+                          typeConverter="CozyRoc.SqlServer.SSIS.ExcelSource+OutputTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">1</property>
+                        <property
+                          dataType="System.String"
+                          name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.ExcelSource, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+                      </properties>
+                      <connections>
+                        <connection
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Connections[EXCEL+]"
+                          connectionManagerID="Package.ConnectionManagers[Excel Connection Manager 1]"
+                          connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager 1]"
+                          description="COZYROC Excel Connection Manager"
+                          name="EXCEL+" />
+                      </connections>
+                      <outputs>
+                        <output
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output]"
+                          name="Excel Source Plus Output">
+                          <outputColumns>
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[SeriesNo]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[SeriesNo]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[SeriesNo]"
+                              name="SeriesNo"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[AccountNo]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]"
+                              name="AccountNo"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanCustomerId]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanCustomerId]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanCustomerId]"
+                              name="LoanCustomerId"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanStartDate]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanStartDate]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanStartDate]"
+                              name="LoanStartDate"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanEndDate]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanEndDate]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanEndDate]"
+                              name="LoanEndDate"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[ApprovalAmount]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[ApprovalAmount]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[ApprovalAmount]"
+                              name="ApprovalAmount"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CurrentPrincipalBalance]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CurrentPrincipalBalance]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CurrentPrincipalBalance]"
+                              name="CurrentPrincipalBalance"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FeeOutstanding]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[FeeOutstanding]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FeeOutstanding]"
+                              name="FeeOutstanding"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CurrentRate]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CurrentRate]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CurrentRate]"
+                              name="CurrentRate"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[ArrearsAmount]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[ArrearsAmount]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[ArrearsAmount]"
+                              name="ArrearsAmount"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DaysInArrears]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[DaysInArrears]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DaysInArrears]"
+                              name="DaysInArrears"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TimesInArrears]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[TimesInArrears]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TimesInArrears]"
+                              name="TimesInArrears"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanTerm]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanTerm]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanTerm]"
+                              name="LoanTerm"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[InArrearsIndicator]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[InArrearsIndicator]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[InArrearsIndicator]"
+                              name="InArrearsIndicator"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[HistoricalDaysInArrears]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[HistoricalDaysInArrears]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[HistoricalDaysInArrears]"
+                              name="HistoricalDaysInArrears"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[MaxDaysInArrears]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[MaxDaysInArrears]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[MaxDaysInArrears]"
+                              name="MaxDaysInArrears"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AgeBucket]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[AgeBucket]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AgeBucket]"
+                              name="AgeBucket"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CustomerChannel]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CustomerChannel]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CustomerChannel]"
+                              name="CustomerChannel"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[UserLevel]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[UserLevel]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[UserLevel]"
+                              name="UserLevel"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CreditRating]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CreditRating]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CreditRating]"
+                              name="CreditRating"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CreditLimit]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CreditLimit]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CreditLimit]"
+                              name="CreditLimit"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CustomerAreaLocation]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CustomerAreaLocation]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CustomerAreaLocation]"
+                              name="CustomerAreaLocation"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[ProductType]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[ProductType]"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[ProductType]"
+                              name="ProductType"
+                              truncationRowDisposition="FailComponent" />
+                          </outputColumns>
+                          <externalMetadataColumns
+                            isUsed="True">
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[SeriesNo]"
+                              dataType="wstr"
+                              length="250"
+                              name="SeriesNo" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[AccountNo]"
+                              dataType="wstr"
+                              length="250"
+                              name="AccountNo" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanCustomerId]"
+                              dataType="wstr"
+                              length="250"
+                              name="LoanCustomerId" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanStartDate]"
+                              dataType="wstr"
+                              length="250"
+                              name="LoanStartDate" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanEndDate]"
+                              dataType="wstr"
+                              length="250"
+                              name="LoanEndDate" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[ApprovalAmount]"
+                              dataType="wstr"
+                              length="250"
+                              name="ApprovalAmount" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CurrentPrincipalBalance]"
+                              dataType="wstr"
+                              length="250"
+                              name="CurrentPrincipalBalance" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[FeeOutstanding]"
+                              dataType="wstr"
+                              length="250"
+                              name="FeeOutstanding" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CurrentRate]"
+                              dataType="wstr"
+                              length="250"
+                              name="CurrentRate" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[ArrearsAmount]"
+                              dataType="wstr"
+                              length="250"
+                              name="ArrearsAmount" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[DaysInArrears]"
+                              dataType="wstr"
+                              length="250"
+                              name="DaysInArrears" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[TimesInArrears]"
+                              dataType="wstr"
+                              length="250"
+                              name="TimesInArrears" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanTerm]"
+                              dataType="wstr"
+                              length="250"
+                              name="LoanTerm" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[InArrearsIndicator]"
+                              dataType="wstr"
+                              length="250"
+                              name="InArrearsIndicator" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[HistoricalDaysInArrears]"
+                              dataType="wstr"
+                              length="250"
+                              name="HistoricalDaysInArrears" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[MaxDaysInArrears]"
+                              dataType="wstr"
+                              length="250"
+                              name="MaxDaysInArrears" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[AgeBucket]"
+                              dataType="wstr"
+                              length="250"
+                              name="AgeBucket" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CustomerChannel]"
+                              dataType="wstr"
+                              length="250"
+                              name="CustomerChannel" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[UserLevel]"
+                              dataType="wstr"
+                              length="250"
+                              name="UserLevel" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CreditRating]"
+                              dataType="wstr"
+                              length="250"
+                              name="CreditRating" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CreditLimit]"
+                              dataType="wstr"
+                              length="250"
+                              name="CreditLimit" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[CustomerAreaLocation]"
+                              dataType="wstr"
+                              length="250"
+                              name="CustomerAreaLocation" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[ProductType]"
+                              dataType="wstr"
+                              length="250"
+                              name="ProductType" />
+                          </externalMetadataColumns>
+                        </output>
+                        <output
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output]"
+                          isErrorOut="true"
+                          name="Excel Source Plus Error Output">
+                          <outputColumns>
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorCode]"
+                              dataType="i4"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorCode]"
+                              name="ErrorCode"
+                              specialFlags="1" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorColumn]"
+                              dataType="i4"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorColumn]"
+                              name="ErrorColumn"
+                              specialFlags="2" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[SeriesNo]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[SeriesNo]"
+                              name="SeriesNo"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[AccountNo]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[AccountNo]"
+                              name="AccountNo"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanCustomerId]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanCustomerId]"
+                              name="LoanCustomerId"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanStartDate]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanStartDate]"
+                              name="LoanStartDate"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanEndDate]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanEndDate]"
+                              name="LoanEndDate"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ApprovalAmount]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ApprovalAmount]"
+                              name="ApprovalAmount"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CurrentPrincipalBalance]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CurrentPrincipalBalance]"
+                              name="CurrentPrincipalBalance"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[FeeOutstanding]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[FeeOutstanding]"
+                              name="FeeOutstanding"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CurrentRate]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CurrentRate]"
+                              name="CurrentRate"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ArrearsAmount]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ArrearsAmount]"
+                              name="ArrearsAmount"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[DaysInArrears]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[DaysInArrears]"
+                              name="DaysInArrears"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[TimesInArrears]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[TimesInArrears]"
+                              name="TimesInArrears"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanTerm]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanTerm]"
+                              name="LoanTerm"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[InArrearsIndicator]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[InArrearsIndicator]"
+                              name="InArrearsIndicator"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[HistoricalDaysInArrears]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[HistoricalDaysInArrears]"
+                              name="HistoricalDaysInArrears"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[MaxDaysInArrears]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[MaxDaysInArrears]"
+                              name="MaxDaysInArrears"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[AgeBucket]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[AgeBucket]"
+                              name="AgeBucket"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CustomerChannel]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CustomerChannel]"
+                              name="CustomerChannel"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[UserLevel]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[UserLevel]"
+                              name="UserLevel"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CreditRating]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CreditRating]"
+                              name="CreditRating"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CreditLimit]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CreditLimit]"
+                              name="CreditLimit"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CustomerAreaLocation]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[CustomerAreaLocation]"
+                              name="CustomerAreaLocation"
+                              truncationRowDisposition="FailComponent" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ProductType]"
+                              dataType="wstr"
+                              errorOrTruncationOperation="Conversion"
+                              errorRowDisposition="FailComponent"
+                              length="250"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ProductType]"
+                              name="ProductType"
+                              truncationRowDisposition="FailComponent" />
+                          </outputColumns>
+                          <externalMetadataColumns />
+                        </output>
+                      </outputs>
+                    </component>
+                    <component
+                      refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination"
+                      componentClassID="Microsoft.OLEDBDestination"
+                      contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                      description="OLE DB Destination"
+                      name="OLE DB Destination"
+                      usesDispositions="true"
+                      version="4">
+                      <properties>
+                        <property
+                          dataType="System.Int32"
+                          description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                          name="CommandTimeout">0</property>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the name of the database object used to open a rowset."
+                          name="OpenRowset">[Transactional].[ConsumerLoans]</property>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the variable that contains the name of the database object used to open a rowset."
+                          name="OpenRowsetVariable"></property>
+                        <property
+                          dataType="System.String"
+                          description="The SQL command to be executed."
+                          name="SqlCommand"
+                          UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the column code page to use when code page information is unavailable from the data source."
+                          name="DefaultCodePage">1252</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Forces the use of the DefaultCodePage property value when describing character data."
+                          name="AlwaysUseDefaultCodePage">false</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the mode used to access the database."
+                          name="AccessMode"
+                          typeConverter="AccessMode">3</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                          name="FastLoadKeepIdentity">true</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                          name="FastLoadKeepNulls">false</property>
+                        <property
+                          dataType="System.String"
+                          description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                          name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                          name="FastLoadMaxInsertCommitSize">2147483647</property>
+                      </properties>
+                      <connections>
+                        <connection
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Connections[OleDbConnection]"
+                          connectionManagerID="Package.ConnectionManagers[MSSQL.SFM_Staging]"
+                          connectionManagerRefId="Package.ConnectionManagers[MSSQL.SFM_Staging]"
+                          description="The OLE DB runtime connection used to access the database."
+                          name="OleDbConnection" />
+                      </connections>
+                      <inputs>
+                        <input
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                          errorOrTruncationOperation="Insert"
+                          errorRowDisposition="FailComponent"
+                          hasSideEffects="true"
+                          name="OLE DB Destination Input">
+                          <inputColumns>
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[BusinessDate]"
+                              cachedDataType="date"
+                              cachedName="BusinessDate"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BusinessDate]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[BusinessDate]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[SeriesNo]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="SeriesNo"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SeriesNo]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[SeriesNo]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanCustomerId]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="LoanCustomerId"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanCustomerId]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanCustomerId]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[AccountNo]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="AccountNo"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanAccountNo]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanStartDate]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="LoanStartDate"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanStartDate]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanStartDate]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanEndDate]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="LoanEndDate"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanEndDate]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanEndDate]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ApprovalAmount]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="ApprovalAmount"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ApprovalAmount]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[ApprovalAmount]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CurrentPrincipalBalance]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="CurrentPrincipalBalance"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CurrentPrincipalBalance]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CurrentPrincipalBalance]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ArrearsAmount]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="ArrearsAmount"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsAmount]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[ArrearsAmount]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DaysInArrears]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="DaysInArrears"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DaysInArrears]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[DaysInArrears]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanTerm]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="LoanTerm"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanTerm]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanTerm]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[InArrearsIndicator]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="InArrearsIndicator"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InArrearsIndicator]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[InArrearsIndicator]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[AgeBucket]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="AgeBucket"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AgeBucket]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AgeBucket]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CustomerChannel]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="CustomerChannel"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerChannel]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CustomerChannel]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[UserLevel]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="UserLevel"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[UserLevel]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[UserLevel]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[FeeOutstanding]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="FeeOutstanding"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FeeOutstanding]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FeeOutstanding]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[HistoricalDaysInArrears]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="HistoricalDaysInArrears"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[HistoricalDaysInArrears]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[HistoricalDaysInArrears]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[MaxDaysInArrears]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="MaxDaysInArrears"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MaxDaysInArrears]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[MaxDaysInArrears]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CreditRating]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="CreditRating"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CreditRating]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CreditRating]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CreditLimit]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="CreditLimit"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CreditLimit]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CreditLimit]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TimesInArrears]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="TimesInArrears"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TimesInArrears]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TimesInArrears]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CurrentRate]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="CurrentRate"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CurrentRate]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CurrentRate]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ProductType]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="ProductType"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ProductType]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[ProductType]" />
+                            <inputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CustomerAreaLocation]"
+                              cachedDataType="wstr"
+                              cachedLength="250"
+                              cachedName="CustomerAreaLocation"
+                              externalMetadataColumnId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerAreaLocation]"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[CustomerAreaLocation]" />
+                          </inputColumns>
+                          <externalMetadataColumns
+                            isUsed="True">
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BusinessDate]"
+                              dataType="dbDate"
+                              name="BusinessDate" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SeriesNo]"
+                              dataType="wstr"
+                              length="50"
+                              name="SeriesNo" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanCustomerId]"
+                              dataType="wstr"
+                              length="50"
+                              name="LoanCustomerId" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CoreCustomerId]"
+                              dataType="wstr"
+                              length="50"
+                              name="CoreCustomerId" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LegalEntityType]"
+                              dataType="wstr"
+                              length="50"
+                              name="LegalEntityType" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DocumentType]"
+                              dataType="wstr"
+                              length="50"
+                              name="DocumentType" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DocumentNo]"
+                              dataType="wstr"
+                              length="50"
+                              name="DocumentNo" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerName]"
+                              dataType="wstr"
+                              length="255"
+                              name="CustomerName" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanCardNo]"
+                              dataType="wstr"
+                              length="50"
+                              name="LoanCardNo" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerAreaLocation]"
+                              dataType="wstr"
+                              length="255"
+                              name="CustomerAreaLocation" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerRegisteredAddress]"
+                              dataType="wstr"
+                              length="255"
+                              name="CustomerRegisteredAddress" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerDepartment]"
+                              dataType="wstr"
+                              length="50"
+                              name="CustomerDepartment" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerBusinessGeneralCategory]"
+                              dataType="wstr"
+                              length="50"
+                              name="CustomerBusinessGeneralCategory" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerBusinessFirstCategory]"
+                              dataType="wstr"
+                              length="50"
+                              name="CustomerBusinessFirstCategory" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerBusinessSecondCategory]"
+                              dataType="wstr"
+                              length="50"
+                              name="CustomerBusinessSecondCategory" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerBusinessThirdCategory]"
+                              dataType="wstr"
+                              length="50"
+                              name="CustomerBusinessThirdCategory" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AgricultureLoanType]"
+                              dataType="wstr"
+                              length="50"
+                              name="AgricultureLoanType" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SecurityMethod]"
+                              dataType="wstr"
+                              length="50"
+                              name="SecurityMethod" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PaymentMethod]"
+                              dataType="wstr"
+                              length="50"
+                              name="PaymentMethod" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanAccountNo]"
+                              dataType="wstr"
+                              length="100"
+                              name="LoanAccountNo" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ContractNo]"
+                              dataType="wstr"
+                              length="100"
+                              name="ContractNo" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ProductNo]"
+                              dataType="wstr"
+                              length="50"
+                              name="ProductNo" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ProductName]"
+                              dataType="wstr"
+                              length="255"
+                              name="ProductName" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ProductType]"
+                              dataType="wstr"
+                              length="100"
+                              name="ProductType" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CurrentRate]"
+                              dataType="wstr"
+                              length="50"
+                              name="CurrentRate" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanStartDate]"
+                              dataType="wstr"
+                              length="50"
+                              name="LoanStartDate" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanMaturityDate]"
+                              dataType="wstr"
+                              length="50"
+                              name="LoanMaturityDate" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanEndDate]"
+                              dataType="wstr"
+                              length="50"
+                              name="LoanEndDate" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ApprovalAmount]"
+                              dataType="wstr"
+                              length="50"
+                              name="ApprovalAmount" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CurrentPrincipalBalance]"
+                              dataType="wstr"
+                              length="50"
+                              name="CurrentPrincipalBalance" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ScheduledBalance]"
+                              dataType="wstr"
+                              length="50"
+                              name="ScheduledBalance" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsAmount]"
+                              dataType="wstr"
+                              length="50"
+                              name="ArrearsAmount" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsAmount1]"
+                              dataType="wstr"
+                              length="50"
+                              name="ArrearsAmount1" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsAmount2]"
+                              dataType="wstr"
+                              length="50"
+                              name="ArrearsAmount2" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsInterestInBalanceSheet]"
+                              dataType="wstr"
+                              length="50"
+                              name="ArrearsInterestInBalanceSheet" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ArrearsInterestOutOfBalanceSheet]"
+                              dataType="wstr"
+                              length="50"
+                              name="ArrearsInterestOutOfBalanceSheet" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CompoundInterestBalance]"
+                              dataType="wstr"
+                              length="50"
+                              name="CompoundInterestBalance" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LendingAccountNo]"
+                              dataType="wstr"
+                              length="100"
+                              name="LendingAccountNo" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PaymentAccountNo]"
+                              dataType="wstr"
+                              length="100"
+                              name="PaymentAccountNo" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InterestAccountNo]"
+                              dataType="wstr"
+                              length="100"
+                              name="InterestAccountNo" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DaysInArrears]"
+                              dataType="wstr"
+                              length="10"
+                              name="DaysInArrears" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InterestDaysInArrears]"
+                              dataType="wstr"
+                              length="10"
+                              name="InterestDaysInArrears" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerBSB]"
+                              dataType="wstr"
+                              length="100"
+                              name="CustomerBSB" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AccountManager]"
+                              dataType="wstr"
+                              length="50"
+                              name="AccountManager" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BranchName]"
+                              dataType="wstr"
+                              length="100"
+                              name="BranchName" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OrganisationName]"
+                              dataType="wstr"
+                              length="100"
+                              name="OrganisationName" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OrganisationType]"
+                              dataType="wstr"
+                              length="50"
+                              name="OrganisationType" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanTerm]"
+                              dataType="wstr"
+                              length="50"
+                              name="LoanTerm" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InArrearsIndicator]"
+                              dataType="wstr"
+                              length="50"
+                              name="InArrearsIndicator" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AgeBucket]"
+                              dataType="wstr"
+                              length="50"
+                              name="AgeBucket" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerChannel]"
+                              dataType="wstr"
+                              length="50"
+                              name="CustomerChannel" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[UserLevel]"
+                              dataType="wstr"
+                              length="50"
+                              name="UserLevel" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FeeOutstanding]"
+                              dataType="wstr"
+                              length="50"
+                              name="FeeOutstanding" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[HistoricalDaysInArrears]"
+                              dataType="wstr"
+                              length="10"
+                              name="HistoricalDaysInArrears" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[MaxDaysInArrears]"
+                              dataType="wstr"
+                              length="10"
+                              name="MaxDaysInArrears" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CreditRiskClassificationCode]"
+                              dataType="wstr"
+                              length="20"
+                              name="CreditRiskClassificationCode" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CreditRating]"
+                              dataType="wstr"
+                              length="20"
+                              name="CreditRating" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CreditLimit]"
+                              dataType="wstr"
+                              length="20"
+                              name="CreditLimit" />
+                            <externalMetadataColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[TimesInArrears]"
+                              dataType="wstr"
+                              length="50"
+                              name="TimesInArrears" />
+                          </externalMetadataColumns>
+                        </input>
+                      </inputs>
+                      <outputs>
+                        <output
+                          refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                          exclusionGroup="1"
+                          isErrorOut="true"
+                          name="OLE DB Destination Error Output"
+                          synchronousInputId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                          <outputColumns>
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                              dataType="i4"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                              name="ErrorCode"
+                              specialFlags="1" />
+                            <outputColumn
+                              refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                              dataType="i4"
+                              lineageId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                              name="ErrorColumn"
+                              specialFlags="2" />
+                          </outputColumns>
+                          <externalMetadataColumns />
+                        </output>
+                      </outputs>
+                    </component>
+                  </components>
+                  <paths>
+                    <path
+                      refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task.Paths[Data Conversion Output]"
+                      endId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Inputs[Derived Column Input]"
+                      name="Data Conversion Output"
+                      startId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion.Outputs[Data Conversion Output]" />
+                    <path
+                      refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task.Paths[Derived Column Output]"
+                      endId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                      name="Derived Column Output"
+                      startId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column.Outputs[Derived Column Output]" />
+                    <path
+                      refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task.Paths[Excel Source Plus Output]"
+                      endId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Inputs[Conditional Split Input]"
+                      name="Excel Source Plus Output"
+                      startId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output]" />
+                    <path
+                      refId="Package\Sequence Container\Foreach Loop Container\Data Flow Task.Paths[NonEmptyRows]"
+                      endId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion.Inputs[Data Conversion Input]"
+                      name="NonEmptyRows"
+                      startId="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split.Outputs[NonEmptyRows]" />
+                  </paths>
+                </pipeline>
+              </DTS:ObjectData>
+            </DTS:Executable>
+          </DTS:Executables>
+          <DTS:ForEachVariableMappings>
+            <DTS:ForEachVariableMapping
+              DTS:CreationName=""
+              DTS:DTSID="{13F29923-75C8-4E62-B700-B8C835EBDAD6}"
+              DTS:ObjectName="{13F29923-75C8-4E62-B700-B8C835EBDAD6}"
+              DTS:ValueIndex="0"
+              DTS:VariableName="User::SourceFile_Path" />
+          </DTS:ForEachVariableMappings>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Sequence Container\Format Date"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{EB9FB167-33F4-4699-ADDB-3D9349E71828}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Format Date"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:LoggingOptions
+            DTS:FilterKind="0" />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{A6DAD322-33FA-4FD8-8AFE-FE600F632E7C}"
+              SQLTask:BypassPrepare="False"
+              SQLTask:SqlStatementSource="UPDATE [Transactional].[ConsumerLoans] SET&#xA;LoanStartDate =SUBSTRING(LoanStartDate,6,4) + '-' + (&#xA;SELECT CASE SUBSTRING(LoanStartDate,3,3) &#xA;WHEN 'JAN' THEN '01'&#xA;WHEN 'FEB' THEN '02'&#xA;WHEN 'MAR' THEN '03'&#xA;WHEN 'APR' THEN '04'&#xA;WHEN 'MAY' THEN '05'&#xA;WHEN 'JUN' THEN '06'&#xA;WHEN 'JUL' THEN '07'&#xA;WHEN 'AUG' THEN '08'&#xA;WHEN 'SEP' THEN '09'&#xA;WHEN 'OCT' THEN '10'&#xA;WHEN 'NOV' THEN '11'&#xA;WHEN 'DEC' THEN '12'&#xA;END&#xA;) + '-' + SUBSTRING(LoanStartDate,1,2),&#xA;LoanEndDate =SUBSTRING(LoanEndDate,6,4) + '-' + (&#xA;SELECT CASE SUBSTRING(LoanEndDate,3,3) &#xA;WHEN 'JAN' THEN '01'&#xA;WHEN 'FEB' THEN '02'&#xA;WHEN 'MAR' THEN '03'&#xA;WHEN 'APR' THEN '04'&#xA;WHEN 'MAY' THEN '05'&#xA;WHEN 'JUN' THEN '06'&#xA;WHEN 'JUL' THEN '07'&#xA;WHEN 'AUG' THEN '08'&#xA;WHEN 'SEP' THEN '09'&#xA;WHEN 'OCT' THEN '10'&#xA;WHEN 'NOV' THEN '11'&#xA;WHEN 'DEC' THEN '12'&#xA;END&#xA;) + '-' + SUBSTRING(LoanEndDate,1,2)&#xA;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@BusinessDate"
+                SQLTask:DtsVariableName="User::BusinessDate"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="7"
+                SQLTask:ParameterSize="-1" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Sequence Container.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{809BCDE0-4EC8-430C-A84A-0E728834DCBB}"
+          DTS:From="Package\Sequence Container\Execute SQL Task"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Sequence Container\Foreach Loop Container" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Sequence Container.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{3BFE9E18-3999-46E6-8D4A-848539B6F956}"
+          DTS:From="Package\Sequence Container\Foreach Loop Container"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Sequence Container\Format Date" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="163.2,41.6"
+          Id="Package\Sequence Container\Execute SQL Task"
+          TopLeft="123,18" />
+        <NodeLayout
+          Size="150.4,41.6"
+          Id="Package\Sequence Container\Foreach Loop Container\Data Flow Task"
+          TopLeft="65.0000041042057,49.1999993801115" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="289.6,176"
+          Size="289.6,219.2"
+          Id="Package\Sequence Container\Foreach Loop Container"
+          TopLeft="308.057149206862,66.0000025524814" />
+        <NodeLayout
+          Size="137.6,41.6"
+          Id="Package\Sequence Container\Format Date"
+          TopLeft="122.057146039301,262.023534096319" />
+        <EdgeLayout
+          Id="Package\Sequence Container.PrecedenceConstraints[Constraint]"
+          TopLeft="286.2,38.8">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="166.657149206862,27.2000025524814"
+              Start="0,0"
+              End="166.657149206862,19.7000025524814">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="162.657149206862,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="162.657149206862,0"
+                    Point2="166.657149206862,0"
+                    Point3="166.657149206862,4" />
+                  <mssgle:LineSegment
+                    End="166.657149206862,19.7000025524814" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Sequence Container.PrecedenceConstraints[Constraint 1]"
+          TopLeft="308.057149206862,175.600002552481">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-48.4000031675614,107.223531543838"
+              Start="0,0"
+              End="-40.9000031675614,107.223531543838">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-20.2000015837807,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-20.2000015837807,0"
+                    Point2="-24.2000015837807,0"
+                    Point3="-24.2000015837807,4" />
+                  <mssgle:LineSegment
+                    End="-24.2000015837807,103.223531543838" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-24.2000015837807,103.223531543838"
+                    Point2="-24.2000015837807,107.223531543838"
+                    Point3="-28.2000015837807,107.223531543838" />
+                  <mssgle:LineSegment
+                    End="-40.9000031675614,107.223531543838" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="656.8,363.2"
+          Size="656.8,406.4"
+          Id="Package\Sequence Container"
+          TopLeft="65,73" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Sequence Container\Foreach Loop Container\Data Flow Task">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="155.2,41.6"
+          Id="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Data Conversion"
+          TopLeft="182,194.5" />
+        <NodeLayout
+          Size="160.8,41.6"
+          Id="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Excel Source Plus"
+          TopLeft="182,46" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination"
+          TopLeft="182.57142858116,343.611764714462" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Derived Column"
+          TopLeft="182,268.75" />
+        <NodeLayout
+          Size="171.2,41.6"
+          Id="Package\Sequence Container\Foreach Loop Container\Data Flow Task\Conditional Split"
+          TopLeft="182,120.25" />
+        <EdgeLayout
+          Id="Package\Sequence Container\Foreach Loop Container\Data Flow Task.Paths[NonEmptyRows]"
+          TopLeft="267.6,161.85">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-8,32.65"
+              Start="0,0"
+              End="-8,25.15">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,12.325" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,12.325"
+                    Point2="0,16.325"
+                    Point3="-4,16.325" />
+                  <mssgle:LineSegment
+                    End="-4,16.325" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-4,16.325"
+                    Point2="-8,16.325"
+                    Point3="-8,20.325" />
+                  <mssgle:LineSegment
+                    End="-8,25.15" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-39.067578125,21.325,70.13515625,11.2822265625"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Sequence Container\Foreach Loop Container\Data Flow Task.Paths[Excel Source Plus Output]"
+          TopLeft="265,88">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,32.25"
+              Start="0,0"
+              End="0,24.75">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,24.75" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Sequence Container\Foreach Loop Container\Data Flow Task.Paths[Derived Column Output]"
+          TopLeft="267.88571429058,310.35">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,33.2617647144621"
+              Start="0,0"
+              End="0,25.7617647144621">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25.7617647144621" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Sequence Container\Foreach Loop Container\Data Flow Task.Paths[Data Conversion Output]"
+          TopLeft="259.6,236.1">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="8,32.65"
+              Start="0,0"
+              End="8,25.15">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,12.325" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,12.325"
+                    Point2="0,16.325"
+                    Point3="4,16.325" />
+                  <mssgle:LineSegment
+                    End="4,16.325" />
+                  <mssgle:CubicBezierSegment
+                    Point1="4,16.325"
+                    Point2="8,16.325"
+                    Point3="8,20.325" />
+                  <mssgle:LineSegment
+                    End="8,25.15" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Sequence Container\Foreach Loop Container\Data Flow Task\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

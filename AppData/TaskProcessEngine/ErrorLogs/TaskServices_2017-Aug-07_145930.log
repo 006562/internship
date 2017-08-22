@@ -1,0 +1,25 @@
+[2017-08-07 14:59:30,626] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for da474782-c918-415c-a30c-b4f35a17ce14 failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Exception: Source=DataFlow Task; Error Code=-1071636471; Error Description=SSIS Error Code DTS_E_OLEDBERROR.  An OLE DB error has occurred. Error code: 0x80004005.
+An OLE DB record is available.  Source: "Microsoft SQL Server Native Client 10.0"  Hresult: 0x80004005  Description: "The statement has been terminated.".
+An OLE DB record is available.  Source: "Microsoft SQL Server Native Client 10.0"  Hresult: 0x80004005  Description: "Violation of PRIMARY KEY constraint 'PK_tblFactLoanCustomer'. Cannot insert duplicate key in object 'dbo.tblFactLoanCustomer'. The duplicate key value is (26223800, 24468390, 2, 2, 64, 20160701, 1).".
+
+Source=DataFlow Task; Error Code=-1071607767; Error Description=SSIS Error Code DTS_E_INDUCEDTRANSFORMFAILUREONERROR.  The "Inserting the Working table.Inputs[OLE DB Destination Input]" failed because error code 0xC020907B occurred, and the error row disposition on "Inserting the Working table.Inputs[OLE DB Destination Input]" specifies failure on error. An error occurred on the specified object of the specified component.  There may be error messages posted before this with more information about the failure.
+
+Source=DataFlow Task; Error Code=-1073450974; Error Description=SSIS Error Code DTS_E_PROCESSINPUTFAILED.  The ProcessInput method on component "Inserting the Working table" (33) failed with error code 0xC0209029 while processing input "OLE DB Destination Input" (46). The identified component returned an error from the ProcessInput method. The error is specific to the component, but the error is fatal and will cause the Data Flow task to stop running.  There may be error messages posted before this with more information about the failure.
+
+
+   at BL.TaskProcessService.OperationProvider.RunSSIS(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-07 15:13:58,849] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 60bbfd1a-be20-4513-a18c-c12b81847f63 failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentException: E:\TSSWCFServices\PoolCut\ConsumerLoan\Databases\CreateDatabase.xml has an exception: SQL Server blocked access to procedure 'sys.xp_cmdshell' of component 'xp_cmdshell' because this component is turned off as part of the security configuration for this server. A system administrator can enable the use of 'xp_cmdshell' by using sp_configure. For more information about enabling 'xp_cmdshell', search for 'xp_cmdshell' in SQL Server Books Online.
+SQL Server blocked access to procedure 'sys.xp_cmdshell' of component 'xp_cmdshell' because this component is turned off as part of the security configuration for this server. A system administrator can enable the use of 'xp_cmdshell' by using sp_configure. For more information about enabling 'xp_cmdshell', search for 'xp_cmdshell' in SQL Server Books Online.
+Unable to open the physical file "E:\Databases\Data\Job_2_20170801_127.mdf". Operating system error 2: "2(The system cannot find the file specified.)".
+User does not have permission to alter database 'Job_2_20170801_127', the database does not exist, or the database is not in a state that allows access checks.
+ALTER DATABASE statement failed.
+Database 'Job_2_20170801_127' does not exist. Make sure that the name is entered correctly.
+   at BL.TaskProcessService.OperationProvider.RunXmlQuery(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63

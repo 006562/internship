@@ -1,0 +1,305 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>配置偿付顺序</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <script src="/TrustManagementService/Scripts/Kendo/js/jquery-1.9.1.min.js" type="text/javascript"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/jquery-ui-latest.js"></script>
+    <script src="/TrustManagementService/Config/GlobalVariable.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/common.js"></script>
+    <script src="/TrustManagementService/Scripts/Kendo/js/kendo.all.min.js"></script>
+    <script src="/TrustManagementService/Scripts/Kendo/js/kendo.culture.zh-CN.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/format.number.js"></script>
+    <script src="PaymentSequenceSettingHN.js"></script>
+    <link href="/TrustManagementService/Scripts/Kendo/styles/kendo.material.min.css" rel="stylesheet" />
+    <link href="/TrustManagementService/Scripts/Kendo/styles/kendo.common-material.min.css" rel="stylesheet" />
+    <link href="/TrustManagementService/TrustManagement/TrustFollowUp/css/trustFollowUp.css" rel="stylesheet" />
+    <script src="../../../TrustManagement/Common/Scripts/anyDialog.js"></script>
+    <script type="text/javascript">
+
+    </script>
+    <style type="text/css">
+        body, button, input, select, textarea {
+            font: 12px/1.5 'Microsoft Yahei',tahoma,arial,\5b8b\4f53;
+            outline: 0;
+            resize: none;
+        }
+
+        .objElement {
+            cursor: pointer;
+            text-align: center;
+            margin: 2px;
+            background: #f8f8f8;
+            font-size: 12px;
+            padding: 0 5px;
+            height: 22px;
+            line-height: 22px;
+            color: #000;
+            font-weight: bolder;
+            width: 118px;
+            float: left;
+            overflow: hidden;
+        }
+
+        .divTab {
+            border: #BDBDBD solid 1px;
+            padding: 5px;
+        }
+
+        .divTabHead {
+            background-color: #CCCCCC;
+            height: 28px;
+            border: #BDBDBD solid 1px;
+            padding: 5px 5px 0px 5px;
+        }
+
+        .divTabLi {
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0 5px;
+            text-align: center;
+            height: 28px;
+            line-height: 28px;
+            border: #BDBDBD solid 1px;
+            border-right: none;
+            border-bottom: none;
+            width: 100px;
+            float: left;
+            background: url(../img/grayTable.png);
+            color: #000;
+            font-weight: bolder;
+            display: block;
+        }
+
+        .tabsLi {
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0 5px;
+            text-align: center;
+            height: 28px;
+            line-height: 28px;
+            border: #BDBDBD solid 1px;
+            border-right: none;
+            border-bottom: none;
+            width: 100px;
+            background: url(../img/grayTable.png);
+            color: #000;
+            font-weight: bolder;
+            display: inline-block;
+        }
+
+        .divTabActive {
+            color: #000099 !important;
+            background-color: #EEEEEE !important;
+        }
+
+        .feeElement {
+            background-color: #327bbf;
+            color: #fff;
+        }
+
+        .bondElement {
+            background-color: #cc433b;
+            color: #fff;
+        }
+
+        .leveltd {
+            background-color: #EEEEEE;
+            color: #000000;
+        }
+    </style>
+</head>
+<body style="overflow:hidden">
+    <div class="body-container form nobottom" >
+        <div class='divTab' style='width:auto;overflow:hidden'>
+            <div class="divTabHead" id="sScenarioList"></div>
+            <div class="form" style="min-height:100px;width:auto">
+                <div style="position:absolute;right:10px;top:9px;">
+                    <button id="bt_Save" type="button" class="btn btn-primary" style="padding:3px 20px;">保存</button>
+                </div>
+                <div style="position:absolute;right:82px;top:9px;">
+                    <button id="bt_review" type="button" class="btn btn-primary" style="padding:3px 20px;">预览</button>
+                </div>
+                <div class="form-menu">
+                    <div class="form-panel item">
+                        <div class="col-12">
+                            <div class="col-6 form-group autoLayout-plugins">
+                                <div class="col-4">
+                                    <label>本金精度</label>
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" id="principalP" class="form-control form-item" />
+                                </div>
+                            </div>
+                            <div class="col-6 form-group autoLayout-plugins">
+                                <div class="col-4">
+                                    <label>利息精度</label>
+                                </div>
+                                <div class="col-6">
+                                    <input type="number" id="interestP" class="form-control form-item" />
+                                </div>
+                            </div>
+                            <div class="col-6 form-group autoLayout-plugins">
+                                <div class="col-4">
+                                    <label>收入账结余是否转入本金账</label>
+                                </div>
+                                <div class="col-6">
+                                    <input type="checkbox" id="checkInterest" class="form-item" />
+                                    <div class="field-details" style="display:inline-block;margin-left:10px;">
+                                        <i class="icon icon-help" style="margin-top: 2px;display: block;color:#4174cb;"></i>
+                                        <div class="field-detail-box">
+                                            若不区分收入账与本金账，则所有资金均作为利息回收款，请勾选此项。
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-6 form-group autoLayout-plugins">
+                                <div class="col-4">
+                                    <label>选择期数</label>
+                                </div>
+                                <div class="col-6">
+                                    <input id="checkPeriod" type="checkbox" class="form-item" />
+                                </div>
+                            </div>
+                            <div class="col-6 form-group autoLayout-plugins periodfields">
+                                <div class="col-4">
+                                    <label>起始</label>
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-control form-item" id="PeriodStart"></select>
+                                </div>
+                            </div>
+                            <div class="col-6 form-group autoLayout-plugins periodfields">
+                                <div class="col-4">
+                                    <label>终止（含该日）</label>
+                                </div>
+                                <div class="col-6">
+                                    <select class="form-control form-item" id="PeriodEnd"></select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="overflow:hidden">
+                <div id="sortable_div" style="float:left;width:190px;margin-top:5px;margin-bottom:5px;border:#BDBDBD solid 1px;line-height:28px;overflow-y:auto"></div>
+                <div id="divPayment" style="margin-top:5px;margin-left:200px;margin-bottom:5px;overflow-y:auto">
+                    <div style="width:auto;">
+                        <ul id="panelbar">
+                            <li>
+                                正常偿付
+                                <div>
+                                    <table class="gridTemplate" id="grid1"></table>
+                                    <script id="rowTemplate1" type="text/x-kendo-tmpl">
+                                        <tr data-uid="#: uid #" style="min-height:32px">
+                                            <td class="leveltd">
+                                                <span>#: Id#</span>
+                                            </td>
+                                            <td class="sortable_td" style="padding:0px !important">#= BondFees#</td>
+                                            <td>
+                                                <input type="text" style="width:70px;text-align:left" class="PayLimitation" value="#: PayLimitation#" />
+                                            </td>
+                                            <td>
+                                                <input type="number" style="width:70px" value="#: PercentageOfSurplus#" />&nbsp;<span>%</span>
+                                            </td>
+                                            <td>
+                                                #= AllocationRuleOfSameLevel#
+                                            </td>
+                                            <td>
+                                                #= FillByPrincipal#
+                                            </td>
+                                        </tr>
+                                    </script>
+                                </div>
+                            </li>
+                            <li>
+                                加速清偿
+                                <div>
+                                    <table class="gridTemplate" id="grid2"></table>
+                                    <script id="rowTemplate2" type="text/x-kendo-tmpl">
+                                        <tr data-uid="#: uid #" style="min-height:32px">
+                                            <td class="leveltd">
+                                                <span>#: Id#</span>
+                                            </td>
+                                            <td class="sortable_td" style="padding:0px !important">#= BondFees#</td>
+                                            <td>
+                                                <input type="text" style="width:70px;text-align:left" class="PayLimitation" value="#: PayLimitation#" />
+                                            </td>
+                                            <td>
+                                                <input type="number" style="width:70px" value="#: PercentageOfSurplus#" />&nbsp;<span>%</span>
+                                            </td>
+                                            <td>
+                                                #= AllocationRuleOfSameLevel#
+                                            </td>
+                                            <td>
+                                                #= FillByPrincipal#
+                                            </td>
+                                        </tr>
+                                    </script>
+                                </div>
+                            </li>
+                            <li>
+                                非加速清偿
+                                <div>
+                                    <table class="gridTemplate" id="grid3"></table>
+                                    <script id="rowTemplate3" type="text/x-kendo-tmpl">
+                                        <tr data-uid="#: uid #" style="min-height:32px">
+                                            <td class="leveltd">
+                                                <span>#: Id#</span>
+                                            </td>
+                                            <td class="sortable_td" style="padding:0px !important">#= BondFees#</td>
+                                            <td>
+                                                <input type="text" style="width:70px;text-align:left" class="PayLimitation" value="#: PayLimitation#" />
+                                            </td>
+                                            <td>
+                                                <input type="number" style="width:70px" value="#: PercentageOfSurplus#" />&nbsp;<span>%</span>
+                                            </td>
+                                            <td>
+                                                #= AllocationRuleOfSameLevel#
+                                            </td>
+                                            <td>
+                                                #= FillByPrincipal#
+                                            </td>
+                                        </tr>
+                                    </script>
+                                </div>
+                            </li>
+                            <li>
+                                正常偿付
+                                <div>
+                                    <table class="gridTemplate" id="grid4"></table>
+                                    <script id="rowTemplate4" type="text/x-kendo-tmpl">
+                                        <tr data-uid="#: uid #" style="min-height:32px">
+                                            <td class="leveltd">
+                                                <span>#: Id#</span>
+                                            </td>
+                                            <td class="sortable_td" style="padding:0px !important">#= BondFees#</td>
+                                            <td>
+                                                <input type="text" style="width:70px;text-align:left" class="PayLimitation" value="#: PayLimitation#" />
+                                            </td>
+                                            <td>
+                                                <input type="number" style="width:70px" value="#: PercentageOfSurplus#" />&nbsp;<span>%</span>
+                                            </td>
+                                            <td>
+                                                #= AllocationRuleOfSameLevel#
+                                            </td>
+                                            <td>
+                                                #= FillByPrincipal#
+                                            </td>
+                                        </tr>
+                                    </script>
+                                </div>
+                            </li>
+                        </ul>
+
+                    </div>
+                    <!--<div style='height:100px;width:auto;border:#BDBDBD solid 1px;line-height:28px' id='sortable_div'>
+                </div>-->
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

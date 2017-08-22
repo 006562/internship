@@ -1,0 +1,30 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link href="../Contents/common.css" rel="stylesheet" />
+    <link href="../Contents/previewPage.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+
+</head>
+    
+<body>
+    <div class="wrap">
+        <h3 data-bind="text:Language.Title01" class="pageTitle font16"></h3>
+        <div data-bind="foreach:DataItems" class="content">
+            <div class="col-6 pageRow">
+                <span data-bind="text:Text" class="font12"></span>
+                <!--ko if:IsDisplay-->
+                <span class="font12">:</span>
+                <!--/ko-->
+                <span data-bind="text:Value" class="font12"></span>
+            </div>
+        </div>
+    </div>
+    <script src="viewGrid.v.js"></script>
+</body>
+</html>
+

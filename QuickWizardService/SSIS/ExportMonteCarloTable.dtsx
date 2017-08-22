@@ -1,0 +1,2377 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/24/2016 9:26:48 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="JDDEV02"
+  DTS:CreatorName="JDDEV02\supdev"
+  DTS:DTSID="{F13D12CA-02DD-4967-8564-F71AA2FE66F9}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="2052"
+  DTS:ObjectName="ExportMonteCarloTable"
+  DTS:PackageType="5"
+  DTS:VersionBuild="57"
+  DTS:VersionGUID="{91C01D64-238A-4D4B-9AC9-149A9C8B6CBB}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Excel Connection Manager 2]"
+      DTS:CreationName="EXCEL+"
+      DTS:DTSID="{8937DA70-0200-4EDF-8281-D84F61E4BED1}"
+      DTS:ObjectName="Excel Connection Manager 2">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">"ExcelFilePath="+ @[User::DestinationFullPath] +";FormatType=Auto;Recalculate=False;RetainSameConnection=True;"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <ConnectionManager
+          ConnectionString="ExcelFilePath=E:\TSSWCFServices\QuickWizardService\Files\Working\MonteCarlo导出.xlsx;FormatType=Auto;Recalculate=False;RetainSameConnection=True;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[poolcutsp\mssql.SFM_DAL_ConsumerLoan]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{E4469E09-1615-41B3-A6B8-A2EC5E597232}"
+      DTS:ObjectName="poolcutsp\mssql.SFM_DAL_ConsumerLoan">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=.\mssql;Initial Catalog=TrustManagement;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{92E9C289-A76E-4D9B-869C-881BF4CC495D}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;select N'现金流入' title,  ItemValue Value from [TrustManagement].[TrustInfoExtension] &#xA;where ItemCode='CashflowInput' and TrustId=&quot;+ @[User::TrustID]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="CashflowInput">
+      <DTS:VariableValue
+        DTS:DataType="8">select N'现金流入' title,  ItemValue Value from [TrustManagement].[TrustInfoExtension] 
+where ItemCode='CashflowInput' and TrustId=65</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{339327EF-4A6E-4DEF-9251-E3F149A42D7E}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DestinationExcelPath">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\QuickWizardService\Files\Working</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E0BEB96D-200A-45BD-9913-4D412D04927B}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::DestinationExcelPath]+&quot;\\&quot;+ @[User::ExcelName]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DestinationFullPath">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\QuickWizardService\Files\Working\MonteCarlo导出.xlsx</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4FCA9238-4C69-4BBD-995C-D7B24919C8C3}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ExcelName">
+      <DTS:VariableValue
+        DTS:DataType="8">MonteCarlo导出.xlsx</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8D4E4615-285A-4383-8E1B-4F4D7C97494C}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="OutputFolder">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\QuickWizardService\Files\Output</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A7DB43C3-36F2-4C61-9431-680286510B61}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;select N'回收率' title,  ItemValue Value from [TrustManagement].[TrustInfoExtension] &#xA;where ItemCode='RecoveryRate' and TrustId=&quot;+ @[User::TrustID]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="RecoveryRate">
+      <DTS:VariableValue
+        DTS:DataType="8">select N'回收率' title,  ItemValue Value from [TrustManagement].[TrustInfoExtension] 
+where ItemCode='RecoveryRate' and TrustId=65</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C4A30051-E782-43E4-99C8-0B35234CE5B7}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::OutputFolder]+&quot;\\&quot;+ @[User::ResultName]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="RenameFullPath">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\QuickWizardService\Files\Output\MonteCarlo.xlsx</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{ED8E5814-6719-455B-8DE1-55DAAE855362}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ResultName">
+      <DTS:VariableValue
+        DTS:DataType="8">MonteCarlo.xlsx</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{FE74E207-B65C-4E37-AFEC-66147C82BE02}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;SELECT [ClassName] 证券简称&#xA;      ,[Rating] 原始评级&#xA;      ,[RequiredDefaultRate] 需承受的违约比率&#xA;      ,[NormalScenarioDefaultRate] 正常情况下能承受的违约比率&#xA;      ,[StressScenario1DefaultRate] 压力景况1下能承受的违约比率&#xA;      ,[StressScenario2DefaultRate] 压力景况2下能承受的违约比率&#xA;  FROM [TrustManagement].[TrustManagement].[TrustMonteCarloTestResult] where TrustId=&quot; + @[User::TrustID]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SelecCalculateMonteCarloTest">
+      <DTS:VariableValue
+        DTS:DataType="8">SELECT [ClassName] 证券简称
+      ,[Rating] 原始评级
+      ,[RequiredDefaultRate] 需承受的违约比率
+      ,[NormalScenarioDefaultRate] 正常情况下能承受的违约比率
+      ,[StressScenario1DefaultRate] 压力景况1下能承受的违约比率
+      ,[StressScenario2DefaultRate] 压力景况2下能承受的违约比率
+  FROM [TrustManagement].[TrustManagement].[TrustMonteCarloTestResult] where TrustId=65</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A6286757-9500-4BE6-9EE6-46622858CF19}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;exec [TrustManagement].[usp_GetMonteCarlo_Cashflow] &quot; + @[User::TrustID]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SelectCashflow">
+      <DTS:VariableValue
+        DTS:DataType="8">exec [TrustManagement].[usp_GetMonteCarlo_Cashflow] 65</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{379294FD-4B53-4273-8464-2FDAE0896115}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;exec [TrustManagement].usp_GetRecoveryRateMapping &quot;+  @[User::TrustID]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SelectRecoveryRateMapping">
+      <DTS:VariableValue
+        DTS:DataType="8">exec [TrustManagement].usp_GetRecoveryRateMapping 65</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F27AC105-5E4D-41A4-BB6A-7EFCAF27B89A}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::SourceExcelPath]+&quot;\\&quot;+ @[User::ExcelName]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceExcelFullPath">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\QuickWizardService\Files\MonteCarlo导出.xlsx</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{74B0865B-98B7-4D6E-9AA8-ADA02E9DC5B8}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceExcelPath">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\QuickWizardService\Files</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{7A010F18-15C1-47D9-B1AE-C64635CE33E1}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="TrustID">
+      <DTS:VariableValue
+        DTS:DataType="8">65</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Copy excel to working"
+      DTS:CreationName="Microsoft.FileSystemTask"
+      DTS:Description="File System Task"
+      DTS:DTSID="{BFF386CC-7567-4F39-88CB-A3FD0E0F8AB4}"
+      DTS:ExecutableType="Microsoft.FileSystemTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Copy excel to working"
+      DTS:TaskContact="File System Task;Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <FileSystemData
+          TaskOverwriteDestFile="True"
+          TaskSourcePath="User::SourceExcelFullPath"
+          TaskIsSourceVariable="True"
+          TaskDestinationPath="User::DestinationFullPath"
+          TaskIsDestinationVariable="True" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Data Flow Task"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{168D0EC7-BBC0-4291-ACD5-1178D717D89E}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Data Flow Task"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Data Flow Task\Excel Destination Plus"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="Inserts data into Excel worksheet.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+              description="Inserts data into Excel worksheet."
+              name="Excel Destination Plus"
+              usesDispositions="true">
+              <properties>
+                <property
+                  dataType="System.Null"
+                  description="Inserts data into Excel worksheet."
+                  name="ComponentObject"
+                  typeConverter="NOTBROWSABLE" />
+                <property
+                  dataType="System.String"
+                  description="Destination Excel worksheet."
+                  expressionType="Notify"
+                  name="Worksheet"
+                  typeConverter="CozyRoc.SqlServer.SSIS.TableEditor, CozyRoc.SSISPlus.UI.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">Sheet1</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies first row contains column names."
+                  name="FirstRowHasColumnName">true</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies destination first column. The value is 1-based."
+                  expressionType="Notify"
+                  name="StartColumn">9</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies destination first row. The value is 1-based."
+                  expressionType="Notify"
+                  name="StartRow">2</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies to save Excel workbook at end."
+                  name="SaveAtEnd">true</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies input type."
+                  name="InputType"
+                  typeConverter="CozyRoc.SqlServer.SSIS.ExcelDestination+InputTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies how to handle existing data."
+                  name="ExistingData"
+                  typeConverter="CozyRoc.SqlServer.SSIS.ExcelDestination+ExistingDataTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">1</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.ExcelDestination, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task\Excel Destination Plus.Connections[EXCEL+]"
+                  connectionManagerID="Package.ConnectionManagers[Excel Connection Manager 2]"
+                  connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager 2]"
+                  description="COZYROC Excel Connection Manager"
+                  name="EXCEL+" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Data Flow Task\Excel Destination Plus.Inputs[Excel Destination Plus Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Excel Destination Plus Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Data Flow Task\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[评级档位]"
+                      cachedDataType="wstr"
+                      cachedLength="20"
+                      cachedName="评级档位"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[评级档位]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[回收率降低比例 (%)]"
+                      cachedDataType="numeric"
+                      cachedName="回收率降低比例 (%)"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[回收率降低比例 (%)]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[降低后的回收率 (%)]"
+                      cachedDataType="r8"
+                      cachedName="降低后的回收率 (%)"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[降低后的回收率 (%)]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task\Excel Destination Plus.Outputs[Excel Destination Plus Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Excel Destination Plus Error Output"
+                  synchronousInputId="Package\Data Flow Task\Excel Destination Plus.Inputs[Excel Destination Plus Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Data Flow Task\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">declare @startDate date=?
+declare @endDate date=?
+declare @startCopy date
+
+declare @dateTable table(startdate varchar(10),enddate varchar(10))
+
+
+while (@startDate&lt;=@endDate)
+begin
+ set @startCopy=@startDate
+   while (@startCopy&lt;=@endDate)
+     begin
+	    insert into @dateTable values(@startDate,@startCopy) 
+		set @startCopy=DATEADD(M,1,@startCopy)
+	 end
+
+	 set @startDate=DATEADD(M,1,@startDate)
+end
+ 
+ select * from @dateTable</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::SelectRecoveryRateMapping</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">936</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping">"@startDate:Input",{43E5F8C7-75F7-4E92-928D-AE999B6D8669};"@endDate:Input",{B1A58150-4667-47FB-A42E-B23F4B6F93FB};</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[poolcutsp\mssql.SFM_DAL_ConsumerLoan]"
+                  connectionManagerRefId="Package.ConnectionManagers[poolcutsp\mssql.SFM_DAL_ConsumerLoan]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[评级档位]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Rating]"
+                      length="20"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[评级档位]"
+                      name="评级档位"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[回收率降低比例 (%)]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Discount]"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[回收率降低比例 (%)]"
+                      name="回收率降低比例 (%)"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[降低后的回收率 (%)]"
+                      dataType="r8"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ReducedRecovery]"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[降低后的回收率 (%)]"
+                      name="降低后的回收率 (%)"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Rating]"
+                      dataType="wstr"
+                      length="20"
+                      name="Rating" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Discount]"
+                      dataType="numeric"
+                      name="Discount"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ReducedRecovery]"
+                      dataType="r8"
+                      name="ReducedRecovery" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Rating]"
+                      dataType="wstr"
+                      length="20"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Rating]"
+                      name="Rating" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Discount]"
+                      dataType="numeric"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Discount]"
+                      name="Discount"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ReducedRecovery]"
+                      dataType="r8"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ReducedRecovery]"
+                      name="ReducedRecovery" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Data Flow Task.Paths[OLE DB Source Output]"
+              endId="Package\Data Flow Task\Excel Destination Plus.Inputs[Excel Destination Plus Input]"
+              name="OLE DB Source Output"
+              startId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Data Flow Task 1"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{5faadf1e-ceac-4b85-b695-02e7593b3d80}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Data Flow Task 1"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Data Flow Task 1\Excel Destination Plus"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="Inserts data into Excel worksheet.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+              description="Inserts data into Excel worksheet."
+              name="Excel Destination Plus"
+              usesDispositions="true">
+              <properties>
+                <property
+                  dataType="System.Null"
+                  description="Inserts data into Excel worksheet."
+                  name="ComponentObject"
+                  typeConverter="NOTBROWSABLE" />
+                <property
+                  dataType="System.String"
+                  description="Destination Excel worksheet."
+                  expressionType="Notify"
+                  name="Worksheet"
+                  typeConverter="CozyRoc.SqlServer.SSIS.TableEditor, CozyRoc.SSISPlus.UI.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">Sheet1</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies first row contains column names."
+                  name="FirstRowHasColumnName">true</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies destination first column. The value is 1-based."
+                  expressionType="Notify"
+                  name="StartColumn">5</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies destination first row. The value is 1-based."
+                  expressionType="Notify"
+                  name="StartRow">2</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies to save Excel workbook at end."
+                  name="SaveAtEnd">true</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies input type."
+                  name="InputType"
+                  typeConverter="CozyRoc.SqlServer.SSIS.ExcelDestination+InputTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies how to handle existing data."
+                  name="ExistingData"
+                  typeConverter="CozyRoc.SqlServer.SSIS.ExcelDestination+ExistingDataTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">1</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.ExcelDestination, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task 1\Excel Destination Plus.Connections[EXCEL+]"
+                  connectionManagerID="Package.ConnectionManagers[Excel Connection Manager 2]"
+                  connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager 2]"
+                  description="COZYROC Excel Connection Manager"
+                  name="EXCEL+" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Data Flow Task 1\Excel Destination Plus.Inputs[Excel Destination Plus Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Excel Destination Plus Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[现金流项目]"
+                      cachedDataType="nText"
+                      cachedName="现金流项目"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[现金流项目]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[压力1金额]"
+                      cachedDataType="nText"
+                      cachedName="压力1金额"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[压力1金额]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[压力2金额]"
+                      cachedDataType="nText"
+                      cachedName="压力2金额"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[压力2金额]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Excel Destination Plus Error Output"
+                  synchronousInputId="Package\Data Flow Task 1\Excel Destination Plus.Inputs[Excel Destination Plus Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Data Flow Task 1\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">declare @startDate date=?
+declare @endDate date=?
+declare @startCopy date
+
+declare @dateTable table(startdate varchar(10),enddate varchar(10))
+
+
+while (@startDate&lt;=@endDate)
+begin
+ set @startCopy=@startDate
+   while (@startCopy&lt;=@endDate)
+     begin
+	    insert into @dateTable values(@startDate,@startCopy) 
+		set @startCopy=DATEADD(M,1,@startCopy)
+	 end
+
+	 set @startDate=DATEADD(M,1,@startDate)
+end
+ 
+ select * from @dateTable</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::SelectCashflow</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">936</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping">"@startDate:Input",{43E5F8C7-75F7-4E92-928D-AE999B6D8669};"@endDate:Input",{B1A58150-4667-47FB-A42E-B23F4B6F93FB};</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task 1\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[poolcutsp\mssql.SFM_DAL_ConsumerLoan]"
+                  connectionManagerRefId="Package.ConnectionManagers[poolcutsp\mssql.SFM_DAL_ConsumerLoan]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[现金流项目]"
+                      dataType="nText"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[现金流项目]"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[现金流项目]"
+                      name="现金流项目"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[压力1金额]"
+                      dataType="nText"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[压力1金额]"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[压力1金额]"
+                      name="压力1金额"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[压力2金额]"
+                      dataType="nText"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[压力2金额]"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[压力2金额]"
+                      name="压力2金额"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[证券简称]"
+                      dataType="nText"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[证券简称]"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[证券简称]"
+                      name="证券简称"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[需承受的违约比率]"
+                      dataType="nText"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[需承受的违约比率]"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[需承受的违约比率]"
+                      name="需承受的违约比率"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[现金流项目]"
+                      dataType="nText"
+                      name="现金流项目" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[压力1金额]"
+                      dataType="nText"
+                      name="压力1金额" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[压力2金额]"
+                      dataType="nText"
+                      name="压力2金额" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[证券简称]"
+                      dataType="nText"
+                      name="证券简称" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[需承受的违约比率]"
+                      dataType="nText"
+                      name="需承受的违约比率" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[证券简称]"
+                      dataType="nText"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[证券简称]"
+                      name="证券简称" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[现金流项目]"
+                      dataType="nText"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[现金流项目]"
+                      name="现金流项目" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[需承受的违约比率]"
+                      dataType="nText"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[需承受的违约比率]"
+                      name="需承受的违约比率" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[压力1金额]"
+                      dataType="nText"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[压力1金额]"
+                      name="压力1金额" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[压力2金额]"
+                      dataType="nText"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[压力2金额]"
+                      name="压力2金额" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Data Flow Task 1.Paths[OLE DB Source Output]"
+              endId="Package\Data Flow Task 1\Excel Destination Plus.Inputs[Excel Destination Plus Input]"
+              name="OLE DB Source Output"
+              startId="Package\Data Flow Task 1\OLE DB Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Data Flow Task 1 1"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{fba7997d-0d79-49b9-8d6a-c3f88cb40f9e}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Data Flow Task 1 1"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Data Flow Task 1 1\Excel Destination Plus"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="Inserts data into Excel worksheet.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+              description="Inserts data into Excel worksheet."
+              name="Excel Destination Plus"
+              usesDispositions="true">
+              <properties>
+                <property
+                  dataType="System.Null"
+                  description="Inserts data into Excel worksheet."
+                  name="ComponentObject"
+                  typeConverter="NOTBROWSABLE" />
+                <property
+                  dataType="System.String"
+                  description="Destination Excel worksheet."
+                  expressionType="Notify"
+                  name="Worksheet"
+                  typeConverter="CozyRoc.SqlServer.SSIS.TableEditor, CozyRoc.SSISPlus.UI.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">Sheet1</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies first row contains column names."
+                  name="FirstRowHasColumnName">true</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies destination first column. The value is 1-based."
+                  expressionType="Notify"
+                  name="StartColumn">4</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies destination first row. The value is 1-based."
+                  expressionType="Notify"
+                  name="StartRow">18</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies to save Excel workbook at end."
+                  name="SaveAtEnd">true</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies input type."
+                  name="InputType"
+                  typeConverter="CozyRoc.SqlServer.SSIS.ExcelDestination+InputTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies how to handle existing data."
+                  name="ExistingData"
+                  typeConverter="CozyRoc.SqlServer.SSIS.ExcelDestination+ExistingDataTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">1</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.ExcelDestination, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task 1 1\Excel Destination Plus.Connections[EXCEL+]"
+                  connectionManagerID="Package.ConnectionManagers[Excel Connection Manager 2]"
+                  connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager 2]"
+                  description="COZYROC Excel Connection Manager"
+                  name="EXCEL+" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Data Flow Task 1 1\Excel Destination Plus.Inputs[Excel Destination Plus Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Excel Destination Plus Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Data Flow Task 1 1\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[证券简称]"
+                      cachedDataType="wstr"
+                      cachedLength="20"
+                      cachedName="证券简称"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[证券简称]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1 1\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[原始评级]"
+                      cachedDataType="wstr"
+                      cachedLength="20"
+                      cachedName="原始评级"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[原始评级]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1 1\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[需承受的违约比率]"
+                      cachedDataType="numeric"
+                      cachedName="需承受的违约比率"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[需承受的违约比率]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1 1\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[正常情况下能承受的违约比率]"
+                      cachedDataType="numeric"
+                      cachedName="正常情况下能承受的违约比率"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[正常情况下能承受的违约比率]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1 1\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[压力景况1下能承受的违约比率]"
+                      cachedDataType="numeric"
+                      cachedName="压力景况1下能承受的违约比率"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[压力景况1下能承受的违约比率]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1 1\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[压力景况2下能承受的违约比率]"
+                      cachedDataType="numeric"
+                      cachedName="压力景况2下能承受的违约比率"
+                      cachedPrecision="15"
+                      cachedScale="4"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[压力景况2下能承受的违约比率]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task 1 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Excel Destination Plus Error Output"
+                  synchronousInputId="Package\Data Flow Task 1 1\Excel Destination Plus.Inputs[Excel Destination Plus Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Data Flow Task 1 1\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">declare @startDate date=?
+declare @endDate date=?
+declare @startCopy date
+
+declare @dateTable table(startdate varchar(10),enddate varchar(10))
+
+
+while (@startDate&lt;=@endDate)
+begin
+ set @startCopy=@startDate
+   while (@startCopy&lt;=@endDate)
+     begin
+	    insert into @dateTable values(@startDate,@startCopy) 
+		set @startCopy=DATEADD(M,1,@startCopy)
+	 end
+
+	 set @startDate=DATEADD(M,1,@startDate)
+end
+ 
+ select * from @dateTable</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::SelecCalculateMonteCarloTest</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">936</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping">"@startDate:Input",{43E5F8C7-75F7-4E92-928D-AE999B6D8669};"@endDate:Input",{B1A58150-4667-47FB-A42E-B23F4B6F93FB};</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task 1 1\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[poolcutsp\mssql.SFM_DAL_ConsumerLoan]"
+                  connectionManagerRefId="Package.ConnectionManagers[poolcutsp\mssql.SFM_DAL_ConsumerLoan]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[证券简称]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[证券简称]"
+                      length="20"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[证券简称]"
+                      name="证券简称"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[原始评级]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[原始评级]"
+                      length="20"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[原始评级]"
+                      name="原始评级"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[需承受的违约比率]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[需承受的违约比率]"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[需承受的违约比率]"
+                      name="需承受的违约比率"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[正常情况下能承受的违约比率]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[正常情况下能承受的违约比率]"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[正常情况下能承受的违约比率]"
+                      name="正常情况下能承受的违约比率"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[压力景况1下能承受的违约比率]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[压力景况1下能承受的违约比率]"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[压力景况1下能承受的违约比率]"
+                      name="压力景况1下能承受的违约比率"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[压力景况2下能承受的违约比率]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[压力景况2下能承受的违约比率]"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[压力景况2下能承受的违约比率]"
+                      name="压力景况2下能承受的违约比率"
+                      precision="15"
+                      scale="4"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[证券简称]"
+                      dataType="wstr"
+                      length="20"
+                      name="证券简称" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[原始评级]"
+                      dataType="wstr"
+                      length="20"
+                      name="原始评级" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[需承受的违约比率]"
+                      dataType="numeric"
+                      name="需承受的违约比率"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[正常情况下能承受的违约比率]"
+                      dataType="numeric"
+                      name="正常情况下能承受的违约比率"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[压力景况1下能承受的违约比率]"
+                      dataType="numeric"
+                      name="压力景况1下能承受的违约比率"
+                      precision="15"
+                      scale="4" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[压力景况2下能承受的违约比率]"
+                      dataType="numeric"
+                      name="压力景况2下能承受的违约比率"
+                      precision="15"
+                      scale="4" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[证券简称]"
+                      dataType="wstr"
+                      length="20"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[证券简称]"
+                      name="证券简称" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[原始评级]"
+                      dataType="wstr"
+                      length="20"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[原始评级]"
+                      name="原始评级" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[需承受的违约比率]"
+                      dataType="numeric"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[需承受的违约比率]"
+                      name="需承受的违约比率"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[正常情况下能承受的违约比率]"
+                      dataType="numeric"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[正常情况下能承受的违约比率]"
+                      name="正常情况下能承受的违约比率"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[压力景况1下能承受的违约比率]"
+                      dataType="numeric"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[压力景况1下能承受的违约比率]"
+                      name="压力景况1下能承受的违约比率"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[压力景况2下能承受的违约比率]"
+                      dataType="numeric"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[压力景况2下能承受的违约比率]"
+                      name="压力景况2下能承受的违约比率"
+                      precision="15"
+                      scale="4" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Data Flow Task 1 1.Paths[OLE DB Source Output]"
+              endId="Package\Data Flow Task 1 1\Excel Destination Plus.Inputs[Excel Destination Plus Input]"
+              name="OLE DB Source Output"
+              startId="Package\Data Flow Task 1 1\OLE DB Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Data Flow Task 2"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{b06c97c0-8ff9-4d16-b6b8-90efd376a21e}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Data Flow Task 2"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Data Flow Task 2\Excel Destination Plus"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="Inserts data into Excel worksheet.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+              description="Inserts data into Excel worksheet."
+              name="Excel Destination Plus"
+              usesDispositions="true">
+              <properties>
+                <property
+                  dataType="System.Null"
+                  description="Inserts data into Excel worksheet."
+                  name="ComponentObject"
+                  typeConverter="NOTBROWSABLE" />
+                <property
+                  dataType="System.String"
+                  description="Destination Excel worksheet."
+                  expressionType="Notify"
+                  name="Worksheet"
+                  typeConverter="CozyRoc.SqlServer.SSIS.TableEditor, CozyRoc.SSISPlus.UI.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">Sheet1</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies first row contains column names."
+                  name="FirstRowHasColumnName">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies destination first column. The value is 1-based."
+                  expressionType="Notify"
+                  name="StartColumn">2</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies destination first row. The value is 1-based."
+                  expressionType="Notify"
+                  name="StartRow">2</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies to save Excel workbook at end."
+                  name="SaveAtEnd">true</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies input type."
+                  name="InputType"
+                  typeConverter="CozyRoc.SqlServer.SSIS.ExcelDestination+InputTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies how to handle existing data."
+                  name="ExistingData"
+                  typeConverter="CozyRoc.SqlServer.SSIS.ExcelDestination+ExistingDataTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">1</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.ExcelDestination, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task 2\Excel Destination Plus.Connections[EXCEL+]"
+                  connectionManagerID="Package.ConnectionManagers[Excel Connection Manager 2]"
+                  connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager 2]"
+                  description="COZYROC Excel Connection Manager"
+                  name="EXCEL+" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Data Flow Task 2\Excel Destination Plus.Inputs[Excel Destination Plus Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Excel Destination Plus Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Data Flow Task 2\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[title]"
+                      cachedDataType="wstr"
+                      cachedLength="4"
+                      cachedName="title"
+                      lineageId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Output].Columns[title]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 2\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[Value]"
+                      cachedDataType="wstr"
+                      cachedLength="2000"
+                      cachedName="Value"
+                      lineageId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Output].Columns[Value]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task 2\Excel Destination Plus.Outputs[Excel Destination Plus Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Excel Destination Plus Error Output"
+                  synchronousInputId="Package\Data Flow Task 2\Excel Destination Plus.Inputs[Excel Destination Plus Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 2\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 2\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 2\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 2\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Data Flow Task 2\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">declare @startDate date=?
+declare @endDate date=?
+declare @startCopy date
+
+declare @dateTable table(startdate varchar(10),enddate varchar(10))
+
+
+while (@startDate&lt;=@endDate)
+begin
+ set @startCopy=@startDate
+   while (@startCopy&lt;=@endDate)
+     begin
+	    insert into @dateTable values(@startDate,@startCopy) 
+		set @startCopy=DATEADD(M,1,@startCopy)
+	 end
+
+	 set @startDate=DATEADD(M,1,@startDate)
+end
+ 
+ select * from @dateTable</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::CashflowInput</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">936</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping">"@startDate:Input",{43E5F8C7-75F7-4E92-928D-AE999B6D8669};"@endDate:Input",{B1A58150-4667-47FB-A42E-B23F4B6F93FB};</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task 2\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[poolcutsp\mssql.SFM_DAL_ConsumerLoan]"
+                  connectionManagerRefId="Package.ConnectionManagers[poolcutsp\mssql.SFM_DAL_ConsumerLoan]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Output].Columns[title]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[title]"
+                      length="4"
+                      lineageId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Output].Columns[title]"
+                      name="title"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Output].Columns[Value]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Value]"
+                      length="2000"
+                      lineageId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Output].Columns[Value]"
+                      name="Value"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[title]"
+                      dataType="wstr"
+                      length="4"
+                      name="title" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Value]"
+                      dataType="wstr"
+                      length="2000"
+                      name="Value" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[title]"
+                      dataType="wstr"
+                      length="4"
+                      lineageId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[title]"
+                      name="title" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Value]"
+                      dataType="wstr"
+                      length="2000"
+                      lineageId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Value]"
+                      name="Value" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Data Flow Task 2.Paths[OLE DB Source Output]"
+              endId="Package\Data Flow Task 2\Excel Destination Plus.Inputs[Excel Destination Plus Input]"
+              name="OLE DB Source Output"
+              startId="Package\Data Flow Task 2\OLE DB Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Data Flow Task 2 1"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{f2315702-dbc2-401b-9f43-3056fb87eb24}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Data Flow Task 2 1"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Data Flow Task 2 1\Excel Destination Plus"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="Inserts data into Excel worksheet.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+              description="Inserts data into Excel worksheet."
+              name="Excel Destination Plus"
+              usesDispositions="true">
+              <properties>
+                <property
+                  dataType="System.Null"
+                  description="Inserts data into Excel worksheet."
+                  name="ComponentObject"
+                  typeConverter="NOTBROWSABLE" />
+                <property
+                  dataType="System.String"
+                  description="Destination Excel worksheet."
+                  expressionType="Notify"
+                  name="Worksheet"
+                  typeConverter="CozyRoc.SqlServer.SSIS.TableEditor, CozyRoc.SSISPlus.UI.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">Sheet1</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies first row contains column names."
+                  name="FirstRowHasColumnName">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies destination first column. The value is 1-based."
+                  expressionType="Notify"
+                  name="StartColumn">2</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies destination first row. The value is 1-based."
+                  expressionType="Notify"
+                  name="StartRow">4</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies to save Excel workbook at end."
+                  name="SaveAtEnd">true</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies input type."
+                  name="InputType"
+                  typeConverter="CozyRoc.SqlServer.SSIS.ExcelDestination+InputTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies how to handle existing data."
+                  name="ExistingData"
+                  typeConverter="CozyRoc.SqlServer.SSIS.ExcelDestination+ExistingDataTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">1</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.ExcelDestination, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task 2 1\Excel Destination Plus.Connections[EXCEL+]"
+                  connectionManagerID="Package.ConnectionManagers[Excel Connection Manager 2]"
+                  connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager 2]"
+                  description="COZYROC Excel Connection Manager"
+                  name="EXCEL+" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Data Flow Task 2 1\Excel Destination Plus.Inputs[Excel Destination Plus Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Excel Destination Plus Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Data Flow Task 2 1\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[title]"
+                      cachedDataType="wstr"
+                      cachedLength="4"
+                      cachedName="title"
+                      lineageId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[title]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 2 1\Excel Destination Plus.Inputs[Excel Destination Plus Input].Columns[Value]"
+                      cachedDataType="wstr"
+                      cachedLength="2000"
+                      cachedName="Value"
+                      lineageId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Value]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task 2 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Excel Destination Plus Error Output"
+                  synchronousInputId="Package\Data Flow Task 2 1\Excel Destination Plus.Inputs[Excel Destination Plus Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 2 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 2 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 2 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 2 1\Excel Destination Plus.Outputs[Excel Destination Plus Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Data Flow Task 2 1\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">declare @startDate date=?
+declare @endDate date=?
+declare @startCopy date
+
+declare @dateTable table(startdate varchar(10),enddate varchar(10))
+
+
+while (@startDate&lt;=@endDate)
+begin
+ set @startCopy=@startDate
+   while (@startCopy&lt;=@endDate)
+     begin
+	    insert into @dateTable values(@startDate,@startCopy) 
+		set @startCopy=DATEADD(M,1,@startCopy)
+	 end
+
+	 set @startDate=DATEADD(M,1,@startDate)
+end
+ 
+ select * from @dateTable</property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::RecoveryRate</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">936</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping">"@startDate:Input",{43E5F8C7-75F7-4E92-928D-AE999B6D8669};"@endDate:Input",{B1A58150-4667-47FB-A42E-B23F4B6F93FB};</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task 2 1\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[poolcutsp\mssql.SFM_DAL_ConsumerLoan]"
+                  connectionManagerRefId="Package.ConnectionManagers[poolcutsp\mssql.SFM_DAL_ConsumerLoan]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[title]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[title]"
+                      length="4"
+                      lineageId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[title]"
+                      name="title"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Value]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Value]"
+                      length="2000"
+                      lineageId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Output].Columns[Value]"
+                      name="Value"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[title]"
+                      dataType="wstr"
+                      length="3"
+                      name="title" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[Value]"
+                      dataType="wstr"
+                      length="2000"
+                      name="Value" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[title]"
+                      dataType="wstr"
+                      length="3"
+                      lineageId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[title]"
+                      name="title" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Value]"
+                      dataType="wstr"
+                      length="2000"
+                      lineageId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[Value]"
+                      name="Value" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Data Flow Task 2 1.Paths[OLE DB Source Output]"
+              endId="Package\Data Flow Task 2 1\Excel Destination Plus.Inputs[Excel Destination Plus Input]"
+              name="OLE DB Source Output"
+              startId="Package\Data Flow Task 2 1\OLE DB Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Rename Excel"
+      DTS:CreationName="Microsoft.FileSystemTask"
+      DTS:Description="File System Task"
+      DTS:DTSID="{9F17DF97-CDA6-4DAF-B66E-63406CEEE638}"
+      DTS:ExecutableType="Microsoft.FileSystemTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Rename Excel"
+      DTS:TaskContact="File System Task;Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <FileSystemData
+          TaskOperationType="RenameFile"
+          TaskOverwriteDestFile="True"
+          TaskSourcePath="User::DestinationFullPath"
+          TaskIsSourceVariable="True"
+          TaskDestinationPath="User::RenameFullPath"
+          TaskIsDestinationVariable="True" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{BE44B2BD-E12F-4900-93AE-1059F1EDC2BC}"
+      DTS:From="Package\Copy excel to working"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Data Flow Task" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{075107FD-3305-4F03-A6E5-29ED1EB9CA3B}"
+      DTS:From="Package\Data Flow Task"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Data Flow Task 1" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{4A442922-8E68-45F3-960C-899A442B688A}"
+      DTS:From="Package\Data Flow Task 1"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\Data Flow Task 1 1" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{913B64AB-3597-40F8-AF90-C340B6BDE9BE}"
+      DTS:From="Package\Data Flow Task 1 1"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Data Flow Task 2" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 4]"
+      DTS:CreationName=""
+      DTS:DTSID="{6B331459-384E-46D2-BB9E-5CE8F836A077}"
+      DTS:From="Package\Data Flow Task 2"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 4"
+      DTS:To="Package\Data Flow Task 2 1" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 5]"
+      DTS:CreationName=""
+      DTS:DTSID="{74891990-16E3-44C1-85E3-DFFC23A23C9D}"
+      DTS:From="Package\Data Flow Task 2 1"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 5"
+      DTS:To="Package\Rename Excel" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="185,42"
+          Id="Package\Copy excel to working"
+          TopLeft="129,76" />
+        <NodeLayout
+          Size="151,42"
+          Id="Package\Data Flow Task"
+          TopLeft="139,168" />
+        <NodeLayout
+          Size="160,42"
+          Id="Package\Data Flow Task 1"
+          TopLeft="336,174" />
+        <NodeLayout
+          Size="160,42"
+          Id="Package\Data Flow Task 1 1"
+          TopLeft="510,312" />
+        <NodeLayout
+          Size="151,42"
+          Id="Package\Data Flow Task 2"
+          TopLeft="520,433" />
+        <NodeLayout
+          Size="151,42"
+          Id="Package\Data Flow Task 2 1"
+          TopLeft="286,535" />
+        <NodeLayout
+          Size="145,42"
+          Id="Package\Rename Excel"
+          TopLeft="279,422" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="218,118">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50"
+              Start="0,0"
+              End="0,42.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="290,192">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="46,0"
+              Start="0,0"
+              End="38.5,0">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="38.5,0" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="416,216">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="174,96"
+              Start="0,0"
+              End="174,88.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,44" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,44"
+                    Point2="0,48"
+                    Point3="4,48" />
+                  <mssgle:LineSegment
+                    End="170,48" />
+                  <mssgle:CubicBezierSegment
+                    Point1="170,48"
+                    Point2="174,48"
+                    Point3="174,52" />
+                  <mssgle:LineSegment
+                    End="174,88.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="592.75,354">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,79"
+              Start="0,0"
+              End="0,71.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,71.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 4]"
+          TopLeft="595.5,475">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-234,60"
+              Start="0,0"
+              End="-234,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,26"
+                    Point2="0,30"
+                    Point3="-4,30" />
+                  <mssgle:LineSegment
+                    End="-230,30" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-230,30"
+                    Point2="-234,30"
+                    Point3="-234,34" />
+                  <mssgle:LineSegment
+                    End="-234,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 5]"
+          TopLeft="337.666666666667,535">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="13.8333333333333,-71"
+              Start="0,0"
+              End="13.8333333333333,-63.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-24.8466579292267" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,-24.8466579292267"
+                    Point2="0,-28.8466579292267"
+                    Point3="4,-28.8466579292267" />
+                  <mssgle:LineSegment
+                    End="9.83333333333331,-28.8466579292267" />
+                  <mssgle:CubicBezierSegment
+                    Point1="9.83333333333331,-28.8466579292267"
+                    Point2="13.8333333333333,-28.8466579292267"
+                    Point3="13.8333333333333,-32.8466579292267" />
+                  <mssgle:LineSegment
+                    End="13.8333333333333,-63.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Data Flow Task">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Data Flow Task\OLE DB Source"
+          TopLeft="225,55" />
+        <NodeLayout
+          Size="182,42"
+          Id="Package\Data Flow Task\Excel Destination Plus"
+          TopLeft="202,180" />
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[OLE DB Source Output]"
+          TopLeft="301,97">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-8,83"
+              Start="0,0"
+              End="-8,75.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,37.5"
+                    Point2="0,41.5"
+                    Point3="-4,41.5" />
+                  <mssgle:LineSegment
+                    End="-4,41.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-4,41.5"
+                    Point2="-8,41.5"
+                    Point3="-8,45.5" />
+                  <mssgle:LineSegment
+                    End="-8,75.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Data Flow Task 1">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Data Flow Task 1\OLE DB Source"
+          TopLeft="225,55" />
+        <NodeLayout
+          Size="184,42"
+          Id="Package\Data Flow Task 1\Excel Destination Plus"
+          TopLeft="202,180" />
+        <EdgeLayout
+          Id="Package\Data Flow Task 1.Paths[OLE DB Source Output]"
+          TopLeft="297.5,97">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,83"
+              Start="0,0"
+              End="0,75.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,75.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task 1\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Data Flow Task 1 1">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Data Flow Task 1 1\OLE DB Source"
+          TopLeft="225,55" />
+        <NodeLayout
+          Size="184,42"
+          Id="Package\Data Flow Task 1 1\Excel Destination Plus"
+          TopLeft="202,180" />
+        <EdgeLayout
+          Id="Package\Data Flow Task 1 1.Paths[OLE DB Source Output]"
+          TopLeft="297.5,97">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,83"
+              Start="0,0"
+              End="0,75.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,75.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task 1 1\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Data Flow Task 2">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Data Flow Task 2\OLE DB Source"
+          TopLeft="225,55" />
+        <NodeLayout
+          Size="182,42"
+          Id="Package\Data Flow Task 2\Excel Destination Plus"
+          TopLeft="202,180" />
+        <EdgeLayout
+          Id="Package\Data Flow Task 2.Paths[OLE DB Source Output]"
+          TopLeft="301,97">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-8,83"
+              Start="0,0"
+              End="-8,75.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,37.5"
+                    Point2="0,41.5"
+                    Point3="-4,41.5" />
+                  <mssgle:LineSegment
+                    End="-4,41.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-4,41.5"
+                    Point2="-8,41.5"
+                    Point3="-8,45.5" />
+                  <mssgle:LineSegment
+                    End="-8,75.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task 2\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Data Flow Task 2 1">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="182,42"
+          Id="Package\Data Flow Task 2 1\Excel Destination Plus"
+          TopLeft="202,180" />
+        <NodeLayout
+          Size="152,42"
+          Id="Package\Data Flow Task 2 1\OLE DB Source"
+          TopLeft="225,55" />
+        <EdgeLayout
+          Id="Package\Data Flow Task 2 1.Paths[OLE DB Source Output]"
+          TopLeft="301,97">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-8,83"
+              Start="0,0"
+              End="-8,75.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,37.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,37.5"
+                    Point2="0,41.5"
+                    Point3="-4,41.5" />
+                  <mssgle:LineSegment
+                    End="-4,41.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-4,41.5"
+                    Point2="-8,41.5"
+                    Point3="-8,45.5" />
+                  <mssgle:LineSegment
+                    End="-8,75.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task 2 1\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

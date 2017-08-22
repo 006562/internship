@@ -1,0 +1,204 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <title>page1</title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../Scripts/calendar.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <script src="../Scripts/magic/magic.core.js"></script>
+    <link href="../Scripts/magic/magic.dialog.css" rel="stylesheet" />
+    <script src="../Scripts/magic/magic.dialog.js"></script>
+	<script src="../Scripts/wcfProxy.js"></script>
+	<link href="../Contents/jquery-ui.css" rel="stylesheet" type="text/css" />
+	    <style type="text/css">
+table{text-align:center;margin:0 auto}
+table.imagetable {
+	font-family: verdana,arial,sans-serif;
+	font-size:15px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #999999;
+	border-collapse: collapse;
+}
+table.imagetable th {
+	background:#b5cfd2;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #999999;
+}
+table.imagetable td {
+	background:#dcddc0;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #999999;
+}
+h2{font-size:20px;color:999999}
+h3{font-size:18px;color:999999}
+/*content h1{text-align：center;margin:0 auto;position:absolute;}*/
+</style>
+	<script type="text/javascript">
+	
+	var sessionID, taskCode;
+    var clientName = 'TaskProcess';
+    var IndicatorAppDomain = 'Task';
+    function InitParams() {
+    }
+    var IsSilverlightInitialized = false;
+    function InitParams() {
+        if (!IsSilverlightInitialized) {
+            IsSilverlightInitialized = true;
+        }
+        document.getElementById("TaskProcessCtl").Content.SL_Agent.InitParams(sessionID, IndicatorAppDomain, taskCode, clientName);
+		//alert(sessionId);
+    }
+
+    function PopupTaskProcessIndicator() {
+        $("#taskIndicatorArea").dialog({
+            modal: true,
+            dialogClass: "TaskProcessDialogClass",
+            closeText: "",
+            //closeOnEscape:false,
+            height: 485,
+            width: 470,
+            close: function (event, ui) { }, // refresh report repository while close the task process screen.
+            //open: function (event, ui) { $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide(); },
+            title: "任务处理"
+        });
+    }
+	
+	
+	</script>
+	  
+</head>
+<body>
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">Configuration Loading...</p>
+    </div>
+	<div id="taskIndicatorArea" style="display:none;width:440px; height:440px;">
+        <object id="TaskProcessCtl" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="display:block" width="100%" height="440px" class="ms-dlgDisable">
+            <param name="source" value="../ClientBin/UI.TaskProcessIndicator.xap" />
+            <param name="enablehtmlaccess" value="True" />
+        </object>
+    </div>
+		
+		<HR/>
+		
+		<div class="col-6 form-row autoLayout-plugins">
+				<div class="form-group">
+						<div class="col-4 control-label">
+							<label><span data-bind="text:Language.PriorDistribution"></span></label>
+						</div>
+						<div class="col-6">
+							<select id="priorDistribution" type="text" class="form-control">
+								<option value="Normal">Bell Curve</option>
+								<option value="LogNormal">LogNormal</option>
+							</select>
+						</div>
+				</div>
+		 </div>
+		 <br /><br /><br />
+				 <div class="col-6 form-row autoLayout-plugins">
+				<div class="form-group">
+						<div class="col-4 control-label">
+							<label><span data-bind="text:Language.Param1"></span></label>
+						</div>
+						<div class="col-6">
+							<input id="param1" type="text" class="form-control" value="0.3"/>
+							
+						</div>
+				</div>
+		 </div>
+		 <br /><br /><br />		 
+		  <div class="col-6 form-row autoLayout-plugins">
+				<div class="form-group">
+						<div class="col-4 control-label">
+							<label><span data-bind="text:Language.Param2"></span></label>
+						</div>
+						<div class="col-6">
+							
+							<input id="param2" type="text" class="form-control" value="0.1"/>
+						</div>
+				</div>
+		 </div>
+		<br /><br /><br />
+ 
+		 <div class="col-6 form-row autoLayout-plugins">
+				<div class="form-group">
+						<div class="col-4 control-label">
+							<label><span data-bind="text:Language.NumOfSamples"></span></label>
+						</div>
+						<div class="col-6">
+							<input id="numOfSamples" type="text" class="form-control" value="2000"/>
+						</div>
+				</div>
+		 </div>
+		 <br /><br /><br />
+		 
+		 
+		 <div class="col-6 form-row autoLayout-plugins" style="width:100%;">
+				<div class="form-group">
+						<div class="col-4 control-label" style="width:16.6%">
+							<label><span data-bind="text:Language.Distribution"></span></label>
+						</div>
+						<div class="col-6">
+							<input id="distributionStart" type="text" class="form-control" value="-0.2" style="width:100px;float:left;"/>
+							<input id="distributionEnd" type="text" class="form-control" value="0.8" style="width:100px;float:left;margin-left:40px;"/>
+						</div>
+				</div>
+		 </div>
+		 
+		<br /><br /><br />
+		
+		<div class="col-6 form-row autoLayout-plugins">
+				<div class="form-group">
+						<div class="col-4 control-label">
+							<label><span data-bind="text:Language.NumOfBuckets"></span></label>
+						</div>
+						<div class="col-6">
+							<input id="numOfBuckets" type="text" class="form-control" value="400"/>
+							
+						</div>
+				</div>
+		 </div>
+		 <br /><br /><br />		 
+		  <div class="col-6 form-row autoLayout-plugins">
+				<div class="form-group">
+						<div class="col-4 control-label">
+							<label><span data-bind="text:Language.OutputFunction"></span></label>
+						</div>
+						<div class="col-6">
+							
+							<select id="outputFunction" type="text" class="form-control">
+								<option value="y=x^2">y=x^2</option>
+								<option value="y=1/(1+x)">y=1/(1+x)</option>
+								<option value="y=x">y=x</option>
+							</select>
+						</div>
+				</div>
+		 </div>
+		<br /><br />
+		<HR />
+		  <div class="form-save"  style="margin-left:10px;">
+			<span><button  id="runMonteCarlo" class="btn btn-primary" onclick="runMonteCarlo()" style="width:100px">
+				<span data-bind="text:Language.BtnRun"></span>
+			</button>
+			<button  id="viewMonteCarlo" class="btn btn-primary" onclick="viewMonteCarlo()" style="width:100px">
+				<span data-bind="text:Language.BtnLook"></span>
+			</button>
+			<!-- <button  id="viewSHIBOR" class="btn btn-primary" onclick="viewCurves()" style="width:200px">查看SHIBOR曲线</button> -->
+			</span>
+        </div>
+		
+    <script src="MonteCarlo_1.js"></script>
+</body>
+</html>

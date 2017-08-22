@@ -1,0 +1,460 @@
+﻿<!DOCTYPE html>
+<html id="app">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" href="../Libraries/Styles/normalize.css">
+  <link rel="stylesheet" href="../Libraries/Styles/common.css">
+  <link rel="stylesheet" href="../Libraries/Styles/magic-check.css">
+  <link rel="stylesheet" href="../Libraries/Styles/animate.css">
+  <link rel="stylesheet" href="../Libraries/Styles/scrollbar.css">
+  <link rel="stylesheet" href="../Libraries/Fonts/fontello/css/fontello.css">
+  <link rel="stylesheet" href="../Libraries/Styles/gcspread.css"/>
+  <link rel="stylesheet" href="Styles/result.css">
+  <title  v-i18n="{value:'title',language:language}"></title>
+  <!--[if lt IE 9]>
+  <script src="../Libraries/Scripts/html5shiv.min.js"></script>
+  <![endif]-->
+</head>
+<body v-bind:class="{gridPage:showGrid}">
+  <header class="header min-width">
+    <nav class="container">
+      <div class="toolbar">
+        <div class="tool-button">
+          <a href="javascript:;" v-i18n.title="{value:'main',language:language}" v-on:click="redirect()"><i class="icon-home"></i></a>
+          <a href="javascript:;" v-i18n.title="{value:'nav.b1',language:language}" v-on:click="dropdown(1)" v-bind:class="[1==isActive?'active':'']"><i class="icon-plus"></i></a>
+          <a href="javascript:;" v-i18n.title="{value:'nav.b2',language:language}" v-on:click="refresh"><i class="icon-arrows-ccw"></i></a>
+          <a href="javascript:;" v-i18n.title="{value:'nav.b3',language:language}" v-on:click="showGrid = true"><i class="icon-table"></i></a>
+          <a href="javascript:;" v-i18n.title="{value:'nav.b4',language:language}" v-bind:class="[2==isActive?'active':'']" v-on:click="dropdown(2)"><i class="icon-cog"></i></a>
+        </div>
+        <button class="btn save rbtn" @click="save" v-i18n="{value:'nav.b5',language:language}"></button>
+      </div>
+      <h1 class="logo">
+        <a href="#" title="CashFlow">
+          <img src="Images/result_logo.png" alt="logo" title="logo" />
+        </a>
+      </h1>
+      <div class="pop-box" v-show="isActive==1" style="display:none">
+        <a href="javascript:void(0);" class="close" @click="closePopBox"><i class="icon-cancel"></i></a>
+        <template v-if="isActive == 1">
+          <div v-show="step == 1" class="animated fadeInLeft" v-cloak>
+            <h3 class="mb10" v-i18n="{value:'dropdown.chart.step1.h3',language:language}"></h3>
+            <div class="row">
+              <div class="pop-col4">
+                  <a href="javascript:void(0);" v-i18n.title="{value:'c1',language:language}" class="checkbox" v-bind:class="{active:chartUse=='spline'}" @click="selectChart('spline')">
+                      <span class="icons checked"></span>
+                      <i class="icon-chart-line"></i>
+                      <span v-i18n="{value:'c1',language:language}"></span>
+                  </a>
+              </div>
+              <div class="pop-col4">
+                  <a href="javascript:void(0);" v-i18n.title="{value:'c2',language:language}" class="checkbox" v-bind:class="{active:chartUse=='column'}" @click="selectChart('column')">
+                      <span class="icons checked"></span>
+                      <i class="icon-chart-bar"></i>
+                      <span v-i18n="{value:'c2',language:language}"></span>
+                  </a>
+              </div>
+              <div class="pop-col4">
+                  <a href="javascript:void(0);" v-i18n.title="{value:'c3',language:language}" class="checkbox" v-bind:class="{active:chartUse=='area'}" @click="selectChart('area')">
+                      <span class="icons checked"></span>
+                      <i class="icon-chart-area"></i>
+                      <span v-i18n="{value:'c3',language:language}"></span>
+                  </a>
+              </div>
+              <div class="pop-col4">
+                  <a href="javascript:void(0);" v-i18n.title="{value:'c4',language:language}" class="checkbox" v-bind:class="{active:chartUse=='scatter'}" @click="selectChart('scatter')">
+                      <span class="icons checked"></span>
+                      <i class="icon-chart-line-1"></i>
+                      <span v-i18n="{value:'c4',language:language}"></span>
+                  </a>
+              </div>
+              <div class="pop-col4">
+                  <a href="javascript:void(0);" v-i18n.title="{value:'c5',language:language}" class="checkbox" v-bind:class="{active:chartUse=='bar'}" @click="selectChart('bar')">
+                      <span class="icons checked"></span>
+                      <i class="icon-database"></i>
+                      <span v-i18n="{value:'c5',language:language}"></span>
+                  </a>
+              </div>
+            </div>
+            <div class="text-right">
+              <button type="button" class="next" @click="step = 2" v-i18n="{value:'dropdown.chart.step1.button',language:language}"></button>
+            </div>
+            
+          </div>
+          <div v-show="step == 2" class="animated fadeInLeft" v-cloak>
+            <h3 class="mb10" v-i18n="{value:'dropdown.chart.step2.h3',language:language}"></h3>
+            <p class="tip" v-i18n="{value:'dropdown.chart.step2.title',language:language}"></p>
+            <input type="text" id="chartTitle" class="form-control" v-model="chartTitle" autofocus v-i18n.placeholder="{value:'dropdown.chart.step2.titletip',language:language}">
+            <p class="tip">
+              <span v-i18n="{value:'selectdatatip',language:language}"></span>
+            </p>
+            <div class="row">
+              <div class="selectBox">
+                <div class="search">
+                  <input type="text" class="form-control" v-model="searchChartData" v-i18n.placeholder="{value:'searchtext',language:language}"/>
+                </div>
+                <div class="pop-col6" v-for="item in resultChartData | filterBy searchChartData in 'ItemName'">
+                  <div class="mb15">
+                    <input type="checkbox" class="magic-checkbox" id="add-{{item.ItemName}}" v-bind:value="item.ItemName" v-model="chartIds">
+                    <label for="add-{{item.ItemName}}">{{item.ItemName}}</label>
+                  </div>
+                </div>                
+              </div>
+            </div>
+            <div class="bottom">
+              <button type="button" class="prevBtn" @click="step = 1" v-i18n="{value:'dropdown.chart.step2.prev',language:language}"></button>
+              <button type="button" class="submitBtn" @click="createChart" v-i18n="{value:'dropdown.chart.step2.button',language:language}"></button>
+            </div>
+          </div>
+        </template>
+      </div>
+      <div class="pop-box" v-show="isActive==2" style="display:none">
+        <a href="javascript:void(0);" class="close" @click="closePopBox"><i class="icon-cancel"></i></a>
+        <h3 class="mb10" v-i18n="{value:'nav.b4',language:language}"></h3>
+        <p class="tip" v-i18n="{value:'dropdown.language',language:language}"></p>
+        <div class="row mb15">
+          <div class="pop-col4">
+            <a href="javascript:void(0)" class="checkbox" v-bind:class="{active:language=='cn'}" @click="language = 'cn'">
+              <span class="icons checked"></span>
+              简体中文
+            </a>
+          </div>
+          <div class="pop-col4">
+            <a href="javascript:void(0)" class="checkbox" v-bind:class="{active:language=='en'}" @click="language = 'en'">
+              <span class="icons checked"></span>
+              English
+            </a>
+          </div>
+        </div>
+        <p class="tip" v-i18n="{value:'dropdown.card.titletip',language:language}"></p>
+        <div class="row mb15">
+          <div class="pop-col4">
+            <a href="javascript:void(0)" class="checkbox" v-bind:class="{active:cardRows==1}" @click="cardRows = 1">
+              <span class="icons checked"></span>
+              <span class="icons icon one"></span>
+              <span v-i18n="{value:'dropdown.card.row',language:language}"></span>
+            </a>
+          </div>
+          <div class="pop-col4">
+            <a href="javascript:void(0)" class="checkbox" v-bind:class="{active:cardRows==2}" @click="cardRows = 2">
+              <span class="icons checked"></span>
+              <span class="icons icon two"></span>
+              <span v-i18n="{value:'dropdown.card.tworows',language:language}"></span>
+            </a>
+          </div>
+          <div class="pop-col4">
+            <a href="javascript:void(0)" class="checkbox" v-bind:class="{active:cardRows==3}" @click="cardRows = 3">
+              <span class="icons checked"></span>
+              <span class="icons icon three"></span>
+              <span v-i18n="{value:'dropdown.card.threerows',language:language}"></span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </header> <!-- header end -->
+
+  <!-- card lists -->
+  <section class="container box-scroll" v-cloak v-show="openCard">
+    <a href="javascript:void(0);" class="box-prev" v-show="pageCount>0&&pageCurrent>=1" @click="prev" style="display:none"><i class="icon-left-open"></i></a>
+    <a href="javascript:void(0);" class="box-next" v-show="pageCount>0&&pageCurrent<pageCount-1" @click="next" style="display:none"><i class="icon-right-open"></i></a>
+    <div class="box-invisible">
+      <div class="row">
+        <div class="box-list clear">
+          <h3>
+            <span class="toolbar">
+              <button type="button" class="icon-plus-circled" @click="addCard"></button>
+              <button type="button" class="icon-minus-circled" @click="openCard = false"></button>
+            </span>
+            <span v-i18n="{value:'cardboxtitle',language:language}"></span>
+          </h3>
+          <div v-if="viewCardData!=''">
+            <div class="box-card animated" 
+              v-bind:class="cardAnimate"
+              v-for="card of viewCardData | limitBy pageSize pageCurrent*pageSize">
+              <span class="boxToolBar">
+                <button type="button" class="icon-pencil" @click="editCard(card,$index)"></button>
+                <button type="button" class="icon-cancel" @click="deleteCard($index)"></button>
+              </span>
+              <ul v-bind:class="{mut:card.length>1}">
+                <li v-for="row in card">
+                  <h4 v-text="row.ItemValue | tofixed 4"></h4>
+                  <p v-text="row.ItemName"></p>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div v-else class="text-center" style="line-height:120px;color:#6986a0;" v-i18n="{value:'nocardcontent',language:language}">
+          </div>
+        </div>        
+      </div>
+    </div>
+  </section>
+
+  <!-- chart lists -->
+  <section class="container box-scroll" v-show="viewChartData!=''" v-cloak>
+    <div class="box-charts" v-scroll>
+      <div class="row">
+        <div class="box-tiles-chart box-chart" v-for="row of viewChartData" transition="zoom" stagger="100">
+          <h3>
+            <span class="toolbar">
+              <button type="button" class="icon-pencil" @click="editChart(row,$index)"></button>
+              <button type="button" class="icon-cancel" @click="deleteChart($index)"></button>
+            </span>
+            <span v-text="row.title"></span>
+          </h3>
+          <div class="box-body" v-chart="row.chart"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Combinations chart -->
+  <section class="container box-scroll" v-cloak v-show="openMixChart">
+    <div class="row">
+      <div class="box-mix-chart box-chart">
+        <h3>
+          <span class="toolbar">
+            <button type="button" class="icon-cog" @click="showModal = true"></button>
+            <button type="button" class="icon-minus-circled" title="最小化" @click="openMixChart = false"></button>
+          </span>
+          <span v-i18n="{value:'mixcharttitle',language:language}"></span>
+        </h3>
+        <div v-chart="viewMixChartData" v-if="viewMixChartData!=''"></div>
+        <div v-else style="line-height:460px;text-align:center;color:#6986a0;" v-i18n="{value:'nochartcontent',language:language}">
+        </div>
+      </div>      
+    </div>
+  </section>
+
+  <!-- 右边工具栏 -->
+  <div class="rightBar">
+    <button type="button" v-i18n.title="{value:'cardboxtitle',language:language}" class="icon-vcard" @click="openCard = !openCard" v-bind:class="{active:openCard == true}"></button>
+    <button type="button" v-i18n.title="{value:'mixcharttitle',language:language}" class="icon-chart-bar" @click="openMixChart = !openMixChart" v-bind:class="{active:openMixChart == true}"></button>
+  </div>
+
+  <!-- 编辑图表 -->
+  <edit-chart v-bind:show.sync="showEdit" v-bind:language="language" v-ref:editchart></edit-chart>
+  <!-- 新增或编辑卡片 -->
+  <edit-card v-bind:show.sync="showCardModal" v-bind:language="language" v-cloak v-ref:editcard></edit-card>
+  <!-- 计算结果表格 -->
+  <grid-view v-bind:show.sync="showGrid" v-cloak><div id="divResultTable"></div></grid-view>
+
+  <!-- 配置混合图表 -->
+  <dialog-modal v-bind:show.sync="showModal" v-cloak>
+    <h3 v-i18n="{value:'mixchart.status',language:language}"></h3>
+    <p class="tip"></p>
+    <div class="row">
+      <div class="pop-col4">
+        <a href="javascript:void(0);" v-i18n.title="{value:'c1',language:language}" class="checkbox" v-bind:class="{active:mixChartUse=='spline'}" @click="mixChartUse = 'spline'">
+          <span class="badge pull-right animated bounceIn" v-if="mixSplineIds.length>0" v-text="mixSplineIds.length"></span>
+          <span class="icons checked"></span>
+          <i class="icon-chart-line"></i>
+          <span v-i18n="{value:'c1',language:language}"></span>
+        </a>
+      </div>
+      <div class="pop-col4">
+          <a href="javascript:void(0);" v-i18n.title="{value:'c2',language:language}" class="checkbox" v-bind:class="{active:mixChartUse=='column'}" @click="mixChartUse = 'column'">
+            <span class="badge pull-right animated bounceIn" v-if="mixColumnIds.length>0" v-text="mixColumnIds.length"></span>
+            <span class="icons checked"></span>
+            <i class="icon-chart-bar"></i>
+            <span v-i18n="{value:'c2',language:language}"></span>
+          </a>
+      </div>
+      <div class="pop-col4">
+          <a href="javascript:void(0);" v-i18n.title="{value:'c3',language:language}" class="checkbox" v-bind:class="{active:mixChartUse=='area'}" @click="mixChartUse = 'area'">
+            <span class="badge pull-right animated bounceIn" v-if="mixAreaIds.length>0" v-text="mixAreaIds.length"></span>
+            <span class="icons checked"></span>
+            <i class="icon-chart-area"></i>
+            <span v-i18n="{value:'c3',language:language}"></span>
+          </a>
+      </div>
+    </div>
+    <p class="tip"  v-i18n="{value:'selectdatatip',language:language}"></p>
+    <div class="selectBox">
+        <div class="search">
+          <input type="text" class="form-control" v-model="searchChartData" v-i18n.placeholder="{value:'searchtext',language:language}"/>
+        </div>
+        <div class="pop-col6" v-for="item in resultChartData | filterBy searchChartData in 'ItemName'">
+          <div class="mb15">
+            <input type="checkbox" class="magic-checkbox" id="chart-{{$index}}" v-if="mixChartUse=='spline'" v-bind:value="item.ItemName" v-model="mixSplineIds">
+            <input type="checkbox" class="magic-checkbox" id="chart-{{$index}}" v-if="mixChartUse=='area'" v-bind:value="item.ItemName" v-model="mixAreaIds">
+            <input type="checkbox" class="magic-checkbox" id="chart-{{$index}}" v-if="mixChartUse=='column'" v-bind:value="item.ItemName" v-model="mixColumnIds">
+            <label for="chart-{{$index}}">{{item.ItemName}}</label>
+          </div>
+        </div>
+    </div>
+    <div class="bottom">
+      <button type="button" class="submitBtn" @click="saveMixSetting" v-i18n="{value:'mixchart.button',language:language}"></button>
+    </div>
+  </dialog-modal>
+
+  <!--编辑卡片模板-->
+  <script type="x/template" id="edit-card-template">
+    <div class="modal-mask" v-show="show" transition="modal">
+      <div class="modal-wrapper">
+        <div class="modal-container pop-box">
+          <a href="javascript:void(0);" class="close" @click="show = false"><i class="icon-cancel"></i></a>
+            <template v-if="type=='add'">
+              <h3 v-i18n="{value:'card.add.title',language:language}"></h3>
+              <p class="tip" v-i18n="{value:'selectdatatip',language:language}"></p>
+              <div class="row mb15">
+                <div class="selectBox">
+                  <div class="search">
+                    <input type="text" class="form-control" v-model="searchCardData" v-i18n.placeholder="{value:'searchtext',language:language}"/>
+                  </div>
+                  <div class="pop-col6" v-for="item in resultCardData  | filterBy searchCardData in 'ItemName'">
+                    <div class="mb15">
+                      <input type="checkbox" class="magic-checkbox" id="add-card-{{item.ItemName}}" v-bind:value="item.ItemName" v-model="cardIds">
+                      <label for="add-card-{{item.ItemName}}">{{item.ItemName}}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="bottom">
+                <button type="button" class="submitBtn" @click="createCard" v-i18n="{value:'card.add.button',language:language}"></button>
+              </div>
+            </template>
+            <template v-else="type=='edit'">
+              <h3 v-i18n="{value:'card.edit.title',language:language}"></h3>
+              <p class="tip" v-i18n="{value:'selectdatatip',language:language}"></p>
+              <div class="row mb15">
+                <div class="selectBox">
+                  <div class="search">
+                    <input type="text" class="form-control" v-model="searchCardData" v-i18n.placeholder="{value:'searchtext',language:language}"/>
+                  </div>
+                  <div class="pop-col6" v-for="item in resultCardData  | filterBy searchCardData in 'ItemName'">
+                    <div class="mb15">
+                      <input type="checkbox" class="magic-checkbox" id="edit-card-{{item.ItemName}}" v-bind:value="item.ItemName" v-model="cardIds">
+                      <label for="edit-card-{{item.ItemName}}">{{item.ItemName}}</label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="bottom">
+                <button type="button" class="submitBtn" @click="saveEdit" v-i18n="{value:'card.edit.button',language:language}"></button>
+              </div>
+            </template>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <!--编辑图表-->
+  <script type="x/template" id="edit-chart-template">
+
+    <div class="modal-mask" v-show="show" transition="modal">
+      <div class="modal-wrapper">
+        <div class="modal-container pop-box">
+          <a href="javascript:void(0);" class="close" @click="show = false"><i class="icon-cancel"></i></a>
+          <h3 class="mb10"><span v-i18n="{value:'chart.status',language:language}"></span> {{editData.title}}</h3>
+          <p class="tip" v-i18n="{value:'dropdown.chart.step1.h3',language:language}"></p>
+          <div class="row">
+              <div class="pop-col4">
+                <a href="javascript:void(0);" v-i18n.title="{value:'c1',language:language}" class="checkbox" v-bind:class="{active:chartUse=='spline'}" @click="chartUse = 'spline'">
+                  <span class="icons checked"></span>
+                  <i class="icon-chart-line"></i>
+                  <span v-i18n="{value:'c1',language:language}"></span>
+                </a>
+              </div>
+              <div class="pop-col4">
+                  <a href="javascript:void(0);" v-i18n.title="{value:'c2',language:language}" class="checkbox" v-bind:class="{active:chartUse=='column'}" @click="chartUse = 'column'">
+                    <span class="icons checked"></span>
+                    <i class="icon-chart-bar"></i>
+                    <span v-i18n="{value:'c2',language:language}"></span>
+                  </a>
+              </div>
+              <div class="pop-col4">
+                  <a href="javascript:void(0);" v-i18n.title="{value:'c3',language:language}" class="checkbox" v-bind:class="{active:chartUse=='area'}" @click="chartUse = 'area'">
+                    <span class="icons checked"></span>
+                    <i class="icon-chart-area"></i>
+                    <span v-i18n="{value:'c3',language:language}"></span>
+                  </a>
+              </div>
+              <div class="pop-col4">
+                  <a href="javascript:void(0);" v-i18n.title="{value:'c4',language:language}" class="checkbox" v-bind:class="{active:chartUse=='scatter'}" @click="chartUse = 'scatter'">
+                    <span class="icons checked"></span>
+                    <i class="icon-chart-line-1"></i>
+                   <span v-i18n="{value:'c4',language:language}"></span>
+                  </a>
+              </div>
+              <div class="pop-col4">
+                  <a href="javascript:void(0);" v-i18n.title="{value:'c5',language:language}" class="checkbox" v-bind:class="{active:chartUse=='bar'}" @click="chartUse = 'bar'">
+                    <span class="icons checked"></span>
+                    <i class="icon-database"></i>
+                    <span v-i18n="{value:'c5',language:language}"></span>
+                  </a>
+              </div>
+          </div>
+          <p class="tip" v-i18n="{value:'chart.title',language:language}"></p>
+          <input type="text" id="editChartTitle" class="form-control" v-model="editData.title" autofocus="autofocus" v-i18n.placeholder="{value:'chart.titletip',language:language}">
+          <p class="tip" v-i18n="{value:'selectdatatip',language:language}"></p>
+          <div class="row">
+            <div class="selectBox">
+              <div class="search">
+                <input type="text" class="form-control" v-model="searchChartData" v-i18n.placeholder="{value:'searchtext',language:language}"/>
+              </div>
+              <div class="pop-col6" v-for="item in resultChartData | filterBy searchChartData in 'ItemName'">
+                <div class="mb15">
+                  <input type="checkbox" class="magic-checkbox" id="{{item.ItemName}}" v-bind:value="item.ItemName" v-model="chartIds">
+                  <label for="{{item.ItemName}}">{{item.ItemName}}</label>
+                </div>
+              </div>                
+            </div>
+          </div>
+          <div class="bottom">
+            <button type="button" class="submitBtn" @click="saveEdit" v-i18n="{value:'chart.button',language:language}"></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </script>
+  <!--公用模态组件-->
+  <script type="x/template" id="modal-template">
+    <div class="modal-mask" v-show="show" transition="modal">
+      <div class="modal-wrapper">
+        <div class="modal-container pop-box">
+            <a href="javascript:void(0);" class="close" @click="show = false; "><i class="icon-cancel"></i></a>
+          <slot></slot>
+        </div>
+      </div>
+    </div>
+  </script>
+
+  <script type="x/template" id="grid-template">
+    <div class="modal-mask" v-show="show" transition="modal">
+        <div class="modal-wrapper-grid">
+            <div class="modal-container-grid grid">
+                <div class="title">
+                    <button type="button" class="grid-close" @click="show = false"><i class="icon-cancel"></i></button>
+                    <button type="button" class="grid-export" id="btnExportExcel" @click="JSONToExcel">导 出</button>
+                    <strong>CashFlowResult</strong>
+                </div>
+                <slot style="border-top:1px solid #ddd;"></slot>
+            </div>
+            <ul id="spreadContextMenu" class="dropdown-menu" role="menu">
+                <li><a class="localize" data-action="cut">cut</a></li>
+                <li><a class="localize" data-action="copy">copy</a></li>
+                <li><a class="localize" data-action="paste">paste</a></li>
+                <li class="context-header divider"></li>
+                <li class="context-header"><a class="localize" data-action="insert">insert</a></li>
+                <li class="context-header"><a class="localize" data-action="delete">delete</a></li>
+            </ul>
+        </div>
+     
+    </div>
+
+  </script>
+
+  <script src="../Libraries/Scripts/common.js"></script>
+  <script type="text/javascript">
+    require(['jquery-2.2.3.min', 'vue'], function() {
+        require(['highcharts', 'webProxy', 'dataProcess', 'jquery.mousewheel', 'jquery.scroll', 'gcspread', 'dataGrid', 'anyDialog'], function () {
+          config.path = 'Scripts/';
+          require(['viewCashFlowResult']);
+      })
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+    <Parameters>
+        <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+    </Parameters>
+    <Query>
+        <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[usp_GetAggregationData]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[usp_GetAggregationData]
+'
+exec (@vchSQL)
+
+set @vchSQL ='
+CREATE PROCEDURE [dbo].[usp_GetAggregationData]
+(
+	@DimPoolID bigint,
+    @LTVPassNo varchar(50),
+	@AggregationCategory nvarchar(200) 
+)
+AS
+Begin
+	SELECT [AggregationCategory]
+      ,[AggregationItem]
+      ,[Value]
+      ,[FormatString]
+  FROM [dbo].[tblUIDataAggregation] where DimPoolID = @DimPoolID and LTVPassNo=@LTVPassNo  and  AggregationCategory = @AggregationCategory
+End'
+
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+EXEC (@BigSQL)
+
+]]>
+    </Query>
+
+</main>

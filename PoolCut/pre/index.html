@@ -1,0 +1,195 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <link rel="stylesheet" type="text/css" href="./bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="./font/fontello/css/fontello.css">
+  <link rel="stylesheet" type="text/css" href="./index.css">
+  <script src="./Scripts/common.js"></script>
+</head>
+
+<body> 
+
+  <div class="form" id="PoolECForm">
+    <div class="form-body default" style="width:800px">
+      <h3 style="width:730px">
+      <span>Result</span> 
+      <div class="pull-right all-wraper" v-if="ecModel.length">
+          <label class="virtual-label">
+            <input type="checkbox" class="org-checkbox" id="all-input" v-model="allChecked">
+            <span class="virtual-checkbox">
+              <i class="virtual-icon icon-ok"></i>
+            </span>
+          </label>
+          <label for="all-input">All</label>
+          <span>({{checkedSet.length}})</span>
+      </div>
+      </h3>
+      <div>
+        <div class="view-work-body">
+          <div v-for="typeCode in CriteriaTypeCodeSet">
+            <div class="typeCode-title">
+              <span selectstart="return fasle" @click="typeCode.isShow=!typeCode.isShow">
+            {{typeCode.code}} 
+            <i class="icon-down-dir" v-show="typeCode.isShow"></i>
+            <i class="icon-up-dir" v-show="!typeCode.isShow"></i>
+          </span>
+            </div>
+            <div v-show="typeCode.isShow">
+              <div class="ec-row" v-for="EC in ecModel|filterBy typeCode.code in 'CriteriaTypeCode'" v-bind:class="{mb0:$index==ecModel.length-1}">
+                <div class="btns-wraper">
+                  <div class='desc-wraper'>
+                    <label class="virtual-label">
+                      <input type="checkbox" class="org-checkbox" v-bind:value="$index" v-model="checkedSet">
+                      <span class="virtual-checkbox">
+                      <i class="virtual-icon icon-ok-1"></i>
+                    </span>
+                    </label>
+                    <span class="ec-name">{{EC.CriteriaName}}</span>
+                    <span class="ec-desc">({{EC.CriteriaDescription}})</span>
+                  </div>
+                  <div class="btn-group btn-group-xs" role="group">
+                    <button type="button" class="btn btn-default btn-sm btn-hover" title="表单视图" v-bind:class="{active:EC.activeView=='Form'}" @click="EC.activeView='Form'">
+                      <i class="icon-list-alt"></i>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm btn-hover" title="查询语句" v-bind:class="{active:EC.activeView=='Query'}" @click="refreshQuery(EC)">
+                      <i class="icon-direction"></i>
+                    </button>
+                    <button type="button" class="btn btn-default btn-sm btn-hover" title="校验语句" v-bind:class="{active:EC.activeView=='Verification'}" @click="EC.activeView='Verification'">
+                      <i class="icon-ok-1" style="position: relative;bottom: 1px;"></i>
+                    </button>
+                      <button type="button" class="btn btn-default btn-sm btn-hover" title="保存" @click="saveECEntities($index)">
+                          <i class="icon-floppy-1" style="position: relative;bottom: 1px;"></i>
+                      </button>
+                  </div>
+                </div>
+                <div class="content-wraper">
+                  <table class="table table-hover view-table m0" v-show="EC.activeView=='Form'">
+                    <tbody>
+                        <tr v-for="row in EC.XMLSqlQueryEC.Presentation">
+                            <td class="textCell pl15" width="430px">{{row.RowText}}</td>
+                            <td class="desCell">
+                                <template v-for="field in row.Field">
+                                    <select class="form-control input-group-select" v-if="field.FieldType=='ReplaceOperator'" v-model="field.Value" v-bind:disabled="!EC.IsEditable">
+                                        <option v-for="item in field.SuggestedOperators" value="{{item.Value}}">{{item.Name}}</option>
+                                    </select>
+                                    <input type="text" class="input-group-box" v-if="field.FieldType=='TextBox'" v-model="field.Value" v-bind:disabled="!EC.IsEditable">
+                                    <label class="virtual-label mb0 mr5" v-if="field.FieldType=='CheckBox'">
+                                        <input type="checkbox" class="org-checkbox" v-model="field.IsCheck" v-bind:disabled="!EC.IsEditable">
+                                        <span class="virtual-checkbox">
+                                            <i class="virtual-icon icon-ok-1"></i>
+                                        </span>
+                                    </label>
+                                    <table class="subtable table" v-if="field.FieldType=='ReplaceLookup'&&field.DataSourceType=='Static'">
+                                        <thead v-if="field.SuggestedItems.length">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th>Value</th>
+                                                <!--<th>Excluded</th>
+                            <th>IsNew</th>-->
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="staticItem in field.SuggestedItems">
+                                                <td>
+                                                    <label class="virtual-label">
+                                                        <input type="checkbox" class="org-checkbox" v-model="staticItem.IsCheck" v-bind:disabled="!EC.IsEditable">
+                                                        <span class="virtual-checkbox">
+                                                            <i class="virtual-icon icon-ok-1"></i>
+                                                        </span>
+                                                    </label>
+                                                </td>
+                                                <td>{{staticItem.Name}}</td>
+                                                <td>{{staticItem.Value}}</td>
+                                                <!--<td>{{staticItem.Excluded}}</td>
+                            <td>{{staticItem.IsNew}}</td>-->
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="subtable table" v-if="field.FieldType=='ReplaceLookup'&&field.DataSourceType=='Dynamic'">
+                                        <thead v-if="field.SuggestedItems.length">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th>Value</th>
+                                                <th>Excluded</th>
+                                                <th>IsNew</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="staticItem in field.SuggestedItems">
+                                                <td>
+                                                    <label class="virtual-label">
+                                                        <input type="checkbox" class="org-checkbox" v-model="staticItem.IsCheck" v-bind:disabled="!EC.IsEditable">
+                                                        <span class="virtual-checkbox">
+                                                            <i class="virtual-icon icon-ok-1"></i>
+                                                        </span>
+                                                    </label>
+                                                </td>
+                                                <td>{{staticItem.Name}}</td>
+                                                <td>{{staticItem.Value}}</td>
+                                                <td>{{staticItem.Excluded}}</td>
+                                                <td>{{staticItem.IsNew}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="subtable table" v-if="field.FieldType=='TargetLookup'&&field.DataSourceType=='Static'">
+                                        <thead v-if="field.SuggestedItems.length">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Name</th>
+                                                <th>CurrentValue</th>
+                                                <th>TargetValue</th>
+                                                <th>Tolerance</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="staticItem in field.SuggestedItems">
+                                                <td>
+                                                    <label class="virtual-label">
+                                                        <input type="checkbox" class="org-checkbox" v-model="staticItem.IsCheck">
+                                                        <span class="virtual-checkbox">
+                                                            <i class="virtual-icon icon-ok-1"></i>
+                                                        </span>
+                                                    </label>
+                                                </td>
+                                                <td>{{staticItem.Name}}</td>
+                                                <td>{{staticItem.CurrentValue}}</td>
+                                                <td><input type="text" v-model="staticItem.TargetValue"></td>
+                                                <td><input type="text" v-model="staticItem.Tolerance"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </template>
+                            </td>
+                        </tr>
+                    </tbody>
+                  </table>
+                  <textarea class="view-area" placeholder="Query ..." v-model="EC.ECQeury" v-bind:disabled="!EC.IsEditable" v-show="EC.activeView=='Query'"></textarea>
+                  <textarea class="view-area" placeholder="Verification ..." v-model="EC.ECDrillthroughQuery" v-bind:disabled="!EC.IsEditable" v-show="EC.activeView=='Verification'"></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">
+        <button type="button" class="btn btn-primary btn-sm" v-if="ecModel.length>0" @click="saveCriteria">
+          Save
+        </button>
+        <button type="button" class="btn btn-success btn-sm" v-if="ecModel.length>0">
+          Run
+        </button>
+        <button type="button" class="btn" @click="closePreview">Close</button>
+      </div>
+    </div>
+  </div>
+  <script src="./jQuery.js"></script>
+  <script src="./vue.js"></script>
+  <script src="./index.js"></script>
+</body>
+
+</html>

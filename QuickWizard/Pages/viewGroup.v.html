@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link href="../Contents/common.css" rel="stylesheet" />
+    <link href="../Contents/previewPage.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+    <script src='../Scripts/common.js'></script>
+    <script src='../Scripts/dataOperate.js'></script>
+    <script src="../Scripts/format.number.js"></script>
+    <script src='../Scripts/renderControl.js'></script>
+</head>
+<body>
+    <div class="wrap">
+        <h1 data-bind="text:Language.Title" class="pageTitle font14"></h1>
+        <div data-bind="foreach:ServiceProviderRoles" class="content">
+            <!--ko if:IsDisplay-->
+            <div class="col-12 pt15">
+                <div data-bind="text:ItemAliasValue" class="pageItem"></div>
+                <div data-bind="foreach:Fields" class="pageRow" style="width:840px">
+                    <!--ko if:IsDisplay-->
+                    <div class="col-6 pageRow row">
+                        <span data-bind="text:ItemAliasValue" class="font12"></span>
+                        <span class="font12">:</span>
+                        <span data-bind="text:ItemValue" class="font12"></span>
+                    </div>
+                    <!--/ko-->
+                </div>
+            </div>
+            <!--/ko-->
+        </div>
+    </div>
+    <script src="viewGroup.v.js"></script>
+</body>
+</html>
+

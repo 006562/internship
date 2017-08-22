@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+	<Parameters>
+		<Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+	</Parameters>
+	<Query>
+    <![CDATA[
+declare @vchSQL  varchar(8000)
+Declare @vchFullSQL varchar(8000)
+set @vchSQL = 'use [' + @DBName + ']
+
+/****** Object:  View [dbo].[vw_DimDistributions]    Script Date: 09/19/2012 17:29:31 ******/
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N''[dbo].[vw_DimDistributions]''))
+DROP VIEW [dbo].[vw_DimDistributions]
+'
+exec (@vchSQL)
+
+set @vchSQL = '
+/****** Object:  View [dbo].[vw_DimDistributions]    Script Date: 09/19/2012 17:12:34 ******/
+CREATE VIEW [dbo].[vw_DimDistributions]
+AS
+
+SELECT * FROM DAL_SEC.dbo.tblDimDistributions WITH (NOLOCK)
+'
+
+SET @vchFullSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @vchFullSQL
+EXEC (@vchFullSQL)
+
+]]>
+  </Query>
+
+</main>

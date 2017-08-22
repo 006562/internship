@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>收益分配历史数据</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="/TrustManagementService/TrustManagement/Common/css/trustWizard.css" />
+    <link rel="stylesheet" href="/TrustManagementService/TrustManagement/Common/css/IncomeDistributionHistoryData.css" />
+</head>
+<body> 
+    <div class="title"><h3 class="h3">收益分配历史数据</h3></div>
+    <div class="catalog">
+        <div class="catalog-box">
+            <div class="line">
+                <em class="circle top"></em>
+                <em class="circle bottom"></em>
+            </div>
+            <div class="catalog-scroll">
+                <dl class="catalog-list" data-bind="foreach: historyIncomes">
+                    <dt class="catalog-title" data-bind="attr: { 'id': 'catalogTitle_' + $index()}">
+                        <em class="dot"></em>
+                        <div class="text" data-bind="click: $parent.catalogTitleClick.bind($data, $index())"><span data-bind="text: name"></span></div>
+                        <div class="sub-text">
+                            <span style="font-weight: bold">计息天数: </span><span data-bind="text: totalInteretDays"></span>天
+                            <span style="font-weight: bold">兑付日期: </span><span data-bind="text: cashDay"></span>
+                        </div>
+                        <div style="clear: both;"></div>
+                        <div class="catalog-content" data-bind="attr: { id: 'catalogContent_'+ $index() }">
+                            <table class="table" style="width: 60%">
+                                <thead>
+                                    <tr>
+                                        <th>现金流入</th>
+                                        <th>金额</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-bind="foreach: periodCashInflows">
+                                    <tr>
+                                        <td style="width: 41.67%; font-weight: bold;" data-bind="text: displayName"></td>
+                                        <td data-bind="text: amount"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <table class="table">
+                                <thead>
+                                <tr>
+                                    <th>对象</th>
+                                    <th>类型</th>
+                                    <th>账户类型</th>
+                                    <th>应分配金额</th>
+                                    <th>实际分配金额</th>
+                                </tr>
+                                </thead>
+                                <tbody data-bind="foreach: periodFees">
+                                <tr>
+                                    <td style="width: 25%; font-weight: bold;" data-bind="text: displayName"></td>
+                                    <td style="width: 10%" data-bind="text: feeType"></td>
+                                    <td style="width: 25%" data-bind="text: accountType"></td>
+                                    <td style="width: 20%" data-bind="text: feeDueAmount"></td>
+                                    <td data-bind="text: feePaidAmount"></td>
+                                </tr>
+                                </tbody>
+                            </table>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>对象</th>
+                                        <th>类型</th>
+                                        <th>账户类型</th>
+                                        <th>当前执行利率(%)</th>
+                                        <th>期初证券余额</th>
+                                        <th>期末证券余额</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-bind="foreach: periodBalances">
+                                    <tr>
+                                        <td style="width: 25%; font-weight: bold;" data-bind="text: displayName"></td>
+                                        <td style="width: 10%" data-bind="text: type"></td>
+                                        <td style="width: 25%" data-bind="text: accountType"></td>
+                                        <td style="width: 12%" data-bind="text: currentRate"></td>
+                                        <td style="width: 13%" data-bind="text: openingBalance"></td>
+                                        <td data-bind="text: closingBalance"></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </dt>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/common.js"></script>
+    <script src="/TrustManagementService/Scripts/moment.min.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/format.number.js"></script>
+    <script src="/TrustManagementService/Config/GlobalVariable.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/jquery-1.7.2.min.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/knockout-3.4.0.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/knockout.mapping-latest.js"></script>
+    <script src="/TrustManagementService/TrustManagement/TrustList/IncomeDistributionHistoryData.js"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+    <Parameters>
+        <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+    </Parameters>
+    <Query>
+        <![CDATA[
+declare @vchSQL  varchar(8000)
+set @vchSQL = 'use [' + @DBName + ']
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tblUploadedFiles]'') AND type in (N''U''))
+DROP TABLE [dbo].[tblUploadedFiles]
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+
+CREATE TABLE [dbo].[tblUploadedFiles](
+	[UploadID] [bigint] IDENTITY(1,1) NOT NULL,
+	[FileName] [nvarchar](200) NULL,
+	[InternalFileName] [nvarchar](200) NULL,
+	[Description] [nvarchar](500) NULL,
+	[UploadTime] [datetime] NULL,
+	[ProcessedTime] [datetime] NULL,
+ CONSTRAINT [PK_UploadedFiles] PRIMARY KEY CLUSTERED 
+(
+	[UploadID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]'
+
+exec (@vchSQL)
+
+]]>
+    </Query>
+
+</main>

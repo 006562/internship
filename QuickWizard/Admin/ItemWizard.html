@@ -1,0 +1,119 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <title>Item内容管理</title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link rel="stylesheet" href="../Contents/model.css" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/dataOperate.js"></script>
+    <script src="../Scripts/common.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var db = getQueryString("db");
+            var sc = getQueryString("sc");
+            if (db == null)
+            {
+                db = "QuickCredit";
+            }
+            else if (sc == "QuickCredit")
+            {
+                sc = "QuickCredit";
+            }
+            var dUrl = $("li").eq(0).data('url') + "?db="+db+"&sc="+sc;
+                var $iframe = $('.work iframe');
+                $iframe.attr('src', dUrl);
+                $iframe.load(function () {
+                    $(this).fadeIn();
+                });
+                $("li").click(function () {
+                    if (!$(this).hasClass("active")) {
+                        var url = $(this).data('url');
+                        url = url + "?db=" + db + "&sc=" + sc;
+                        $iframe.hide();
+                        $iframe.attr('src', url);
+                        $iframe.load(function () {
+                            $(this).fadeIn();
+                        });
+                        $("li").each(function () {
+                            $(this).removeClass("active");
+                            $(this).css("cursor", "pointer");
+                        })
+                        $(this).addClass("active");
+                        $(this).css("cursor", "default");
+                    }
+                });
+            
+            function changeMenu() {
+                var IsOpen = false;
+                var $menu = $('.step-menu'),
+                    $aside = $('.page>.aside');
+
+                $menu.unbind().click(function () {
+                    var $this = $(this), _left;
+
+                    if (IsOpen) {
+                        IsOpen = false;
+                        $aside.removeClass('menu');
+                        _left = 280;
+                    } else {
+                        IsOpen = true;
+                        $aside.addClass('menu');
+                        _left = 60;
+                    }
+                    $('.page').stop().animate({
+                        'padding-left': _left + 'px'
+                    }, 100);
+                });
+            }
+            changeMenu();
+        });
+
+
+             
+         
+
+    </script>
+</head>
+<body>
+
+    <div class="page">
+        <div class="aside">
+            <div class="step-box">
+                <div class="step-head">
+                    <div class="step-menu"><i class="icon icon-list"></i></div>
+                    <h2>Item内容管理</h2>
+                </div>
+                <ul>
+                    <li class="active" data-url="Page.html" style="cursor:pointer">
+                        <span class="no">1</span>
+                        <span class="flag"><i class="icon icon-right"></i></span>
+                        <h3 class="step-title">Page管理</h3>
+                        <p class="step-text">完善Page管理</p>
+                    </li>
+                    <li data-url="ItemCategory.html">
+                        <span class="no">2</span>
+                        <span class="flag"><i class="icon icon-right"></i></span>
+                        <h3 class="step-title">ItemCategory</h3>
+                        <p class="step-text">完善Item类别</p>
+                    </li>
+                    <li data-url="ItemList.html" style="cursor:pointer">
+                        <span class="no">3</span>
+                        <span class="flag"><i class="icon icon-right"></i></span>
+                        <h3 class="step-title">Item管理</h3>
+                        <p class="step-text">Item管理</p>
+                    </li>
+                   
+                    
+                </ul>
+
+            </div>
+        </div>
+        <div class="work">
+            <iframe src="" frameborder="0"></iframe>
+        </div>
+    </div>
+
+</body>
+</html>

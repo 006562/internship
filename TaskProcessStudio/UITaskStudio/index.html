@@ -1,0 +1,269 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Cashflow studio Powered by Goldenstand.">
+  <meta http-equiv="X-UA-compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" href="../Libraries/Styles/normalize.css">
+  <link rel="stylesheet" href="../Libraries/Styles/common.css">
+  <link rel="stylesheet" href="../Libraries/Styles/animate.css">
+  <link rel="stylesheet" href="../Libraries/Styles/codemirror.css">
+  <link rel="stylesheet" href="../Libraries/Fonts/fontello/css/fontello.css">
+  <link rel="stylesheet" href="Styles/cashflow.css">
+  
+  <title>TaskProcessStudio</title>
+  <!--[if lt IE 9]>
+  <script src="../Libraries/Scripts/html5shiv.min.js"></script>
+  <![endif]-->
+</head>
+
+<body id="layout">
+  <header id="header">
+    <h1 class="logo" @click="tabActive='task'">
+      <img src="Images/logo.png" alt="logo" title="logo" />
+    </h1>
+    <a href="javascript:void(0);" title="搜索" class="switch search-switch pl10 pr10 font18" rel="nofolow"><i class="icon-search"></i></a>
+    <menu class="menu">
+      <div id="studioTabsUL" class="btn-group btn-group-sm" role="group"></div>
+    </menu>
+  </header>    
+  <task v-ref:task></task>
+  <!-- 搜索 -->
+  <search v-ref:search></search>
+    <script type="text/x-template" id="searchTemplate">
+        <aside id="searchBox">        
+  		<div class="search-top">
+	        <div class="search-object">
+	          <span class="pull-right font16 search-close"><i class="icon-cancel"></i></span>
+	          <strong>Object Explorer</strong>
+	        </div>
+            <div class="search-box br3">
+          		<input type="search" class="search-input" v-model="appDomain" placeholder="Search a app domain.." />
+                <button type="button" @click="searchtask" class="search-btn">
+                <i class="icon-search"></i>
+                </button>
+            </div>
+            </div>
+            <div class="search-result" v-if="searchResult!=''">
+            <div class="search-task">
+                <input type="text" class="input" placeholder="Search Task.." v-model="searchTask" />
+            </div>
+            <ul id="search-res" onselectstart="return false">
+          <li v-for="row in searchResult | filterBy searchTask in 'CodeDictionaryCode'" @dblclick="loadTaskWork(row.CodeDictionaryCode,row.CriteriaSetCode,row.IsCheckOut)" @click="selectObj(row,$event)" :class="[row.IsCheck? 'active':'']" track-by="$index">
+                <span class="icon"><i class="icon-doc-text"></i></span> {{row.CodeDictionaryCode}}
+                </li>
+            </ul>
+            </div>
+            <div class="search-result" v-else>
+            <p class="no-content">No Content</p>
+            </div>
+        </aside>
+        </script>
+    <script type="text/x-template" id="viewActionTemplate">
+    <nav class="nav leftNav">
+        <div class="nav-body">
+        <h3 class="nav-title font14">
+        <i class="icon icon-move pl6 pr6 mr5 font14 "></i>
+        {{name}}
+        </h3>
+        <div class="nav-tabs-body">
+            <div class="nav-tabs-content">
+                <ul class="tool font12" dragable="action">
+                    <li v-for="list in items[0].list"><i class="icon icon-doc-text"></i>{{list.ActionDisplayName}}</li>
+                </ul>
+            </div>
+        </div>
+        </div>
+    </nav>
+    </script>
+    <script type="text/x-template" id="viewToolTemplate">
+        <nav class="nav rightNav">
+            <div class="nav-body">
+            <h3 class="nav-title font14">
+                <i class="icon icon-tasks pl6 pr6 mr5 font14 "></i>
+                {{name}}
+            </h3>
+            <div class="nav-tabs-body">
+                <div class="nav-tabs-content">
+                    <div class="list-wrap">
+                        <ul  class="tool font12" dragable="taskTools" @mouseout="removeHover()">
+                            <li v-for="item in items[0].list" @mouseover="addHover($index)" v-bind:class="{active:isHover==$index}">
+                                <i class="icon icon-doc"></i> {{item.Name}}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </nav>
+ 
+        </script>
+    <script type="text/x-template" id="taskWorkTemplate">
+        <article id="TaskMain" class="main">
+            <div id="TaskContent" class="content">
+            <div id="DialogHook" class="work">
+                <div class="work-top">
+                <div class="pull-right">
+              <input type="text" class="searchTaskCode" id="searchTaskCode" v-model="taskCode" size="{{sizelen}}" placeholder="New Task Code"/>
+                </div>
+                <div class="btn-group" role="group" aria-label="...">
+                    <button type="button" id="ribbon_showContent" @click="showContent('1')" class="btn btn-default btn-sm" data-balloon="ShowContent" data-balloon-pos="up"><i class="icon-table"></i></button>
+                    <button type="button" id="ribbon_showSimpleContent" @click="showSimpleContent('2')" class="btn btn-default btn-sm" data-balloon="ShowSimpleContent" data-balloon-pos="up"><i class="icon-vcard"></i></button>
+                    <button type="button" id="ribbon_ApplyTask" @click="applyTask()" class="btn btn-default btn-sm" data-balloon="Check Code" data-balloon-pos="up"><i class="icon-ok-1"></i></button>
+                    <button type="button" id="ribbon_SaveTask" @click="saveTask()" class="btn btn-default btn-sm" data-balloon="SaveTask" data-balloon-pos="up"><i class="icon-floppy-1"></i></button>
+                    <button type="button" id="ribbon_RefreshTask" @click="refreshTask()" class="btn btn-default btn-sm" data-balloon="RefreshTask" data-balloon-pos="up"><i class="icon-arrows-ccw"></i></button>
+                    <button type="button" id="ribbon_PopVariablePannel" @click="popTaskDataInput" class="btn btn-default btn-sm" data-balloon="PopVariablePannel" data-balloon-pos="up"><i class="icon-popup-2"></i></button>
+                    <button type="button" id="ribbon_Xml" @click="showTaskXML()" class="btn btn-default btn-sm" data-balloon="XML" data-balloon-pos="up"><i class="icon-list-alt"></i></button>
+                    <button type="button" id="ribbon_RunTask" @click="popCashFlowRunWindow()" class="btn btn-default btn-sm" data-balloon="RunTask" data-balloon-pos="up"><i class="icon-play"></i></button>
+                    <button type="button" id="ribbon_PopSessionManage" @click="PopSessionManage" class="btn btn-default btn-sm" data-balloon="SessionManage" data-balloon-pos="up"><i class="icon-tasks"></i></button>
+                </div>
+                </div>
+                <div id="work-body" class="work-body">
+                <div class="panel-actions">
+                    <div class="panel-head">
+                    <h3 style ="margin-left:10px">
+                        Actions
+                    </h3>
+                    </div>
+                    <div class="panel-body">
+                    <dl>
+                        <dt>ActionCode</dt>
+                        <dd>ActionDisplayName</dd>
+                    </dl>
+                    <ul class="tbActions">
+                        <li v-for="item in taskModel" v-bind:class="[item.IsCheck ? 'active' : '']" @dblclick="showContent('1')" @click="selectAction($event,$index)" tabindex="{{$index}}">
+                            <span>{{item.ActionCode}}</span>
+                            <span>{{item.ActionDisplayName}}</span>
+                        </li>
+                    </ul>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+        </article>
+            <edit-actioncontent v-ref:editactioncontent></edit-actioncontent>
+            <pop-runtask v-ref:popruntask></pop-runtask>
+            <edit-taskxml v-ref:edittaskxml></edit-taskxml>
+          
+        </script>
+    <script type="text/x-template" id="taskEditTemplate">
+        <div id="editParameter" class="edit-param">
+            <table class="table table-bordered parma">
+                <thead>
+                    <tr>
+                        <th>ActionDisplayName</th>
+                        <th>ActionCode</th>
+                        <th>FunctionName</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <input type="text" class="form-control" v-model="activeAction.ActionDisplayName" @blur="txtTrim($event)" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" v-model="activeAction.ActionCode" @blur="txtTrim($event)" />
+                        </td>
+                        <td>
+                            <input type="text" class="form-control" v-model="activeAction.FunctionName" @blur="txtTrim($event)" />
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table class="table table-bordered parma">
+                <thead>
+                    <tr>
+                        <th v-if="display"><i class="icon-plus-circled add" @click="AddActionParam()"></i></th>
+                        <th width="150">Name</th>
+                        <th v-if="display">SessionParameterName</th>
+                        <th width="300">Value</th>
+                        <th v-if="display">DataType</th>
+                        <th v-if="display">Usage</th>
+                        <th v-if="display">IsConfig</th>
+                    </tr>
+                </thead>
+                <tbody v-if="display">
+                    <tr v-for="item in activeAction.Parameter" droppable="tasktools">
+                        <td>
+                            <div class="middle"><i class="icon-minus-circled delete" @click="DelActionParam($index)"></i></div>
+                        </td>
+                        <td>
+                            <input type="text" v-model="item.Name" class="form-control" name="{{item.Name}}" @blur="txtTrim($event)" @mousedown.stop>
+                        </td>
+                        <td>
+                            <input type="text" v-model="item.SessionParameterName" class="form-control" @blur="txtTrim($event)" @mousedown.stop>
+                        </td>
+                        <td>
+                            <input type="text" v-model="item.Value" class="form-control" @blur="txtTrim($event)" @mousedown.stop>
+                        </td>
+                        <td>
+                            <input type="text" v-model="item.DataType" class="form-control" @blur="txtTrim($event)" @mousedown.stop>
+                        </td>
+                        <td>
+                            <input type="text" v-model="item.Usage" class="form-control" @blur="txtTrim($event)" @mousedown.stop>
+                        </td>
+                        <td>
+                            <div class="middle">
+                                <input type="checkbox" v-model="item.IsConfigurable" @mousedown.stop />
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody v-else>
+                    <tr v-for="item in activeAction.Parameter" v-if="item.IsConfigurable==true" droppable="tasktools">
+                        <td>
+                            <input type="text" v-model="item.Name" class="form-control" @blur="txtTrim($event)" @mousedown.stop>
+                        </td>
+                        <td>
+                            <input type="text" v-model="item.Value" class="form-control" @blur="txtTrim($event)" @mousedown.stop>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </script>
+    <script type="text/x-template" id="editTaskXMLTemplate">
+        <div id="editXml" class="modal-mask" v-show="showXml" transition="modal">
+            <div class="modal-wrapper">
+                <div id="taskXml" class="modal-container">
+                    <h3>Editting Task XML</h3>
+                    <a href="javascript:void(0);" class="close" @click="showXml = false"><i class="icon-cancel"></i></a>
+                    <textarea id="txtTaskXml" name="txtTaskXml">{{taskXml}}</textarea>
+                    <div class="modal-bottom">
+                        <button type="button" @click="apply" class="btn btn-apply">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script type="text/x-template" id="taskRunTemplate">
+        <div id="taskIndicatorArea" style="display:none;width:440px; height:440px;border-top:1px solid #ddd;padding:5px;">
+            <object id="TaskProcessCtl" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="display:block" width="100%" height="440px" class="ms-dlgDisable">
+                <param name="source" value="/TaskProcessEngine/ClientBin/UI.TaskProcessIndicator.xap" />
+                <param name="enablehtmlaccess" value="True" />
+            </object>
+        </div>
+    </script>
+    <div id="scriptForTask" style="display:none;padding:10px;">
+        <textarea id="txtScript" class="editXmlArea form-control" style="width:100%;height:480px;font-size:12px;color:#222;"></textarea>
+    </div>
+
+    <script src="../Libraries/Scripts/common.js"></script>
+    <script src="package.js"></script>
+    <script type="text/javascript">
+    var sessionID, taskCode;
+    var clientName = 'TaskProcess';
+    var IndicatorAppDomain = 'Task';
+    var IsSilverlightInitialized = false;
+    function InitParams() {
+        if (!IsSilverlightInitialized) {
+            IsSilverlightInitialized = true;
+        }
+        document.getElementById("TaskProcessCtl").Content.SL_Agent.InitParams(sessionID, IndicatorAppDomain, taskCode, clientName);
+    }
+    </script>
+</body>
+
+</html>

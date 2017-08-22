@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="../Scripts/magic/magic.core.css" rel="stylesheet" />
+    <link href="../Scripts/magic/magic.grid.css" rel="stylesheet" />
+    <script src="../Scripts/jquery.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <script src="../Scripts/common.js"></script>
+    <script src="../Scripts/magic/magic.core.js"></script>
+    <script src="../Scripts/magic/magic.grid.js"></script>
+    <script src="../Scripts/magic/magic.pager.js"></script>
+    <script src="../Scripts/magic/magic.mousewheel.js"></script>
+    <link href="../Scripts/magic/magic.dialog.css" rel="stylesheet" />
+    <script src="../Scripts/magic/magic.dialog.js"></script>
+    <script src="../Scripts/magic/dataOperate.js"></script>
+    <style type="text/css">
+        .expGrid .icon {
+            float: left;
+            margin-top: 2px;
+        }
+    </style>
+    <script type="text/javascript">
+
+
+        $(function () {
+            loadPages();
+        });
+
+        function loadPages()
+        {
+            var pg = $('body');
+            var vw = pg.find('#pageDiv');
+            var pages = vw.mac('grid', {
+                cols: [
+                    {
+                        name: 'no', title: '&nbsp;', width: 18,
+                        render: function (r, tr) {
+                            var a = $('<span class="icon icon-plus"></span>');
+                            a.click(function () {
+                                var yy = vw.find('.ybar>div');
+                                var pl = tr.exPanel;
+                                if (a.hasClass('icon-plus')) {
+                                    if (pl) {
+                                        pl.show();
+                                    } else {
+                                        pl = $('<ul style="background-color: #FFF; margin: 0px;"></div>');
+                                        //you can load remote content here
+                                        pl.append('<li>' + r.subject + '</li><li>'
+                                            + r.summary + '</li><li>Debit = '
+                                            + r.debit + '</li><li>Credit = ' + r.credit + '</li>'
+                                        );
+                                        tr.exPanel = pl.insertAfter(tr);
+                                        $('<div class="clear"></div>').insertBefore(pl);
+                                    }
+                                    yy.height(yy.height() + pl.height());
+                                    a.removeClass('icon-plus').addClass('icon-minus');
+                                } else {
+                                    pl.hide();
+                                    yy.height(yy.height() - pl.height());
+                                    a.removeClass('icon-minus').addClass('icon-plus');
+                                }
+                            });
+                            return a;
+                        }
+                    },
+                    { field: 'PageId', title: 'PageId', width: 100 },
+                    { field: 'PageCode', title: 'PageCode', width: 200 }                  
+                ],
+                loader: {
+                    appDomain: "QuickWizard",
+                    spName: "usp_Admin_GetPagesPaging",
+                    params: { PageNo: 1, PageSize: 20 },
+                    autoLoad: true
+                },
+
+                pagerLength: 10,
+                onRowClick: function () {
+                    var tr = $(this);
+                    pages.find('.tr').removeClass('selected');
+                    tr.addClass('selected');
+                    var k = tr.attr('name');
+                    var page = pages.data[k];
+                }
+            });
+        }
+    </script>
+ </head>
+<body>
+    <div>
+        <div id="pageDiv" class="view grid"></div>
+    </div>
+</body>
+</html>

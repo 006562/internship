@@ -1,0 +1,160 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-compatible" content="IE=edge,chrome=1">
+    <link href="../Libraries/Styles/reset.css" rel="stylesheet" />
+    <script src="../Libraries/Scripts/jquery-2.2.3.min.js"></script>
+    <script src="../Libraries/Scripts/jquery.cookie.js"></script>
+    <script src="../Libraries/Scripts/roleOperate.js"></script>
+    <script src="../Libraries/Scripts/WebProxy.js"></script>
+    <script src="../Libraries/Scripts/common.js"></script>
+    <script src="../Libraries/Scripts/workflowTypeModule.js"></script>
+    <script src="../Libraries/Scripts/anyDialog.js"></script>
+    <script src="workflowRun.js"></script>
+    <script type="text/javascript">
+        workflowRun.createWorkflowActionButtons();
+    </script>
+    <title>流程操作</title>
+    <style>
+        body{
+            background:#fff;
+        }
+        .btn-groups .btn{
+            margin-right: 5px;
+            border:none;
+        }
+        .btn-default{
+            background-color: #4a93d9;
+            color: #fff;
+        }
+        .btn-reject{
+            background-color: #ea6464;
+            color: #fff;
+        }
+        .btn-cancel{
+            background-color: #cfe3f5;
+            color: #6887a5;
+        }
+        .btn-cancel:hover,.btn-cancel:active{
+            opacity: .8;
+            color: #6887a5;
+        }
+        .btn-default:hover,.btn-default:active,.btn-default:focus,
+        .btn-reject:hover,.btn-reject:active,.btn-reject:focus{
+            opacity: .8;
+            color: #fff;
+        }
+        .textarea{
+            width:100%;
+            overflow-y:hidden;
+        }
+        .callback-info{
+           text-align:center;
+        }
+        .callback-info .iconfont{
+            font-size:4em;
+        }
+        .callback-info p{
+            font-size:14px;
+            margin-top:10px;
+        }
+        .success{
+            color:#19d419;
+        }
+		.modal-mask {
+			position: fixed;
+			z-index: 9998;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+            background:rgba(0,0,0,.2);
+			display: table;
+		}
+		.modal-wrapper {
+			display: table-cell;
+			vertical-align: middle;
+		}
+		.modal-container {
+			width: 180px;
+			margin: 0px auto;
+            padding:20px;
+            text-align:center;
+			border-radius: 4px;
+            z-index:9999;
+            background:rgba(0,0,0,.6);
+            color:#fff;
+			-webkit-animation: scale-up .25s ease-out both;
+					animation: scale-up .25s ease-out both;
+		}
+        .loading{
+            -webkit-animation:am-rotate 1.2s infinite linear;
+			animation:am-rotate 1.2s infinite linear;
+            margin-right:5px;
+        }
+		@keyframes scale-up {
+			0%{
+				opacity: 0;
+				-webkit-transform: scale(1.2);
+						transform: scale(1.2);				
+			}
+			100% {
+				opacity: 1;
+				-webkit-transform: scale(1);
+						transform: scale(1);
+			}
+		}
+        @-webkit-keyframes am-rotate {
+	        from {
+		        -webkit-transform: rotate(0deg);
+				        transform: rotate(0deg);
+	        }to{ 
+		        -webkit-transform: rotate(360deg);
+				        transform: rotate(360deg);
+	        }
+        }
+        @keyframes am-rotate {
+	        from {
+		        -webkit-transform: rotate(0deg);
+				        transform: rotate(0deg);
+	        }to{ 
+		        -webkit-transform: rotate(360deg);
+				        transform: rotate(360deg);
+	        }
+        }
+    </style>
+</head>
+<body>
+    <div id="operate" class="pd-20 pt-10">
+        <label>审核意见</label>
+        <div class="form-group">
+            <textarea id="approval_opinion" class="form-control textarea" rows="7"></textarea>
+        </div>
+        <div id="buttongroup" class="btn-groups"></div>
+    </div>
+    <div id="success" class="pd-20 pt-10" style="display:none">
+        <div class="callback-info pd-20">
+            <div class="iconfont success">
+                <i class="icon-roundcheckfill"></i>
+            </div>
+            <p>提交成功!<span id="num" class="ml-5 mr-5"></span>秒后自动关闭</p>
+        </div>
+    </div>
+    <div id="error" class="pd-20 pt-10" style="display:none">
+        <div class="callback-info pd-20">
+            <div class="iconfont error">
+                <i class="icon-roundclosefill"></i>
+            </div>
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+    <div id="loading" class="modal-mask" style="display:none">
+        <div class="modal-wrapper">
+            <div class="modal-container">
+                <i class="icon-jiazai loading"></i>提交中...
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,141 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <title></title>
+
+    <link href="../../Contents/bootstrap.css" rel="stylesheet" />
+    <link href="../../Scripts/magic/magic.dialog.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">Configuration Loading...</p>
+    </div>
+    <div class="tab-columns">
+        <button type="button" class="btn btn-active" data-col="2">
+            <span class="bs bs2"></span>
+            <span class="bs bs2"></span>
+        </button>
+        <button type="button" class="btn" data-col="3">
+            <span class="bs bs1"></span>
+            <span class="bs bs1"></span>
+            <span class="bs bs1"></span>
+        </button>
+    </div>
+    <div id="page_main_container" class="main">
+
+        <div class="main-sections" data-bind="foreach: Sections">
+            <div class="main-section" data-bind="attr:{sectionIndex: $index(), id: Identity}">
+                <h3 class="h3"><span class="title" data-bind="text: Title"></span></h3>
+
+                <div class="form-panel" data-bind="template: { name: Templ, data: FieldsSetting }"></div>
+
+                <div class="form-save" data-bind="foreach: Buttons">
+                    <button data-bind="text: Text, attr:{'class': Class, 'onclick':Click}"></button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script type="text/html" id="qw_KO_GridView">
+        <div class="form-item">
+            <table class="table table-bordered">
+                <thead>
+                    <tr data-bind="renderGridHeader:InnerText.Operate(), sectionIndex: $parentContext.$index()"></tr>
+                </thead>
+                <tbody data-bind="foreach:GridView">
+                    <tr data-bind="renderGridColumn:$parent.InnerText, sectionIndex: $parentContext.$parentContext.$index()"></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="form-item">
+            <div class="pull-right btn-group-sm">
+                <input type="button" class="btn btn-default btn-sm" onclick="gdvOperation.Clear(this)" data-bind="value: InnerText.BtnClear" />
+                <input type="button" class="btn btn-primary btn-sm gdv-detail-btnSave" onclick="gdvOperation.Save(this)" data-bind="value:InnerText.BtnSave" />
+            </div>
+            <h3 class="h3"><span class="title" data-bind="text:DetailsTitle"></span></h3>
+
+            <!--ko if: HasOptionalFields-->
+            <div class="form-drop">
+                <div class="row">
+                    <div class="col-4">
+                        <select class="form-control gdv-optionalfields-select" data-bind="foreach: Detail">
+                            <!--ko ifnot: IsDisplay-->
+                            <option data-bind="attr: {value:$index}, text: ItemAliasValue"></option>
+                            <!-- /ko -->
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-plus" onclick="gdvOperation.AddOptionalField(this)"><i class="icon icon-add"></i></button>
+                </div>
+            </div>
+            <!-- /ko -->
+
+            <div class="col-12 form-item form-horizontal" data-bind="foreach:Detail">
+                <!-- ko  if: IsDisplay -->
+                <div class="col-6 form-row autoLayout-plugins">
+                    <div class="form-group">
+                        <div class="col-4 control-label">
+                            <label data-bind="text:ItemAliasValue"></label>
+                        </div>
+                        <div class="col-6">
+                            <span data-bind="renderControl2:ItemId"></span>
+                        </div>
+                        <!-- ko  ifnot: IsCompulsory -->
+                        <button type="button" data-bind="attr: { itemIndex: $index }" onclick="gdvOperation.RemoveOptionalField(this)" class="btn btn-remove"><i class="icon icon-remove"></i></button>
+                        <!-- /ko -->
+                    </div>
+                </div>
+                <!-- /ko -->
+            </div>
+        </div>
+    </script>
+    <script type="text/html" id="qw_KO_StandView">
+        <!--ko if: HasOptionalFields-->
+        <div class="col-12 form-drop">
+            <div class="row">
+                <div class="col-4">
+                    <select class="form-control sdv-optionalfields-select" data-bind="foreach: Fields">
+                        <!--ko ifnot: IsDisplay-->
+                        <option data-bind="attr: {value: $index}, text: ItemAliasValue"></option>
+                        <!-- /ko -->
+                    </select>
+                </div>
+                <button type="button" onclick="sdvOperation.AddOptionalField(this)" class="btn btn-plus"><i class="icon icon-add"></i></button>
+            </div>
+        </div>
+        <!-- /ko -->
+        <div class="col-12 form-row form-horizontal" data-bind="foreach:Fields">
+            <!-- ko if: IsDisplay -->
+            <div class="col-6 form-row autoLayout-plugins">
+                <div class="form-group">
+                    <div class="col-4 control-label">
+                        <label data-bind="text:ItemAliasValue"></label>
+                    </div>
+                    <div class="col-6">
+                        <span data-bind="renderControl2: ItemCode"></span>
+                    </div>
+                    <!-- ko ifnot: IsCompulsory -->
+                    <button type="button" data-bind="attr: { itemIndex: $index }" onclick="sdvOperation.RemoveOptionalField(this)" class="btn btn-remove"><i class="icon icon-remove"></i></button>
+                    <!-- /ko -->
+                </div>
+            </div>
+            <!-- /ko -->
+        </div>
+    </script>
+
+    <script src="../../Scripts/jquery.min.js"></script>
+    <script src="../../Scripts/App.Global.js"></script>
+    <script src="../../Scripts/jquery.cookie.js"></script>
+    <script src="../../Scripts/knockout-3.4.0.js"></script>
+    <script src="../../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../../Scripts/calendar.min.js"></script>
+    <script src="../../Scripts/jquery-ui.min.js"></script>
+    <script src="../../Scripts/magic/magic.core.js"></script>
+    <script src="../../Scripts/magic/magic.dialog.js"></script>
+    <script src="BootStrapping.js"></script>
+</body>
+</html>

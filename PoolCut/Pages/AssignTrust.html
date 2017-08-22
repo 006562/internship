@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>文件上传</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+
+    <link href="../Contents/style.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="main">
+        <h3 id="step-title" class="h3"><span id="spanPageTitle" class="title"></span></h3>
+        <div class="form" id="AssetPoolCreationForm">
+            <div class="form-body default">
+                <div class="form-panel drop">
+                    <div class="col-12 form-group">
+                        <div class="col-3"><label>选择专项计划：</label></div>
+                        <div class="col-9">
+                            <select class="form-control" id="selAssociatedTrust"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3 buttons pull-right">
+                    <button type="button" class="btn btn-primary" title="提交" id="btnSubmit">提交</button>
+                    <button type="button" class="btn btn-default" title="取消" onclick="Cancel()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/App.Global.js"></script>
+    <script src="../Scripts/common.js"></script>
+    <script src="../UIFrame/js/gs-admin-2.pages.js"></script>
+    <script src="../Scripts/PoolCutCommon.js"></script>
+    <script>
+        $(function () {
+            var rcvData = GSDialog.GetData();
+            var TaskCode = rcvData.TaskCode;
+            console.log(TaskCode);
+            var PoolId = rcvData.Pool.PoolId;
+            if (!TaskCode || !PoolId || isNaN(PoolId)) { return; }
+
+            $('#spanPageTitle').text(rcvData.title);
+
+            var executeParam = { SPName: 'TrustManagement.usp_GetTrusts', SQLParams: [] };
+            executeParam.SQLParams.push({ Name: 'language', Value: 'zh-cn', DBType: 'string' });
+
+            var executeParams = encodeURIComponent(JSON.stringify(executeParam));
+            var serviceUrl = GlobalVariable.PoolCutServiceURL + 'CommonGet?connName=PoolCut_Database&exeParams=' + executeParams;
+            CallWCFSvc(serviceUrl, true, 'GET', function (data) {
+                var $sel = $('#selAssociatedTrust')
+                var options = '';
+                $.each(data, function (i, v) {
+                    options += '<option value="{0}">{1}</options>'.format(v.TrustId, v.TrustName);
+                });
+                $sel.append(options);
+            });
+            $('#btnSubmit').click(function () { SubmitPage(TaskCode, PoolId); });
+        });
+        function SubmitPage(taskCode, poolId) {
+            var tpi = new parent.TaskProcessIndicatorHelper();
+            tpi.AddVariableItem('DimReportingDateId', (new Date()).dateFormat('yyyyMMdd'), 'Int', 1, 0, 0);
+            tpi.AddVariableItem('TrustId', $('#selAssociatedTrust').val(), 'Int', 1, 0);
+            tpi.AddVariableItem('TrustName', $('#selAssociatedTrust option:selected').text(), 'String', 1, 0);
+            tpi.AddVariableItem('PoolID', poolId, 'Int', 1, 0);
+            tpi.AddVariableItem('TemplateFolder', 'E:\\TSSWCFServices\\PoolCut\\ConsumerLoan\\Document\\' + $('#selAssociatedTrust').val(), 'Int', 1, 0);
+            tpi.AddVariableItem('HostUrl', GlobalVariable.SslHost, 'String', 1, 0);
+            tpi.ShowIndicator('ConsumerLoan', taskCode);
+        }
+        function Cancel() {
+            GSDialog.Close(0);
+        }
+    </script>
+</body>
+</html>

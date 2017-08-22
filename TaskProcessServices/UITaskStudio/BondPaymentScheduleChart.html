@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/highcharts.js"></script>
+    <script src="../Scripts/highcharts_exporting.js"></script>
+    <script src="../Scripts/getUrlParameter.js"></script>
+    <a href="javascript:history.go(-1);">返回</a>
+    <div id="container" style="min-width: 400px; height: 600px; margin: 0 auto"></div>
+</body>
+</html>
+<script type="text/javascript">
+    if (!('map' in Array.prototype)) {
+        Array.prototype.map = function (mapper, that /*opt*/) {
+            var other = new Array(this.length);
+            for (var i = 0, n = this.length; i < n; i++)
+                if (i in this)
+                    other[i] = mapper.call(that, this[i], i, this);
+            return other;
+        };
+    }
+
+    // Load the fonts
+    Highcharts.createElement('link', {
+        href: '../css/font/GoogleFontDosis.css',
+        rel: 'stylesheet',
+        type: 'text/css'
+    }, null, document.getElementsByTagName('head')[0]);
+
+    Highcharts.theme = {
+        colors: ["#7cb5ec", "#f7a35c", "#90ee7e", "#7798BF", "#aaeeee", "#ff0066", "#eeaaee",
+           "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+        chart: {
+            backgroundColor: null,
+            style: {
+                fontFamily: "Dosis, sans-serif"
+            }
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            style: {
+                fontSize: '16px',
+                fontWeight: 'bold',
+                textTransform: 'uppercase'
+            }
+        },
+        tooltip: {
+            borderWidth: 0,
+            backgroundColor: 'rgba(219,219,216,0.8)',
+            shadow: false
+        },
+        legend: {
+            itemStyle: {
+                fontWeight: 'bold',
+                fontSize: '13px'
+            }
+        },
+        xAxis: {
+            gridLineWidth: 1,
+            labels: {
+                style: {
+                    fontSize: '12px'
+                }
+            }
+        },
+        yAxis: {
+            minorTickInterval: 'auto',
+            title: {
+                style: {
+                    textTransform: 'uppercase'
+                }
+            },
+            labels: {
+                style: {
+                    fontSize: '12px'
+                }
+            }
+        },
+        plotOptions: {
+            candlestick: {
+                lineColor: '#404048'
+            }
+        },
+
+
+        // General
+        background2: '#F0F0EA'
+
+    };
+
+    // Apply the theme
+    Highcharts.setOptions(Highcharts.theme);
+
+    $(function () {
+
+        function GetData() {
+            var tmsSessionServiceBase = "https://poolcutwcf/TaskProcessServices/BondPaymentScheduleService.svc/jsAccessEP/";
+            var responseResult = [];
+            var TrustId = getUrlParameter("TrustId");
+            var ReportingDate = getUrlParameter("ReportingDate");
+            var requestUrl = tmsSessionServiceBase + "GetBondPaymentChartByTrust/" + TrustId + "/TrustManagement/" + ReportingDate;
+            
+            $.ajax({
+                url: requestUrl,
+                success: function (result) {
+                    responseResult = result;
+                },
+                dataType: 'json',
+                async: false
+            });
+            return responseResult;
+        }
+        var data = GetData();
+        
+        var categories = data.map(function (v) { return v.date; });
+        var series = [{
+            name: '利息',
+            data: data.map(function (v) { return v.interest;})
+        }
+        , {
+            name: '本金',
+            data: data.map(function (v) { return v.principal; })
+        }];
+             
+        var titleText = "现金流图";
+        var yAxisTitle = "本金及利息";
+
+        $('#container').highcharts({
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: titleText
+            },
+            xAxis: {
+                categories: categories
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: yAxisTitle
+                },
+                stackLabels: {
+                    enabled: false,
+                    style: {
+                        fontWeight: 'bold',
+                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+                    }
+                }
+            },
+            legend: {
+                align: 'right',
+                x: -30,
+                verticalAlign: 'top',
+                y: 25,
+                floating: true,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white',
+                borderColor: '#CCC',
+                borderWidth: 1,
+                shadow: false
+            },
+            tooltip: {
+                headerFormat: '<b>{point.x}</b><br/>',
+                pointFormat: '{series.name}: {point.y:.0f}<br/>共计: {point.stackTotal:.0f}'
+            },
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: false,
+                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white',
+                        style: {
+                            textShadow: '0 0 3px black'
+                        }
+                    }
+                }
+            },
+            series:series
+        });
+
+        /**
+ * Grid-light theme for Highcharts JS
+ * @author Torstein Honsi
+ */
+
+       
+
+    });
+</script>

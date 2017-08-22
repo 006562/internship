@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <title></title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../Scripts/calendar.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <script src="../Scripts/magic/magic.core.js"></script>
+    <link href="../Scripts/magic/magic.dialog.css" rel="stylesheet" />
+    <script src="../Scripts/magic/magic.dialog.js"></script>
+</head>
+<body>
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">Configuration Loading...</p>
+    </div>
+    <div id="BasicParams" class="main">
+        <div class="tab-columns">
+            <button type="button" class="btn btn-active" data-col="2">
+                <span class="bs bs2"></span>
+                <span class="bs bs2"></span>
+            </button>
+            <button type="button" class="btn" data-col="3">
+                <span class="bs bs1"></span>
+                <span class="bs bs1"></span>
+                <span class="bs bs1"></span>
+            </button>
+        </div>
+        <h3 id="step-title" class="h3"><span class="title" data-bind="text:Language.ProductInfo"></span></h3>
+        <div class="form-panel">
+            <div class="col-12 form-drop">
+                <div class="row">
+                    <div class="col-4">
+                        <select id="tb_CompulsoryDDL" class="form-control" data-bind="foreach: DataItems">
+                            <!--ko ifnot:IsDisplay-->
+                            <option data-bind="attr: {value: ItemCode}, text: ItemAliasValue"></option>
+                            <!-- /ko -->
+                        </select>
+                    </div>
+                    <button type="button" onclick="createCompulsory()" class="btn btn-plus"><i class="icon icon-add"></i></button>
+                </div>
+            </div>
+            <div class="col-12 form-row form-horizontal" data-bind="foreach:DataItems">
+                <!-- ko if: IsDisplay -->
+                <div class="col-6 form-row autoLayout-plugins">
+                    <div class="form-group">
+                        <label data-bind="text:ItemAliasValue" class="col-4 control-label"></label>
+                        <div class="col-6">
+                            <span data-bind="renderControl:ItemId"></span>
+                        </div>
+                        <!-- ko  if: IsNew -->
+                        <button id="btn_RemoveCompulsory" type="button" data-bind="attr: { itemCode: ItemCode }" onclick="removeCompulsory(this)" class="btn btn-remove"><i class="icon icon-remove"></i></button>
+                        <!-- /ko -->
+                    </div>
+
+                </div>
+                <!-- /ko -->
+            </div>
+        </div>
+        <div class="form-save">
+            <input id="save" type="button" class="btn btn-primary" onclick="saveItem()" data-bind="value:Language.BtnSave" />
+        </div>
+
+    </div>
+    <script src="viewBasicParams.js"></script>
+</body>
+</html>

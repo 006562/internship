@@ -1,0 +1,1127 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+    <title>Trust Config</title>
+</head>
+<body>
+    <div id="loading" class="loadpage text-center">加载配置中...</div>
+
+    <div class="aside">
+        <div class="step-box">
+            <ul>
+                <li>
+                    <span class="no">1</span>
+                    <span class="flag"><i class="icon icon-right"></i></span>
+                    <h3 class="step-title">产品信息</h3>
+                    <p class="step-text">添加产品信息</p>
+                </li>
+                <li>
+                    <span class="no">2</span>
+                    <span class="flag"><i class="icon icon-right"></i></span>
+                    <h3 class="step-title">分层信息</h3>
+                    <p class="step-text">完善债券分层信息</p>
+                </li>
+                <li>
+                    <span class="no">3</span>
+                    <span class="flag"><i class="icon icon-right"></i></span>
+                    <h3 class="step-title">日期设置</h3>
+                    <p class="step-text">设置信托相关日期</p>
+                </li>
+                <li>
+                    <span class="no">4</span>
+                    <span class="flag"><i class="icon icon-right"></i></span>
+                    <h3 class="step-title">专项事件及增信</h3>
+                    <p class="step-text">专项计划事件及增信</p>
+                </li>
+                <li>
+                    <span class="no">5</span>
+                    <span class="flag"><i class="icon icon-right"></i></span>
+                    <h3 class="step-title">相关参与方</h3>
+                    <p class="step-text">完善相关参与方信息</p>
+                </li>
+                <li>
+                    <span class="no">6</span>
+                    <span class="flag"><i class="icon icon-right"></i></span>
+                    <h3 class="step-title">专项计划现金流</h3>
+                    <p class="step-text">专项计划及现金流信息</p>
+                </li>
+                <li>
+                    <span class="no">7</span>
+                    <span class="flag"><i class="icon icon-right"></i></span>
+                    <h3 class="step-title">交易文档</h3>
+                    <p class="step-text"></p>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main">
+        <h3 id="step-title" class="h3"><span class="title">产品信息</span></h3>
+        <div class="form">
+            <!-- 产品信息 -->
+            <div class="form-body" id="step0">
+                <div id="TrustItemDiv">
+                    <div class="form-panel drop">
+                        <div class="col-12 form-group">
+                            <div class="col-3">
+                                <select class="form-control" data-bind="foreach: optionalFields" id="selOptionalFields">
+                                    <option data-bind="attr: {value: $index}, text: ItemAliasValue"></option>
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" onclick="TrustItemModule.AddItem(this)" class="btn btn-plus"><i class="icon icon-add"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-panel default" data-bind="foreach:displayFields">
+                        <div class="col-6 form-group autoLayout-plugins">
+                            <div class="col-4">
+                                <label data-bind="css:{datarequired:IsCompulsory},attr:{dataIndex:$index},text:ItemAliasValue"></label>
+                            </div>
+
+                            <!--ko if: ItemCode().toLocaleLowerCase()=='issueamount'-->
+                            <!--onkeyup="ItemValue:TrustItemModule.fmoney(this, $(this).val(), 0)"-->
+                            <div class="col-6">
+                                <input type="text" id="mminput"
+                                       data-bind="value:$root.formatp(ItemValue()),event: { keyup: function(data,event){$root.logkeyup(data,event)}}, attr: {'data-valid': (+' '+(IsCompulsory()=='True'?'Required':''))}" onchange="validControlValue(this)" class="form-control text-center" />
+                            </div>
+
+                            <!--/ko-->
+                            <!-- ko  if: ItemCode().toLocaleLowerCase()!='issueamount' -->
+                            <div class="col-6" data-bind="renderControl:ItemValue"></div>
+                            <!-- /ko -->
+                            <!-- ko  if: IsCompulsory()=='False'-->
+                            <div class="col-2">
+                                <button data-bind="attr: { dataIndex: $index }" onclick="TrustItemModule.RemoveItem(this)" class="btn btn-remove">
+                                    <i class="icon icon-remove"></i>
+                                </button>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+
+                    <h3 id="step-title" class="h3"><span class="title">资产支持证券基本情况</span></h3>
+                    <div class="form-panel default" data-bind="foreach:BondFields">
+                        <div class="col-6 form-group autoLayout-plugins">
+                            <div class="col-4">
+                                <label data-bind="css:{datarequired:IsCompulsory},attr:{dataIndex:$index},text:ItemAliasValue"></label>
+                            </div>
+
+                            <!--ko if: ItemCode().toLocaleLowerCase()=='issueamount'-->
+                            <!--onkeyup="ItemValue:TrustItemModule.fmoney(this, $(this).val(), 0)"-->
+                            <div class="col-6">
+                                <input type="text" id="mminput"
+                                       data-bind="value:$root.formatp(ItemValue()),event: { keyup: function(data,event){$root.logkeyup(data,event)}}, attr: {'data-valid': (+' '+(IsCompulsory()=='True'?'Required':''))}" onchange="validControlValue(this)" class="form-control text-center" />
+                            </div>
+
+                            <!--/ko-->
+                            <!-- ko  if: ItemCode().toLocaleLowerCase()!='issueamount' -->
+                            <div class="col-6" data-bind="renderControl:ItemValue"></div>
+                            <!-- /ko -->
+                            <!-- ko  if: IsCompulsory()=='False'-->
+                            <div class="col-2">
+                                <button data-bind="attr: { dataIndex: $index }" onclick="TrustItemModule.RemoveItem(this)" class="btn btn-remove">
+                                    <i class="icon icon-remove"></i>
+                                </button>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                    <h3 id="step-title" class="h3"><span class="title">增信措施</span></h3>
+                    <div class="form-panel item">
+                        <div class="form-panel table-scroll">
+
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th width="40">
+                                            <button onclick="TrustItemModule.addZXItem(this)" type="button" class="btn btn-plus" style="padding:0">
+                                                <i class="icon icon-add" style="margin-right:0"></i>
+                                            </button>
+                                        </th>
+                                        <th width="40">ID</th>
+                                        <th>增信描述</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-bind="foreach:ZXFields">
+                                    <tr>
+                                        <td>
+                                            <button type="button" data-bind="attr: { dataIndex: $index() }" onclick="TrustItemModule.removeZXItem(this)" class="btn btn-remove" style="padding:0"><i class="icon icon-remove" style="margin-right:0"></i></button>
+                                        </td>
+                                        <td data-bind="text:$index()+1"></td>
+                                        <td>
+                                            <input type="text" onchange="validControlValue(this)" data-bind="value: ItemValue, attr: {'data-valid': ' Required'}" class="form-control text-center" />
+                                            <!--<div class="col-12" data-bind="renderControl:ItemValue"></div>-->
+                                        </td>
+
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 分层信息 -->
+            <div class="form-body" id="step1">
+                <div id="TrustBondDiv">
+                    <span class="title" style="float:right;">
+                        <button id="FactBondPayment_show" type="button" class="btn" style="padding:0px 12px;">实际支付</button>
+                    </span>
+                    <div class="form-panel item">
+                        <h3 class="h3"><span class="title">债券信息</span></h3>
+                        <div style="height:5px;"></div>
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th data-bind="renderTitle:'SecurityExchangeCode'"></th>
+                                    <th data-bind="renderTitle:'ShortName'"></th>
+                                    <th data-bind="renderTitle:'OriginalCreditRating'"></th>
+                                    <th data-bind="renderTitle:'OfferAmount'"></th>
+                                    <th data-bind="renderTitle:'CouponBasis'"></th>
+                                    <th data-bind="renderTitle:'IssueDate'"></th>
+                                    <th data-bind="renderTitle:'LegalMaturityDate'"></th>
+                                    <th data-bind="renderTitle:'PaymentConvention'"></th>
+                                    <th width="110">操作</th>
+                                </tr>
+                            </thead>
+                            <tbody id="result" data-bind="foreach:GridView">
+                                <tr>
+                                    <td data-bind="text: SecurityExchangeCode"></td>
+                                    <td data-bind="text: ShortName"></td>
+                                    <td data-bind="text: OriginalCreditRating"></td>
+                                    <!--改了这里，使用formatp实现会计显示-->
+                                    <td data-bind="text: $parent.formatp(OfferAmount())"></td>
+                                    <td data-bind="text: CouponBasis"></td>
+                                    <td data-bind="text: IssueDate"></td>
+                                    <td data-bind="text: LegalMaturityDate"></td>
+                                    <td data-bind="text: PaymentConvention"></td>
+
+                                    <td>
+                                        <button type="button" id="tb_edit" class="btn btn-primary btn-sm" data-bind="attr: { dataIndex: $index }" onclick="TrustBondModule.TrustBond_Detail(this)">
+                                            编辑
+                                        </button>
+                                        <button type="button" id="tb_delete" class="btn btn-delete btn-sm delete " data-bind="attr: { dataIndex: $index }" onclick="TrustBondModule.TrustBond_Delete(this)">
+                                            删除
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="editPaymentSequence" class="col-12 form-panel item">
+                            <button type="button" id="editPaymentSequenceBtn" style="padding:2px 10px" class="btn btn-default pull-right"><i class="icon icon-setting"></i>维护分层偿付顺序</button>
+                        </div>
+                    </div>
+                    <form id="TrustBond" class="form-panel-bond">
+                        <div class="form-panel item">
+                            <div class="pull-right buttons">
+                                <input type="button" class="btn btn-default btn-sm" id="tb_Clear" value="清空" />
+                                <input type="button" class="btn btn-primary btn-sm" id="tb_Add" value="添加" />
+                            </div>
+                            <h3 class="h3"><span class="title" id="tb_name">添加分层</span></h3>
+                            <div class="form-panel drop">
+                                <div class="col-12 form-group">
+                                    <div class="col-3">
+                                        <select id="tb_CompulsoryDDL" class="form-control" data-bind="foreach: SelectCompulsory">
+                                            <option data-bind="attr: {value: ItemCode}, text: ItemAliasValue"></option>
+                                        </select>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="button" class="btn btn-plus" id="tb_AddCompulsory" onclick="TrustBondModule.CreateCompulsory()"><i class="icon icon-add"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-panel item" id="TrustItem_Detail" data-bind="foreach:Detail">
+                                <!-- ko  if: IsDisplay() -->
+                                <div class="col-6 form-group autoLayout-plugins">
+                                    <div class="col-4">
+                                        <label data-bind="text:ItemAliasValue"></label>
+                                    </div>
+                                    <div class="col-6">
+                                        <!--改了这里，使用if单独绑定OfferAmount-->
+                                        <!--ko   if:ItemCode()=='OfferAmount'-->
+                                        <input id="OfferAmount" type="text" class="form-control" data-bind="value:$parent.formatp(ItemValue()),event: { keyup:$parent.logkeyupItemValue.bind($index,$data,'#OfferAmount')}," data-valid="Required" />
+                                        <!-- /ko-->
+                                        <!-- ko  if:DataType()!='Select' -->
+                                        <!-- ko  if:ItemCode()!='OfferAmount'-->
+                                        <span data-bind="renderControl:ItemCode"></span>
+                                        <!-- /ko -->
+                                        <!-- /ko -->
+                                        <!-- ko  if:DataType()=='Select' -->
+                                        <!-- ko  if:ItemCode()!='RatingAgent'-->
+                                        <span data-bind="renderControl:ItemCode,id:'bn_'"></span>
+                                        <!-- /ko -->
+                                        <!-- ko  if:ItemCode()=='RatingAgent'-->
+                                        <select class="form-control" data-bind="options:$parent.DDL.RatingAgent, optionsText:'ItemAliasValue', optionsValue:'SPId',value:ItemValue"></select>
+                                        <!-- /ko -->
+                                        <!-- /ko -->
+                                    </div>
+                                    <div class="col-2">
+                                        <!-- ko  if: IsNew() -->
+                                        <button id="btn_RemoveCompulsory" type="button" data-bind="attr: { itemCode: ItemCode }" onclick="TrustBondModule.RemoveCompulsory(this)" class="btn btn-remove"><i class="icon icon-remove"></i></button>
+                                        <!-- /ko -->
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                        <div id="tb_PrincipalPaymentSchedule_div" class="form-panel item" data-bind="visible:IsPrincipalScheduleShow">
+                            <h3 class="h3"><span class="title">附加信息</span></h3>
+                            <div class="form-panel item" id="PrincipalPaymentSchedule" data-bind="foreach:PrincipalSchedules">
+                                <div class="col-12">
+                                    <div class="col-4 form-group">
+                                        <div class="col-4">
+                                            <label>计划还本时间</label>
+                                        </div>
+                                        <div class="col-7">
+                                            <input class="form-control date-plugins" data-bind="value:PlanPayDate" data-valid="Required" onchange="validControlValue(this)" />
+                                        </div>
+                                    </div>
+                                    <div class="col-4 form-group">
+                                        <div class="col-4">
+                                            <label>计划还本金额</label>
+                                        </div>
+                                        <div class="col-7">
+                                            <input type="text" class="form-control" data-bind="value:$parent.formatp(PlanPayAmount()),event: {keyup:$parent.logkeyup.bind($data,$index)}," data-valid="Required" />
+                                        </div>
+                                    </div>
+                                    <div class="col-2 form-group">
+                                        <!--ko if:IsPlus-->
+                                        <button id="addPPS" type="button" class="btn btn-plus" onclick="TrustBondModule.AddPPS()"><i class="icon icon-add"></i></button>
+                                        <!-- /ko -->
+                                        <!--ko ifnot:IsPlus-->
+                                        <button id="removePPS" type="button" class="btn btn-remove" data-bind="attr: { dataIndex: $index }" onclick="TrustBondModule.RemovePPS(this)"><i class="icon icon-remove"></i></button>
+                                        <!-- /ko -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    <div class="form-panel" style="display:none"
+                            <button type="button" class="btn btn-default" onclick="TrustBondModule.PreView()">Show PreView</button>
+                            <button type="button" class="btn btn-default" onclick="TrustBondModule.SubmitJson()">Show SubmitJson</button>
+                            <textarea class="form-control" style="height:180px;margin-top:-1px;" id="divTrustBondShow"></textarea>
+                        </div>
+                </div>
+            </div>
+            <!-- 日期设置 -->
+            <div class="form-body" id="step2">
+                <div id="TrustExtensionDiv">
+                    <span class="title" style="float:right;">
+                        <button id="period_set" type="button" class="btn" style="padding:0px 12px;">修改</button>
+                    </span>
+                    <div class="form-panel item">
+                        <h3 class="h3"><span class="title">专项计划日期事件</span></h3>
+                        <div class="form-panel drop">
+                            <div class="col-12 form-group">
+                                <div class="col-3">
+                                    <select class="form-control" data-bind="foreach:DateSetList.NoHaveDataList">
+                                        <option data-bind="html:ItemAliasValue,attr:{dataIndex: $index}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <button id="addShowColumn" type="button" class="btn btn-plus"><i class="icon icon-add"></i></button>
+                                </div>
+                                <div class="col-3">
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-12" data-bind="foreach:DateSetList.HaveDataList">
+                            <div class="col-6 form-group autoLayout-plugins">
+                                <div class="col-4">
+                                    <label data-bind="html:ItemAliasValue"></label>
+                                </div>
+                                <div class="col-6">
+                                    <div class="col-11" data-bind="renderControl:ItemValue">
+                                    </div>
+                                </div>
+                                <div class="col-2" data-bind="if:CanDel">
+                                    <button id="removeShowColumn" title="删除" data-bind="attr:{dataIndex: $index}" class="btn btn-remove">
+                                        <i class="icon icon-remove"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<input type="button" onclick='alert("FundTransferDate：" + TrustExtensionNameSpace.GetDateSetListByCode(1, "RemittanceFrequency", "ItemAliasValue"));' value="测试" />-->
+                    <!--<input type="text" class="form-control date-plugins" data-bind="value:ItemValue,attr:{name:ItemCode,class:cls,baseDateType:ItemCode}" />-->
+                    <div class="form-panel item">
+                        <h3 class="h3"><span class="title">循环购买设置</span></h3>
+                        <div class="form-panel drop">
+                            <div class="col-12 form-group">
+                                <div class="col-3">
+                                    <select class="form-control" data-bind="foreach:ForEachSet.NoHaveDataList">
+                                        <option data-bind="html:ItemAliasValue,attr:{dataIndex: $index}"></option>
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <button id="addShowColumnEx" type="button" class="btn btn-plus"><i class="icon icon-add"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12" data-bind="foreach:ForEachSet.HaveDataList">
+                            <div class="col-6 form-group autoLayout-plugins">
+                                <div class="col-4">
+                                    <label data-bind="html:ItemAliasValue"></label>
+                                </div>
+                                <div class="col-6">
+                                    <div class="col-11" data-bind="renderControl:ItemValue">
+                                    </div>
+                                </div>
+                                <div class="col-2" data-bind="if:CanDel">
+                                    <button id="removeShowColumnEx" title="删除" data-bind="attr:{dataIndex: $index}" class="btn btn-remove">
+                                        <i class="icon icon-remove"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-panel item">
+                        <h3 class="h3"><span class="title">日期计算</span></h3>
+                        <div class="form-panel drop" id="addWorkDayDiv">
+                            <div class="col-12 form-group">
+                                <div class="col-3">
+                                    <div class="col-11">
+                                        <select class="form-control" data-bind="foreach:JSRList.NoHaveDataList">
+                                            <option data-bind="html:DisplayName,attr:{dataIndex: $index}"></option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="col-11">
+                                        <input type="text" name="DateValue" disabled="disabled" class="form-control date-plugins" />
+                                    </div>
+                                </div>
+                                
+                                <div class="col-3">
+                                    <div class="col-2">
+                                        <label>距离</label>
+                                    </div>
+                                    <div class="col-10">
+                                        <div class="col-11">
+                                            <select class="form-control" id="DateTypeSelect" name="DateType" data-bind="foreach:CompareTargetArry">
+                                                <option data-bind="html:ItemAliasValue,value:ItemCode"></option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-2">
+                                    <div class="col-6">
+                                        <div class="col-11">
+                                            <input type="text" id="addDateCount" name="DateCount" class="form-control text-center" />
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label>个工作日</label>
+                                    </div>
+                                </div>
+                                <div class="col-1">
+                                    <button id="addWorkDay" type="button" class="btn btn-plus">
+                                        <i class="icon icon-add"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div style="width:50%;float:right;text-align:center;margin-bottom:5px;"><span id="setautohide" style=" cursor:pointer"><i class="icon icon-bottom" style="font-size:12px"></i><span> 点击显示</span></span></div>
+                        <div style="width:50%;float:right;text-align:center;margin-bottom:5px;"><span id="sortDate" style=" cursor:pointer"><i class="icon icon-bottom" style="font-size:12px"></i><span> 降序排序</span></span></div>
+                        <div data-bind="foreach:JSRList.HaveDataList" id="TrustExtensionJSRListHaveDataList">
+                            <!-- ko if:IsShow -->
+                            <div class="col-12 form-group" data-bind="attr:{dataIndex: $index}">
+                                <div class="col-3">
+                                    <div class="col-11">
+                                        <label data-bind="html:DisplayName"></label>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="col-11">
+                                        <input type="text" name="DateValue" class="form-control" disabled="disabled" data-bind="value:ItemValue" />
+                                    </div>
+                                </div>
+                                <div class="col-3" name="autohide" style="display:none;">
+                                    <div class="col-2">
+                                        <label>距离</label>
+                                    </div>
+                                    <div class="col-10">
+                                        <div class="col-11">
+                                            <label name="DateType" data-bind="value:CompareTarget,html:$root.GetCompareTargetName(CompareTarget())"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-2" name="autohide" style="display:none;">
+                                    <div class="col-6">
+                                        <div class="col-11">
+                                            <input type="text" class="form-control text-center" name="DateCount" data-bind="value:DateCount" />
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <label>个工作日</label>
+                                    </div>
+                                </div>
+                                <div class="col-1" name="autohide" style="display:none;">
+                                    <button id="removeWorkDay" title="删除" data-bind="attr:{dataIndex: $index}" class="btn btn-remove">
+                                        <i class="icon icon-remove"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <!-- /ko -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-body" id="step3">
+                <div id="TrustEventDiv">
+                    <div class="form-panel item">
+                        <h3 class="h3"><span class="title">专项计划</span></h3>
+                        <div class="form-panel drop">
+                            <div class="col-12 form-group">
+                                <div class="col-3">
+                                    <select class="form-control" data-bind="foreach: TrustEventItem" id="trustEvent_SpecificPlan_selOptionalFields">
+                                        <!-- ko ifnot: isDisplay -->
+                                        <option data-bind="attr: {value: $index}, text: ItemAliasValue"></option>
+                                        <!-- /ko -->
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" onclick="TrustEventBizModule.AddItem(this, 'SpecificPlan', 'trustEvent_SpecificPlan_selOptionalFields')" class="btn btn-plus xs-mt10"><i class="icon icon-add"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-panel drop table-scroll">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th width="220">事件</th>
+                                        <th>定性描述</th>
+                                        <th width="40"></th>
+                                    </tr>
+                                </thead>
+                                <tbody data-bind="foreach: TrustEventItem">
+                                    <tr data-bind="visible: isDisplay, css:{isPreview: isDisplay}" class="trChange">
+                                        <td data-bind="text: ItemAliasValue" style="font-weight:bold;"></td>
+                                        <td>
+                                            <table>
+                                                <tbody data-bind="foreach: triggeredRecords">
+                                                    <tr>
+                                                        <td style="width:100%; padding-bottom:5px;">
+                                                            <textarea rows="2" class="form-control addedTriggeredRecord" style="height:45px; min-width:200px;" data-bind="value: ItemValue"></textarea>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-remove" style="width:28px;"
+                                                                    data-bind="attr: {itemIndex: $index, parentIndex: $parentContext.$index}"
+                                                                    onclick="TrustEventBizModule.RemoveRecordItem(this)">
+                                                                <i class="icon icon-remove"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                                <tfoot>
+                                                    <tr>
+                                                        <td style="width:100%;">
+                                                            <textarea rows="2" class="form-control" style="height:45px; min-width:200px;"
+                                                                      data-bind="attr: {id: 'trustEvent_txtarea_'+$index()}"></textarea>
+                                                        </td>
+                                                        <td>
+                                                            <button type="button" class="btn btn-plus" style="width:28px;"
+                                                                    data-bind="attr: {itemIndex: $index}"
+                                                                    onclick="TrustEventBizModule.AddRecordItem(this)">
+                                                                <i class="icon icon-add"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>
+                                                </tfoot>
+                                            </table>
+                                        </td>
+                                        <td>
+                                            <span data-bind="ifnot: IsCompulsory()==='True'">
+                                                <button type="button" title="删除" data-bind="attr: { itemIndex: $index, itemRequired: IsCompulsory } "
+                                                        onclick="TrustEventBizModule.RemoveItem(this, 'SpecificPlan')" class="btn btn-remove">
+                                                    <i class="icon icon-remove"></i>
+                                                </button>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-panel item">
+                        <h3 class="h3" style="cursor:pointer;" onclick="TrustEventBizModule.ToogleBreachConditionTable(this)">
+                            <span class="title">违约条件</span>&nbsp;<i class="icon icon-bottom"></i>
+                        </h3>
+                        <div class="form-panel drop" style="display:none;">
+                            <div class="col-12 form-group">
+                                <div class="col-3">
+                                    <select class="form-control" data-bind="foreach: TrustEventItemCondition" id="trustEvent_BreachCondition_selOptionalFields">
+                                        <!-- ko ifnot: isDisplay -->
+                                        <option data-bind="attr: {value: $index}, text: ItemAliasValue"></option>
+                                        <!-- /ko -->
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" onclick="TrustEventBizModule.AddItem(this, 'BreachCondition', 'trustEvent_BreachCondition_selOptionalFields')" class="btn btn-plus xs-mt10"><i class="icon icon-add"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-panel drop table-scroll" style="display:none;">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="2" valign="top" width="220">违约条件</th>
+                                        <th rowspan="2" valign="top">触发事件</th>
+                                        <th colspan="4" valign="top">测试</th>
+                                        <th rowspan="2" width="40"></th>
+                                    </tr>
+                                    <tr>
+                                        <th width="40">检测</th>
+                                        <th width="80">假定值</th>
+                                        <th width="80">条件</th>
+                                        <th width="140">阈值</th>
+                                    </tr>
+                                </thead>
+                                <tbody data-bind="foreach: TrustEventItemCondition">
+                                    <tr data-bind="visible: isDisplay, css:{isPreview: isDisplay}">
+                                        <td data-bind="text: ItemAliasValue" style="font-weight:bold;"></td>
+                                        <td>
+                                            <div data-bind="foreach: $parent.TrustEventItem" style="text-align:left;">
+                                                <div data-bind="visible: isDisplay" style="line-height:22px;">
+                                                    <input type="checkbox" onclick="TrustEventBizModule.TriggeredBySet(this)"
+                                                           data-bind="value: ItemCode, checked: $parent.triggering,
+                                                                attr: {targetIndex:$index, triggerId:$parent.ItemCode}" />
+                                                    <span data-bind="text: ItemAliasValue"></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input type="checkbox" data-bind="checked: isChecking" />
+                                        </td>
+                                        <td>
+                                            <div data-bind="visible: isChecking" class="form-group">
+                                                <div class="col-12">
+                                                    <input type="text" data-bind="value: currentValue" class="form-control" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div data-bind="visible: isChecking">
+                                                <select data-bind="value: operator" class="form-control">
+                                                    <option value="NA">请选择</option>
+                                                    <option value="gt">></option>
+                                                    <option value="ge">>=</option>
+                                                    <option value="ne">&ne;</option>
+                                                    <option value="eq">=</option>
+                                                    <option value="lt"><</option>
+                                                    <option value="le"><=</option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div data-bind="visible: isChecking" class="form-group">
+                                                <div class="col-7">
+                                                    <div class="col-11">
+                                                        <input type="text" class="form-control" data-bind="value: threshold" />
+                                                    </div>
+                                                </div>
+                                                <div class="col-3">
+                                                    <button type="button" class="btn btn-default" data-bind="attr: { itemIndex: $index }" onclick="TrustEventBizModule.VerifyCondition(this)">测试</button>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span data-bind="ifnot: IsCompulsory()==='True'">
+                                                <button type="button" title="删除" data-bind="attr: { itemIndex: $index, itemRequired: IsCompulsory } "
+                                                        onclick="TrustEventBizModule.RemoveItem(this, 'BreachCondition')" class="btn btn-remove">
+                                                    <i class="icon icon-remove"></i>
+                                                </button>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="form-panel" style="display:none;">
+                        <button type="button" class="btn btn-default" onclick="TrustEventBizModule.showJS()">Show JS</button>
+                        <button type="button" class="btn btn-default" onclick="TrustEventBizModule.SubmitJson()">Show Submit JS</button>
+                        <textarea class="form-control" style="height:180px;margin-top:-1px;" id="divTrustEventShow"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="form-body" id="step4">
+                <div id="TrustSPRoleDiv">
+                    <div class="catalog">
+                        <div class="catalog-box">
+                            <div class="line">
+                                <em class="circle top"></em>
+                                <em class="circle bottom"></em>
+                            </div>
+                            <div class="catalog-scroll">
+                                <dl class="catalog-list">
+                                    <dt class="catalog-title pleft" data-bind="attr: { labelIndex: 0 }" onclick="TrustSPRoleModule.titleOnClick(this); return false;">
+                                        <em class="dot"></em>
+                                        <div class="text fontinfo"><span>通讯录</span></div>
+                                    </dt>
+                                </dl>
+                                <!-- ko foreach: ServiceProviderRoles -->
+                                <dl class="catalog-list">
+                                    <dt class="catalog-title" data-bind="attr: { labelIndex: $index() + 1 }" onclick="    TrustSPRoleModule.titleOnClick(this); return false;">
+                                        <em class="dot"></em>
+                                        <div class="text"><span data-bind="text: Title"></span></div>
+                                    </dt>
+                                </dl>
+                                <!-- /ko -->
+                                <dl class="catalog-list">
+                                    <dt class="catalog-title pleft" data-bind="attr: { labelIndex: $root.ServiceProviderRoles().length + 1 }" onclick="    TrustSPRoleModule.titleOnClick(this); return false;">
+                                        <em class="dot"></em>
+                                        <div class="text fontinfo"><span>账户信息</span></div>
+                                    </dt>
+                                </dl>
+                                <!-- ko foreach: ServiceProviderRolesEx -->
+                                <dl class="catalog-list">
+                                    <dt class="catalog-title" data-bind="attr: { labelIndex: $index() + $parent.ServiceProviderRoles().length + 2 }" onclick="    TrustSPRoleModule.titleOnClick(this); return false;">
+                                        <em class="dot"></em>
+                                        <div class="text"><span data-bind="text: Title"></span></div>
+                                    </dt>
+                                </dl>
+                                <!-- /ko -->
+                            </div>
+                            <!--<div class="catalog-scroll" data-bind="foreach: ServiceProviderRolesEx">
+                                <dl class="catalog-list">
+                                    <dt class="catalog-title" data-bind="attr: { labelIndex: $index }" onclick="TrustSPRoleModule.titleOnClick(this)">
+                                        <em class="dot"></em>
+                                        <div class="text"><span data-bind="text: Title"></span></div>
+                                    </dt>
+                                </dl>
+                            </div>-->
+                        </div>
+                    </div>
+                    <div class="form-panel-size item">
+                        <h3 class="h3 form-box-index"><span class="title roletype">通讯录</span></h3>
+                        <div class="form-panel drop">
+                            <div class="col-12 form-group">
+                                <div class="col-4">
+                                    <select data-bind="foreach: OptionalServiceProviderRoles" id="selSPRole" class="form-control">
+                                        <option data-bind="attr:{value: $index}, text: Title"></option>
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-plus" onclick="TrustSPRoleModule.addNewRole()"><i class="icon icon-add"></i></button>
+                                </div>
+                                <div class="col-6">
+                                    <button type="button" style="padding:2px 10px" class="btn btn-default pull-right" onclick="TrustSPRoleModule.configSequence();"><i class="icon icon-setting" style="font-size:18px;"></i>配置费用偿还顺序</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-panel" data-bind="foreach: ServiceProviderRoles">
+                            <div class="form-box form-box-index" data-bind="attr:{boxIndex:$index}">
+                                <div class="col-12 form-group h3">
+                                    <div class="col-4">
+                                        <span data-bind="text: Title"></span>
+                                        <button onclick="TrustSPRoleModule.deleteSPRole(this)" data-bind="visible: !IsCompulsory(),attr:{roleIndex:$index}" class="btn btn-remove"><i class="icon icon-remove"></i></button>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="col-6 pull-right">
+                                            <!--<select data-bind="options: $parent.ServiceProviders, optionsText:function(item) {return item.SPTitle},value: SPId, optionsValue:function(item) {return item.SPId}" class="form-control"></select>-->
+                                            <input type="text" class="form-control" data-valid="Required" data-bind="value:SPCode" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-panel item">
+                                    <div class="col-12 form-group">
+                                        <div class="col-6">
+                                            <div class="col-4">
+                                                <div class="col-11">
+                                                    <label>添加</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <select data-bind="foreach: OptionalFields" id="selOptionalFields" class="form-control">
+                                                    <option data-bind="attr: {value: $index}, text: FieldTitle"></option>
+                                                </select>
+                                            </div>
+                                            <div class="col-2">
+                                                <button type="button" class="btn btn-plus" data-bind="attr: { sproleindex: $index }" onclick="TrustSPRoleModule.addNew(this)"><i class="icon icon-add"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul id="ulDemo" data-bind="attr:{roleIndex:$index},foreach: DisplayFields">
+                                        <li data-bind="attr: {fieldIndex: $index}" class="col-6 form-group">
+                                            <div class="col-4">
+                                                <div class="col-11">
+                                                    <label data-bind="text: FieldTitle"></label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <span data-bind="renderControl:ItemValue"></span>
+                                                <!--<input type="text" class="form-control" data-bind="value: ItemValue, attr: {dataType: DataType}" />-->
+                                            </div>
+                                            <div class="col-2">
+                                                <button class="btn btn-remove" title="删除" onclick="TrustSPRoleModule.deleteField(this)" data-bind="visible: IsCompulsory() == 'False'"><i class="icon icon-remove"></i></button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-panel-size"><hr /></div>
+                    <div class="form-panel-size item">
+                        <h3 class="h3 form-box-index"><span class="title">账户信息</span></h3>
+                        <div class="form-panel drop">
+                            <div class="col-12 form-group">
+                                <div class="col-4">
+                                    <select data-bind="foreach: OptionalServiceProviderRolesEx" id="selSPRoleEx" class="form-control">
+                                        <option data-bind="attr:{value: $index}, text: Title"></option>
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                    <button type="button" class="btn btn-plus" onclick="TrustSPRoleModule.addNewRoleEx()"><i class="icon icon-add"></i></button>
+                                </div>
+                                <div class="col-6">
+                                    <!--<button type="button" style="padding:2px 10px" class="btn btn-default pull-right" onclick="TrustSPRoleModule.configSequence();"><i class="icon icon-setting" style="font-size:18px;"></i>配置费用偿还顺序</button>-->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-panel" data-bind="foreach: ServiceProviderRolesEx">
+                            <div class="form-box form-box-index" data-bind="attr:{boxIndex:$index}">
+                                <div class="col-12 form-group h3">
+                                    <div class="col-4">
+                                        <span data-bind="text: Title"></span>
+                                        <button onclick="TrustSPRoleModule.deleteSPRoleEx(this)" data-bind="visible: !IsCompulsory(),attr:{roleIndex:$index}" class="btn btn-remove"><i class="icon icon-remove"></i></button>
+                                    </div>
+                                    <div class="col-8">
+                                        <div class="col-6 pull-right">
+                                            <!--<select data-bind="options: $parent.ServiceProviders, optionsText:function(item) {return item.SPTitle},value: SPId, optionsValue:function(item) {return item.SPId}" class="form-control"></select>-->
+                                            <input type="text" class="form-control" data-valid="Required" data-bind="value:SPCode" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-panel item">
+                                    <div class="col-12 form-group">
+                                        <div class="col-6">
+                                            <div class="col-4">
+                                                <div class="col-11">
+                                                    <label>添加</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <select data-bind="foreach: OptionalFields" id="selOptionalFields" class="form-control">
+                                                    <option data-bind="attr: {value: $index}, text: FieldTitle"></option>
+                                                </select>
+                                            </div>
+                                            <div class="col-2">
+                                                <button type="button" class="btn btn-plus" data-bind="attr: { sproleindex: $index }" onclick="TrustSPRoleModule.addNewEx(this)"><i class="icon icon-add"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ul id="ulDemo" data-bind="attr:{roleIndex:$index},foreach: DisplayFields">
+                                        <li data-bind="attr: {fieldIndex: $index}" class="col-6 form-group">
+                                            <div class="col-4">
+                                                <div class="col-11">
+                                                    <label data-bind="text: FieldTitle"></label>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <span data-bind="renderControl:ItemValue"></span>
+                                                <!--<input type="text" class="form-control" data-bind="value: ItemValue, attr: {dataType: DataType}" />-->
+                                            </div>
+                                            <div class="col-2">
+                                                <button class="btn btn-remove" title="删除" onclick="TrustSPRoleModule.deleteFieldEx(this)" data-bind="visible: IsCompulsory() == 'False'"><i class="icon icon-remove"></i></button>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- 专项计划现金流 -->
+            <div class="form-body" id="step5">
+                <div class="form-panel item" id="TrustWaterFall">
+                    <div class="form-panel table-scroll">
+                        <!--<input type="text" id="mminput" onkeyup="TrustWaterFallModule.fmoney($(this).val(), 3)" class="form-control text-center" />
+                        <label id="test">123</label>
+                        <label id="test1">456</label>
+                        <label id="test2">456</label>-->
+                        <table class="table">
+                            <!--data-bind="visible: Specialplan().length>0"-->
+                            <thead>
+                                <tr>
+                                    <th width="40">
+                                        <button onclick="TrustWaterFallModule.AddItem(this)" type="button" class="btn btn-plus" style="padding:0">
+                                            <i class="icon icon-add" style="margin-right:0"></i>
+                                        </button>
+                                    </th>
+                                    <th width="40">ID</th>
+                                    <th width="200">收款日期</th>
+                                    <th width="400">收集期间</th>
+                                    <th>本金(元)</th>
+                                    <th>利息(元)</th>
+                                    <th>合计(元)</th>
+                                </tr>
+                            </thead>
+                            <tbody data-bind="foreach:Specialplan">
+                                <tr>
+                                    <td>
+                                        <button type="button" data-bind="attr: { dataIndex: $index()}" onclick="TrustWaterFallModule.RemoveItem(this)" class="btn btn-remove" style="padding:0"><i class="icon icon-remove" style="margin-right:0"></i></button>
+                                    </td>
+                                    <td data-bind="text:$index()+1"></td>
+                                    <td>
+                                        <input type="text" class="form-control text-center date-plugins" onchange="validControlValue(this)" readonly="readonly" data-bind="value: SpecialplanReceivablesdate, valueUpdate: 'afterkeydown', attr: {'data-valid': 'date Required'}" />
+                                    </td>
+                                    <td>
+                                        <!--<input type="text" onchange="validControlValue(this)" data-bind="    value: PoolCloseDate, valueUpdate: 'afterkeydown',attr: { 'data-valid': 'decimal Required', dataIndex: $index() }" onkeyup="TrustWaterFallModule. waterfalltotle(this)" class="form-control text-center" />
+                                        <input type="text" onchange="validControlValue(this)" data-bind="    value: principal, valueUpdate: 'afterkeydown',attr: { 'data-valid': 'decimal Required', dataIndex: $index() }" onkeyup="TrustWaterFallModule. waterfalltotle(this)" class="form-control text-center" />-->
+
+                                        <input type="text" name="datequjian" data-bind="    value: TrustWaterFallModule.Datequjian(PoolCloseDate,CollectionDate),valueUpdate: 'afterkeydown',attr: {dataIndex: $index() }"
+                                               onchange="TrustWaterFallModule.Datequjianupdate(this)" class="form-control text-center" />
+
+                                        <!--<input type="text" class="form-control text-center date-plugins" onchange="validControlValue(this)" readonly="readonly" data-bind="value: TrustWaterFallModule.Datequjian(PoolCloseDate,CollectionDate), valueUpdate: 'afterkeydown', attr: {'data-valid': 'date Required'}" />-->
+                                        <!--<input type="text" class="form-control text-center date-plugins" onchange="validControlValue(this)" readonly="readonly" data-bind="value: CollectionDate, valueUpdate: 'afterkeydown', attr: {'data-valid': 'date Required'}" />-->
+                                    </td>
+                                    <td class="form-group">
+                                        <input type="text" onchange="validControlValue(this)" data-bind="    value: principal, valueUpdate: 'afterkeydown',attr: { 'data-valid': 'decimal Required', dataIndex: $index() }" onkeyup="TrustWaterFallModule. waterfalltotle(this)" class="form-control text-center" />
+                                    </td>
+                                    <td class="form-group">
+                                        <input type="text" onchange="validControlValue(this)" data-bind="value:interest,valueUpdate: 'afterkeydown', attr: {'data-valid': 'decimal Required', dataIndex: $index()}" onkeyup="TrustWaterFallModule.waterfalltotle(this)" class="form-control text-center" />
+                                    </td>
+                                    <td class="form-group">
+                                        <input type="text" onchange="validControlValue(this)" data-bind="value:totle, attr: {'data-valid': 'decimal Required'}" class="form-control text-center" />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- 交易文档 -->
+            <div class="form-body" id="step6">
+                <div id="TrustAttatchedFileNoTrustDiv" class="doc_error">
+                    信托信息未创建，请先创建信托信息后再维护相关文档。
+                </div>
+                <div id="TrustAttatchedFilesDiv" style="display:none;">
+                    <div class="form-panel drop">
+                        <div class="col-12 form-group">
+                            <div class="col-1" style="min-width:85px !important;">
+                                <button type="button" class="btn btn-primary" onclick="TrustAttatchedFileModel.UploadNewFiles()">批量上传</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-panel item">
+                        <div class="col-12">
+                            <div class="col-1">
+                                <h3 class="h3"><span class="title">&nbsp;</span></h3>
+                            </div>
+                            <div class="col-4">
+                                <h3 class="h3"><span class="title">文件类型</span></h3>
+                            </div>
+                            <div class="col-1" style="text-align:center;">
+                                <h3 class="h3"><span class="title">是否必备</span></h3>
+                            </div>
+                            <div class="col-1" style="text-align:center;">
+                                <h3 class="h3"><span class="title">文件格式</span></h3>
+                            </div>
+                            <div class="col-5">
+                                <h3 class="h3"><span class="title">文件名称</span></h3>
+                            </div>
+                        </div>
+                        <div class="form-panel item categoryList" data-bind="foreach: TrustAttatchedFileCategories">
+                            <div class="col-12 form-group fileCateNameDiv">
+                                <div class="col-12 cateOriginalName form-group">
+                                    <div class="col-10">
+                                        <div class="col-1" style="cursor:pointer;">
+                                            <i class="icon icon-folder"></i>
+                                        </div>
+                                        <div class="col-9">
+                                            <label data-bind="text: ($index()+1)+'&nbsp;&nbsp;&nbsp;'+ FileCategory(), attr:{cateName: FileCategory()}" class="cateName"></label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 cateFilesDiv" data-bind="foreach: $parent.TrustAttatchedFiles">
+                                    <!-- ko if: FileCategory()==$parent.FileCategory() -->
+                                    <div class="col-12  form-group filesList" style="margin-bottom:10px !important;">
+                                        <div class="col-1">&nbsp;</div>
+                                        <div class="col-4">
+                                            <label><span data-bind="text: ($parentContext.$index()+1)+'-'+ subCateIndex()+'&nbsp;&nbsp;&nbsp;'+SubCategory()"></span></label>
+                                        </div>
+                                        <div class="col-1" style="text-align:center;">
+                                            <label data-bind="text: (IsCompulsory()?'是':'否')"></label>
+                                        </div>
+                                        <div class="col-1" style="text-align:center;">
+                                            <label data-bind="text: FileType()"></label>
+                                        </div>
+                                        <div class="col-5">
+                                            <div class="col-12 file-item">
+                                                <!-- ko if: FilePath() -->
+                                                <div class="col-9">
+                                                    <label class="file-linkname-label" style="height:auto !important;"><a data-bind="attr:{href: FilePathLink()}"><span data-bind="text:FileName"></span></a></label>
+                                                    <label class="file-updateexited-input" style="display:none; height:auto !important; padding-top:5px;"><input type="file" style="width:260px;" data-bind="attr:{id: 'newAddedFileToUpload_'+$index(), itemIndex: $index()}" onchange="TrustAttatchedFileModel.ModifyNewFileName(this)" /></label>
+                                                </div>
+                                                <div class="col-3  buttons">
+                                                    <button type="button" class="btn btnUpd" title="更新文档" data-bind="attr: { itemIndex: $index() }" onclick="TrustAttatchedFileModel.GoingUpdateExitedFile(this, true)"><i class="icon icon-edit"></i></button>
+                                                    <button type="button" class="btn btnDel" title="删除文档" data-bind="attr: { itemIndex: $index() }" onclick="TrustAttatchedFileModel.DeleteUploadedFiel(this)"><i class="icon icon-trash"></i></button>
+                                                    <button type="button" class="btn btnRev" title="放弃更新" data-bind="attr: { itemIndex: $index() }" onclick="TrustAttatchedFileModel.GoingUpdateExitedFile(this, false)" style="display:none;"><i class="icon icon-chexiao"></i></button>
+                                                </div>
+                                                <!-- /ko -->
+                                                <!-- ko ifnot: FilePath() -->
+                                                <div class="btn" style="border:none">
+                                                    <input type="file" style="width:300px" data-bind="attr:{id: 'newAddedFileToUpload_'+$index(), itemIndex: $index()}" onchange="TrustAttatchedFileModel.ModifyNewFileName(this)" />
+                                                </div>
+                                                <!-- /ko -->
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- /ko -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--<button type="button" onclick="TrustAttatchedFileModel.showJson()">Show JSON</button>-->
+                    <div id="divTrustAttatchedFilesJS"></div>
+                </div>
+            </div>
+        </div>
+        <div class="form-button">
+            <button id="prev-step" type="button" class="btn btn-default btn-prev"><i class="icon icon-back"></i>上一步</button>
+            <button id="next-step" type="button" class="btn btn-primary btn-next">下一步<i class="icon icon-right"></i></button>
+            <button id="preview" type="button" class="btn btn-preview">预览</button>
+        </div>
+    </div>
+    <div class="main" id="trustPeriod" style="display:none;padding:10px 20px;">
+        <h3 class="h3"><span class="title">调整</span></h3>
+        <div class="form" style="min-height:370px;">
+            <div class="form-body" style="display:block;">
+                <div id="TrustPeriodDiv">
+                    <div class="form-panel item">
+                        <div class="form-panel drop">
+                            <div class="col-12 form-group">
+                                <div class="col-3">
+                                    <select class="form-control" name="TrustPeriodType" id="TrustPeriodType">
+                                       <!--这里加了PaymentDate和CollectionDate_NW-->
+                                        <option value="PaymentDate_CF">兑付兑息日期</option>
+                                        <option value="PaymentDate">工作日兑付日</option>
+                                        <option value="CollectionDate_NW">结算日</option>                                      
+                                    </select>
+                                </div>
+                                <div class="col-2">
+                                </div>
+                            </div>
+                        </div>
+                        <div data-bind="foreach:DataList" style="height:300px;overflow:auto;" id="PeriodTarget">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="display:none;" id="PeriodTemplate">
+                <div class="col-12 form-group" data-bind="attr:{dataIndex: $index}">
+                    <div class="col-2">
+                        <div class="col-11">
+                            <label>开始时间</label>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="col-11">
+                            <input type="text" class="form-control date-plugins" data-bind="value:StartDate" />
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="col-11">
+                            <label>结束时间</label>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="col-11">
+                            <input type="text" class="form-control date-plugins" data-bind="value:EndDate" />
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="col-11">
+                            <label>手动更改</label>
+                        </div>
+                    </div>
+                    <div class="col-2">
+                        <div class="col-11">
+                            <input type="checkbox" data-bind="checked:IsManualModified" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-button" style="float:right;padding-top:15px;">
+            <button id="SavePeriod" type="button" class="btn">确定</button>
+        </div>
+    </div>
+    <div class="main form" style="display:none;padding:10px 20px; border-bottom:0px;" id="TrustFactBondPayment">
+        <div class="form-panel">
+            <div class="form-panel drop list-filters">
+                <div class="col-12">
+                    <!--<div class="col-3 form-group">
+                        <div class="col-4">
+                            <label>名称：</label>
+                        </div>
+                        <div class="col-7">
+                            <input class="filter like form-control" name="Name" />
+                        </div>
+                    </div>-->
+                    <div class="col-3 form-group">
+                        <div class="col-4">
+                            <label>报告日：</label>
+                        </div>
+                        <div class="col-7">
+                            <select class="filter eq form-control" name="DimReportingDateId" id="selReportingDateFilter"></select>
+                        </div>
+                    </div>
+                    <span class="title" style="float:left;padding-top:5px;">
+                        <button id="FactBondPayment_GetList" type="button" class="btn" style="padding:0px 12px;">检索</button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-panel" id="TrustFactBondPaymentDiv" style="height:350px;overflow:auto;">
+            <table class="table" id="FactBondPayment_Target" style="background:rgba(238, 238, 238, 1)"></table>
+        </div>
+        <table class="table" style="display:none;" id="FactBondPayment_Template">
+            <thead>
+                <tr>
+                    <th>证券简称</th>
+                    <th>报告日</th>
+                    <th>票面利息</th>
+                    <th>票面本金</th>
+                    <th>剩余票面</th>
+                    <th>发行总额</th>
+                    <th>剩余总额</th>
+                </tr>
+            </thead>
+            <tbody data-bind="foreach:DataList">
+                <tr>
+                    <td data-bind="text: BondName"></td>
+                    <td data-bind="text: ReportingDateId"></td>
+                    <td data-bind="text: CouponPaymentPerNote"></td>
+                    <td data-bind="text: PrincipalPaymentPerNote"></td>
+                    <td data-bind="text: StatedAmountPerNoteAfterPayment"></td>
+                    <td data-bind="text: OfferAmount"></td>
+                    <td data-bind="text: LeftOverAmount"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script type="text/javascript">
+
+    </script>
+    <script src="./TrustWizard/viewTrustWizard.js"></script>
+    <script src="./TrustWizard/viewTrustItem.js"></script>
+    <script src="./TrustWizard/viewTrustBond.js"></script>
+    <script src="./TrustWizard/viewTrustExtension.js"></script>
+    <script src="./TrustWizard/viewTrustEvent.js"></script>
+    <script src="./TrustWizard/viewTrustSPRole.js"></script>
+    <script src="./TrustWizard/viewTrustWaterFall.js"></script>
+    <script src="./TrustWizard/viewTrustAttatchedFiles.js"></script>
+    <script type="text/javascript">
+        TRUST.init();
+    </script>
+</body>
+</html>

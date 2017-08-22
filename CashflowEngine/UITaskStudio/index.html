@@ -1,0 +1,617 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="description" content="Cashflow studio Powered by Goldenstand.">
+  <meta http-equiv="X-UA-compatible" content="IE=edge,chrome=1">
+  <link rel="stylesheet" href="../Libraries/Styles/normalize.css">
+  <link rel="stylesheet" href="../Libraries/Styles/common.css">
+  <link rel="stylesheet" href="../Libraries/Styles/animate.css">
+  <link rel="stylesheet" href="../Libraries/Styles/codemirror.css">
+  <link rel="stylesheet" href="../Libraries/Fonts/fontello/css/fontello.css">
+  <link rel="stylesheet" href="../Libraries/Styles/gcspread.css" rel="stylesheet" />
+  <link rel="stylesheet" href="../Libraries/Scripts/chosen.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="Styles/cashflow.css">
+
+  <title v-i18n="{value:'title',language:language}"></title>
+  <!--[if lt IE 9]>
+  <script src="../Libraries/Scripts/html5shiv.min.js"></script>
+  <![endif]-->
+</head>
+
+<body id="layout">
+  <header id="header">
+    <h1 class="logo" @click="tabActive='task'">
+      <img src="Images/logo.png" alt="logo" title="logo" />
+    </h1>
+      <a href="javascript:void(0);" v-i18n.title="{value:'searchPanel',language:language}" class="switch search-switch pl10 pr10 font18" rel="nofolow"><i class="icon-search"></i></a>
+    <menu class="menu">
+      <div id="studioTabsUL" class="btn-group btn-group-sm" role="group">
+        <button type="button" class="btn btn-default" v-bind:class="{active:tabActive=='task'}" @click="tabActive='task'" v-i18n="{value:'tab.t1',language:language}">Task View</button>
+        <button type="button" class="btn btn-default" v-bind:class="{active:tabActive=='caculation'}" @click="tabActive='caculation'" v-i18n="{value:'tab.t2',language:language}">Caculation View</button>
+      </div>
+    </menu>
+  </header>
+  <task v-show="tabActive =='task'" v-ref:task></task>
+  <caculation v-show="tabActive =='caculation'" v-ref:caculation></caculation>
+  <!-- 搜索 -->
+  <search v-ref:search></search>
+  <script type="text/x-template" id="searchTemplate">
+    <aside id="searchBox">
+      <div class="search-top">
+        <div class="search-object">
+          <span class="pull-right font16 search-close"><i class="icon-cancel"></i></span>
+          <strong>Object Explorer</strong>
+        </div>
+        <div class="search-box br3">
+            <input type="search" class="search-input" v-model="appDomain" placeholder="Search a app domain.." />
+            <button type="button" @click="searchtask" class="search-btn" >
+                <i class="icon-search" v-i18n.title="{value:'search',language:language}"></i>
+            </button>
+        </div>
+      </div>
+      <div class="search-result" v-if="searchResult!=''">
+        <div class="search-task">
+          <input type="text" class="input" placeholder="Search Task.." v-model="searchTask" />
+        </div>
+        <ul id="search-res" onselectstart="return false">
+          <li v-for="row in searchResult | filterBy searchTask in 'CodeDictionaryCode'" @dblclick="loadTaskWork(row.CodeDictionaryCode,row.CriteriaSetCode,row.IsCheckOut),clearFilterName()" @click="selectObj(row,$event)" :class="[row.IsCheck? 'active':'']" track-by="$index">
+            <span class="icon"><i class="icon-doc-text"></i></span> {{row.CodeDictionaryCode}}
+          </li>
+        </ul>
+      </div>
+      <div class="search-result" v-else>
+        <p class="no-content">No Content</p>
+      </div>
+    </aside>
+  </script>
+  <script type="text/x-template" id="viewActionTemplate">
+    <nav class="nav leftNav">
+        <div class="nav-body" >
+            <h3 class="nav-title font14" >
+                <i class="icon icon-move pl6 pr6 mr5 font14 "></i>
+                {{name}}
+            </h3>
+            <div class="nav-tabs-body">
+                <ul class="tabs">
+                    <li v-for="tab in tabs">
+                        <a href="#" class="{active:isActive==$index}" @click="isActive=$index">{{tab.text}}</a>
+                    </li>
+                </ul>
+                <div v-for="item in items" class="nav-tabs-content" v-bind:class="[hide, isActive==$index ? 'show' : 'hide']">
+                <!--<ul class="tool font12" dragable="action" v-if="item.name=='Single Actions'">
+                       <li v-for="list in item.list">
+                            <i class="icon icon-doc-text"></i>{{list.ActionDisplayName}}
+                        </li>
+                    </ul>-->
+                    <ul v-if="item.name=='Single Actions'" class="tool wrapTool font12">
+                        <li v-for="(index,list) in item.list" class="category" @click="list.isOpen = !list.isOpen">
+                            <i class="icon icon-down-open" v-if="list.isOpen"></i>
+                            <i class="icon icon-right-open" v-else></i>
+                            <span v-if="language=='en'">{{list.GroupName}}</span>
+                            <span v-else>{{list.CNGroupName}}</span>
+                            <ol class="tool font12" v-show="list.isOpen" dragable="action">
+                                <li v-for="row in list.Actions" @click.stop>
+                                    <i class="icon icon-doc-text" groupindex="{{index}}"></i>
+                                    <span title="{{row.Describe}}">{{row.ActionDisplayName}}</span>
+                                </li>
+                            </ol>
+                        </li>
+                    </ul>
+                    <ul v-if="item.name=='Combine Templates'" class="tool wrapTool font12">
+                        <li v-for="list in item.list" class="category" @click="selectBank(list)">
+                            <i class="icon icon-down-open" v-if="list.isOpen"></i>
+                            <i class="icon icon-right-open" v-else></i>
+                            <span>{{list.BankName}}</span>
+                            <ol class="tool font12" v-show="list.isOpen" dragable="action">
+                                <li v-for="row in list.Models" @click.stop>
+                                    <i class="icon icon-doc-text"></i>
+                                    <span>{{row.TemplateTypeName}}</span>
+                                </li>
+                            </ol>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+  </script>
+  <script type="text/x-template" id="viewToolTemplate">
+    <nav class="nav rightNav">
+      <div class="nav-body">
+          <h3 class="nav-title font14">
+              <i class="icon icon-tasks pl6 pr6 mr5 font14 "></i>
+              {{name}}
+          </h3>
+        <div class="nav-tabs-body">
+          <ul class="tabs">
+            <li v-for="tab in tabs">
+                <a href="javascript:void(0);" v-bind:class="{active:isActive==$index}" @click="isActive=$index" >{{tab.text}}</a>
+            </li>
+          </ul>
+          <div class="nav-tabs-content">
+            <div class="search-tool" v-show="searchMethod">
+              <input type="text" class="form-control" placeholder="🔍&nbsp;&nbsp;&nbsp;Search Method" v-model="items[0].filterName">
+            </div>
+            <div class="list-wrap" v-bind:class="{'search-item':isActive==0}">
+              <ul v-show="isActive==0" class="tool font12" dragable='taskTools' @mouseout="removeHover()">
+                  <li v-for="item in items[0].list | methfilterBy items[0].filterName in 'Query.Name'" @dblclick="viewECMethods($index)" @mouseover="addHover($index)" v-bind:class="{active:isHover==$index}" >
+                      <i class="icon icon-doc"></i> <span title="{{item.Query.DisplayName}}">{{item.Query.Name}}</span>
+                  </li>
+              </ul>
+              <ul v-show="isActive==1" class="tool font12" dragable="taskTools" @mouseout="removeHover()">
+                <li v-for="item in items[1].list" @mouseover="addHover($index)" v-bind:class="{active:isHover==$index}">
+                  <i class="icon icon-doc"></i> {{item.Name}}
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </script>
+  <script type="text/x-template" id="taskWorkTemplate">
+    <article id="TaskMain" class="main">
+      <div id="TaskContent" class="content">
+        <div id="DialogHook" class="work">
+          <div class="work-top">
+              <div class="pull-right">
+                  <input type="text"  class="searchTaskCode" v-model="taskCode" size="{{sizelen}}" v-i18n.placeholder="{value:'tab1.buttons.code',language:language}" />
+              </div>
+              <div class="btn-group" role="group" aria-label="...">
+                  <button type="button" id="ribbon_showContent" @click="showContent('1')" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab1.buttons.b1',language:language}" data-balloon-pos="up"><i class="icon-table"></i></button>
+                  <button type="button" id="ribbon_showSimpleContent" @click="showSimpleContent('2')" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab1.buttons.b2',language:language}" data-balloon-pos="up"><i class="icon-vcard"></i></button>
+                  <button type="button" id="ribbon_ApplyTask" @click="applyTask()" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab1.buttons.b3',language:language}" data-balloon-pos="up"><i class="icon-ok-1"></i></button>
+                  <button type="button" id="ribbon_SaveTask" @click="saveTask()" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab1.buttons.b4',language:language}" data-balloon-pos="up"><i class="icon-floppy-1"></i></button>
+                  <button type="button" id="ribbon_RefreshTask" @click="refreshTask()" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab1.buttons.b5',language:language}" data-balloon-pos="up"><i class="icon-arrows-ccw"></i></button>
+                  <button type="button" id="ribbon_PopVariablePannel" @click="popTaskDataInput" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab1.buttons.b6',language:language}" data-balloon-pos="up"><i class="icon-popup-2"></i></button>
+                  <button type="button" id="ribbon_Xml" @click="showTaskXML()" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab1.buttons.b7',language:language}" data-balloon-pos="up"><i class="icon-list-alt"></i></button>
+                  <button type="button" id="ribbon_RunTask" @click="popCashFlowRunWindow()" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab1.buttons.b8',language:language}" data-balloon-pos="up"><i class="icon-play"></i></button>
+                  <button type="button" @click="showDisplayer" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab1.buttons.b9',language:language}" data-balloon-pos="up"><i class="icon-chart-bar"></i></button>
+                  <button type="button" id="ribbon_clearLocalStorage" @click="clearLocalStorage()" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab1.buttons.b10',language:language}" data-balloon-pos="up"><i class="icon-drive"></i></button>
+                  <button type="button" id="ribbon_clearLocalStorage" @click="switchLanguage()" class="btn btn-default btn-sm" v-i18n.balloon="{value:'language',language:language}" data-balloon-pos="up"><i class="icon-switch"></i></button>
+              </div>
+          </div>
+          <div id="work-body" class="work-body">
+            <div class="panel-actions mb10">
+              <div class="panel-head">
+                <div class="panel-arrow">
+                  <i class="icon-down-dir"></i>
+                </div>
+                  <h3 v-i18n="{value:'tab1.work.d',language:language}">
+                      DirectInput
+                  </h3>
+              </div>
+              <div class="panel-body">
+                <dl>
+                    <dt v-i18n="{value:'tab1.work.a1',language:language}">ActionCode</dt>
+                    <dd v-i18n="{value:'tab1.work.a2',language:language}">ActionDisplayName</dd>
+                </dl>
+                <ul class="tbActions" id="DirectInput">
+                  <li v-for="item in directModel" v-bind:class="[item.IsCheck ? 'active' : '']" @dblclick="showContent('1')" @click="selectAction($event,$index,'DirectInput')" tabindex="{{$index}}">
+                    <span>{{item.ActionCode}}</span>
+                    <span>{{item.ActionDisplayName}}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="panel-actions mb10">
+              <div class="panel-head">
+                <div class="panel-arrow">
+                  <i class="icon-down-dir"></i>
+                </div>
+                  <h3 v-i18n="{value:'tab1.work.c',language:language}">
+                      Calculated
+                  </h3>
+              </div>
+              <div class="panel-body">
+                <dl>
+                    <dt v-i18n="{value:'tab1.work.a1',language:language}">ActionCode</dt>
+                    <dd v-i18n="{value:'tab1.work.a2',language:language}">ActionDisplayName</dd>
+                </dl>
+                <ul class="tbActions" id="Calculated">
+                  <li v-for="item in caculateModel" v-bind:class="[item.IsCheck ? 'active' : '']" @dblclick="showContent('1')" @click="selectAction($event,$index,'Calculated')" tabindex="{{$index}}">
+                    <span>{{item.ActionCode}}</span>
+                    <span>{{item.ActionDisplayName}}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div class="panel-actions mb10">
+              <div class="panel-head">
+                <div class="panel-arrow">
+                  <i class="icon-down-dir"></i>
+                </div>
+                  <h3 v-i18n="{value:'tab1.work.e',language:language}">
+                      Export
+                  </h3>
+              </div>
+              <div class="panel-body">
+                <dl>
+                    <dt v-i18n="{value:'tab1.work.a1',language:language}">ActionCode</dt>
+                    <dd v-i18n="{value:'tab1.work.a2',language:language}">ActionDisplayName</dd>
+                </dl>
+                <ul class="tbActions" id="Export">
+                  <li v-for="item in exportModel" v-bind:class="[item.IsCheck ? 'active' : '']" @dblclick="showContent('1')" @click="selectAction($event,$index,'Export')" tabindex="{{$index}}">
+                    <span>{{item.ActionCode}}</span>
+                    <span>{{item.ActionDisplayName}}</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+    <edit-actioncontent v-ref:editactioncontent></edit-actioncontent>
+    <edit-combactionname v-ref:editcombactionname></edit-combactionname>
+    <edit-actionnumber v-ref:editactionnumber></edit-actionnumber>
+    <edit-taskxml v-ref:edittaskxml></edit-taskxml>
+    <mainview v-ref:mainviews></mainview>
+    <pop-runtask v-ref:popruntask></pop-runtask>
+    <!--v-bind:curpan.sync="curpan" v-bind:isactive.sync="isactive"-->
+  </script>
+  <script type="text/x-template" id="actionNameEditTemplate">
+    <div id="actionNameEdit" class="edit-param">
+      <table class="table table-bordered parma">
+        <thead>
+          <tr>
+            <th>ItemName</th>
+            <th>ItemValue</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in actionModel">
+            <td>
+              <input id="iptName" disabled type="text" class="form-control" v-model="item.ItemName" value="{{item.ItemName}}" />
+            </td>
+            <td>
+                <input id="iptValue" type="text" class="form-control" v-model="item.ItemValue" value="{{item.ItemValue}}" @blur="txtTrim($event)" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </script>
+  <script type="text/x-template" id="actionNumberEditTemplate">
+      <div id="SetActionNumber" class="edit-number">
+          <div class="form-group mb20">
+              <label class="font14 pb5" v-i18n="{value:'tab1.action.name',language:language}">ActionName :</label>
+              <input class="form-control" v-model="actionDisplayName" readonly="readonly">
+          </div>
+          <div class="form-group mb20">
+              <label class="font14 pb5" v-i18n="{value:'tab1.action.number',language:language}">ActionNumber :</label>
+              <input class="form-control" v-model="number">
+          </div>
+      </div>
+  </script>
+  <script type="text/x-template" id="taskEditTemplate">
+    <div id="editParameter" class="edit-param">
+      <table class="table table-bordered parma">
+        <thead>
+          <tr>
+              <th v-i18n="{value:'tab1.work.param.disName',language:language}">ActionDisplayName</th>
+              <th v-i18n="{value:'tab1.work.param.code',language:language}">ActionCode</th>
+              <th v-i18n="{value:'tab1.work.param.funName',language:language}">FunctionName</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+                <input type="text" class="form-control" v-model="activeAction.ActionDisplayName" @blur="txtTrim($event)" />
+            </td>
+            <td>
+                <input type="text" class="form-control" v-model="activeAction.ActionCode" @blur="txtTrim($event)" />
+            </td>
+            <td>
+                <input type="text" class="form-control" v-model="activeAction.FunctionName" @blur="txtTrim($event)" />
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <table class="table table-bordered parma">
+        <thead>
+          <tr>
+            <th v-if="display"><i class="icon-plus-circled add" @click="AddActionParam()"></i></th>
+              <th width="150" v-i18n="{value:'tab1.work.param.info.name',language:language}">Name</th>
+              <th v-if="display" v-i18n="{value:'tab1.work.param.info.spName',language:language}">SessionParameterName</th>
+              <th width="300" v-i18n="{value:'tab1.work.param.info.value',language:language}">Value</th>
+              <th v-if="display" v-i18n="{value:'tab1.work.param.info.dType',language:language}">DataType</th>
+              <th v-if="display" v-i18n="{value:'tab1.work.param.info.usage',language:language}">Usage</th>
+              <th v-if="display" v-i18n="{value:'tab1.work.param.info.isConfig',language:language}">IsConfig</th>
+          </tr>
+        </thead>
+        <tbody v-if="display">
+          <tr v-for="item in activeAction.Parameter" droppable="tasktools">
+            <td>
+              <div class="middle"><i class="icon-minus-circled delete" @click="DelActionParam($index)"></i></div>
+            </td>
+            <td>
+                <input type="text" v-model="item.Name" class="form-control" name="{{item.Name}}" @blur="txtTrim($event)" @mousedown.stop>
+            </td>
+            <td>
+                <input type="text" v-model="item.SessionParameterName" class="form-control" @blur="txtTrim($event)" @mousedown.stop>
+            </td>
+            <td>
+                <input type="text" v-model="item.Value" class="form-control" @blur="txtTrim($event)" @dblclick="redirectCaculaction(item)" @mousedown.stop>
+            </td>
+            <td>
+                <input type="text" v-model="item.DataType" class="form-control" @blur="txtTrim($event)" @mousedown.stop>
+            </td>
+            <td>
+                <input type="text" v-model="item.Usage" class="form-control" @blur="txtTrim($event)" @mousedown.stop>
+            </td>
+            <td>
+              <div class="middle">
+                <input type="checkbox" v-model="item.IsConfigurable" @mousedown.stop />
+              </div>
+            </td>
+          </tr>
+        </tbody>
+        <tbody v-else>
+          <tr v-for="item in activeAction.Parameter" v-if="item.IsConfigurable==true" droppable="tasktools">
+            <td>
+                <input type="text" v-model="item.Name" class="form-control" @blur="txtTrim($event)" @mousedown.stop>
+            </td>
+            <td>
+              <input type="text" v-model="item.Value" class="form-control" @blur="txtTrim($event)" @dblclick="redirectCaculaction(item)" @mousedown.stop>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </script>
+  <script type="text/x-template" id="editTaskXMLTemplate">
+    <div id="editXml" class="modal-mask" v-show="showXml" transition="modal">
+      <div class="modal-wrapper">
+        <div id="taskXml" class="modal-container">
+          <h3>Editting Task XML</h3>
+          <a href="javascript:void(0);" class="close" @click="showXml = false"><i class="icon-cancel"></i></a>
+          <textarea id="txtTaskXml" name="txtTaskXml">{{taskXml}}</textarea>
+          <div class="modal-bottom">
+            <button type="button" @click="apply" class="btn btn-apply">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+  <script type="text/x-template" id="formulaTemplate">
+    <nav class="nav leftNav">
+      <div class="nav-body">
+          <h3 class="nav-title font14" >
+              <i class="icon icon-leaf-1 pl6 pr6 mr5 font14"></i>
+              <span v-i18n="{value:'tab2.formula.title',language:language}"> </span>
+          </h3>
+        <div class="tool-table">
+          <div class="tool-btns">
+              <div class="tool-btn add" v-i18n.title="{value:'tab2.formula.add',language:language}" data-balloon-pos="up" @click="ECAdd">
+                  <i class="icon-plus"></i>
+              </div>
+              <div class="tool-btn remove" v-i18n.title="{value:'tab2.formula.del',language:language}" data-balloon-pos="up" @click="ECRemove">
+                  <i class="icon-minus"></i>
+              </div>
+          </div>
+          <div class="search-tool" v-if="ecModel.length">
+            <input type="text" class="form-control" placeholder="🔍&nbsp;&nbsp;&nbsp;&nbsp;Search  EC" v-model="filterName">
+          </div>
+          <div class="list-wrap">
+            <div class="tip" v-show='!filterArr.length&&filterName'>No Result !</div>
+            <ul id="tool-list">
+              <li v-for="row of ecModel | ecfilterBy filterName in 'Query.Name'" v-bind:class="{active:activeId==$index}" @click="addActive($index)">
+                <span v-text="row.Query.Name" @selectstart.prevent></span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </script>
+  <script type="text/x-template" id="ecWorkTemplate">
+    <article class="main">
+      <div class="content">
+        <div class="work">
+          <div class="work-top">
+            <div class="pull-right">
+                <input type="text"  class="searchTaskCode" v-model="ecCode" size="{{sizelen}}" v-i18n.placeholder="{value:'tab2.buttons.code',language:language}" />
+            </div>
+              <button type="button" id="ribbon_VerifyEC" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab2.buttons.b1',language:language}" data-balloon-pos="up" @click="VerifyCriteria">
+                  <i class="icon-calculator"></i>
+              </button>
+            <div class="btn-group" role="group" aria-label="...">
+                <button type="button" id="ribbon_SaveEC" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab2.buttons.b2',language:language}" data-balloon-pos="up" @click="saveCriteria">
+                    <i class="icon-floppy-1"></i>
+                </button>
+                <button type="button" id="ribbon_RefreshEC" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab2.buttons.b3',language:language}" data-balloon-pos="up" @click="refresh">
+                    <i class="icon-arrows-ccw"></i>
+                </button>
+                <button type="button" id="ribbon_ECXML" class="btn btn-default btn-sm" v-i18n.balloon="{value:'tab2.buttons.b4',language:language}" data-balloon-pos="up" @click="showECXML()">
+                    <i class="icon-list-alt"></i>
+                </button>
+            </div>
+          </div>
+          <div class="work-body">
+            <div class="form-group mb20">
+                <label class="font14 pb5" v-i18n="{value:'tab2.work.name',language:language}">Name :</label>
+              <input class="form-control" v-model="activeEC.Query.Name">
+            </div>
+            <div class="form-group mb20">
+                <label class="font14 pb5" v-i18n="{value:'tab2.work.disName',language:language}">DisplayName :</label>
+                  <input class="form-control" v-model="activeEC.Query.DisplayName">
+            </div>
+            <div class="EC-panel form-group mb20">
+                <label class="font14 pb5" v-i18n="{value:'tab2.work.param.title',language:language}">Parameters :</label>
+              <div class="EC-tool">
+                  <dl class="EC-title">
+                      <dd class="toolCell longCell" v-i18n="{value:'tab2.work.param.info.name',language:language}">Name</dd>
+                      <dd class="toolCell longCell" v-i18n="{value:'tab2.work.param.info.spName',language:language}">SessionParameterName</dd>
+                      <dd class="toolCell" v-i18n="{value:'tab2.work.param.info.value',language:language}">Value</dd>
+                      <dd class="toolCell lastCell" v-i18n="{value:'tab2.work.param.info.dType',language:language}">DataType</dd>
+                  </dl>
+                <template v-for="data in activeEC.Parameters" track-by="$index">
+                  <dl class="EC-row" @mousedown="selectDragIndex($index)">
+                    <span class="firstIcon" @click="removeRow($index)">
+                      <i class="icon icon-minus"></i>
+                    </span>
+                    <dd class="toolCell longCell">
+                        <input type="text" v-model="data.Name" @blur="txtTrim($event)" @mousedown.stop>
+                    </dd>
+                    <dd class="toolCell longCell">
+                        <input type="text" v-model="data.SessionParameterName" @blur="txtTrim($event)" @mousedown.stop>
+                    </dd>
+                    <dd class="toolCell">
+                        <input type="text" v-model="data.Value" @blur="txtTrim($event)" @mousedown.stop>
+                    </dd>
+                    <dd class="toolCell lastCell">
+                        <input type="text" v-model="data.DataType" @blur="txtTrim($event)" @mousedown.stop>
+                    </dd>
+                    <span class="lastIcon" @click="editRow($index)">
+                    <i class="icon icon-ellipsis"></i>
+                    </span>
+                  </dl>
+                  <dl class="EC-row disDraggable" v-if="data.IsEditing">
+                    <dd class="toolCell editCell lastCell">
+                      <div class="editItem">
+                          <span class="editField" v-i18n="{value:'tab2.work.param.info.fName',language:language}">FieldName</span>&nbsp;
+                          <input type="text" class="form-control" v-model="data.Field.FieldName" @blur="txtTrim($event)" @mousedown.stop>
+                      </div>
+                      <div class="editItem">
+                          <span class="editField" v-i18n="{value:'tab2.work.param.info.position',language:language}">Position</span>&nbsp;
+                          <input type="text" class="form-control" v-model="data.Field.Position" @blur="txtTrim($event)" @mousedown.stop>
+                      </div>
+                    </dd>
+                  </dl>
+                </template>
+              </div>
+            </div>
+            <div class="code-panel form-group mb20">
+                <label class="font14 pb5" v-i18n="{value:'tab2.work.equation',language:language}">Equation :</label>
+              <div class="codeArea">
+                <textarea class="editArea" v-model="activeEC.Query.Equation" @keydown.tab.prevent></textarea>
+              </div>
+              <div class="areaCopy"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </script>
+  <script type="text/x-template" id="caculationTemplate">
+    <nav class="nav rightNav">
+      <div class="nav-body">
+          <h3 class="nav-title font14" >
+              <i class="icon icon-calculator pl6 pr6 mr5 font14 "></i>
+              <span v-i18n="{value:'tab2.caculationTools.title',language:language}"></span>
+          </h3>
+        <div class="nav-tabs-body">
+          <ul class="tabs">
+            <li v-for="tab in tabs">
+              <a href="#" v-bind:class="{active:isActive==$index}" @click="isActive=$index">{{tab.text}}</a>
+            </li>
+          </ul>
+          <div class="nav-tabs-content show">
+            <div class="search-tool" v-show="searchMeta">
+              <input type="text" class="form-control" placeholder="🔍&nbsp;&nbsp;&nbsp;Search Metadata" v-model="data.items[0].filterName">
+            </div>
+            <div class="list-wrap" v-bind:class="{'search-item':isActive==0}">
+              <ul v-show="isActive==0" class="dragList tool font12" v-bind:class="{dragActive:isActive==0}" dragable='caculation' @mouseout="removeHover()">
+                <li v-for="text in data.items[0].list | metafilterBy data.items[0].filterName in 'Name'" @dblclick="viewTaskAction(text)" @mouseover="addHover($index)" v-bind:class="{active:isHover==$index}">
+                  <i class=" icon icon-file-code"></i>
+                  <span >{{text.Name}}</span>
+                </li>
+              </ul>
+              <ul v-show="isActive==1" class="dragList tool font12" v-bind:class="{dragActive:isActive==1}" dragable='caculation' @mouseout="removeHover()">
+                <li v-for="text in data.items[1].list" @mouseover="addHover($index)" v-bind:class="{active:isHover==$index}">
+                  <i class="icon icon-file-code"></i>
+                  <span>{{text.Name}}</span>
+                </li>
+              </ul>
+              <ul v-show="isActive==2" class="dragList tool wrapTool font12" v-bind:class="{dragActive:isActive==2}">
+                <li v-for="text in data.items[2].list" class="dragItem" @click="text.isOpen=!text.isOpen">
+                  <i class="icon icon-down-open" v-if="text.isOpen"></i>
+                  <i class="icon icon-right-open" v-else></i>
+                  <span v-if="language=='cn'">{{text.CNName}}</span>
+                  <span v-else>{{text.Name}}</span>
+                  <ol class="tool font12" v-show="text.isOpen" dragable='caculationFun'>
+                    <li v-for="item in text.list" @mouseover="addFunHover($event)" @mouseout="removeFunHover($event)" @click.stop>
+                      <span>{{item.Name}}</span>
+                    </li>
+                  </ol>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+  </script>
+  <script type="text/x-template" id="editECXMLTemplate">
+    <div id="editXml" class="modal-mask" v-show="showXml" transition="modal">
+      <div class="modal-wrapper">
+        <div id="ECXml" class="modal-container">
+          <h3>Editting Criteria XML</h3>
+          <a href="javascript:void(0);" class="close" @click="showXml = false"><i class="icon-cancel"></i></a>
+          <textarea id="txtECXml" name="txtECXml">{{ecXml}}</textarea>
+          <div class="modal-bottom">
+            <button type="button" @click="apply" class="btn btn-apply">Apply</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </script>
+    <script type="text/x-template" id="mainview">
+        <div class="pop-data-input" v-show="showDataInput" transition="modal">
+            <div class="data-tabs text-center">
+                <div class="pull-right ribbon">
+                    <a href="javascript:void(0);" @click="refreshData()"><i class="icon-arrows-ccw"></i></a>
+                    <a href="javascript:void(0);" @click="saveData()"><i class="icon-floppy-1"></i></a>
+                    <a href="javascript:void(0);" @click="closeWindow()"><i class="icon-cancel"></i></a>
+                    <input type="button" @click="apply()" id="btnApply" style="display:none" />
+                </div>
+                <div class="pull-left data-title">
+                    现金流模型数据输入
+                </div>
+                <div class="btn-group" role="group" aria-label="...">
+                    <button type="button" class="btn btn-sm btn-default" v-bind:class="{active:tabActive=='variable'}" @click="changeTab('variable')">Variable View</button>
+                    <button type="button" class="btn btn-sm btn-default" v-bind:class="{active:tabActive=='range'}" @click="changeTab('range')">Range View</button>
+                </div>
+            </div>
+            <div id="divDataInputTable"></div>
+            <ul id="spreadContextMenu" class="dropdown-menu" role="menu">
+                <li><a class="localize" data-action="cut">cut</a></li>
+                <li><a class="localize" data-action="copy">copy</a></li>
+                <li><a class="localize" data-action="paste">paste</a></li>
+                <li class="context-header divider"></li>
+                <li class="context-header"><a class="localize" data-action="insert">insert</a></li>
+                <li class="context-header"><a class="localize" data-action="delete">delete</a></li>
+            </ul>
+        </div>
+    </script>
+  <script type="text/x-template" id="taskRunTemplate">
+    <div id="taskIndicatorArea">
+      <object id="TaskProcessCtl" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="display:block" width="100%" height="440px" class="ms-dlgDisable">
+        <param name="source" value="/TaskProcessEngine/ClientBin/UI.TaskProcessIndicator.xap" />
+        <param name="enablehtmlaccess" value="True" />
+      </object>
+    </div>
+  </script>
+  <div id="scriptForTask" style="display:none;padding:10px;border-top:1px solid #dedede">
+    <textarea id="txtScript" class="editXmlArea form-control" style="height:475px"></textarea>
+  </div>
+  <script src="../Libraries/Scripts/common.js"></script>
+  <script src="package.js"></script>
+  <script type="text/javascript">
+  var sessionID, taskCode;
+  var clientName = 'CashFlowProcess';
+  var IndicatorAppDomain = 'Task';
+  var IsSilverlightInitialized = false;
+  function InitParams() {
+    if (!IsSilverlightInitialized) {
+      IsSilverlightInitialized = true;
+    }
+    document.getElementById("TaskProcessCtl").Content.SL_Agent.InitParams(sessionID, IndicatorAppDomain, taskCode, clientName);
+  }
+  </script>
+</body>
+
+</html>

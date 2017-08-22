@@ -1,0 +1,86 @@
+<Tool Name="CashFlowBaseModel">
+  <Actions>
+    <Action ActionCode="InitSessionVariable" ActionDisplayName="模型变量初始化" FunctionName="RunSP" SequenceNo="1">
+      <Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="SPName" SessionParameterName="" Value="[Task].[usp_CopyTaskProcessContextToSessionContext]" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="ConnectionString" SessionParameterName="" Value="Server=mssql;Database=TaskProcess;Trusted_Connection=True;" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="SessionId" SessionParameterName="SessionId" Value="" DataType="UniqueIdentifier" Usage="SQLParameter" IsConfigurable="false" />
+      <Parameter Name="TaskCode" SessionParameterName="TaskCode" Value="" DataType="NVarChar" Usage="SQLParameter" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="PrepareSessionVariables" ActionDisplayName="初始化数据库变量" FunctionName="RunSSIS" SequenceNo="2">
+      <Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="SSISPackagePath" SessionParameterName="" Value="E:\TSSWCFServices\TrustManagementService\ConsumerLoan\SSIS\Task.PrepareSessionData.dtsx" DataType="String" Usage="Task" />
+      <Parameter Name="LogPath" SessionParameterName="" Value="E:\TSSWCFServices\TrustManagementService\ConsumerLoan\Logs\" DataType="String" Usage="SSISPackageVariable" />
+      <Parameter Name="DBServer" SessionParameterName="" Value="mssql" DataType="String" Usage="SSISPackageVariable" />
+      <Parameter Name="DBName_TaskProcess" SessionParameterName="" Value="TaskProcess" DataType="String" Usage="SSISPackageVariable" />
+      <Parameter Name="DBName_ConsumerLoan" SessionParameterName="" Value="SFM_DAL_ConsumerLoan" DataType="String" Usage="SSISPackageVariable" />
+      <Parameter Name="SessionID" SessionParameterName="SessionId" Value="" DataType="String" Usage="SSISPackageVariable" />
+      <Parameter Name="TrustId" SessionParameterName="TrustId" Value="" DataType="String" Usage="SSISPackageVariable" />
+      <Parameter Name="ReportingDate" SessionParameterName="ReportingDate" Value="" DataType="String" Usage="SSISPackageVariable" />
+      <Parameter Name="Period" SessionParameterName="Period" Value="0" DataType="String" Usage="SSISPackageVariable" />
+      <Parameter Name="CurrentPosition" SessionParameterName="" Value="0" DataType="String" Usage="SSISPackageVariable" />
+    </Action>
+    <Action ActionCode="PrepareMemoryVariables" ActionDisplayName="初始化内存变量" FunctionName="InitializeMemoryObject" SequenceNo="3">
+      <Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="InitCashFlowFromMemory" ActionDisplayName="初始化现金流变量" FunctionName="RunManagedMethodByPath" SequenceNo="4">
+      <Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="E:\\TSSWCFServices\\TrustManagementService\\bin\\DADP.CashFlowStudioEntity.dll" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="DADP.CashFlowStudioEntity.CashFlowInputProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="InitSessionContextArrayFromMemory" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="sSessionId" SessionParameterName="SessionId" Value="" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="sConnectionString" SessionParameterName="" Value="Server=mssql;Database=TaskProcess;Trusted_Connection=True;" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="sAppDomain" SessionParameterName="" Value="Task" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="CompileModel" ActionDisplayName="现金流模型编译" FunctionName="RunManagedMethodByPath" SequenceNo="5">
+      <Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="E:\\TSSWCFServices\\TrustManagementService\\bin\\AddIn.CashflowScript.dll" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.CashFlowScriptAddIn" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="CompileCashFlowEquationPlus" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="sSessionId" SessionParameterName="SessionId" Value="" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="sConnectionString" SessionParameterName="" Value="Server=mssql;Database=TaskProcess;Trusted_Connection=True;" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="sAppDomain" SessionParameterName="" Value="Task" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="sDLLFilePath" SessionParameterName="" Value="C:\\TEMP\\" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="sDLLFileName" SessionParameterName="" Value="CashFlowEquationScript" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="thirdPartyDllPath" SessionParameterName="" Value="E:\\TSSWCFServices\\TrustManagementService\\bin\\AddIn.CashflowScript.dll" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="CaculateCashFlowTask" ActionDisplayName="现金流计算任务" FunctionName="RunManagedMethodByPath" SequenceNo="105">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="true" />
+      <Parameter Name="NumberFormat" SessionParameterName="" Value="{0:#,0.00}" DataType="String" Usage="CashFlow" IsConfigurable="true" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Export" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="C:\\Temp\\CashFlowEquationScript.dll" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="ExecuteAll" DataType="String" Usage="Task" IsConfigurable="true" />
+      <Parameter Name="startPosition" SessionParameterName="StartPeriod" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="endPosition" SessionParameterName="EndPeriod" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="CashFlowExporting" ActionDisplayName="输出现金流" FunctionName="OutputCashflowToDbTable" SequenceNo="106">
+      <Parameter Name="InputType" SessionParameterName="" Value="Export" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="sSessionId" SessionParameterName="SessionId" Value="" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="ConnectionString" SessionParameterName="" Value="Server=mssql;Database=SFM_DAL_ConsumerLoan;Trusted_Connection=True;" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="Schema" SessionParameterName="" Value="TrustManagement" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="TableName" SessionParameterName="" Value="FactTrustTransaction" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="ReportingDates" SessionParameterName="ReportingDates" Value="" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="TrustId" SessionParameterName="TrustId" Value="" DataType="Int16" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="CashFlowExporting" ActionDisplayName="输出现金流" FunctionName="OutputCashflowToDbTable" SequenceNo="107">
+      <Parameter Name="InputType" SessionParameterName="" Value="Export" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="sSessionId" SessionParameterName="SessionId" Value="" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="ConnectionString" SessionParameterName="" Value="Server=mssql;Database=SFM_DAL_ConsumerLoan;Trusted_Connection=True;" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="Schema" SessionParameterName="" Value="TrustManagement" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="TableName" SessionParameterName="" Value="FactBondPayment" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="ReportingDates" SessionParameterName="ReportingDates" Value="" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="TrustId" SessionParameterName="TrustId" Value="" DataType="Int16" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="ExportModel" ActionDisplayName="模型输出(数据库)" FunctionName="RunManagedMethodByPath" SequenceNo="108">
+      <Parameter Name="InputType" SessionParameterName="" Value="Export" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="E:\\TSSWCFServices\\TrustManagementService\\bin\\DADP.CashFlowStudioEntity.dll" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="DADP.CashFlowStudioEntity.CashFlowInputProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="ExportDisplayCashFlowToDataBase" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="sSessionId" SessionParameterName="SessionId" Value="" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="sConnectionString" SessionParameterName="" Value="Server=mssql;Database=TaskProcess;Trusted_Connection=True;" DataType="String" Usage="" IsConfigurable="false" />
+      <Parameter Name="sAppDomain" SessionParameterName="" Value="Task" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+  </Actions>
+</Tool>

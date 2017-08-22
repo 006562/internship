@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+    <Parameters>
+        <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+    </Parameters>
+    <Query>
+        <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[usp_GetPoolsNotInList]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[usp_GetPoolsNotInList]
+'
+exec (@vchSQL)
+
+set @vchSQL ='CREATE PROCEDURE [dbo].[usp_GetPoolsNotInList]
+	@PoolList nvarchar(200)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @Pools TABLE( DimPoolId bigint )
+    declare @Pos int
+    declare @NextPos int
+    declare @vchPoolId varchar(10)
+
+   If @PoolList is null or @PoolList = ''''''''
+      Return 0
+      
+    SET @NextPos = CHARINDEX('''','''', @PoolList, 0)
+    If @NextPos = 0 begin
+		  Insert @Pools(DimPoolId) values (Convert(bigint, @PoolList))
+    End
+    
+    SET @Pos = 0
+    WHILE (@NextPos > 0)
+       BEGIN
+          If @NextPos - @Pos > 0 and @NextPos - @Pos < 10
+             begin
+                SET @vchPoolId = LTRIM(RTRIM(SUBSTRING(@PoolList, @Pos, @NextPos - @Pos)))
+                insert @Pools(DimPoolId) values (CONVERT(bigint, @vchPoolId))
+                print @vchPoolId
+             end
+          SET @Pos = @NextPos + 1
+          SET @NextPos = CHARINDEX('''','''', @PoolList, @Pos)
+          If @NextPos = 0
+             begin
+                SET @vchPoolId = LTRIM(RTRIM(SUBSTRING(@PoolList, @Pos, LEN(@PoolList) - @Pos + 1)))
+                insert @Pools(DimPoolId) values (CONVERT(bigint, @vchPoolId))
+                print @vchPoolId
+             end
+       END
+    
+    select * from tblDimPool where DimPoolId not in (select DimPoolID from @Pools)
+
+END
+'
+
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+EXEC (@BigSQL)
+
+]]>
+    </Query>
+
+</main>

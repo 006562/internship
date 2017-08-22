@@ -1,0 +1,81 @@
+﻿<Scripts>
+  <VariableScript>
+    DECLARE @CriteriaSetCode nvarchar(200)
+    DECLARE @CodeCategoryId bigint
+    DECLARE @SequenceNo bigint
+    DECLARE @CriteriaSetTypeId bigint
+    DECLARE @CriteriaSetId bigint
+
+    SET @CodeCategoryId = (SELECT [CodeCategoryId] From {1}.[CodeCategory] WHERE [CategoryCode]='CriteriaSetType')
+    SET @SequenceNo = (SELECT CONVERT(int,count(1)+1) FROM {1}.[CodeDictionary] WHERE [CodeCategoryId] = @CodeCategoryId)
+    SET @CriteriaSetCode='{0}'
+
+    /**************************************************新增ECCode*******************************************************************************/
+    IF (NOT EXISTS(select 1 from {1}.[CodeDictionary] where CodeDictionaryCode=@CriteriaSetCode and CodeCategoryId=@CodeCategoryId))
+    BEGIN
+    INSERT INTO {1}.[CodeDictionary]([CodeCategoryId],[CodeDictionaryCode],[Value],[ValueShort],[SequenceNo],[IsDidplayed])
+    VALUES(@CodeCategoryId,@CriteriaSetCode,@CriteriaSetCode,@CriteriaSetCode,@SequenceNo,1)
+    END
+
+    /**************************************************建立关联*******************************************************************************/
+    SET @CriteriaSetTypeId = (SELECT CodeDictionaryId FROM {1}.[CodeDictionary] WHERE CodeDictionaryCode = @CriteriaSetCode)
+
+    IF (NOT EXISTS(select 1 from {1}.[CriteriaSet] where CriteriaSetTypeId = @CriteriaSetTypeId))
+    BEGIN
+    /*INSERT INTO {1}.[CriteriaSet]([CriteriaSetTypeId],[DimOrganisationId])
+    VALUES(@CriteriaSetTypeId,0)*/
+    INSERT INTO {1}.[CriteriaSet]([CriteriaSetTypeId])
+    VALUES(@CriteriaSetTypeId)
+    END
+  </VariableScript>
+  <CriteriaScript>
+    /**************************************************新增EC *******************************************************************************/
+    SET @CriteriaSetId = (SELECT CriteriaSetId FROM {12}.[CriteriaSet] WHERE CriteriaSetTypeId = @CriteriaSetTypeId)
+
+    IF (NOT EXISTS(select 1 from {12}.[Criteria] where CriteriaSetId = @CriteriaSetId and CriteriaId = {0}))
+    BEGIN
+    INSERT INTO {12}.[Criteria]
+    ([CriteriaName]
+    ,[CriteriaDescription]
+    ,[CriteriaSetId]
+    ,[CriteriaTypeId]
+    ,[IsEnable]
+    ,[ECPassNo]
+    ,[XMLSqlQueryEC]
+    ,[XMLSqlQueryDrillThrough]
+    ,[CriteriaTableTypeId]
+    ,[SequenceNo]
+    ,[IsFunctionEnable]
+    ,[IsEditable])
+    VALUES('{1}'
+    ,N'{2}'
+    ,@CriteriaSetId
+    ,{3}
+    ,{4}
+    ,{5}
+    ,N'{6}'
+    ,N'{7}'
+    ,{8}
+    ,{9}
+    ,{10}
+    ,{11})
+    END
+    ELSE
+    BEGIN
+    UPDATE {12}.[Criteria]
+    SET [CriteriaName] = '{1}'
+    ,[CriteriaDescription] =N'{2}'
+    ,[CriteriaSetId] = @CriteriaSetId
+    ,[CriteriaTypeId] = {3}
+    ,[IsEnable] = {4}
+    ,[ECPassNo] = {5}
+    ,[XMLSqlQueryEC] = N'{6}'
+    ,[XMLSqlQueryDrillThrough] = N'{7}'
+    ,[CriteriaTableTypeId] ={8}
+    ,[SequenceNo] = {9}
+    ,[IsFunctionEnable] = {10}
+    ,[IsEditable] = {11}
+    WHERE CriteriaSetId = @CriteriaSetId and CriteriaId = {0}
+    END
+  </CriteriaScript>
+</Scripts>

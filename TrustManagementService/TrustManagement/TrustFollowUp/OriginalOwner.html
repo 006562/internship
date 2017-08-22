@@ -1,0 +1,118 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+    <title>Original</title>
+    <link rel="stylesheet" href="css/trustFollowUp.css" />
+    <script src="../Common/Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../../Config/GlobalVariable.js"></script>
+    <script src="../Common/Scripts/common.js"></script>
+    <script src="../Common/Scripts/calendar.min.js"></script>
+    <script src="FilePathConfig.js"></script>
+    <script src="OriginalOwner.js"></script>
+    <script type="text/javascript">
+        var tid = getQueryString("tid") ? getQueryString("tid") : "";
+        var RDate = getQueryString("RDate") ? getQueryString("RDate") : "";
+        var OriginatorId = getQueryString("oid") ? getQueryString("oid") : "";
+
+        var sContent = {
+            'SPName': 'usp_GetTblOriginatorByTrustIdAndReportingDate', 'SQLParams': [
+            { 'Name': 'OriginatorId', 'Value': OriginatorId, 'DBType': 'string' },
+            { 'Name': 'TrustId', 'Value': tid, 'DBType': 'string' },
+             { 'Name': 'ReportingDate', 'Value': RDate, 'DBType': 'string' }
+            ]
+        };
+        var getDataConfig = sContent;
+        var getUpdateParams = function (ps) {
+            return {
+                'SPName': 'usp_UpdateTblOriginatorByTrustIdAndReportingDate', 'SQLParams': [
+                    { 'Name': 'items', 'Value': ps, 'DBType': 'xml' }
+                ]
+            };
+        }
+    </script>
+</head>
+<body>
+    <div id="loading" class="loadpage text-center">加载配置中...</div>
+    <div class="page">
+        <div class="main">
+            <div class="menu-buttons xs-hidden">
+                <span class="tab-columns">
+                    <button type="button" class="btn btn-active" data-col="2">
+                        <span class="bs bs2"></span>
+                        <span class="bs bs2"></span>
+                    </button>
+                    <button type="button" class="btn" data-col="3">
+                        <span class="bs bs1"></span>
+                        <span class="bs bs1"></span>
+                        <span class="bs bs1"></span>
+                    </button>
+                </span>
+            </div>
+            <h3 id="step-title" class="h3"><span class="title">原始权益人信息</span></h3>
+            <div class="form">
+                <!-- 原始权益人 -->
+                <div class="form-body" id="step0">
+                    <div id="TrustExtensionDiv">
+                        <div class="form-panel item">
+                            <div class="col-12" data-bind="foreach:DateSetList.BasicData">
+                                <!-- ko if : IsDisplay()=='1' -->
+
+
+
+                                <div class="col-6 form-group autoLayout-plugins">
+                                    <div class="col-4">
+                                        <label data-bind="html:ItemAliasValue"></label>
+                                    </div>
+                                    <div class="col-6">
+                                        <!-- ko if: ItemCode()=='AuditReport' -->
+                                        <div class="col-11 file-item fileDiv">
+                                            <!-- ko if: ItemValue.peek() && $.trim(ItemValue()).length > 0 -->
+                                            <div class="col-9">
+                                                <label class="file-linkname-label" style="height:auto !important;"><a data-bind="attr:{href: $root.GetFilePath(ItemValue())}" target="_blank"><span data-bind="text:ItemValue"></span></a><input type="hidden" name="oldvalue" data-bind="value:ItemValue.peek()" /></label>
+                                                <label class="file-updateexited-input" style="display:none; height:auto !important; padding-top:5px;"><input type="file" style="width:125px;" data-bind="attr: {id:'OriginalFileToUpload', itemIndex: $index() }" onchange="OriginalOwner.ModifyNewFileName(this)" /></label>
+                                            </div>
+                                            <div class="col-3  buttons">
+                                                <button type="button" class="btn btnUpd" title="更新文档" data-bind="attr: { itemIndex: $index() }" onclick="OriginalOwner.GointUpdatedExitedFile(this,true)"><i class="icon icon-edit"></i></button>
+                                                <button type="button" class="btn btnDel" title="删除文档" data-bind="attr: { itemIndex: $index() }" onclick="OriginalOwner.DeleteUploadedFile(this)"><i class="icon icon-trash"></i></button>
+                                                <button type="button" class="btn btnRev" title="放弃更新" data-bind="attr: { itemIndex: $index() }" onclick="OriginalOwner.GointUpdatedExitedFile(this, false)" style="display:none;"><i class="icon icon-chexiao"></i></button>
+                                            </div>
+                                            <!-- /ko -->
+                                            <!-- ko if: !ItemValue.peek() || $.trim(ItemValue()).length == 0 -->
+                                            <div>
+                                                <input type="file" style="width:190px" data-bind="attr: { id:'OriginalFileToUpload',itemIndex: $index() }" onchange="OriginalOwner.ModifyNewFileName(this)" />
+                                            </div>
+                                            <!-- /ko -->
+                                        </div>
+                                        <!-- /ko -->
+                                        <!-- ko if: ItemCode()!='AuditReport' -->
+                                        <div class="col-11" data-bind="renderControl:ItemValue">
+                                        </div>
+                                        <!-- /ko -->
+                                    </div>
+                                </div>
+
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-button">
+                <button id="next-step" type="button" class="btn btn-primary btn-next">确定</button>
+                <button id="preview" type="button" class="btn btn-preview">预览</button>
+            </div>
+        </div>
+    </div>
+    <script src="../Common/Scripts/knockout-3.4.0.js"></script>
+    <script src="../Common/Scripts/knockout.mapping-latest.js"></script>
+    <script src="../Common/Scripts/knockout.binding.rendercontrol.js"></script>
+    <script src="./viewFllowUpPageMain.js"></script>
+    <script src="./viewFllowUpPageData.js"></script>
+    <script type="text/javascript">
+        TrustFllowUp.init();
+    </script>
+</body>
+</html>

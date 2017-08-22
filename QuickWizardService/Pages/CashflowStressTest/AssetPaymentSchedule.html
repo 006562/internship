@@ -1,0 +1,505 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+
+    <title>基础资产偿付现金流</title>
+
+    <link href="css/trustFollowUp.css" rel="stylesheet" />
+    <link href="css/pagerlist-style.css" rel="stylesheet" />
+    <link href="css/font/GoogleFontDosis.css" rel="stylesheet" />
+
+    <script src="js/jquery-1.7.2.min.js"></script>
+    <script src="js/GlobalVariable.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/jquery.datagrid.js"></script>
+    <script src="js/jquery.datagrid.options.js"></script>
+
+    <script src="js/highcharts.js"></script>
+    <script src="js/highcharts_exporting.js"></script>
+    <style type="text/css">
+        .radio-list {
+            font: "12px/1.5 "Microsoft Yahei", tahoma, arial, 宋体";
+            resize: none;
+        }
+
+            .radio-list .radio-list-span {
+                display: inline-block;
+                min-width: 60px;
+                text-align: left;
+            }
+    </style>
+</head>
+<body>
+    <div class="page form">
+        <div class="main">
+            <h3 id="step-title" class="h3">
+                <span class="title tab-switch titlecur" data-view="#listViewContainer">列表视图</span>
+                <span class="title tab-switch" data-view="#chartViewContainer">图表视图</span>
+                <span class="title tab-switch" data-view="#AssetPaymentStatistics_list" style="display:none;">实际还款计划</span>
+                <span class="title tab-switch" data-view="#AssetPaymentStatistics_view" style="display:none;">实际还款计划图示</span>
+            </h3>
+            <div class="form-panel drop nobottom">
+                <div class="form-panel drop list-filters" style="display:none;">
+                    <div class="col-12">
+                        <div class="col-3 form-group">
+                            <div class="col-5">
+                                <label>查看现金流：</label>
+                            </div>
+                            <div class="col-5">
+                                <select class="form-control" name="Purpose" id="selPayDateFilter">
+                                    <option value="">请选择</option>
+                                    <option value="0">备选池</option>
+                                    <option value="1">已入池</option>
+                                    <option value="2">全部</option>
+                                    <option value="3">已入池和拟购买池</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-2 form-group">
+                            <button type="button" class="btn btn-primary btn-sm" id="btnSearch">检索</button>
+                            <!--<button type="button" class="btn btn-default btn-sm" id="btnReset">查询条件重置</button>-->
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:10px;">
+                    <div id="listViewContainer" class="list-container viewcontainer"></div>
+                    <div id="chartViewContainer" class="viewcontainer" style="display:none; min-width:95%; min-height:80%;"></div>
+                    <div id="AssetPaymentStatistics_list" class="list-container viewcontainer" style="display:none;"></div>
+                    <div id="AssetPaymentStatistics_view" class="viewcontainer" style="display:none;">
+                        <div class="radio-list">
+                            <span class="radio-list-span">请选择：</span>
+                            <span class="radio-list-span"><input type="radio" name="Showtype" id="Showtype1" value="1" checked="checked" /><label for="Showtype1">本金</label></span>
+                            <span class="radio-list-span"><input type="radio" name="Showtype" id="Showtype2" value="2" /><label for="Showtype2">利息</label></span>
+                            <span class="radio-list-span"><input type="radio" name="Showtype" id="Showtype3" value="3" /><label for="Showtype3">总和</label></span>
+                        </div>
+                        <div id="AssetPaymentStatistics_view_chart" style="min-width:95%; min-height:80%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+<script type="text/javascript">
+    if (!('map' in Array.prototype)) {
+        Array.prototype.map = function (mapper, that /*opt*/) {
+            var other = new Array(this.length);
+            for (var i = 0, n = this.length; i < n; i++)
+                if (i in this)
+                    other[i] = mapper.call(that, this[i], i, this);
+            return other;
+        };
+    }
+
+    Highcharts.theme = {
+        colors: ["#7cb5ec", "#f7a35c", "#aaeeee", "#7798BF", "#ff0066", "#90ee7e", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+        chart: { backgroundColor: null, style: { fontFamily: "Dosis, sans-serif" } },
+        credits: { enabled: false },
+        title: { style: { fontSize: '16px', fontWeight: 'bold', textTransform: 'uppercase' } },
+        tooltip: { borderWidth: 0, backgroundColor: 'rgba(219,219,216,0.8)', shadow: false },
+        legend: { itemStyle: { fontWeight: 'bold', fontSize: '13px' } },
+        xAxis: { gridLineWidth: 1, labels: { style: { fontSize: '12px' } } },
+        yAxis: { minorTickInterval: 'auto', title: { style: { textTransform: 'uppercase' } }, labels: { style: { fontSize: '12px' } } },
+        plotOptions: { candlestick: { lineColor: '#404048' } },
+        background2: '#F0F0EA'
+    };
+    Highcharts.setOptions(Highcharts.theme);
+
+    var svcUrl = GlobalVariable.DataProcessServiceUrl + "CommonExecuteGet?";
+    var svcUrlWithConn = GlobalVariable.DataProcessServiceUrl+"CommonGetExecute?";
+
+    function getAssetPaymentScheduleData(trustId, spName, accountNo, purpose) {
+        var executeParam = { SPName: spName, SQLParams: [] };
+        executeParam.SQLParams.push({ Name: 'trustId', value: trustId, DBType: 'int' });
+        if (accountNo) {
+            executeParam.SQLParams.push({ Name: 'accountNo', value: accountNo, DBType: 'string' });
+        }
+        if (purpose) {
+            executeParam.SQLParams.push({ Name: 'purpose', value: purpose, DBType: 'int' });
+        }
+
+        var executeParams = encodeURIComponent(JSON.stringify(executeParam));
+        var sourceData = [];
+        $.ajax({
+            cache: false,
+            type: "GET",
+            async: false,
+            url: svcUrlWithConn + 'connConfig=TrustManagement&appDomain=Asset&executeParams=' + executeParams + '&resultType=commom',
+            dataType: "json",
+            contentType: "application/xml;charset=utf-8",
+            data: {},
+            success: function (response) {
+                if (typeof response === 'string') { sourceData = JSON.parse(response); }
+                else { sourceData = response; }
+            },
+            error: function (response) { alert('Error occursed while requiring the remote source data!'); }
+        });
+        return sourceData;
+    }
+    var trustId = getQueryString('trustId');
+
+    $(function () {
+        if (!trustId || trustId == 0 || isNaN(trustId)) {
+            return;
+        }
+
+        $('.tab-switch').click(function () {
+            $(this).addClass('titlecur').siblings().removeClass('titlecur');
+            var view = $(this).attr('data-view');
+            if (view) {
+                $('.viewcontainer').hide();
+                $(view).show();
+            }
+        });
+
+        ShowtypeClick();
+        btnSearchClick();
+
+        var accountNo = getQueryString('accountNo');
+        bindAssetPaymentScheduleData();
+
+        if (accountNo) {
+            bindAssetPaymentStatistics(trustId, 'usp_GetAssetPaymentStatistics_ByAccountNo', accountNo);
+            $('.tab-switch').show();
+        }
+    });
+    function bindAssetPaymentScheduleData() {
+        var data = [];
+
+        var spName = 'usp_GetAssetScheduleImutation';
+
+        var accountNo = getQueryString('accountNo');
+        if (accountNo) {
+            spName = 'usp_GetAssetPaymentScheduleFromOthers';
+            data = getAssetPaymentScheduleData(trustId, spName, accountNo, null);
+        }
+        else {
+            var purpose = null;
+            var purDom = $('.list-filters .form-control[name="Purpose"]');
+            if (purDom.length > 0) {
+                purpose = purDom.val();
+
+                $('.list-filters').show();
+
+                if (purpose.length > 0)
+                    data = getAssetPaymentScheduleData(trustId, spName, null, purpose);
+            }
+        }
+
+        bindListView(data);
+        bindChartView(data);
+    }
+    function btnSearchClick() {
+        $('#btnSearch').click(function () {
+            bindAssetPaymentScheduleData();
+        })
+    }
+    function ShowtypeClick() {
+        $("#AssetPaymentStatistics_view").find("input[type='radio'][name=''Showtype]").click(function () {
+            bindAssetPaymentStatisticsView();
+        });
+    }
+    function bindListView(data) {
+        if ($('#listViewContainer').datagrid("datagrid"))
+            $('#listViewContainer').datagrid("destroy");
+        $('#listViewContainer').datagrid({
+            data: data,
+            col: [{ field: "StartDate", title: "开始时间", sortable: true, attrHeader: settable.tableTh, attr: settable.tableTd }
+                , { field: "EndDate", title: "结束时间", sortable: true, attrHeader: settable.tableTh, attr: settable.tableTd }
+                , { field: "PrincipalAmount", title: "本金", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd }
+                , { field: "InterestAmount", title: "利息", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd }
+                //, { field: "PrincipalFromTopUp", title: "本金余额", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd }
+                //, { field: "InterestFromTopUp", title: "利息余额", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd }
+            ],
+            attr: 'mytable',
+            paramsDefault: { paging: 30 },
+            noData: "<p class='noData'>当前视图没有可显示记录。</p>",
+            pagerPosition: "bottom",
+            pager: "mypager",
+            sorter: "mysorter",
+            onComplete: function () {
+                $(".mytable").on("click", ".table-td", function () {
+                    $(".mytable .table-td").removeClass("active");
+                    $(this).addClass("active");
+                })
+            }
+        });
+    }
+
+    function bindChartView(data) {
+        var categories = data.map(function (v) { return v.EndDate; });
+        var series = [{ name: '利息', data: data.map(function (v) { return v.InterestAmount; }) },
+            { name: '本金', data: data.map(function (v) { return v.PrincipalAmount; }) }];
+
+        var titleText = "现金流图";
+        var yAxisTitle = "本金及利息";
+
+        $('#chartViewContainer').highcharts({
+            chart: { type: 'column' },
+            title: { text: titleText },
+            xAxis: { categories: categories },
+            yAxis: {
+                min: 0, title: { text: yAxisTitle },
+                stackLabels: {
+                    enabled: false,
+                    style: { fontWeight: 'bold', color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray' }
+                }
+            },
+            legend: {
+                align: 'right', x: -25, y: -3, verticalAlign: 'top',
+                floating: true, borderWidth: 1, borderColor: '#CCC', shadow: false,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white'
+            },
+            tooltip: {
+                headerFormat: '<b>{point.x}</b><br/>',
+                pointFormat: '{series.name}: {point.y:.0f}<br/>共计: {point.stackTotal:.0f}'
+            },
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    dataLabels: {
+                        enabled: false, style: { textShadow: '0 0 3px black' },
+                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                    }
+                }
+            },
+            series: series
+        });
+    }
+
+    function bindAssetPaymentStatistics(trustId, spName, accountNo) {
+        var executeParam = { SPName: spName, SQLParams: [] };
+        executeParam.SQLParams.push({ Name: 'trustId', value: trustId, DBType: 'int' });
+        if (accountNo) {
+            executeParam.SQLParams.push({ Name: 'accountNo', value: accountNo, DBType: 'string' });
+        }
+
+        var executeParams = encodeURIComponent(JSON.stringify(executeParam));
+        var sourceData = [];
+        $.ajax({
+            cache: true,
+            type: "GET",
+            async: false,
+            url: svcUrlWithConn + 'connConfig=TrustManagement&appDomain=Asset&executeParams=' + executeParams + '&resultType=commom',
+            dataType: "json",
+            contentType: "application/xml;charset=utf-8",
+            data: {},
+            success: function (response) {
+                if (typeof response === 'string') { sourceData = JSON.parse(response); }
+                else { sourceData = response; }
+                $.each(sourceData, function (i, n) {
+                    sourceData[i].PayDate = sourceData[i].PayDate ? getStringDate(sourceData[i].PayDate).dateFormat('yyyy-MM-dd') : ''
+                });
+                AssetPaymentData = sourceData;
+                bindAssetPaymentStatisticsList();
+                bindAssetPaymentStatisticsView();
+            },
+            error: function (response) { alert('Error occursed while requiring the remote source data!'); }
+        });
+        return sourceData;
+    }
+
+    function bindAssetPaymentStatisticsList() {
+        var data = AssetPaymentData;
+        $('#AssetPaymentStatistics_list').datagrid({
+            data: data,
+            col: [{ field: "AccountNo", title: "合同编号", sortable: true, attrHeader: settable.tableTh, attr: settable.tableTd }
+                , {
+                    field: "PayDate", title: "日期", sortable: true, attrHeader: settable.tableTh, attr: settable.tableTd
+                    //, render: function (data) { return data.value ? getStringDate(data.value).dateFormat('yyyy-MM-dd') : ''; }
+                }
+                , { field: "ScheduledPrincipalAmount", title: "应收（本）", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd }
+                , {
+                    field: "ActualPrincipalAmount", title: "实收（本）", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd
+                    , render: function (data) {
+                        return '<input type="text" value="{0}" name="PrincipalPayAmount" rowIndex="{1}" data-valid="required decimal" onchange="CommonValidation.ValidControlValue($(this))" style="width:100%;height:80%;" />'.StringFormat(data.value ? data.value : '', data.rowindex);
+                    }
+                }
+                , { field: "AdjustedPrincipalAmount", title: "调整后（本）", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd }
+                , { field: "ScheduledInterestAmount", title: "应收（利息）", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd }
+                , {
+                    field: "ActualInterestAmount", title: "实收（利息）", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd
+                    , render: function (data) {
+                        return '<input type="text" value="{0}" name="InterestPayAmount" rowIndex="{1}" data-valid="required decimal" onchange="CommonValidation.ValidControlValue($(this))" style="width:100%;height:80%;" />'.StringFormat(data.value ? data.value : '', data.rowindex);
+                    }
+                }
+                , { field: "AdjustedInterestAmount", title: "调整后（利息）", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd }
+                , {
+                    field: "", title: "操作", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd
+                    , render: function (data) {
+                        var html = '<a style="cursor:pointer" rowIndex="' + data.rowindex + '" onclick="SaveAssetPayment(\'' + data.row.AccountNo + '\',\'' + data.row.PayDate + '\',' + data.rowindex + ');">保存</a>';
+                        return html;
+                    }
+                }
+            ],
+            attr: 'mytable',
+            paramsDefault: { paging: 30 },
+            noData: "<p class='noData'>当前视图没有可显示记录。</p>",
+            pagerPosition: "bottom",
+            pager: "mypager",
+            sorter: "mysorter",
+            onComplete: function () {
+                $(".mytable").on("click", ".table-td", function () {
+                    $(".mytable .table-td").removeClass("active");
+                    $(this).addClass("active");
+                })
+            }
+        });
+    }
+    function SaveAssetPayment(AccountNo, PayDate, index) {
+        var rows = $("#AssetPaymentStatistics_list input[rowIndex='" + index + "']");
+        if (rows.length > 0) {
+            var haveError = false;
+            $(rows).each(function () {
+                var $this = $(this);
+                if (!CommonValidation.ValidControlValue($this)) { haveError = true; }
+            });
+            if (haveError) return;
+
+            var item = '';
+            item += '<item>';
+            item += '<{0}>{1}</{0}>'.StringFormat('TrustId', trustId);
+            item += '<{0}>{1}</{0}>'.StringFormat('AccountNo', AccountNo);
+            item += '<{0}>{1}</{0}>'.StringFormat('PayDate', PayDate);
+
+            $.each(rows, function (i, n) {
+                item += '<{0}>{1}</{0}>'.StringFormat($(n).attr("name"), $(n).val());
+            });
+            item += '</item>';
+
+            var executeParam = {
+                SPName: 'usp_UpdateAssetPayment', SQLParams: [
+                    { Name: 'items', value: item, DBType: 'xml' }
+                ]
+            };
+
+            ExecuteGetData(true, svcUrl, 'Asset', executeParam, function (data) {
+                if (data[0].Result == 1) alert('保存成功');
+                else if (data[0].Result == 1) alert('保存失败');
+                else if (data[0].Result == 2) alert('未找到该条数据');
+            });
+        }
+    }
+    var AssetPaymentData = [];
+    function bindAssetPaymentStatisticsView() {
+        var data = AssetPaymentData;
+        var columnTemplate = function (params) {
+            return {
+                chart: {
+                    //type: 'column',
+                    zoomType: 'x'
+                },
+                title: { text: params.titleText },
+                xAxis: { type: 'category', categories: params.categories },//categories: params.categories
+                yAxis: {
+                    min: 0, title: { text: params.yAxisTitle },
+                    stackLabels: {
+                        enabled: false,
+                        style: { fontWeight: 'bold', color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray' }
+                    }
+                },
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{series.name}: {point.y:.0f}<br/>共计: {point.stackTotal:.0f}'
+                },
+                legend: {
+                    enabled: true,
+                    width: 280
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal'
+                        //,dataLabels: {
+                        //    enabled: true
+                        //}
+                    }
+                },
+                series: params.series
+            }
+        };
+
+        var categories1 = data.map(function (v) { return v.PayDate; });
+        //var series1 = [
+        //    {
+        //        name: '计划利息', type: 'spline',
+        //        data: data.map(function (v) { return v.ScheduledInterestAmount; }), stack: '计划'
+        //    },
+        //    {
+        //        name: '实际利息', type: 'column',
+        //        data: data.map(function (v) { return v.ActualInterestAmount; }), stack: '实际'
+        //    },
+        //    {
+        //        name: '调整利息', type: 'column',
+        //        data: data.map(function (v) { return v.AdjustedInterestAmount; }), stack: '调整'
+        //    },
+        //    {
+        //        name: '计划本金', type: 'spline',
+        //        data: data.map(function (v) { return v.ScheduledPrincipalAmount; }), stack: '计划'
+        //    },
+        //    {
+        //        name: '实际本金', type: 'column',
+        //        data: data.map(function (v) { return v.ActualPrincipalAmount; }), stack: '实际'
+        //    },
+        //    {
+        //        name: '调整本金', type: 'column',
+        //        data: data.map(function (v) { return v.AdjustedPrincipalAmount; }), stack: '调整'
+        //    }
+        //];
+        var series1 = [];
+        var stype = $("#AssetPaymentStatistics_view").find("input[type='radio'][name=''Showtype][checked]").val();
+        if (stype == "1") {
+            series1 = [
+                    {
+                        name: '计划本金', type: 'spline',
+                        data: data.map(function (v) { return v.ScheduledPrincipalAmount; }), stack: '计划'
+                    },
+                    {
+                        name: '实际本金', type: 'column',
+                        data: data.map(function (v) { return v.ActualPrincipalAmount; }), stack: '实际'
+                    },
+                    {
+                        name: '调整本金', type: 'column',
+                        data: data.map(function (v) { return v.AdjustedPrincipalAmount; }), stack: '调整'
+                    }
+            ];
+        } else if (stype == '2') {
+            series1 = [
+                    {
+                        name: '计划利息', type: 'spline',
+                        data: data.map(function (v) { return v.ScheduledInterestAmount; }), stack: '计划'
+                    },
+                    {
+                        name: '实际利息', type: 'column',
+                        data: data.map(function (v) { return v.ActualInterestAmount; }), stack: '实际'
+                    },
+                    {
+                        name: '调整利息', type: 'column',
+                        data: data.map(function (v) { return v.AdjustedInterestAmount; }), stack: '调整'
+                    }
+            ];
+        }
+        else {
+            series1 = [
+                    {
+                        name: '计划', type: 'spline',
+                        data: data.map(function (v) { return v.ScheduledPrincipalAmount + v.ScheduledInterestAmount; }), stack: '计划'
+                    },
+                    {
+                        name: '实际', type: 'column',
+                        data: data.map(function (v) { return v.ActualPrincipalAmount + v.ActualInterestAmount; }), stack: '实际'
+                    },
+                    {
+                        name: '调整', type: 'column',
+                        data: data.map(function (v) { return v.AdjustedPrincipalAmount + v.AdjustedInterestAmount; }), stack: '调整'
+                    }
+            ];
+        }
+
+        var tmp1 = { titleText: "计划还款", yAxisTitle: "", categories: categories1, series: series1 };
+        $('#AssetPaymentStatistics_view_chart').highcharts(columnTemplate(tmp1));
+
+    }
+
+</script>

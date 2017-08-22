@@ -1,0 +1,115 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <title>page1</title>
+    <link href="../../Contents/bootstrap.css" rel="stylesheet" />
+    <style type="text/css">
+        .svg text {
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .svg .node rect {
+            stroke: none;
+            fill: #dcdcdc;
+        }
+        .svg .edgePath path.path {
+            stroke: #828282;
+            fill: none;
+            stroke-width: 1.5px;
+        }
+        .svg .edgePath marker {
+            fill: #6B6B6B;
+        }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">Configuration Loading...</p>
+    </div>
+    <div id="page_main_container" class="main-dialog"> 
+        <div id="divTreeView" style="width:830px"></div>
+    </div>
+
+    <script src="../../Scripts/jquery.min.js"></script>
+    <script src="../../Scripts/App.Global.js"></script>
+    <script src="../../Scripts/d3/d3.min.js"></script>
+    <script src="../../Scripts/d3/dagre-d3.min.js"></script>
+    <script>
+
+        function GetQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null)
+                return unescape(r[2]);
+            return null;
+        }
+
+        $(function () {
+            var TreeName = GetQueryString('TreeName');
+            var serviceUrl = GlobalVariable.QuickWizardServiceUrl + 'CommonGetWithConnName?connName=QuantDB_FixedIncome&exeParams=';
+
+            var executeParam = {
+                SPName: 'Pricing.usp_GetRouteNodes', SQLParams: [
+                    { Name: 'RouteSetName', Value: TreeName, DBType: 'string' }
+                ]
+            };
+            var svcUrl = serviceUrl + encodeURIComponent(JSON.stringify(executeParam));
+            var nodesData = CallWCFSvc(svcUrl, false, 'GET');
+
+            var executeParam = {
+                SPName: 'Pricing.usp_GetRouteLinks', SQLParams: [
+                    { Name: 'RouteSetName', Value: TreeName, DBType: 'string' }
+                ]
+            };
+            svcUrl = serviceUrl + encodeURIComponent(JSON.stringify(executeParam));
+            var connLineData = CallWCFSvc(svcUrl, false, 'GET');
+
+            $('#divTreeView').html('<svg class="svg" width="800" height="800"><g /></svg>')
+
+            var g = new dagreD3.graphlib.Graph().setGraph({
+                rankdir: 'LR'
+            });
+            nodesData.forEach(function (data) {
+                g.setNode(data.NodeName, { label: data.NoteText, width: 50, height: 60 }); // 绘制节点
+            });
+            connLineData.forEach(function (data) {
+                g.setEdge(data.PNode, data.CNode, { label: data.EdgeLabel });
+            });
+
+            // 设置节点圆角
+            g.nodes().forEach(function (v) {
+                var node = g.node(v);
+                node.rx = node.ry = 5;
+            });
+
+            var svg = d3.select("svg"),
+                inner = svg.select("g");
+
+            // 支持图像放大缩小
+            var zoom = d3.behavior.zoom().on("zoom", function () {
+                inner.attr("transform", "translate(" + d3.event.translate + ")" +
+                                            "scale(" + d3.event.scale + ")");
+            });
+            svg.call(zoom);
+
+            // 创建渲染
+            new dagreD3.render()(inner, g);
+
+            // 图形居中
+            var initialScale = 1;
+            zoom
+                .translate([(svg.attr("width") - g.graph().width * initialScale) / 2, 20])
+                .scale(initialScale)
+                .event(svg);
+            svg.attr('height', 500);
+
+            $('#loading').fadeOut();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,338 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <title>审批流程权限管理</title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link rel="stylesheet" href="../Contents/common.css" />
+    <link href="../Scripts/jquery-ui.css" rel="stylesheet" />
+    <link href="../Contents/page.css" rel="stylesheet" />
+    <!--<link href="../Scripts/Kendo/styles/kendo.common-material.min.css" rel="stylesheet" />
+    <link href="../Scripts/Kendo/styles/kendo.material.min.css" rel="stylesheet" />-->
+    <link href="../Contents/fontello/css/fontello.css" rel="stylesheet" />
+    <!--<link href="../Contents/tabNav.css" rel="stylesheet" />-->
+
+    <script src="../Config/globalVariable.js"></script>
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <script src="../Scripts/common.js"></script>
+    <script src="../Scripts/anyDialog.js"></script>
+    <!--<script src="../Scripts/Kendo/js/kendo.all.min.js"></script>
+    <script src="../Scripts/Kendo/js/kendo.culture.zh-CN.js"></script>
+    <script src="../Scripts/Kendo/js/kendo.messages.zh-CN.js"></script>-->
+    <!--<script src="../Scripts/loading.js"></script>-->
+    <script src="approvePermission.js"></script>
+    <script src="../Scripts/roleOperate.js"></script>
+    <style>
+        html,
+        body{
+            height: 100%;
+            width: 100%;
+            padding: 12px;
+        }
+        .list-item {
+            height: 40px;
+            line-height: 40px;
+            padding: 0 5px;
+            border-bottom: 1px solid #ddd;
+            cursor: default;
+            font-size: 12px;
+        }
+
+            .list-item:hover {
+                background-color: #E9EBF5;
+                color: #3B5999;
+            }
+
+            .list-item.active {
+                background-color: #BBDEFB;
+                color: #3F51B5;
+                border-bottom: 1px solid #bbb;
+            }
+
+        .btn-wraper {
+            overflow: hidden;
+        }
+
+        .tool-btn {
+            float: left;
+            width: 50%;
+            box-sizing: border-box;
+            padding: 4px 0;
+            text-align: center;
+            cursor: pointer;
+            background-color: #fafafa;
+            background-image: -webkit-linear-gradient(top, #fafafa, #f3f3f3);
+            background-image: -ms-linear-gradient(top, #fafafa, #f3f3f3);
+            border-bottom: 1px solid #ddd;
+        }
+
+        .rolelist {
+            float: left;
+            width: 100%;
+            box-sizing: border-box;
+            padding: 0 5px;
+            height: 40px;
+            line-height: 40px;
+            text-align: left;
+            cursor: pointer;
+            background-color: #fafafa;
+            background-image: -webkit-linear-gradient(top, #fafafa, #f3f3f3);
+            background-image: -ms-linear-gradient(top, #fafafa, #f3f3f3);
+            border-bottom: 1px solid #ddd;
+        }
+
+        .trustgrouptype {
+            float: left;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 15px;
+            line-height: 40px;
+            height: 39px;
+            text-align: center;
+            cursor: pointer;
+            background-color: rgba(152, 163, 226, 1);
+            background-image: -webkit-linear-gradient(top, #fafafa, #f3f3f3);
+            background-image: -ms-linear-gradient(top, #fafafa, #f3f3f3);
+        }
+        #btnAdd_govermentGroup {
+            color: #38941C;
+            cursor: pointer;
+        }
+
+            #btnAdd_govermentGroup:hover {
+                background-color: #F0F2FD;
+                background-image: -webkit-linear-gradient(top, #F0F2FD, #F0F2FD);
+                background-image: -ms-linear-gradient(top, #F0F2FD, #F0F2FD);
+            }
+
+        #btnRemove_govermentGroup {
+            border-left: 1px solid #ddd;
+            color: #e84646;
+            cursor: pointer;
+        }
+
+            #btnRemove_govermentGroup:hover {
+                background-color: #FBEBF0;
+                background-image: -webkit-linear-gradient(top, #FBEBF0, #FBEBF0);
+                background-image: -ms-linear-gradient(top, #FBEBF0, #FBEBF0);
+            }
+
+        #txtGovermentGroupName {
+            height: 36px;
+            border-color: transparent;
+            border-bottom-color: #ddd;
+            box-shadow: none;
+        }
+
+        #tabList {
+            position: absolute;
+            top: 12px;
+            bottom: 12px;
+            left: 12px;
+            right: 12px;
+        }
+
+        .sider_govermentGroup {
+            float: left;
+            height: 100%;
+            width: 18%;
+            overflow: auto;
+            border: 1px solid #ddd;
+            border-right: none;
+        }
+
+        .govermentGroupList-wraper {
+            overflow: auto;
+        }
+
+        #govermentGroupList {
+            list-style: none;
+        }
+
+        .main {
+            float: right;
+            width: 80%;
+        }
+
+        .grid-wraper {
+            float: right;
+            height: 100%;
+            width: 82%;
+            overflow: auto;
+            border: 1px solid #ddd;
+        }
+
+        .warning-text {
+            letter-spacing: .2em;
+        }
+
+        /*tabNav*/
+        header {
+            margin-top: 10px;
+        }
+
+        .nav {
+            padding-left: 0;
+            margin-bottom: 0;
+            list-style: none;
+        }
+
+            .nav:after {
+                display: table;
+                content: " ";
+                clear: both;
+            }
+
+        .nav-tabs > li {
+            float: left;
+            margin-bottom: -1px;
+        }
+
+        .nav > li {
+            position: relative;
+            display: block;
+        }
+
+            .nav > li:hover a {
+                color: #008bf5;
+            }
+
+        .nav-tabs > li.active > a {
+            color: #008bf5;
+            cursor: default;
+            background-color: #fff;
+            border: 1px solid #87d7ff;
+            border-bottom-color: transparent;
+        }
+
+        .nav > li > a {
+            position: relative;
+            display: block;
+            padding: 8px 20px;
+            text-decoration: none;
+            cursor: default;
+            outline: none;
+        }
+
+        .nav-tabs > li > a {
+            margin-right: 2px;
+            line-height: 1.42857143;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+        }
+
+        #btnAdd > a {
+            cursor: pointer;
+        }
+
+        #btnAdd:hover .icon-plus {
+            background-color: #f4f4f4;
+        }
+
+        #btnAdd .icon-plus {
+            display: inline-block;
+            width: 28px;
+            height: 17px;
+            color: #73af8e;
+            line-height: 15px;
+            background: #fff;
+            border: 1px solid #bbb;
+            border-radius: 0 5px 0;
+            padding-left: 4px;
+            transform: skewX(10deg);
+        }
+
+        .cancel {
+            display: inline-block;
+            width: 13px;
+            height: 13px;
+            padding: 1px;
+            margin-left: 2px;
+            margin-top: -2px;
+            color: #1562b7;
+            line-height: 10px;
+            text-align: center;
+            font-size: 14px;
+            border: 1px solid transparent;
+            border-radius: 50%;
+            vertical-align: middle;
+            cursor: default;
+        }
+
+            .cancel:hover {
+                background-color: #fb1818;
+                color: #fff;
+            }
+
+        #dialogIframe {
+            border: 1px solid #ddd;
+            width: 100%;
+            background-color: #ffffff;
+        }
+        #product{
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+        }
+        #project .table,
+        #product .table{
+            margin: 0;
+        }
+
+        #project .table td,
+        #product .table td{
+            text-align:left;
+            padding: 0 0 0 17px;
+            height: 40px;
+        }
+
+        #project .table input,
+        #product .table input{
+            margin-right: 4px;
+            vertical-align: middle;
+        }
+        #project .table span,
+        #product .table span{
+            cursor: pointer;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+<body>
+    <!--<header>
+        <ul class="nav nav-tabs" role="tablist">
+            <li class="home_li active">
+                <a herf="javascript:;">角色列表</a>
+            </li>
+        </ul>
+    </header>-->
+        <div id="tabList">
+            <div class="sider_govermentGroup">
+                <div class="btn-wraper">
+                    <div class="rolelist">
+                        <i class=""></i>
+                        <span>角色列表</span>
+                    </div>
+                </div>
+                <div class="govermentGroupList-wraper">
+                    <ul size="4" id="govermentGroupList" class="select1"></ul>
+                </div>
+            </div>
+            <div class="grid-wraper">
+                    <div class="panel panel-default" id="allpermission">
+                        <!-- Default panel contents -->
+                        <div id="project" class="group"></div>
+                        <div id="product" class="group"></div>
+                        <div id="AssignmentCommand" class="group"></div>
+                        <div class="form-save pr5 mt15">
+                            <button id="save" type="button" class="btn btn-primary pull-right" onclick="savePermissionByRoleId()">
+                                保存信息
+                            </button>
+                        </div>
+                    </div>
+                </div>
+        </div>
+</body>
+</html>

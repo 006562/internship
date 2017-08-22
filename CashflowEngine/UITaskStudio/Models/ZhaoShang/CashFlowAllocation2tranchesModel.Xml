@@ -1,0 +1,826 @@
+<Tool Name="CashFlowAllocation2tranchesModel">
+  <Actions>
+    <Action ActionCode="OpeningBalance_A" ActionDisplayName="#{LevelA}#开始本金" FunctionName="RunManagedMethodByPath" SequenceNo="29">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_OpeningInvestedAmount_A" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="OpeningBalance_A" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="NumberOfNotes_A" ActionDisplayName="#{LevelA}#份数" FunctionName="RunManagedMethodByPath" SequenceNo="30">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_NumberOfNotes_A" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="NumberOfNotes_A" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="StatedAmountPerNotePriorPayment_A" ActionDisplayName="#{LevelA}#支付前每份金额" FunctionName="RunManagedMethodByPath" SequenceNo="31">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_StatedAmountPerNotePriorPayment_A" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="StatedAmountPerNotePriorPayment_A" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="Interest_Due_A" ActionDisplayName="#{LevelA}#应付利息" FunctionName="RunManagedMethodByPath" SequenceNo="32">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_CurrentPeriodInterest_A" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="Interest_Due_A" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="Principal_Due_A" ActionDisplayName="#{LevelA}#应付本金" FunctionName="RunManagedMethodByPath" SequenceNo="33">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_AllocationAmount_A" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="Principal_Due_A" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="Principal_Scheduled_A" ActionDisplayName="#{LevelA}#计划应付本金" FunctionName="RunManagedMethodByPath" SequenceNo="34">
+      <Parameter Name="IsDirectInput" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="Principal_Scheduled_A" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="Interest_Paid_A" ActionDisplayName="#{LevelA}#利息分配" FunctionName="RunManagedMethodByPath" SequenceNo="35">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.GenericBondWaterfallPlus" DataType="String" Usage="Task" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="CreateCashFlow" DataType="String" Usage="Task" />
+      <Parameter Usage="" DataType="Int16" Value="0" SessionParameterName="CurrentPosition" Name="CurrentPosition" />
+      <Parameter Usage="" DataType="String" Value="Interest_Paid_A" SessionParameterName="" Name="CashFlowName" />
+    </Action>
+    <Action ActionCode="Principal_Paid_A" ActionDisplayName="#{LevelA}#本金分配" FunctionName="RunManagedMethodByPath" SequenceNo="36">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.GenericBondWaterfallPlus" DataType="String" Usage="Task" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="CreateCashFlow" DataType="String" Usage="Task" />
+      <Parameter Usage="" DataType="Int16" Value="0" SessionParameterName="CurrentPosition" Name="CurrentPosition" />
+      <Parameter Usage="" DataType="String" Value="Principal_Paid_A" SessionParameterName="" Name="CashFlowName" />
+    </Action>
+    <Action ActionCode="OpeningBalance_EquityClass" ActionDisplayName="#{EquityClass}#开始本金" FunctionName="RunManagedMethodByPath" SequenceNo="61">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_OpeningInvestedAmount_EquityClass" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="OpeningBalance_EquityClass" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="NumberOfNotes_EquityClass" ActionDisplayName="#{EquityClass}#份数" FunctionName="RunManagedMethodByPath" SequenceNo="62">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_NumberOfNotes_EquityClass" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="NumberOfNotes_EquityClass" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="StatedAmountPerNotePriorPayment_EquityClass" ActionDisplayName="#{EquityClass}#支付前每份金额" FunctionName="RunManagedMethodByPath" SequenceNo="63">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_StatedAmountPerNotePriorPayment_EquityClass" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="StatedAmountPerNotePriorPayment_EquityClass" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="Principal_Due_EquityClass" ActionDisplayName="#{EquityClass}#应付本金" FunctionName="RunManagedMethodByPath" SequenceNo="64">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_AllocationAmount_EquityClass" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="Principal_Due_EquityClass" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="Interest_Due_EquityClass" ActionDisplayName="#{EquityClass}#应付利息" FunctionName="RunManagedMethodByPath" SequenceNo="65">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_CurrentPeriodInterest_EquityClass" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="Interest_Due_EquityClass" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="Principal_Paid_EquityClass" ActionDisplayName="#{EquityClass}#本金分配" FunctionName="RunManagedMethodByPath" SequenceNo="66">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.GenericBondWaterfallPlus" DataType="String" Usage="Task" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="CreateCashFlow" DataType="String" Usage="Task" />
+      <Parameter Usage="" DataType="Int16" Value="0" SessionParameterName="CurrentPosition" Name="CurrentPosition" />
+      <Parameter Usage="" DataType="String" Value="Principal_Paid_EquityClass" SessionParameterName="" Name="CashFlowName" />
+    </Action>
+    <Action ActionCode="Interest_Paid_EquityClass" ActionDisplayName="#{EquityClass}#利息分配" FunctionName="RunManagedMethodByPath" SequenceNo="67">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.GenericBondWaterfallPlus" DataType="String" Usage="Task" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="CreateCashFlow" DataType="String" Usage="Task" />
+      <Parameter Usage="" DataType="Int16" Value="0" SessionParameterName="CurrentPosition" Name="CurrentPosition" />
+      <Parameter Usage="" DataType="String" Value="Interest_Paid_EquityClass" SessionParameterName="" Name="CashFlowName" />
+    </Action>
+    <Action ActionCode="BondPayment" ActionDisplayName="计算债券偿付金额" FunctionName="RunManagedMethodByPath" SequenceNo="68">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="false" DataType="String" Usage="CashFlow" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.GenericBondWaterfallPlus" DataType="String" Usage="Task" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="RunWaterfall_UnifiedIncomePlus" DataType="String" Usage="Task" />
+      <Parameter Usage="" DataType="Int16" Value="0" SessionParameterName="CurrentPosition" Name="CurrentPosition" />
+    </Action>
+    <Action ActionCode="ClosingBalance_A" ActionDisplayName="#{LevelA}#结束本金" FunctionName="RunManagedMethodByPath" SequenceNo="69">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_ClosingInvestedAmount_A" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="ClosingBalance_A" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="CouponPaymentPerNote_A" ActionDisplayName="#{LevelA}#每份收益分配" FunctionName="RunManagedMethodByPath" SequenceNo="70">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_CouponPaymentPerNote_A" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="CouponPaymentPerNote_A" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="PrincipalPaymentPerNote_A" ActionDisplayName="#{LevelA}#每份本金分配" FunctionName="RunManagedMethodByPath" SequenceNo="71">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_PrincipalPaymentPerNote_A" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="PrincipalPaymentPerNote_A" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="TotalPaymentPerNote_A" ActionDisplayName="#{LevelA}#每份总分配" FunctionName="RunManagedMethodByPath" SequenceNo="72">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TotalPaymentPerNote_A" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TotalPaymentPerNote_A" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="TotalBondPayment_A" ActionDisplayName="#{LevelA}#总分配" FunctionName="RunManagedMethodByPath" SequenceNo="73">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TotalBondPayment_A" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TotalBondPayment_A" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="StatedAmountPerNoteAfterPayment_A" ActionDisplayName="#{LevelA}#支付后每份金额" FunctionName="RunManagedMethodByPath" SequenceNo="74">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_StatedAmountPerNoteAfterPayment_A" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="StatedAmountPerNoteAfterPayment_A" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="ClosingBalance_EquityClass" ActionDisplayName="#{EquityClass}#结束本金" FunctionName="RunManagedMethodByPath" SequenceNo="93">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_ClosingInvestedAmount_EquityClass" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="ClosingBalance_EquityClass" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="CouponPaymentPerNote_EquityClass" ActionDisplayName="#{EquityClass}#每份收益分配" FunctionName="RunManagedMethodByPath" SequenceNo="94">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_CouponPaymentPerNote_EquityClass" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="CouponPaymentPerNote_EquityClass" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="PrincipalPaymentPerNote_EquityClass" ActionDisplayName="#{EquityClass}#每份本金分配" FunctionName="RunManagedMethodByPath" SequenceNo="95">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_PrincipalPaymentPerNote_EquityClass" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="PrincipalPaymentPerNote_EquityClass" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="TotalPaymentPerNote_EquityClass" ActionDisplayName="#{EquityClass}#每份总分配" FunctionName="RunManagedMethodByPath" SequenceNo="96">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TotalPaymentPerNote_EquityClass" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TotalPaymentPerNote_EquityClass" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="TotalBondPayment_EquityClass" ActionDisplayName="#{EquityClass}#总分配" FunctionName="RunManagedMethodByPath" SequenceNo="97">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TotalBondPayment_EquityClass" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TotalBondPayment_EquityClass" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="StatedAmountPerNoteAfterPayment_EquityClass" ActionDisplayName="#{EquityClass}#支付后每份金额" FunctionName="RunManagedMethodByPath" SequenceNo="98">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_StatedAmountPerNoteAfterPayment_EquityClass" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="StatedAmountPerNoteAfterPayment_EquityClass" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="TrustPlanAccount_ClosingBalance" ActionDisplayName="专项计划账户结束余额" FunctionName="RunManagedMethodByPath" SequenceNo="99">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TrustPlanAccount_ClosingBalance" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TrustPlanAccount_ClosingBalance" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="TrustPlanAccount_Principal_ClosingBalance" ActionDisplayName="专项计划本金账户结束余额" FunctionName="RunManagedMethodByPath" SequenceNo="100">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TrustPlanAccount_Principal_ClosingBalance" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TrustPlanAccount_Principal_ClosingBalance" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="TrustPlanAccount_Interest_ClosingBalance" ActionDisplayName="专项计划收入账户结束余额" FunctionName="RunManagedMethodByPath" SequenceNo="101">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TrustPlanAccount_Interest_ClosingBalance" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TrustPlanAccount_Interest_ClosingBalance" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="TrustPlan_SeniorNotes_AllocationAmt" ActionDisplayName="优先级分配资金" FunctionName="RunManagedMethodByPath" SequenceNo="102">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TrustPlan_SeniorNotes_AllocationAmt" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TrustPlan_SeniorNotes_AllocationAmt" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="TrustPlan_EquityNote_AllocationAmt" ActionDisplayName="次级分配期收益" FunctionName="RunManagedMethodByPath" SequenceNo="103">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TrustPlan_EquityNote_AllocationAmt" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TrustPlan_EquityNote_AllocationAmt" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+    <Action ActionCode="TrustPlan_Total_AllocationAmt" ActionDisplayName="总分配资金" FunctionName="RunManagedMethodByPath" SequenceNo="104">
+      <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      <Parameter Name="AssemblyPath" SessionParameterName="" Value="" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="MethodName" SessionParameterName="" Value="EC_TrustPlan_Total_AllocationAmt" DataType="String" Usage="Task" IsConfigurable="false" />
+      <Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      <Parameter Name="CashFlowName" SessionParameterName="" Value="TrustPlan_Total_AllocationAmt" DataType="String" Usage="" IsConfigurable="false" />
+    </Action>
+  </Actions>
+  <Methods>
+    <main>
+      <Parameters>
+        <Parameter Name="InitialInvestedAmount" SessionParameterName="InitialInvestedAmount_A" Value="" DataType="double" Usage="CashFlow" />
+        <Parameter Name="PreClosingInvestedAmount" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="ClosingBalance_A">
+            <Position>Math.Max(CurrentPosition-1,0)</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_OpeningInvestedAmount_A">
+        if (CurrentPosition == 0 )
+        {
+        return InitialInvestedAmount;
+        }
+        else
+        {
+        return PreClosingInvestedAmount;
+        };
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="InitialInvestedAmount" SessionParameterName="InitialInvestedAmount_EquityClass" Value="" DataType="double" Usage="CashFlow" />
+        <Parameter Name="PreClosingInvestedAmount" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="ClosingBalance_EquityClass">
+            <Position>Math.Max(CurrentPosition-1,0)</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_OpeningInvestedAmount_EquityClass">
+        if (CurrentPosition == 0 )
+        {
+        return InitialInvestedAmount;
+        }
+        else
+        {
+        return PreClosingInvestedAmount;
+        };
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="OpeningBalance" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="OpeningBalance_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="Principal_Scheduled_A" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Principal_Scheduled_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_AllocationAmount_A">
+        if (Principal_Scheduled_A == 0) return OpeningBalance;
+        else return Math.Min(Principal_Scheduled_A, OpeningBalance);
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="Income_TotalAvailable" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="TrustPlanAccount_Total_AvailableAmt">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="OpeningBalance_A" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="OpeningBalance_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="OpeningBalance_EquityClass" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="OpeningBalance_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_AllocationAmount_EquityClass">
+        if (OpeningBalance_A == 0 )
+        {
+        return Income_TotalAvailable;
+        }
+        else return Math.Min(OpeningBalance_EquityClass, Income_TotalAvailable);
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="BaseNoteMargin" SessionParameterName="BaseNoteMargin_A" Value="" DataType="double" Usage="CashFlow" />
+        <Parameter Name="UnitOfMeasure" SessionParameterName="" Value="1" DataType="double" Usage="CashFlow" />
+        <Parameter Name="NumberOfNotes" SessionParameterName="NumberOfNotes_A" Value="10" DataType="double" Usage="CashFlow" />
+        <Parameter Name="Precision" SessionParameterName="" Value="7" DataType="double" Usage="CashFlow" />
+        <Parameter Name="OpeningInvestedAmount" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="OpeningBalance_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="InterestDays" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="InterestDays">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_CurrentPeriodInterest_A">
+        return Math.Round(((OpeningInvestedAmount / NumberOfNotes) * UnitOfMeasure * BaseNoteMargin * InterestDays / 365.0), (int)Precision) * (NumberOfNotes / UnitOfMeasure);
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="BaseNoteMargin" SessionParameterName="BaseNoteMargin_EquityClass" Value="" DataType="double" Usage="CashFlow" />
+        <Parameter Name="UnitOfMeasure" SessionParameterName="" Value="1" DataType="double" Usage="CashFlow" />
+        <Parameter Name="NumberOfNotes" SessionParameterName="NumberOfNotes_EquityClass" Value="10" DataType="double" Usage="CashFlow" />
+        <Parameter Name="Precision" SessionParameterName="" Value="7" DataType="double" Usage="CashFlow" />
+        <Parameter Name="OpeningInvestedAmount" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="OpeningBalance_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="InterestDays" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="InterestDays">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_CurrentPeriodInterest_EquityClass">
+        return Math.Round(((OpeningInvestedAmount / NumberOfNotes) * UnitOfMeasure * BaseNoteMargin * InterestDays / 365.0), (int)Precision) * (NumberOfNotes / UnitOfMeasure);
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="OpeningInvestedAmount" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="OpeningBalance_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="AllocationAmount" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Principal_Paid_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_ClosingInvestedAmount_A">
+        return Math.Max(OpeningInvestedAmount - AllocationAmount,0);
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="OpeningInvestedAmount" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="OpeningBalance_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="AllocationAmount" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Principal_Paid_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_ClosingInvestedAmount_EquityClass">
+        return Math.Max(OpeningInvestedAmount - AllocationAmount,0);
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="Principal_Paid_A" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Principal_Paid_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="Interest_Paid_A" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Interest_Paid_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TrustPlan_SeniorNotes_AllocationAmt">
+        return Principal_Paid_A + Interest_Paid_A;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="Principal_Paid_EquityClass" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Principal_Paid_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="Interest_Paid_EquityClass" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Interest_Paid_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TrustPlan_EquityNote_AllocationAmt">
+        return Principal_Paid_EquityClass + Interest_Paid_EquityClass;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="TrustPlan_SeniorNotes_AllocationAmt" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="TrustPlan_SeniorNotes_AllocationAmt">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="TrustPlan_EquityNote_AllocationAmt" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="TrustPlan_EquityNote_AllocationAmt">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TrustPlan_Total_AllocationAmt">
+        return TrustPlan_SeniorNotes_AllocationAmt + TrustPlan_EquityNote_AllocationAmt;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="NumberOfNotes" SessionParameterName="NumberOfNotes_A" Value="" DataType="double" Usage="CashFlow" />
+        <Parameter Name="ClosingBalance" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="ClosingBalance_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_StatedAmountPerNoteAfterPayment_A">
+        return ClosingBalance / NumberOfNotes;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="NumberOfNotes" SessionParameterName="NumberOfNotes_EquityClass" Value="" DataType="double" Usage="CashFlow" />
+        <Parameter Name="ClosingBalance" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="ClosingBalance_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_StatedAmountPerNoteAfterPayment_EquityClass">
+        return ClosingBalance / NumberOfNotes;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="NumberOfNotes" SessionParameterName="NumberOfNotes_A" Value="" DataType="double" Usage="CashFlow" />
+        <Parameter Name="OpeningBalance" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="OpeningBalance_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_StatedAmountPerNotePriorPayment_A">
+        return OpeningBalance / NumberOfNotes;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="NumberOfNotes" SessionParameterName="NumberOfNotes_EquityClass" Value="" DataType="double" Usage="CashFlow" />
+        <Parameter Name="OpeningBalance" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="OpeningBalance_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_StatedAmountPerNotePriorPayment_EquityClass">
+        return OpeningBalance / NumberOfNotes;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="NumberOfNotes" SessionParameterName="NumberOfNotes_A" Value="" DataType="double" Usage="CashFlow" />
+        <Parameter Name="Paid" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Interest_Paid_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_CouponPaymentPerNote_A">
+        return Paid / NumberOfNotes;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="NumberOfNotes" SessionParameterName="NumberOfNotes_A" Value="" DataType="double" Usage="CashFlow" />
+        <Parameter Name="Paid" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Principal_Paid_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_PrincipalPaymentPerNote_A">
+        return Paid / NumberOfNotes;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="Principal" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="PrincipalPaymentPerNote_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="Coupon" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="CouponPaymentPerNote_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TotalPaymentPerNote_A">
+        return Principal + Coupon;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="Principal" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Principal_Paid_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="Coupon" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Interest_Paid_A">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TotalBondPayment_A">
+        return Principal + Coupon;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="NumberOfNotes" SessionParameterName="NumberOfNotes_EquityClass" Value="" DataType="double" Usage="CashFlow" />
+        <Parameter Name="Paid" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Interest_Paid_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_CouponPaymentPerNote_EquityClass">
+        return Paid / NumberOfNotes;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="NumberOfNotes" SessionParameterName="NumberOfNotes_EquityClass" Value="" DataType="double" Usage="CashFlow" />
+        <Parameter Name="Paid" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Principal_Paid_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_PrincipalPaymentPerNote_EquityClass">
+        return Paid / NumberOfNotes;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="Principal" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="PrincipalPaymentPerNote_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="Coupon" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="CouponPaymentPerNote_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TotalPaymentPerNote_EquityClass">
+        return Principal + Coupon;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="Principal" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Principal_Paid_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="Coupon" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="Interest_Paid_EquityClass">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TotalBondPayment_EquityClass">
+        return Principal + Coupon;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="NumberOfNotes" SessionParameterName="NumberOfNotes_A" Value="" DataType="double" Usage="CashFlow" />
+      </Parameters>
+      <Query name="EC_NumberOfNotes_A">
+        return NumberOfNotes;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="NumberOfNotes" SessionParameterName="NumberOfNotes_EquityClass" Value="" DataType="double" Usage="CashFlow" />
+      </Parameters>
+      <Query name="EC_NumberOfNotes_EquityClass">
+        return NumberOfNotes;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="TrustPlanAccount_Total_AvailableAmt" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="TrustPlanAccount_Total_AvailableAmt">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TrustPlanAccount_ClosingBalance">
+        return TrustPlanAccount_Total_AvailableAmt;
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="TrustPlanAccount_Total_AvailableAmt" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="TrustPlanAccount_Total_AvailableAmt">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="TrustPlanAccount_Principal_AvailableAmt" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="TrustPlanAccount_Principal_AvailableAmt">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TrustPlanAccount_Principal_ClosingBalance">
+        return Math.Min(TrustPlanAccount_Total_AvailableAmt,TrustPlanAccount_Principal_AvailableAmt);
+      </Query>
+      <Presentation />
+    </main>
+    <main>
+      <Parameters>
+        <Parameter Name="TrustPlanAccount_Total_AvailableAmt" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="TrustPlanAccount_Total_AvailableAmt">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+        <Parameter Name="TrustPlanAccount_Principal_AvailableAmt" SessionParameterName="" Value="" DataType="double" Usage="CashFlow">
+          <Field Name="TrustPlanAccount_Principal_AvailableAmt">
+            <Position>CurrentPosition</Position>
+          </Field>
+        </Parameter>
+      </Parameters>
+      <Query name="EC_TrustPlanAccount_Interest_ClosingBalance">
+        if (TrustPlanAccount_Total_AvailableAmt &lt;= TrustPlanAccount_Principal_AvailableAmt)
+        {
+        return 0;
+        }
+        else
+        {
+        return TrustPlanAccount_Total_AvailableAmt - TrustPlanAccount_Principal_AvailableAmt;
+        }
+      </Query>
+      <Presentation />
+    </main>
+  </Methods>
+</Tool>

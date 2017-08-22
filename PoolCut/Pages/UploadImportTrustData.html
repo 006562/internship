@@ -1,0 +1,97 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>导入打标资产</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+
+    <link href="../Contents/style.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="main">
+        <h3 id="step-title" class="h3"><span class="title">导入打标资产</span></h3>
+        <div class="form" id="AssetPoolCreationForm">
+            <div class="form-body default">
+                <div class="form-panel drop">
+                    <div class="col-12 form-group">
+                        <div class="col-3"><label>上传文件：</label></div>
+                        <div class="col-9">
+                            <input type="file" id="fileUploadFileTrust" class="form-control file" data-valid="required" />
+                        </div>
+                    </div>
+                    <div class="col-12 form-group">
+                        <div class="col-3"><label>专项计划：</label></div>
+                        <div class="col-9">
+                            <select class="form-control" id="TrustCode"></select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3 buttons pull-right">
+                    <button type="button" class="btn btn-primary" title="上传" onclick="SubmitForm()">上传</button>
+                    <button type="button" class="btn btn-default" title="取消" onclick="Cancel()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/common.js"></script>
+    <!--
+    <script src="../Scripts/calendar.min.js"></script>
+    -->
+    <script src="../UIFrame/js/gs-admin-2.pages.js"></script>
+    <script src="../Scripts/App.Global.js"></script>
+    <script src="../Scripts/PoolCutCommon.js"></script>
+    <script>
+        $(function () {
+            $('#AssetPoolCreationForm .form-control').change(function () {
+                CommonValidation.ValidControlValue($(this));
+            });
+            //AssetType
+            var executeParam = { SPName: 'TrustManagement.usp_GetTrusts', SQLParams: [] };
+            executeParam.SQLParams.push({ Name: 'language', Value: 'zh-CN', DBType: 'string' });
+            var executeParams = encodeURIComponent(JSON.stringify(executeParam));
+            var serviceUrl = GlobalVariable.PoolCutServiceURL + 'CommonGet?connName=PoolCut_Database&exeParams=' + executeParams;
+            CallWCFSvc(serviceUrl, true, 'GET', function (data) {
+                var $sel = $('#TrustCode')
+                var options = '';
+                $.each(data, function (i, v) {
+                    options += '<option value="{0}">{1}</options>'.format(v.TrustId, v.TrustName);
+                });
+                $sel.append(options);
+            });           
+        });
+        function SubmitForm() {
+            var isFormFieldsAllValid = true;
+            $('#AssetPoolCreationForm .form-control').each(function () {
+                if (!CommonValidation.ValidControlValue($(this))) isFormFieldsAllValid = false;
+            });
+
+            if (!isFormFieldsAllValid)
+                return false;
+
+            var filePath = $('#fileUploadFileTrust').val();
+            var fileName = filePath.substring(filePath.lastIndexOf('\\') + 1);
+            //var fileType = fileName.substring(fileName.lastIndexOf('.') + 1);
+
+            UploadFile('fileUploadFileTrust', fileName, 'TopUpFile', function (d) {
+                //alert(d.FileUploadResult);
+                RunTask(d.FileUploadResult);
+                console.log(d);
+                //GSDialog.Close();
+            });
+        }
+        function Cancel() {
+            GSDialog.Close(0);
+        }
+        function RunTask(sourceFilePath) {
+            var TrustId = $('#TrustCode').val();
+            var tpi = new parent.TaskProcessIndicatorHelper();
+            tpi.AddVariableItem('TrustId', TrustId, 'String');
+            tpi.AddVariableItem('SourceFilePath', sourceFilePath, 'String');
+            tpi.ShowIndicator('ConsumerLoan', 'ConsumerLoanDataLoad_TopUp');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,89 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <title>Cash</title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link href="../Contents/common.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../Scripts/calendar.min.js"></script>
+    <script src="../Scripts/format.number.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <script src="../Scripts/magic/magic.core.js"></script>
+    <link href="../Scripts/magic/magic.dialog.css" rel="stylesheet" />
+    <script src="../Scripts/magic/magic.dialog.js"></script>
+</head>
+<body>
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">加载配置中...</p>
+    </div>
+    <div class="main">
+       
+        <h3 class="h3">
+            <span class="title" data-bind="text:Language.ProductInfo"></span>
+        </h3>
+        <div id="TrustWaterFall" class="form-panel">
+            <div class="form-item">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th width="40" rowspan=2>
+                                <button onclick="addItem()" type="button" class="btn btn-plus" style="padding:0">
+                                    <i class="icon icon-add" style="margin-right:0"></i>
+                                </button>
+                            </th>
+                            
+                            
+                            <th width="120" rowspan=2 data-bind="text:Language.CollecDate"></th>
+                            <th width="240" colspan=2 data-bind="text:Language.CollectionPeriod"></th>
+                            
+                            <th rowspan=2 data-bind="text:Language.Principal"></th>
+                            <th rowspan=2 data-bind="text:Language.Interest"></th>
+                            <th rowspan=2 data-bind="text:Language.Total"></th>
+                        </tr>
+                        <tr><th width="120" rowspan=1 data-bind="text:Language.DateCommenced"></th>
+                            <th width="120" rowspan=1 data-bind="text:Language.EndDate"></th>
+                        </tr>
+                    </thead>
+                    <tbody data-bind="foreach:DataItems">
+                        <tr>
+                            <td>
+                                <button type="button" data-bind="attr:{index:$index}" class="btn btn-remove" onclick="removeRow(this)" style="padding:0"><i class="icon icon-remove" style="margin-right:0"></i></button>
+                            </td>
+                            
+                            <td>
+                                <input type="text" class="form-control text-center date-plugins" data-valid="Required" data-bind="value:ReceiptDate" />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control text-center date-plugins" data-valid="Required" data-bind="value:StartDate" />
+                            </td>
+                            <td>
+                                <input type="text" class="form-control text-center date-plugins" data-valid="Required" data-bind="value:EndDate" />
+                            </td>
+                            <td>
+                                <span data-bind="renderControl2:Principal, DataType: 'Decimal',ItemCode:'Principal',SetName:$parent.SetName()"></span>
+                            </td>
+                            <td class="form-group">
+                                <span data-bind="renderControl2:Interest, DataType: 'Decimal',ItemCode:'Interest',SetName:$parent.SetName()"></span>
+                            </td>
+                            <td class="form-group">
+                                <span data-bind="renderControl2:Amount, DataType: 'Decimal',ItemCode:'Amount',SetName:$parent.SetName()"></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="form-save">
+            <input type="button" class="btn btn-primary" onclick="saveItems()" data-bind="value:Language.BtnSave" />
+        </div>
+    </div>
+    <script src="viewCash.js"></script>
+</body>
+</html>

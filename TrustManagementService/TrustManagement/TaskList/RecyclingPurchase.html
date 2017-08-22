@@ -1,0 +1,234 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>循环购买</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+
+    <link href="taskList-style.css" rel="stylesheet" />
+    <link href="../Common/Scripts/jquery-ui.css" rel="stylesheet" type="text/css" />
+
+    <script src="../Common/Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../../Config/GlobalVariable.js"></script>
+    <script src="../Common/Scripts/anyDialog.js"></script>
+    <script src="../Common/Scripts/common.js"></script>
+    <script src="../Common/Scripts/calendar.min.js"></script>
+    <script src="../Common/Scripts/jquery-ui-latest.js" type="text/javascript"></script>
+    <script src="../wcfProxy.js"></script>
+    <script type="text/javascript">
+        var r_trustId = null;
+        var r_taskCode = null;
+        $(function () {
+            debugger;
+            r_trustId = getQueryString('trustId');
+            r_taskCode = getQueryString('taskCode');
+            if (!r_trustId || isNaN(r_trustId) || r_trustId == 0 || !r_taskCode) {
+                return;
+            }
+
+            loadTrustPeriodTaskList();
+            $('.date-plugins').date_input();
+            $('#btnGenerateNext').click(function () {
+                $('#tfootNewSession').show();
+            });
+        });
+
+        function loadTrustPeriodTaskList() {
+            var svcUrl = GlobalVariable.DataProcessServiceUrl+'CommonGetExecute?';
+            var sessionNamePrefix = '{0}|_{1}|_'.format(r_trustId, r_taskCode);
+            var objArgs = {
+                SPName: 'usp_GetSessionsBySessionNamePrefix',
+                SQLParams: [{ Name: 'namePrefix', Value: sessionNamePrefix, DBType: 'string' },
+                            { Name: 'escapeSymbol', Value: '|', DBType: 'string' }]
+            };
+            var executeParams = encodeURIComponent(JSON.stringify(objArgs));
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: svcUrl + 'connConfig=TaskProcess&appDomain=Task&executeParams=' + executeParams + '&resultType=Common',
+                dataType: "json",
+                contentType: "application/xml;charset=utf-8",
+                data: {},
+                success: function (response) {
+                    var sourceData;
+                    if (typeof response === 'string') { sourceData = JSON.parse(response); }
+                    else { sourceData = response; }
+
+                    renderListItem(sourceData);
+                },
+                error: function (response) { alert('Error occursed when fetch the remote source data!'); }
+            });
+        }
+        function renderListItem(source) {
+            var gridRowTemplate = "<tr><td class='center'>{0}</td><td class='center'>{1}</td><td></td>&nbsp;<td class='center'>{2}</td><td class='center'>{3}</td></tr>";
+            var operatorTemplate = '<a href="javascript:openSessionTask(\'{0}\')">详细</a>&nbsp;&nbsp;<a href="javascript:deleteSessionTask(\'{1}\')">删除</a>';
+            var html = '';
+            $.each(source, function (i, v) {
+                var startTime = getStringDate(v.StartTime).dateFormat('yyyy-MM-dd hh:mm:ss');
+                var reportingDate = v.SessionName.substring(v.SessionName.lastIndexOf('_') + 1);
+                var sessionId = v.SessionId;
+                html += gridRowTemplate.format(i + 1, reportingDate, startTime, operatorTemplate.format(reportingDate, sessionId));
+            });
+
+            $('#dataList').empty().append(html);
+            $("#divLoading").fadeOut();
+        }
+        function openSessionTask(rDate) {
+            var dimRDateId = rDate.replace(new RegExp('-', 'gm'), '');
+            var pageUrl = 'TaskList.html?appDomain=Task&TrustId={0};1&TaskCode={1};1&ReportingDate={2};1&DimReportingDateID={3}';
+            pageUrl = pageUrl.format(r_trustId, r_taskCode, rDate, dimRDateId);
+            showDialogPage(pageUrl, '任务列表', 960, 580);
+        }
+        function deleteSessionTask(sId) {
+            if (!confirm('确定删除？')) { return; }
+            var svcUrl = GlobalVariable.DataProcessServiceUrl+'CommonGetExecute?';
+            var objArgs = {
+                SPName: 'usp_DeleteSession',
+                SQLParams: [{ Name: 'SessionId', Value: sId, DBType: 'string' }]
+            };
+            var executeParams = encodeURIComponent(JSON.stringify(objArgs));
+            $.ajax({
+                cache: false,
+                type: "GET",
+                url: svcUrl + 'connConfig=TaskProcess&appDomain=Task&executeParams=' + executeParams + '&resultType=Common',
+                dataType: "json",
+                contentType: "application/xml;charset=utf-8",
+                data: {},
+                success: function (response) {
+                    window.location.reload();
+                },
+                error: function (response) { alert('Error occursed when delete task session!'); }
+            });
+        }
+        function createNewSession() {
+            var $dtObj = $('#dtNextPeriod');
+            var rDate = $dtObj.val();
+            var dtReg = /^(\d{4})-(\d{2})-(\d{2})$/;
+            if (!rDate || !dtReg.test(rDate)) {
+                $dtObj.addClass('redborder');
+                return;
+            }
+            $("#divLoading").show();
+
+            var dimRDateId = rDate.replace(new RegExp('-', 'gm'), '');
+            var sContext = {
+                appDomain: "Task",
+                sessionVariables: "<SessionVariables>"
+                    + "<SessionVariable><Name>TrustId</Name><Value>" + r_trustId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>1</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>TaskCode</Name><Value>" + r_taskCode + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>1</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>ReportingDate</Name><Value>" + rDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>1</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>DimReportingDateID</Name><Value>" + dimRDateId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "</SessionVariables>",
+                taskCode: r_taskCode
+            };
+            var wProxy = new webProxy();
+            wProxy.createSessionByTaskCode(sContext, function (response) {
+                prepareTrustAssociatedDatesSessionContext(response, rDate);
+            });
+        }
+        function prepareTrustAssociatedDatesSessionContext(targetSessionId, reportingDate) {
+            var sContext = {
+                appDomain: "Task",
+                sessionVariables: "<SessionVariables>"
+                    + "<SessionVariable><Name>TrustId</Name><Value>" + r_trustId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>TargetSessionId</Name><Value>" + targetSessionId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>ReportingDate</Name><Value>" + reportingDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "</SessionVariables>",
+                taskCode: 'TrustAssociatedDatesPreparation'
+            };
+            var wProxy = new webProxy();
+            wProxy.createSessionByTaskCode(sContext, function (response) {
+                isSessionCreated = true;
+                sessionID = response;
+                taskCode = 'TrustAssociatedDatesPreparation';
+                IndicatorAppDomain = 'Task';
+                popupTaskProcessIndicator(function () {
+                    window.location.reload();
+                });
+            });
+        }
+        String.prototype.format = function () {
+            var args = arguments;
+            return this.replace(/{(\d+)}/g, function (match, number) {
+                return typeof args[number] != 'undefined'
+                ? args[number]
+                : match
+                ;
+            });
+        };
+        var sessionID, taskCode;
+        var clientName = 'TaskProcess';
+        var IndicatorAppDomain;
+        var IsSilverlightInitialized = false;
+        function InitParams() {
+            if (!IsSilverlightInitialized) {
+                IsSilverlightInitialized = true;
+            }
+            document.getElementById("TaskProcessCtl").Content.SL_Agent.InitParams(sessionID, IndicatorAppDomain, taskCode, clientName);
+        }
+        function popupTaskProcessIndicator(fnCallBack) {
+            $("#taskIndicatorArea").dialog({
+                modal: true,
+                dialogClass: "TaskProcessDialogClass",
+                closeText: "",
+                //closeOnEscape:false,
+                height: 485,
+                width: 470,
+                close: function (event, ui) {
+                    if (typeof fnCallBack === 'function') { fnCallBack(); }
+                },
+                title: "任务处理"
+            });
+        };
+    </script>
+</head>
+<body>
+    <div class="main">
+        <div class="pull-right">
+            <button type="button" class="btn btn-primary" id="btnGenerateNext">生成下一期</button>
+        </div>
+        <h3 class="h3"><span class="title">循环购买任务管理</span></h3>
+        <div class="content">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th width="50px">期数</th>
+                        <th width="120px">循环期日期</th>
+                        <th>&nbsp;</th>
+                        <th width="140px">创建时间</th>
+                        <th width="80px">操作</th>
+                    </tr>
+                </thead>
+                <tbody id="dataList"></tbody>
+                <tfoot id="tfootNewSession" style="display:none;">
+                    <tr>
+                        <td>&nbsp;&nbsp;</td>
+                        <td colspan="3">
+                            下一循环期日期：&nbsp;&nbsp;<input type="text" id="dtNextPeriod" class="date-plugins form-control" />
+                        </td>
+                        <td class="center">
+                            <button type="button" class="btn btn-primary" onclick="createNewSession()">生成</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+    <div class="run-loading" id="divLoading">
+        <div class="loading">
+            <div class="rect"></div>
+            <div class="rect rect2"></div>
+            <div class="rect rect3"></div>
+            <div class="rect rect4"></div>
+        </div>
+    </div>
+
+    <div id="taskIndicatorArea" style="display:none;width:440px; height:440px;">
+        <object id="TaskProcessCtl" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="display:block" width="100%" height="440px" class="ms-dlgDisable">
+            <param name="source" value="../../ClientBin/UI.TaskProcessIndicator.xap" />
+            <param name="enablehtmlaccess" value="True" />
+        </object>
+    </div>
+</body>
+</html>

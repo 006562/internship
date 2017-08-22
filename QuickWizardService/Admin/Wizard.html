@@ -1,0 +1,110 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <title>Quick Wizard</title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link rel="stylesheet" href="../Contents/model.css" />
+    <script src="../Scripts/jquery.min.js"></script>
+    <script src="../Scripts/dataOperate.js"></script>
+    <script src="../Scripts/common.js"></script>
+     <script type="text/javascript">
+         $(function () {
+            
+                 var dUrl = $("li").eq(0).data('url');
+                 var $iframe = $('.work iframe');
+                 $iframe.attr('src', dUrl);
+                 $iframe.load(function () {
+                     $(this).fadeIn();
+                 });
+                 $("li").click(function () {
+                     if (!$(this).hasClass("active")) {
+                         var url = $(this).data('url');
+                         url = url;
+                         $iframe.hide();
+                         $iframe.attr('src', url);
+                         $iframe.load(function () {
+                             $(this).fadeIn();
+                         });
+                         $("li").each(function () {
+                             $(this).removeClass("active");
+                             $(this).css("cursor", "pointer");
+                         })
+                         $(this).addClass("active");
+                         $(this).css("cursor", "default");
+                     }
+                 });
+             
+             function changeMenu() {
+                 var IsOpen = false;
+                 var $menu = $('.step-menu'),
+                     $aside = $('.page>.aside');
+
+                 $menu.unbind().click(function () {
+                     var $this = $(this), _left;
+
+                     if (IsOpen) {
+                         IsOpen = false;
+                         $aside.removeClass('menu');
+                         _left = 280;
+                     } else {
+                         IsOpen = true;
+                         $aside.addClass('menu');
+                         _left = 60;
+                     }
+                     $('.page').stop().animate({
+                         'padding-left': _left + 'px'
+                     }, 100);
+                 });
+             }
+             changeMenu();
+         });
+        
+     </script>
+</head>
+<body>
+
+    <div class="page">
+        <div class="aside">
+            <div class="step-box">
+                <div class="step-head">
+                    <div class="step-menu"><i class="icon icon-list"></i></div>
+                    <h2>数据配置</h2>
+                </div>
+                <ul>
+                    <li class="active" data-url="Items.html">
+                        <span class="no">1</span>
+                        <span class="flag"><i class="icon icon-right"></i></span>
+                        <h3 class="step-title">Item</h3>
+                        <p class="step-text">Item and Category</p>
+                    </li>
+                    <li data-url="ItemChilds.html" style="cursor:pointer">
+                        <span class="no">2</span>
+                        <span class="flag"><i class="icon icon-right"></i></span>
+                        <h3 class="step-title">ItemChilds</h3>
+                        <p class="step-text">ItemChilds</p>
+                    </li>
+                    <li data-url="PageItems.html" style="cursor:pointer">
+                        <span class="no">3</span>
+                        <span class="flag"><i class="icon icon-right"></i></span>
+                        <h3 class="step-title">PageItems</h3>
+                        <p class="step-text">PageItems</p>
+                    </li>
+                    <li data-url="Models.html" style="cursor:pointer">
+                        <span class="no">3</span>
+                        <span class="flag"><i class="icon icon-right"></i></span>
+                        <h3 class="step-title">Models</h3>
+                        <p class="step-text">Models</p>
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+        <div class="work">
+            <iframe src="" frameborder="0"></iframe>
+        </div>
+    </div>
+
+</body>
+</html>

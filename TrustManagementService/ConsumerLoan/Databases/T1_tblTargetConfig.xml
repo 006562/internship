@@ -1,0 +1,95 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+declare @vchSQL  nvarchar(max)
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tblTargetingConfig]'') AND type in (N''U''))
+DROP TABLE [dbo].[tblTargetingConfig]
+
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+SET ANSI_PADDING ON
+
+CREATE TABLE [dbo].[tblTargetingConfig](
+	DimPoolID bigint
+	, DimTargetId bigint IDENTITY(1,1)
+  , DimECID bigint
+	, TargetType varchar(500)
+    , TargetName varchar(500)
+    , TargetContent varchar(500)
+    , TargetValue decimal(15,4) default 0
+    , TargetTolerance decimal(15,4)  default 0
+    , TargetOriginalBalance decimal(15,2) default 0
+    , TargetOriginalValue decimal(15,4)  default 0
+    , TargetSourceQuery nvarchar(4000)
+    , TargetSumQuery nvarchar(4000)
+    , TargetLSQuery nvarchar(4000)
+ )
+    
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tblTargetingConfigIntersect]'') AND type in (N''U''))
+DROP TABLE [dbo].[tblTargetingConfigIntersect]
+
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+SET ANSI_PADDING ON
+
+CREATE TABLE [dbo].[tblTargetingConfigIntersect](
+	DimPoolID bigint
+	, DimTargetId bigint IDENTITY(1,1)
+  , DimECID bigint
+	, TargetType varchar(500)
+    , LTargetName varchar(500)
+    , LTargetContent varchar(500)
+    , RTargetName varchar(500)
+    , RTargetContent varchar(500)
+    , TargetOriginalBalance decimal(15,2) default 0
+    , TargetOriginalValue decimal(15,4) default 0
+    , TargetSourceQuery nvarchar(4000)
+    , TargetSumQuery nvarchar(4000)
+    , TargetLSQuery nvarchar(4000)
+)
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tblTargetingConfigWorking]'') AND type in (N''U''))
+DROP TABLE [dbo].[tblTargetingConfigWorking]
+
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+SET ANSI_PADDING ON
+
+CREATE TABLE [dbo].[tblTargetingConfigWorking](
+	DimPoolID bigint
+  , DimECID bigint
+	, DimTargetId bigint IDENTITY(1,1)
+    , LTargetName varchar(500)
+    , LTargetContent varchar(500)
+    , RTargetName varchar(500)
+    , RTargetContent varchar(500)
+    , TargetType varchar(500)
+    , TargetOriginalBalance decimal(15,2) default 0
+    , TargetOriginalValue decimal(15,4) default 0
+    , TargetConfigValue decimal(15,4) default 0
+    , TargetValue decimal(15,4) default 0
+    , TargetTolerance decimal(15,4) default 0
+    , TargetBalance decimal(15,2) default 0
+    , Adjustment decimal(15,4) default 0
+    , AdjustmentConfig decimal(15,4) default 0
+    , TargetSourceQuery nvarchar(4000)
+    , TargetSumQuery nvarchar(4000)
+    , TargetConfigSumQuery nvarchar(4000)
+)
+'
+exec (@vchSQL)   
+]]>
+  </Query>
+
+</main>

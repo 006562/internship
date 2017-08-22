@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL  varchar(max)
+Declare @bigsql varchar(max)
+
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[Usp_GetRatingAgencyReport]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[Usp_GetRatingAgencyReport]
+'
+exec (@vchSQL)
+
+--**************************************************
+--USP_GetRatingAgencyReport
+--**************************************************
+Set @vchSQL ='CREATE PROCEDURE [dbo].[Usp_GetRatingAgencyReport]  
+	@PoolId  varchar(10)
+,	@LTVPassNo varchar(10)
+,	@PivotCount  tinyint = 0
+
+AS  
+
+BEGIN  
+
+SET NOCOUNT ON
+
+declare @DimPoolId bigint
+set @DimPoolId = CAST(@PoolId as bigint)
+
+declare @Temp table (DimPoolId bigint not null,
+                     DimConsolidationID bigint not null,
+                     DimLoanId bigint not null,
+                     SeqNo int not null,
+                     LTVPassNo nvarchar(200) not null,
+                     DimSecurityId bigint,
+                     PRIMARY KEY(DimConsolidationID, DimLoanId, DimSecurityId, LTVPassNo)
+                     )
+
+insert @Temp                    
+select FC.DimPoolID, FC.DimConsolidationID,  FCL.DimLoanId, FCS.SecurityRank as SeqNo, FC.LTVPassNo,
+FCS.DimSecurityId
+from tblFactConsolidation FC
+inner join tblFactConsolidationLoan FCL on FC.DimPoolID = FCL.DimPoolID
+                                           and FC.DimConsolidationID = FCL.DimConsolidationID
+                                           and FC.LTVPassNo = FCL.LTVPassNo
+inner join tblFactConsolidationSecurity FCS on FC.DimPoolID = FCS.DimPoolID
+                                            and FC.DimConsolidationID = FCS.DimConsolidationID
+                                            and FC.LTVPassNo = FCS.LTVPassNo
+ where FC.DimPoolID = @DimPoolId and FC.LTVPassNo = @LTVPassNo
+ 
+ 
+;WITH x
+AS
+(
+    select T.DimConsolidationID, T.DimLoanId, T.DimSecurityId, SeqNo,
+           DS.SecurityNo, DS.PropertyTypeDesc, DS.PostCode, DS.Suburb, DS.State, DS.Region, DS.Nature, DS.OccupancyPurposeDesc,
+           DS.ValuationType, FS.SecurityValuationAmt, FS.SecurityValuationDate, DS.Tenure
+    from @Temp T
+    left outer join tblFactSecurity FS on T.DimPoolID = FS.DimPoolID and T.DimSecurityId = FS.DimSecurityID                                        
+    left outer join tblDimSecurity DS on FS.DimPoolID = DS.DimPoolID and FS.DimSecurityId = DS.DimSecurityID
+
+    )
+
+
+   SELECT  
+    CONVERT(datetime, cast(fc.DimReportingDateId as varchar), 112) as ReportingDate
+   ,dl.OrganisationCode
+   ,dt.TrustID
+   ,dls.SoldSecuritisationNo as SoldSecuritisationNumber
+   ,fc.DimPoolId as PoolCutID
+   ,fc.ConsolidationNo as PostConsolidationID
+   ,fl.AccountNo
+   ,dl.LoanStatus
+   ,fl.CurrentPrincipalBalance
+   ,fl.CurrentLimit
+   ,fl.CurrentLoanBalance
+   ,fl.OriginalLoanBalance
+   ,dls.CustomerCode as CustomerNumber
+   ,dls.ResidentDesc as BorrowerResidency
+   ,dls.FirstHomeBuyerInd as FirstHomeBuyerIndicator
+--   ,dls.InvolvementType as EmploymentType
+   , '''''''' as EmploymentType
+   ,dl.MortgageInsuranceInd as MortgageInsuranceIndicator
+   ,dl.MortgageInsurerCode as MortgageInsurer
+   ,fl.LoanStartDate
+   ,fl.Seasoning
+   ,fl.LoanMaturityDate
+   , CASE WHEN dl.OrganisationCode = ''''AUS'''' THEN fl.IPANXExpDate
+       ELSE null
+      END as IPANXExpDate
+   ,fl.LoanCloseDate   
+   ,fl.OriginalTerm
+   ,fl.RevisedOriginalTerm   
+   ,fl.RemainingTerm
+   ,dls.OriginalBrand
+   ,dl.ProductCode
+   ,dl.ProductDescription
+   ,dls.OffsetIndicator
+   ,dl.InterestRateTypeCode
+   ,cast((fl.CurrentRate * 100) as decimal(15, 6)) as CurrentRate
+   ,dl.PaymentTypeCode
+   ,fl.FixedRateEndDate
+   ,fl.RemainingFixedTerm as FixedRateRemainingTerm
+   ,fl.InterestOnlyExpiryDate
+   --,CASE
+       --WHEN dl.OrganisationCode = ''''NZD'''' THEN fl.InterestOnlyExpiryDate
+       --ELSE null
+    --END as InterestOnlyExpiryDate
+   --,fl.IOExpDate as TIF_IOExpiryDate
+--   ,fl.IPANXIOExpDate
+--   ,fl.IPANXExpDate
+   ,fl.InterestOnlyRemainingTerm
+   ,dls.PurposeDesc as LoanPurposeDescription
+   ,dls.DocumentType as DocumentTypeCode
+   ,dls.PaymentFrequency
+   ,fl.PaymentAmount 
+   ,fl.AmountOfArrears as ArrearsAmount   
+   ,fl.DaysInArrears
+   ,CASE
+       WHEN dl.ScrubbedFlag = ''''Y'''' THEN dl.ScrubbedFlag
+       ELSE ''''''''
+    END as AuditCodePass
+   ,dls.CrossCollateralisationFlag
+   , dls.SelfEmploymentIndicator
+--   ,'''''''' as SPARE1
+--   ,'''''''' as SPARE2
+--   ,'''''''' as SPARE3
+--   ,'''''''' as SPARE4
+--   ,cast(cast(fc.ConsolidationOriginalLTV * 100 as decimal(15, 4)) as varchar(20)) as OriginalLTV
+   ,cast(fc.ConsolidationValuation as decimal(15, 4)) as PostConsolidationTotalSecurityValue
+   ,fc.SecurityCount as PostConsolidationNumberOfSecurity
+   ,cast(cast(fc.ConsolidationLTV * 100 as decimal(15, 2)) as varchar(20)) as PostConsolidationLTV
+   ,cast(cast(fc.ConsolidationLimitLTV * 100 as decimal(15, 2)) as varchar(20)) as PostConsolidationLimitLTV
+   ,cast(fc.ConsolidationBalance as decimal(15, 4)) as PostConsolidationCurrentPrincipalBalance
+   ,cast(fc.ConsolidationLimitBalance as decimal(15, 4)) as PostConsolidationCurrentLimit
+   ,fc.LoanCount as PostConsolidationNumberOfAccounts
+   
+   , t1.SecurityNo as MainSecurity_SecurityNumber
+   , t1.PropertyTypeDesc as MainSecurity_PropertyTypeDescription
+   , CASE
+        WHEN dl.OrganisationCode = ''''NZD'''' THEN t1.Tenure
+        ELSE null
+     END as MainSecurity_TenureCode
+   , CASE
+        WHEN dl.OrganisationCode = ''''AUS'''' THEN t1.Nature
+        ELSE null
+     END as MainSecurity_Nature
+   , CASE
+        WHEN dl.OrganisationCode = ''''AUS'''' THEN t1.OccupancyPurposeDesc
+        ELSE null
+     END as MainSecurity_OccupancyPurposeDescription
+   , t1.PostCode as MainSecurity_PostCode
+   , t1.Suburb as MainSecurity_Suburb
+   , t1.State as MainSecurity_State
+   , t1.Region as MainSecurity_Region
+   , cast(t1.SecurityValuationAmt as decimal(15, 4)) as MainSecurity_ValuationAmount
+   , t1.SecurityValuationDate as MainSecurity_ValuationDate
+   , t1.ValuationType as MainSecurity_ValuationType
+
+
+FROM dbo.tblFactConsolidation FC
+INNER JOIN dbo.tblFactConsolidationLoan FCL ON FC.DimPoolId=FCL.DimPoolId And FC.DimConsolidationId=FCL.DimConsolidationId And FC.LTVPassNo=FCL.LTVPassNo
+inner JOIN dbo.tblFactLoan FL ON FCL.DimLoanId=FL.DimLoanId And FCL.DimPoolId=FL.DimPoolId 
+inner JOIN dbo.tblDimLoan DL ON FL.DimLoanId=DL.DimLoanId And FL.DimPoolId=DL.DimPoolId
+inner JOIN dbo.view_DimTrust dt on fl.DimTrustID = dt.DimTrustID
+left outer join dbo.tblDimLoanSupplementary dls on dl.DimLoanID = dls.DimLoanID
+left join 
+(select * from x where x.SeqNo = 1) t1 on fc.DimConsolidationID = t1.DimConsolidationID and dl.DimLoanId = t1.DimLoanId
+
+WHERE fc.DimPoolId = @DimPoolId  AND  fc.LTVPassNo = @LTVPassNo
+   
+END
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

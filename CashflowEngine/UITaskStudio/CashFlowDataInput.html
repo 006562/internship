@@ -1,0 +1,77 @@
+﻿<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Cashflow studio Powered by Goldenstand.">
+    <meta http-equiv="X-UA-compatible" content="IE=edge,chrome=1">
+    <link rel="stylesheet" href="../Libraries/Styles/normalize.css">
+    <link rel="stylesheet" href="../Libraries/Styles/common.css">
+    <link rel="stylesheet" href="../Libraries/Styles/animate.css">
+    <link rel="stylesheet" href="../Libraries/Fonts/fontello/css/fontello.css">
+    <link rel="stylesheet" href="Styles/cashflow.css">
+    <link href="../Libraries/Styles/gcspread.css" rel="stylesheet" />
+    <link href="../Libraries/Scripts/chosen.min.css" rel="stylesheet" />
+    <title>CashFlowDataInput</title>
+</head>
+
+<body id="layout">
+    <mainview v-ref:mainviews></mainview>
+    <script type="text/x-template" id="mainview">
+         <div class="pop-data-input">
+            <div class="data-tabs text-center">
+                <div class="pull-right ribbon">
+                    <a href="javascript:void(0);" @click="refreshData()"><i class="icon-arrows-ccw"></i></a>
+                    <a href="javascript:void(0);" @click="saveData()"><i class="icon-floppy-1"></i></a>
+                    <a href="javascript:void(0);" @click="closeWindow()"><i class="icon-cancel"></i></a>
+                    <input type="button" @click="apply()" id="btnApply"  style="display:none" />
+                </div>
+                <!--<div class="pull-left data-title">
+                    现金流模型数据输入
+                </div>-->
+                <div class="btn-group" role="group" aria-label="...">
+                    <button type="button" class="btn btn-sm btn-default" v-bind:class="{active:tabActive=='variable'}" @click="changeTab('variable')">Variable View</button>
+                    <button type="button" class="btn btn-sm btn-default" v-bind:class="{active:tabActive=='range'}" @click="changeTab('range')">Range View</button>
+                </div>
+            </div>
+            <div id="divDataInputTable" ></div>
+            <ul id="spreadContextMenu" class="dropdown-menu" role="menu">
+                <li><a class="localize" data-action="cut">cut</a></li>
+                <li><a class="localize" data-action="copy">copy</a></li>
+                <li><a class="localize" data-action="paste">paste</a></li>
+                <li class="context-header divider"></li>
+                <li class="context-header"><a class="localize" data-action="insert">insert</a></li>
+                <li class="context-header"><a class="localize" data-action="delete">delete</a></li>
+            </ul>
+        </div>
+    </script>
+    <script src="../Libraries/Scripts/common.js"></script>
+    <script type="text/javascript">
+        require(['jquery-2.2.3.min', 'vue'], function () {
+            require(['webProxy', 'dataProcess', 'gcspread', 'dataGrid'], function () {
+                // 配置项目文件加载路径
+                config.path = 'Scripts/';
+                // 配置参数
+                config.data = {
+                    appDomain: 'Task',
+                    language: []
+                };
+                // 载入所有模块
+                require(['viewCashFlowDataInput'], function () {
+                    var that = this;
+                    var mainview = use('viewCashFlowDataInput');  //.component()
+                    // 初始化一个Vue的实例
+                    var app = new Vue({
+                        el: '#layout',
+                        data: config.data,
+                        components: {
+                            'mainview': mainview
+                        }
+                    });
+                });
+            })
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,90 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <script src="../Scripts/jquery.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <link href="../Scripts/magic/magic.core.css" rel="stylesheet" />
+    <script src="../Scripts/magic/magic.core.js"></script>
+    <link href="../Scripts/magic/magic.dialog.css" rel="stylesheet" />
+    <script src="../Scripts/magic/magic.dialog.js"></script>
+ 
+    <script type="text/javascript">
+    $(function () {
+        $('.dlgDemoBtn').click(function () {
+            var el = $(this), act = el.attr('action');
+            switch (act) {
+                case 'basic':
+                    $('<div></div>').mac('dialog', {
+                        title: 'Hello!',
+                        model: true,
+                        autoOpen: true,
+                        width: 200,
+                        draggable: true,
+                        el: '<p>Hello world!</p><p>I\'m MagicDialog!</p>'
+                    });
+                    break;
+                case 'extended':
+                    mac.opendlg({
+                        title: 'Hello!',
+                        message: 'Press {0} can close me.',
+                        params: ['<b>ESC/Enter</b>'],
+                        buttons: [{
+                            text: 'OK',
+                            click: function (d) {
+                                d.close();
+                            }
+                        }]
+                    });
+                    break;
+                case 'wait':
+                    var h = mac.wait('Count 3 sec to close.');
+                    window.setTimeout(function () {
+                        h.close();
+                    }, 3000);
+                    break;
+                case 'complete':
+                    var h = mac.complete('Save success!.');
+                    window.setTimeout(function () {
+                        h.close();
+                    }, 3000);
+                    break;
+                case 'alert':
+                    mac.alert('Hello!');
+                    break;
+                case 'confirm':
+                    mac.confirm('<p>Are you sure?</p>', function () {
+                        alert('You clicked yes!');
+                    }, null);
+                    break;
+                case 'customize':
+                    mac.confirm('<p>Are you sure?</p>', null, null, [{
+                        text: 'Close',
+                        click: function (d) {
+                            d.close();
+                        }
+                    }, {
+                        text: 'Yes, I\'m sure?',
+                        click: function (d) {
+                            d.close();
+                        }
+                    }]);
+                    break;
+            }
+        });
+    });
+    </script>
+</head>
+<body>
+    <button class="dlgDemoBtn" action="basic">Basic</button>
+    <button class="dlgDemoBtn" action="extended">Extended</button>
+    <button class="dlgDemoBtn" action="wait">Spinner</button>
+    <button class="dlgDemoBtn" action="alert">Alert</button>
+    <button class="dlgDemoBtn" action="confirm">Confirm</button>
+    <button class="dlgDemoBtn" action="customize">Customize</button>
+    <button class="dlgDemoBtn" action="complete">Complete</button>
+</body>
+</html>

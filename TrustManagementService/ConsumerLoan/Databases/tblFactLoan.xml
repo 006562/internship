@@ -1,0 +1,114 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+	<Parameters>
+		<Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+	</Parameters>
+	<Query>
+    <![CDATA[
+declare @vchSQL  varchar(8000)
+set @vchSQL = 'use [' + @DBName + ']
+
+/****** Object:  Table [dbo].[tblFactLoan]    Script Date: 05/03/2012 16:34:22 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tblFactLoan]'') AND type in (N''U''))
+DROP TABLE [dbo].[tblFactLoan]
+
+/****** Object:  Table [dbo].[tblFactLoan]    Script Date: 05/03/2012 16:34:22 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+SET ANSI_PADDING ON
+
+CREATE TABLE [dbo].[tblFactLoan](
+	[DimPoolID] [bigint] NOT NULL,
+	[DimLoanID] [bigint] NOT NULL,
+	[DimTrustID] [int] NOT NULL,
+	[DimOrganisationID] [int] NOT NULL,
+	[DimReportingDateID] [int] NOT NULL,
+	[AccountNo] [varchar](20) NOT NULL,
+  [LoanProportionalLTV] [decimal](15, 4) NULL,
+	[IsSold] [bit] NULL,
+	[IsIncluded] [bit] NULL,
+  [LoanStatus] [varchar](20) NULL,
+  [AmountOfArrears] [decimal](15, 2) NULL,
+  [ApprovalAmount] [decimal](15, 0) NULL,
+	[ArrearsHistory] [varchar](20) NULL,
+	[BankFees] [decimal](15, 2) NULL,
+	[BaseRate] [decimal](15, 5) NULL,
+	[CurrentAccruedInterest] [decimal](15, 5) NULL,
+	[CurrentBalanceOutstanding] [decimal](15, 4) NULL,
+	[CurrentLimit] [decimal](15, 2) NULL,
+	[CurrentLoanBalance] [decimal](15, 2) NULL,
+	[CurrentPrincipalBalance] [decimal](15, 2) NULL,
+	[CurrentRate] [decimal](15, 5) NULL,
+	[CurrentSurplusBuffer] [decimal](15, 2) NULL,
+	[CurrentTerm] [int] NULL,
+	[DaysInArrears] [decimal](15, 2) NULL,
+	[EnforcementExpenses] [decimal](15, 2) NULL,
+  [LoanMaturityDate] [datetime] NULL,
+  [DimLoanMaturityDateID] [int] NOT NULL,
+  [LoanStartDate] [datetime] NULL,
+  [LoanCloseDate] [datetime] NULL,
+  [IOExpDate] [datetime] NULL,
+	[IPANXIOEXpDate] [datetime] NULL,
+	[IPANXExpDate] [datetime] NULL,
+  [InterestOnlyExpiryDate] [datetime] NULL,
+  [PrincipalPaidToDate] [datetime] NULL,
+  [CurrentBalanceDistributionCode] [varchar](50) NULL,
+  [SeasoningDistributionCode] [varchar](50) NULL,
+  [CurrentRateDistributionCode] [varchar](50) NULL,
+  [DaysInArrearsDistributionCode] [varchar](50) NULL,
+  [DimInterestOnlyRemainingTermDistributionCode] [varchar](50) NULL,
+  [RemainingTermDistributionCode] [varchar](50) NULL,
+	[FixedBaseRate] [decimal](15, 5) NULL,
+  [FixedRateEndDate] [datetime] NULL,
+	[DimFixedRateEndDateID] [int] NOT NULL,
+	[FixedRateStartDate] [datetime] NULL,
+	[DimFixedRateStartDateID] [int] NOT NULL,
+	[GovernmentDuty] [decimal](15, 2) NULL,
+	[HistoryOfArrears] [varchar](20) NULL,
+	[InterestOnlyInterestAccrualMovementAmount] [decimal](15, 4) NULL,
+	[InterestOnlyInterestChargeAmount] [decimal](15, 4) NULL,
+	[InterestOnlyInterestIncomeAmount] [decimal](15, 4) NULL,
+	[InterestOnlyTerm] [decimal](15, 4) NULL,
+	[InterestOnlyRemainingTerm] [decimal](15, 4) NULL,
+	[MonthsInArrears] [int] NULL,
+	[OriginalLoanBalance] [decimal](15, 0) NULL,
+	[OriginalTerm] [int] NULL,
+	[PaymentAmount] [decimal](15, 2) NULL,
+	[PaymentHoliday] [varchar](20) NULL,
+	[PostSaleLTV] [decimal](15, 8) NULL,
+	[PreSaleLTV] [decimal](15, 8) NULL,
+	[PreviousBaseRate] [decimal](15, 5) NULL,
+	[PreviousAccruedInterest] [decimal](15, 2) NULL,
+	[ProductSwitchAccruedOffsetBenefit] [decimal](15, 2) NULL,
+	[RemainingTerm] [decimal](15, 4) NULL,
+	[RemainingFixedTerm] [decimal](15, 4) NULL,
+	[RevisedOriginalTerm] [decimal](15, 4) NULL,
+	[ScheduledLTV] [decimal](15, 4) NULL,
+	[ScheduledBalance] [decimal](15, 4) NULL,
+	[Seasoning] [decimal](15, 4) NULL,
+	[TermtoMaturity] [decimal](15, 4) NULL,
+  [DimCurrentBalanceDistributionID] [int] NULL,
+  [DimCurrentRateDistributionID] [int] NULL,
+  [DimDaysInArrearsDistributionID] [int] NULL,
+  [DimSeasoningDistributionID] [int] NULL,
+  [DimInterestOnlyRemainingTermDistributionId] [int] NULL,
+  [DimRemainingTermDistributionID] [int] NULL,
+  [FixedRateExpiryTermDistributionCode] [varchar](50) NULL,
+  [DimFixedRateExpiryTermDistributionID] [int] NULL
+  
+ CONSTRAINT [PK_tblFactLoan] PRIMARY KEY CLUSTERED 
+(
+	[DimPoolID] ASC,
+	[DimLoanID] ASC
+
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON, FILLFACTOR = 70) ON [PRIMARY]
+) ON [PRIMARY]'
+
+exec (@vchSQL)
+
+]]>
+  </Query>
+
+</main>

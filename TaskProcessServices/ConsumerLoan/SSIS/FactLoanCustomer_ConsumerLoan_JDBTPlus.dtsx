@@ -1,0 +1,2318 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/5/2015 9:02:41 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GS2106CNVDV003"
+  DTS:CreatorName="DEV\gslocaladmin"
+  DTS:DTSID="{E00F6C2E-D379-4343-8DD4-D7CD8201E435}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="FactLoanCustomer_ConsumerLoan_JDBT"
+  DTS:PackageType="5"
+  DTS:VersionBuild="85"
+  DTS:VersionGUID="{E772664E-DAA4-4197-952E-8731E8655E40}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Cache Connection Manager DimCustomerID]"
+      DTS:CreationName="CACHE"
+      DTS:DTSID="{6DD7386C-E156-4A0A-89F1-C785C795904D}"
+      DTS:ObjectName="Cache Connection Manager DimCustomerID">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager>
+          <DTS:CacheColumns>
+            <DTS:CacheColumn
+              DTS:DataType="130"
+              DTS:Length="50"
+              DTS:IndexPosition="1"
+              DTS:ObjectName="Code"
+              DTS:DTSID="{1C983E1A-B237-4762-8E49-B48ABBDF369B}"
+              DTS:CreationName="" />
+            <DTS:CacheColumn
+              DTS:DataType="3"
+              DTS:ObjectName="DimCustomerID"
+              DTS:DTSID="{B99E983C-02A5-4969-A4E2-BE9D0E0BB80E}"
+              DTS:CreationName="" />
+          </DTS:CacheColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Cache Connection Manager DimLoanID]"
+      DTS:CreationName="CACHE"
+      DTS:DTSID="{7B7A1B8A-FB5E-4258-ADCC-26B70B6FEEFD}"
+      DTS:ObjectName="Cache Connection Manager DimLoanID">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager>
+          <DTS:CacheColumns>
+            <DTS:CacheColumn
+              DTS:DataType="130"
+              DTS:Length="100"
+              DTS:IndexPosition="1"
+              DTS:ObjectName="AccountNo"
+              DTS:DTSID="{973F2E65-8F9C-4F50-B769-815549DDC009}"
+              DTS:CreationName="" />
+            <DTS:CacheColumn
+              DTS:DataType="3"
+              DTS:ObjectName="DimLoanID"
+              DTS:DTSID="{15544F40-35B0-4147-88B9-AEF0E1479E4C}"
+              DTS:CreationName="" />
+          </DTS:CacheColumns>
+        </DTS:ConnectionManager>
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[SFM_DAL_CLO]"
+      DTS:CreationName="OLEDB"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{F119DDD8-E88A-4D3D-A819-6062FEA547D6}"
+      DTS:ObjectName="SFM_DAL_CLO">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::C_DAL_CLO_DB]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=mssql;Initial Catalog=SFM_DAL_ConsumerLoan;Provider=SQLNCLI10.1;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[SFM_STAGING_CLO]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{825A01EE-C514-4978-BBC2-85A3C11BC83E}"
+      DTS:ObjectName="SFM_STAGING_CLO">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::C_STAGING_DB]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=mssql;Initial Catalog=SFM_STAGING;Provider=SQLNCLI10.1;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{2266A2A3-2C7E-45B0-AC8A-D6F741845295}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Data Source=&quot; + @[User::DAL_CLO_SERVER] + &quot;;Initial Catalog=&quot;+@[User::DAL_CLO_DB] +&quot;;Provider=SQLNCLI10.1;Integrated Security=SSPI;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_DAL_CLO_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=mssql;Initial Catalog=SFM_DAL_ConsumerLoan;Provider=SQLNCLI10.1;Integrated Security=SSPI;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A1A4C96D-4EF8-42A1-809F-822B1A37B6F8}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_Organisation">
+      <DTS:VariableValue
+        DTS:DataType="8">BTP</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{5846EBA9-02A0-4E3C-94E2-00197EC2F0BE}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_Reporting_Date">
+      <DTS:VariableValue
+        DTS:DataType="8">2016-06-02</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{74CD321A-5CF9-4C98-961D-D0361479501C}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Data Source=&quot; + @[User::STAGING_SERVER]  + &quot;;Initial Catalog=&quot;+ @[User::STAGING_DB] +&quot;;Provider=SQLNCLI10.1;Integrated Security=SSPI;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_STAGING_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=mssql;Initial Catalog=SFM_STAGING;Provider=SQLNCLI10.1;Integrated Security=SSPI;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{CDF7CAEE-FFEF-4176-A4CE-241F4014F243}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DAL_CLO_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">SFM_DAL_ConsumerLoan</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{53526649-9472-4E1D-BAA1-D7010F8B476C}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DAL_CLO_SERVER">
+      <DTS:VariableValue
+        DTS:DataType="8">mssql</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{BD498D29-2B50-4693-9955-4EEDFEC6A31C}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="DimOrganisationID">
+      <DTS:VariableValue
+        DTS:DataType="3">5</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8B1E44DD-5304-4F0A-9995-50A34DD11CC7}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;select lower(Code) as Code, DimCustomerID&#xA;from dbo.tblDimCustomer&#xA;where  cast('&quot;+ @[User::C_Reporting_Date] +&quot;' as date) between RowStartDate and IsNull(RowEndDate,'9999-12-31') and DimOrganisationID=&quot;+ @[User::OrganisationId]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ExtractDimCustomerID">
+      <DTS:VariableValue
+        DTS:DataType="8">select lower(Code) as Code, DimCustomerID
+from dbo.tblDimCustomer
+where  cast('2016-06-02' as date) between RowStartDate and IsNull(RowEndDate,'9999-12-31') and DimOrganisationID=5</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D37CD264-75B7-4AD9-8BA4-46A6D1F6A1E5}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;select AccountNo, DimLoanID &#xA;from dbo.tblDimLoan &#xA;where cast( &quot;+ &quot;'&quot;+ @[User::C_Reporting_Date] +&quot;'&quot;+&quot;  as date) between RowStartDate and IsNull(RowEndDate,'9999-12-31') and DimOrganisationID=&quot;+ @[User::OrganisationId]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ExtractDimLoanID">
+      <DTS:VariableValue
+        DTS:DataType="8">select AccountNo, DimLoanID 
+from dbo.tblDimLoan 
+where cast( '2016-06-02'  as date) between RowStartDate and IsNull(RowEndDate,'9999-12-31') and DimOrganisationID=5</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F5761155-E883-479F-A56B-4551A4B521B0}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;EXEC GetOrganisationIdByCode &quot;+&quot;'&quot;+ @[User::C_Organisation]   +&quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="GetOrganisationId">
+      <DTS:VariableValue
+        DTS:DataType="8">EXEC GetOrganisationIdByCode 'BTP'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8EAC345B-5FEF-4D50-B0BA-94354322D067}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="OrganisationId">
+      <DTS:VariableValue
+        DTS:DataType="8">5</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{2DD53683-1EE8-4E23-BA52-8F65A1D7469D}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="STAGING_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">SFM_STAGING</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{A526F1A4-EA2B-4C73-BAA6-DD366561088E}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="STAGING_SERVER">
+      <DTS:VariableValue
+        DTS:DataType="8">mssql</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E86F322F-DC0F-41E5-9277-9E36AB674836}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;DELETE FROM  dbo.tblFactLoanCustomer where DimReportingDateID = cast(CONVERT(nvarchar(10),CAST('&quot;+@[User::C_Reporting_Date]+&quot;'  as DATE), 112)  as int)&quot; + &quot; and DimOrganisationId = &quot; + &quot;'&quot; + @[User::OrganisationId] + &quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_DeleteStatement">
+      <DTS:VariableValue
+        DTS:DataType="8">DELETE FROM  dbo.tblFactLoanCustomer where DimReportingDateID = cast(CONVERT(nvarchar(10),CAST('2016-06-02'  as DATE), 112)  as int) and DimOrganisationId = '5'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{6F2465A2-4817-404B-B1EB-C131BB76ADDD}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;exec [dbo].[usp_GetFactLoanCustomer_JDBTPlus]  &quot; + &quot;'&quot; + @[User::C_Reporting_Date]  + &quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_GetFactLoanCustomerStatement">
+      <DTS:VariableValue
+        DTS:DataType="8">exec [dbo].[usp_GetFactLoanCustomer_JDBTPlus]  '2016-06-02'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D72B6A12-4EC9-4692-B90D-16FC10297B45}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_Rowcount_Source">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Data Flow Task"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{37DE8167-9C3D-466D-ABB8-E1D0066B21BF}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Data Flow Task"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Data Flow Task\Cache Transform"
+              componentClassID="Microsoft.Cache"
+              contactInfo="Cache Transform;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Writes data to a cache (a .caw file) with the Cache Connection Manager. Reuse the cache between multiple Lookup transforms to reduce database load. Share the cache to reduce memory usage. Note: cache data is stored in clear text and not recommended for sensitive data."
+              name="Cache Transform"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used."
+                  name="TreatDuplicateKeysAsError">false</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task\Cache Transform.Connections[CacheConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Cache Connection Manager DimLoanID]"
+                  connectionManagerRefId="Package.ConnectionManagers[Cache Connection Manager DimLoanID]"
+                  description="The connection used to access the cache."
+                  name="CacheConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Data Flow Task\Cache Transform.Inputs[Cache Input]"
+                  hasSideEffects="true"
+                  name="Cache Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Data Flow Task\Cache Transform.Inputs[Cache Input].Columns[AccountNo]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="AccountNo"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[AccountNo]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="The cache column associated with the input column."
+                          name="CacheColumnName">AccountNo</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Data Flow Task\Cache Transform.Inputs[Cache Input].Columns[DimLoanID]"
+                      cachedDataType="i4"
+                      cachedName="DimLoanID"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[DimLoanID]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="The cache column associated with the input column."
+                          name="CacheColumnName">DimLoanID</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task\Cache Transform.Outputs[Cache Output]"
+                  name="Cache Output"
+                  synchronousInputId="Package\Data Flow Task\Cache Transform.Inputs[Cache Input]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Data Flow Task\Cache Transform 1"
+              componentClassID="Microsoft.Cache"
+              contactInfo="Cache Transform;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;1"
+              description="Writes data to a cache (a .caw file) with the Cache Connection Manager. Reuse the cache between multiple Lookup transforms to reduce database load. Share the cache to reduce memory usage. Note: cache data is stored in clear text and not recommended for sensitive data."
+              name="Cache Transform 1"
+              version="1">
+              <properties>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used."
+                  name="TreatDuplicateKeysAsError">false</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task\Cache Transform 1.Connections[CacheConnection]"
+                  connectionManagerID="Package.ConnectionManagers[Cache Connection Manager DimCustomerID]"
+                  connectionManagerRefId="Package.ConnectionManagers[Cache Connection Manager DimCustomerID]"
+                  description="The connection used to access the cache."
+                  name="CacheConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Data Flow Task\Cache Transform 1.Inputs[Cache Input]"
+                  hasSideEffects="true"
+                  name="Cache Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Data Flow Task\Cache Transform 1.Inputs[Cache Input].Columns[Code]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="Code"
+                      lineageId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Output].Columns[Code]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="The cache column associated with the input column."
+                          name="CacheColumnName">Code</property>
+                      </properties>
+                    </inputColumn>
+                    <inputColumn
+                      refId="Package\Data Flow Task\Cache Transform 1.Inputs[Cache Input].Columns[DimCustomerID]"
+                      cachedDataType="i4"
+                      cachedName="DimCustomerID"
+                      lineageId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Output].Columns[DimCustomerID]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="The cache column associated with the input column."
+                          name="CacheColumnName">DimCustomerID</property>
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task\Cache Transform 1.Outputs[Cache Output]"
+                  name="Cache Output"
+                  synchronousInputId="Package\Data Flow Task\Cache Transform 1.Inputs[Cache Input]">
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Data Flow Task\OLE DB Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::ExtractDimLoanID</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task\OLE DB Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[SFM_DAL_CLO]"
+                  connectionManagerRefId="Package.ConnectionManagers[SFM_DAL_CLO]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[AccountNo]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[AccountNo]"
+                      length="100"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[AccountNo]"
+                      name="AccountNo"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[DimLoanID]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[DimLoanID]"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[DimLoanID]"
+                      name="DimLoanID"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[AccountNo]"
+                      dataType="wstr"
+                      length="100"
+                      name="AccountNo" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[DimLoanID]"
+                      dataType="i4"
+                      name="DimLoanID" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[AccountNo]"
+                      dataType="wstr"
+                      length="100"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[AccountNo]"
+                      name="AccountNo" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[DimLoanID]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[DimLoanID]"
+                      name="DimLoanID" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Data Flow Task\OLE DB Source 1"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="OLE DB Source 1"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset"></property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::ExtractDimCustomerID</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task\OLE DB Source 1.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[SFM_DAL_CLO]"
+                  connectionManagerRefId="Package.ConnectionManagers[SFM_DAL_CLO]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Output].Columns[Code]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Output].ExternalColumns[Code]"
+                      length="50"
+                      lineageId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Output].Columns[Code]"
+                      name="Code"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Output].Columns[DimCustomerID]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Output].ExternalColumns[DimCustomerID]"
+                      lineageId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Output].Columns[DimCustomerID]"
+                      name="DimCustomerID"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Output].ExternalColumns[Code]"
+                      dataType="wstr"
+                      length="100"
+                      name="Code" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Output].ExternalColumns[DimCustomerID]"
+                      dataType="i4"
+                      name="DimCustomerID" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[Code]"
+                      dataType="wstr"
+                      length="100"
+                      lineageId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[Code]"
+                      name="Code" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[DimCustomerID]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[DimCustomerID]"
+                      name="DimCustomerID" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Data Flow Task.Paths[OLE DB Source Output]"
+              endId="Package\Data Flow Task\Cache Transform.Inputs[Cache Input]"
+              name="OLE DB Source Output"
+              startId="Package\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output]" />
+            <path
+              refId="Package\Data Flow Task.Paths[OLE DB Source Output1]"
+              endId="Package\Data Flow Task\Cache Transform 1.Inputs[Cache Input]"
+              name="OLE DB Source Output"
+              startId="Package\Data Flow Task\OLE DB Source 1.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Delete existing data"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Delete existing data"
+      DTS:DTSID="{FCB8C352-F948-4C14-A9AA-1F005A8DD4CC}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Delete existing data">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Delete existing data\Delete existing data from target table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{40378DD7-9830-45EF-A239-487261C14310}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Delete existing data from target table"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; Microsoft SQL Server 2008; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{F119DDD8-E88A-4D3D-A819-6062FEA547D6}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::V_DeleteStatement" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Delete existing data\Get OrganisationId by code"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{13DB3108-E48D-4A10-9606-8BA876E3EDAB}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get OrganisationId by code"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{F119DDD8-E88A-4D3D-A819-6062FEA547D6}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::GetOrganisationId"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="DimOrganisationID"
+                SQLTask:DtsVariableName="User::OrganisationId" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Delete existing data.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{D473E491-E830-47CE-8D4A-7EC0F9D7AA11}"
+          DTS:From="Package\Delete existing data\Get OrganisationId by code"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Delete existing data\Delete existing data from target table" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Load Data to tblFactLoanCustomer"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Add new loan records"
+      DTS:DTSID="{3E0FD82B-8851-487F-B336-B4C1480B0006}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Load Data to tblFactLoanCustomer">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:DelayValidation="True"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{F4B85013-164D-45B7-92DE-D40949B84B52}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="DataFlow Task"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server v10; (C) 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              BLOBTempStoragePath=""
+              bufferTempStoragePath=""
+              defaultBufferMaxRows="200000"
+              version="1">
+              <components>
+                <component
+                  refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1"
+                  componentClassID="Microsoft.DataConvert"
+                  contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Data Conversion"
+                  name="Data Conversion 1"
+                  usesDispositions="true">
+                  <inputs>
+                    <input
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Inputs[Data Conversion Input]"
+                      name="Data Conversion Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Inputs[Data Conversion Input].Columns[AccountNo]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="AccountNo"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[AccountNo]" />
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Inputs[Data Conversion Input].Columns[Code]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="Code"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[Code]" />
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Inputs[Data Conversion Input].Columns[DimOrganisationID]"
+                          cachedDataType="wstr"
+                          cachedLength="1"
+                          cachedName="DimOrganisationID"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationID]" />
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Output]"
+                      exclusionGroup="1"
+                      name="Data Conversion Output"
+                      synchronousInputId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Inputs[Data Conversion Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Output].Columns[Copy of AccountNo]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="100"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Output].Columns[Copy of AccountNo]"
+                          name="Copy of AccountNo"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the input column used as the source of data for the conversion."
+                              name="SourceInputColumnLineageID">#{Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[AccountNo]}</property>
+                            <property
+                              dataType="System.Boolean"
+                              description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                              name="FastParse">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Output].Columns[Copy of Code]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="50"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Output].Columns[Copy of Code]"
+                          name="Copy of Code"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the input column used as the source of data for the conversion."
+                              name="SourceInputColumnLineageID">#{Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[Code]}</property>
+                            <property
+                              dataType="System.Boolean"
+                              description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                              name="FastParse">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Output].Columns[Copy of DimOrganisationID]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="1"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Output].Columns[Copy of DimOrganisationID]"
+                          name="Copy of DimOrganisationID"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the input column used as the source of data for the conversion."
+                              name="SourceInputColumnLineageID">#{Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationID]}</property>
+                            <property
+                              dataType="System.Boolean"
+                              description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                              name="FastParse">false</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Data Conversion Error Output"
+                      synchronousInputId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Inputs[Data Conversion Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column"
+                  componentClassID="Microsoft.DerivedColumn"
+                  contactInfo="Derived Column;Microsoft Corporation; Microsoft SqlServer v10; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Updates column values using expressions"
+                  localeId="1033"
+                  name="Derived Column"
+                  usesDispositions="true">
+                  <inputs>
+                    <input
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Inputs[Derived Column Input]"
+                      description="Input to the Derived Column Transformation"
+                      name="Derived Column Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Inputs[Derived Column Input].Columns[Code]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="Code"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[Code]" />
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output]"
+                      description="Default Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      name="Derived Column Output"
+                      synchronousInputId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[BusinessDate]"
+                          dataType="date"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[BusinessDate]"
+                          name="BusinessDate"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::C_Reporting_Date]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::C_Reporting_Date]</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          length="3"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]"
+                          name="OrganisationCode"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::C_Organisation]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::C_Organisation]</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[SourceId]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[SourceId]"
+                          name="SourceId"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">1</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">1</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationID]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          length="1"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationID]"
+                          name="DimOrganisationID"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::OrganisationId]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::OrganisationId]</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[LowerCode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          length="50"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[LowerCode]"
+                          name="LowerCode"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">[LOWER](#{Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[Code]})</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">LOWER(Code)</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Error Output]"
+                      description="Error Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Derived Column Error Output"
+                      synchronousInputId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SqlServer v10; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                  description="OLE DB Source"
+                  name="Loan Source"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">EXEC [dbo].[usp_GetFactLoanCustomer_BaitiaoPlus]  ?</property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable">User::V_SelectStatement</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">2</property>
+                    <property
+                      dataType="System.String"
+                      description="The mappings between the parameters in the SQL command and variables."
+                      name="ParameterMapping">"@ReportingDate:Input",{5846EBA9-02A0-4E3C-94E2-00197EC2F0BE};</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[SFM_STAGING_CLO]"
+                      connectionManagerRefId="Package.ConnectionManagers[SFM_STAGING_CLO]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output]"
+                      name="OLE DB Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[DimReportingDateID]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].ExternalColumns[DimReportingDateID]"
+                          length="20"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[DimReportingDateID]"
+                          name="DimReportingDateID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[DataLineageId]"
+                          dataType="guid"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].ExternalColumns[DataLineageId]"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[DataLineageId]"
+                          name="DataLineageId"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[Code]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].ExternalColumns[Code]"
+                          length="100"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[Code]"
+                          name="Code"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[AccountNo]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].ExternalColumns[AccountNo]"
+                          length="255"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[AccountNo]"
+                          name="AccountNo"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].ExternalColumns[DimReportingDateID]"
+                          codePage="1252"
+                          dataType="str"
+                          length="20"
+                          name="DimReportingDateID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].ExternalColumns[DataLineageId]"
+                          dataType="guid"
+                          name="DataLineageId" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].ExternalColumns[Code]"
+                          dataType="wstr"
+                          length="255"
+                          name="Code" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].ExternalColumns[AccountNo]"
+                          dataType="wstr"
+                          length="255"
+                          name="AccountNo" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output]"
+                      isErrorOut="true"
+                      name="OLE DB Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output].Columns[DimReportingDateID]"
+                          codePage="1252"
+                          dataType="str"
+                          length="20"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output].Columns[DimReportingDateID]"
+                          name="DimReportingDateID" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output].Columns[AccountNo]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output].Columns[AccountNo]"
+                          name="AccountNo" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output].Columns[DataLineageId]"
+                          dataType="guid"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output].Columns[DataLineageId]"
+                          name="DataLineageId" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output].Columns[Code]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Error Output].Columns[Code]"
+                          name="Code" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2"
+                  componentClassID="Microsoft.Lookup"
+                  contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6"
+                  description="Joins additional columns to the data flow by looking up values in a table. For example, join to the 'employee id' column the employees table to get 'hire date' and 'employee name'. We recommend this transformation when the lookup table can fit into memory."
+                  name="Lookup 2"
+                  usesDispositions="true"
+                  version="6">
+                  <properties>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the SQL statement that generates the lookup table."
+                      expressionType="Notify"
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies a SQL statement that uses parameters to generate the lookup table."
+                      expressionType="Notify"
+                      name="SqlCommandParam"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from () [refTable]
+where [refTable].[Code] = ?</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the type of connection used to access the reference dataset."
+                      name="ConnectionType"
+                      typeConverter="LookupConnectionType">1</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the cache type of the lookup table."
+                      name="CacheType"
+                      typeConverter="CacheType">0</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
+                      name="NoMatchBehavior"
+                      typeConverter="LookupNoMatchBehavior">0</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset."
+                      name="NoMatchCachePercentage">0</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Maximum Memory Usage for Reference Cache on a 32 bit platform."
+                      name="MaxMemoryUsage">25</property>
+                    <property
+                      dataType="System.Int64"
+                      description="Maximum Memory Usage for Reference Cache on a 64 bit platform."
+                      name="MaxMemoryUsage64">25</property>
+                    <property
+                      dataType="System.String"
+                      description="Indicates whether to reference metadata in an XML format."
+                      name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="Code" dataType="DT_WSTR" length="50" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="DimCustomerID" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
+                      name="ParameterMap">#{Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[Code]};</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used."
+                      name="TreatDuplicateKeysAsError">false</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Connections[CacheConnection]"
+                      connectionManagerID="Package.ConnectionManagers[Cache Connection Manager DimCustomerID]"
+                      connectionManagerRefId="Package.ConnectionManagers[Cache Connection Manager DimCustomerID]"
+                      description="Connection manager used to access lookup data."
+                      name="CacheConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Inputs[Lookup Input]"
+                      name="Lookup Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Inputs[Lookup Input].Columns[Code]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="Code"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[Code]">
+                          <properties>
+                            <property
+                              dataType="System.String"
+                              description="Specifies the column in the reference table that a column joins."
+                              name="JoinToReferenceColumn">Code</property>
+                            <property
+                              dataType="System.Null"
+                              description="Specifies the column in the reference table from which a column is copied."
+                              name="CopyFromReferenceColumn" />
+                          </properties>
+                        </inputColumn>
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Outputs[Lookup Match Output]"
+                      errorOrTruncationOperation="Lookup"
+                      errorRowDisposition="FailComponent"
+                      exclusionGroup="1"
+                      name="Lookup Match Output"
+                      synchronousInputId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Inputs[Lookup Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Outputs[Lookup Match Output].Columns[DimCustomerID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Copy Column"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Outputs[Lookup Match Output].Columns[DimCustomerID]"
+                          name="DimCustomerID"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              dataType="System.String"
+                              description="Specifies the column in the reference table from which a column is copied."
+                              name="CopyFromReferenceColumn">DimCustomerID</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Outputs[Lookup No Match Output]"
+                      description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;"
+                      exclusionGroup="1"
+                      name="Lookup No Match Output"
+                      synchronousInputId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Inputs[Lookup Input]">
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Outputs[Lookup Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Lookup Error Output"
+                      synchronousInputId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Inputs[Lookup Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3"
+                  componentClassID="Microsoft.Lookup"
+                  contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6"
+                  description="Joins additional columns to the data flow by looking up values in a table. For example, join to the 'employee id' column the employees table to get 'hire date' and 'employee name'. We recommend this transformation when the lookup table can fit into memory."
+                  name="Lookup 3"
+                  usesDispositions="true"
+                  version="6">
+                  <properties>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the SQL statement that generates the lookup table."
+                      expressionType="Notify"
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies a SQL statement that uses parameters to generate the lookup table."
+                      expressionType="Notify"
+                      name="SqlCommandParam"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from () [refTable]
+where [refTable].[AccountNo] = ?</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the type of connection used to access the reference dataset."
+                      name="ConnectionType"
+                      typeConverter="LookupConnectionType">1</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the cache type of the lookup table."
+                      name="CacheType"
+                      typeConverter="CacheType">0</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
+                      name="NoMatchBehavior"
+                      typeConverter="LookupNoMatchBehavior">0</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset."
+                      name="NoMatchCachePercentage">0</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Maximum Memory Usage for Reference Cache on a 32 bit platform."
+                      name="MaxMemoryUsage">25</property>
+                    <property
+                      dataType="System.Int64"
+                      description="Maximum Memory Usage for Reference Cache on a 64 bit platform."
+                      name="MaxMemoryUsage64">25</property>
+                    <property
+                      dataType="System.String"
+                      description="Indicates whether to reference metadata in an XML format."
+                      name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="AccountNo" dataType="DT_WSTR" length="100" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="DimLoanID" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                    <property
+                      containsID="true"
+                      dataType="System.String"
+                      description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
+                      name="ParameterMap">#{Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[AccountNo]};</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used."
+                      name="TreatDuplicateKeysAsError">false</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Connections[CacheConnection]"
+                      connectionManagerID="Package.ConnectionManagers[Cache Connection Manager DimLoanID]"
+                      connectionManagerRefId="Package.ConnectionManagers[Cache Connection Manager DimLoanID]"
+                      description="Connection manager used to access lookup data."
+                      name="CacheConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Inputs[Lookup Input]"
+                      name="Lookup Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Inputs[Lookup Input].Columns[AccountNo]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="AccountNo"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[AccountNo]">
+                          <properties>
+                            <property
+                              dataType="System.String"
+                              description="Specifies the column in the reference table that a column joins."
+                              name="JoinToReferenceColumn">AccountNo</property>
+                            <property
+                              dataType="System.Null"
+                              description="Specifies the column in the reference table from which a column is copied."
+                              name="CopyFromReferenceColumn" />
+                          </properties>
+                        </inputColumn>
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Outputs[Lookup Match Output]"
+                      errorOrTruncationOperation="Lookup"
+                      errorRowDisposition="FailComponent"
+                      exclusionGroup="1"
+                      name="Lookup Match Output"
+                      synchronousInputId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Inputs[Lookup Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Outputs[Lookup Match Output].Columns[DimLoanID]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Copy Column"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Outputs[Lookup Match Output].Columns[DimLoanID]"
+                          name="DimLoanID"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              dataType="System.String"
+                              description="Specifies the column in the reference table from which a column is copied."
+                              name="CopyFromReferenceColumn">DimLoanID</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Outputs[Lookup No Match Output]"
+                      description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;"
+                      exclusionGroup="1"
+                      name="Lookup No Match Output"
+                      synchronousInputId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Inputs[Lookup Input]">
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Outputs[Lookup Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Lookup Error Output"
+                      synchronousInputId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Inputs[Lookup Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="OLE DB Destination"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[dbo].[tblFactLoanCustomer]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[SFM_DAL_CLO]"
+                      connectionManagerRefId="Package.ConnectionManagers[SFM_DAL_CLO]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DimReportingDateID]"
+                          cachedCodepage="1252"
+                          cachedDataType="str"
+                          cachedLength="20"
+                          cachedName="DimReportingDateID"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimReportingDateID]"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[DimReportingDateID]" />
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DataLineageId]"
+                          cachedDataType="guid"
+                          cachedName="DataLineageId"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DataLineageId]"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output].Columns[DataLineageId]" />
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[OrganisationCode]"
+                          cachedDataType="wstr"
+                          cachedLength="3"
+                          cachedName="OrganisationCode"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OrganisationCode]"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]" />
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DimCustomerID]"
+                          cachedDataType="i4"
+                          cachedName="DimCustomerID"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimCustomerID]"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Outputs[Lookup Match Output].Columns[DimCustomerID]" />
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DimLoanID]"
+                          cachedDataType="i4"
+                          cachedName="DimLoanID"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimLoanID]"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Outputs[Lookup Match Output].Columns[DimLoanID]" />
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of AccountNo]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="Copy of AccountNo"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AccountNo]"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Output].Columns[Copy of AccountNo]" />
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of Code]"
+                          cachedDataType="wstr"
+                          cachedLength="50"
+                          cachedName="Copy of Code"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerCode]"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Output].Columns[Copy of Code]" />
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[BusinessDate]"
+                          cachedDataType="date"
+                          cachedName="BusinessDate"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ReportingDate]"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[BusinessDate]" />
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[Copy of DimOrganisationID]"
+                          cachedDataType="wstr"
+                          cachedLength="1"
+                          cachedName="Copy of DimOrganisationID"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimOrganisationID]"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Output].Columns[Copy of DimOrganisationID]" />
+                        <inputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[SourceId]"
+                          cachedDataType="i4"
+                          cachedName="SourceId"
+                          externalMetadataColumnId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DatasourceID]"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[SourceId]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AccountNo]"
+                          dataType="wstr"
+                          length="100"
+                          name="AccountNo" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimLoanID]"
+                          dataType="i4"
+                          name="DimLoanID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CustomerCode]"
+                          dataType="wstr"
+                          length="100"
+                          name="CustomerCode" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimCustomerID]"
+                          dataType="i4"
+                          name="DimCustomerID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OrganisationCode]"
+                          dataType="wstr"
+                          length="10"
+                          name="OrganisationCode" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimOrganisationID]"
+                          dataType="i4"
+                          name="DimOrganisationID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ReportingDate]"
+                          dataType="dbDate"
+                          name="ReportingDate" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimReportingDateID]"
+                          dataType="i4"
+                          name="DimReportingDateID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DataLineageId]"
+                          dataType="guid"
+                          name="DataLineageId" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DatasourceID]"
+                          dataType="i4"
+                          name="DatasourceID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PrimaryBorrowerInd]"
+                          codePage="1252"
+                          dataType="str"
+                          length="1"
+                          name="PrimaryBorrowerInd" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task.Paths[Data Conversion Output]"
+                  endId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  name="Data Conversion Output"
+                  startId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Outputs[Data Conversion Output]" />
+                <path
+                  refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task.Paths[Derived Column Output]"
+                  endId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Inputs[Lookup Input]"
+                  name="Derived Column Output"
+                  startId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Outputs[Derived Column Output]" />
+                <path
+                  refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task.Paths[Lookup Match Output]"
+                  endId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Inputs[Lookup Input]"
+                  name="Lookup Match Output"
+                  startId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2.Outputs[Lookup Match Output]" />
+                <path
+                  refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task.Paths[Lookup Match Output1]"
+                  endId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1.Inputs[Data Conversion Input]"
+                  name="Lookup Match Output"
+                  startId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3.Outputs[Lookup Match Output]" />
+                <path
+                  refId="Package\Load Data to tblFactLoanCustomer\DataFlow Task.Paths[OLE DB Source Output]"
+                  endId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column.Inputs[Derived Column Input]"
+                  name="OLE DB Source Output"
+                  startId="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source.Outputs[OLE DB Source Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{0294A981-6F99-463B-A468-51B187DD2947}"
+      DTS:From="Package\Delete existing data"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Data Flow Task" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{48BE1303-E2DF-412B-A75B-D00141D091F4}"
+      DTS:From="Package\Data Flow Task"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Load Data to tblFactLoanCustomer" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="151,42"
+          Id="Package\Data Flow Task"
+          TopLeft="350,281" />
+        <NodeLayout
+          Size="236,44"
+          Id="Package\Delete existing data\Delete existing data from target table"
+          TopLeft="5.5,5.5" />
+        <NodeLayout
+          Size="208,42"
+          Id="Package\Delete existing data\Get OrganisationId by code"
+          TopLeft="15.5,90.5" />
+        <EdgeLayout
+          Id="Package\Delete existing data.PrecedenceConstraints[Constraint]"
+          TopLeft="121.5,90.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,-41"
+              Start="0,0"
+              End="0,-33.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,-33.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.924528301886795"
+          IsExpanded="True"
+          PanelSize="247,206"
+          Size="247,250"
+          Id="Package\Delete existing data"
+          TopLeft="531.66981132075,1" />
+        <NodeLayout
+          Size="148,42"
+          Id="Package\Load Data to tblFactLoanCustomer\DataFlow Task"
+          TopLeft="5.5,5.5" />
+        <ContainerLayout
+          HeaderHeight="43.924528301886795"
+          IsExpanded="True"
+          PanelSize="234,106"
+          Size="234,150"
+          Id="Package\Load Data to tblFactLoanCustomer"
+          TopLeft="546.490566037731,382.415094339623" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="655.16981132075,251">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-229.66981132075,30"
+              Start="0,0"
+              End="-229.66981132075,22.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,11" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,11"
+                    Point2="0,15"
+                    Point3="-4,15" />
+                  <mssgle:LineSegment
+                    End="-225.66981132075,15" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-225.66981132075,15"
+                    Point2="-229.66981132075,15"
+                    Point3="-229.66981132075,19" />
+                  <mssgle:LineSegment
+                    End="-229.66981132075,22.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="425.5,323">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="237.990566037731,59.415094339623"
+              Start="0,0"
+              End="237.990566037731,51.915094339623">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25.7075471698115" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,25.7075471698115"
+                    Point2="0,29.7075471698115"
+                    Point3="4,29.7075471698115" />
+                  <mssgle:LineSegment
+                    End="233.990566037731,29.7075471698115" />
+                  <mssgle:CubicBezierSegment
+                    Point1="233.990566037731,29.7075471698115"
+                    Point2="237.990566037731,29.7075471698115"
+                    Point3="237.990566037731,33.7075471698115" />
+                  <mssgle:LineSegment
+                    End="237.990566037731,51.915094339623" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Data Flow Task">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="150,42"
+          Id="Package\Data Flow Task\OLE DB Source"
+          TopLeft="175,73" />
+        <NodeLayout
+          Size="168,42"
+          Id="Package\Data Flow Task\Cache Transform 1"
+          TopLeft="401,227" />
+        <NodeLayout
+          Size="159,42"
+          Id="Package\Data Flow Task\Cache Transform"
+          TopLeft="205,217" />
+        <NodeLayout
+          Size="159,42"
+          Id="Package\Data Flow Task\OLE DB Source 1"
+          TopLeft="367,71" />
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[OLE DB Source Output]"
+          TopLeft="250,115">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="34.5,102"
+              Start="0,0"
+              End="34.5,94.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,47" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,47"
+                    Point2="0,51"
+                    Point3="4,51" />
+                  <mssgle:LineSegment
+                    End="30.5,51" />
+                  <mssgle:CubicBezierSegment
+                    Point1="30.5,51"
+                    Point2="34.5,51"
+                    Point3="34.5,55" />
+                  <mssgle:LineSegment
+                    End="34.5,94.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[OLE DB Source Output1]"
+          TopLeft="446.5,113">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="38.5,114"
+              Start="0,0"
+              End="38.5,106.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,53" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,53"
+                    Point2="0,57"
+                    Point3="4,57" />
+                  <mssgle:LineSegment
+                    End="34.5,57" />
+                  <mssgle:CubicBezierSegment
+                    Point1="34.5,57"
+                    Point2="38.5,57"
+                    Point3="38.5,61" />
+                  <mssgle:LineSegment
+                    End="38.5,106.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task\OLE DB Source 1">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Load Data to tblFactLoanCustomer\DataFlow Task">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="137,42"
+          Id="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source"
+          TopLeft="28.5,5.5" />
+        <NodeLayout
+          Size="154,42"
+          Id="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Derived Column"
+          TopLeft="91,137.5" />
+        <EdgeLayout
+          Id="Package\Load Data to tblFactLoanCustomer\DataFlow Task.Paths[OLE DB Source Output]"
+          TopLeft="97,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="71,90"
+              Start="0,0"
+              End="71,82.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,41" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,41"
+                    Point2="0,45"
+                    Point3="4,45" />
+                  <mssgle:LineSegment
+                    End="67,45" />
+                  <mssgle:CubicBezierSegment
+                    Point1="67,45"
+                    Point2="71,45"
+                    Point3="71,49" />
+                  <mssgle:LineSegment
+                    End="71,82.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="122,42"
+          Id="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2"
+          TopLeft="316,154" />
+        <EdgeLayout
+          Id="Package\Load Data to tblFactLoanCustomer\DataFlow Task.Paths[Derived Column Output]"
+          TopLeft="245,158.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="71,16.5"
+              Start="0,0"
+              End="63.5,16.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="31.5,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="31.5,0"
+                    Point2="35.5,0"
+                    Point3="35.5,4" />
+                  <mssgle:LineSegment
+                    End="35.5,12.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="35.5,12.5"
+                    Point2="35.5,16.5"
+                    Point3="39.5,16.5" />
+                  <mssgle:LineSegment
+                    End="63.5,16.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="122,42"
+          Id="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3"
+          TopLeft="542,173" />
+        <EdgeLayout
+          Id="Package\Load Data to tblFactLoanCustomer\DataFlow Task.Paths[Lookup Match Output]"
+          TopLeft="438,175">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="104,19"
+              Start="0,0"
+              End="96.5,19">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="48,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="48,0"
+                    Point2="52,0"
+                    Point3="52,4" />
+                  <mssgle:LineSegment
+                    End="52,15" />
+                  <mssgle:CubicBezierSegment
+                    Point1="52,15"
+                    Point2="52,19"
+                    Point3="56,19" />
+                  <mssgle:LineSegment
+                    End="96.5,19" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="3.80861328125,-17.609375,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="165,42"
+          Id="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Data Conversion 1"
+          TopLeft="480,279" />
+        <EdgeLayout
+          Id="Package\Load Data to tblFactLoanCustomer\DataFlow Task.Paths[Lookup Match Output1]"
+          TopLeft="603,215">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-40.5,64"
+              Start="0,0"
+              End="-40.5,56.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,28" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,28"
+                    Point2="0,32"
+                    Point3="-4,32" />
+                  <mssgle:LineSegment
+                    End="-36.5,32" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-36.5,32"
+                    Point2="-40.5,32"
+                    Point3="-40.5,36" />
+                  <mssgle:LineSegment
+                    End="-40.5,56.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-68.44138671875,37,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="171,42"
+          Id="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination"
+          TopLeft="467,384" />
+        <EdgeLayout
+          Id="Package\Load Data to tblFactLoanCustomer\DataFlow Task.Paths[Data Conversion Output]"
+          TopLeft="562.5,321">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-10,63"
+              Start="0,0"
+              End="-10,55.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,27.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,27.5"
+                    Point2="0,31.5"
+                    Point3="-4,31.5" />
+                  <mssgle:LineSegment
+                    End="-6,31.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-6,31.5"
+                    Point2="-10,31.5"
+                    Point3="-10,35.5" />
+                  <mssgle:LineSegment
+                    End="-10,55.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Loan Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 2">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:boolean">false</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Data to tblFactLoanCustomer\DataFlow Task\Lookup 3">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:boolean">false</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Data to tblFactLoanCustomer\DataFlow Task\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

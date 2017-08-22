@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL  nvarchar(max)
+Declare @bigsql nvarchar(max)
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_Targeting_Size_SetupConfiguration]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_Targeting_Size_SetupConfiguration]
+'
+exec (@vchSQL)
+
+--**************************************************
+--USP_Targeting_Size_SetupConfiguration
+--**************************************************
+Set @vchSQL ='Create Procedure [dbo].[USP_Targeting_Size_SetupConfiguration]
+(
+	@DimPoolId bigint
+	, @DimECId bigint
+	, @TargetTolerance decimal(15,2) = 0.01
+) AS Begin
+
+	Set NOCOUNT ON
+	
+	Declare @xmlEC xml
+
+	--****************************************************************
+	-- Build Up Configuration Table
+	--****************************************************************
+	Select	@xmlEC = EC.XMLSqlQueryEC   
+	From	dbo.tblDimEC EC
+	Where	DimPoolID = @DimPoolId And DimECID = @DimECId
+
+	Delete From dbo.tblTargetingConfig Where DimPoolID = @DimPoolId and DimECID = @DimECID
+	
+	insert tblTargetingConfig(DimPoolId, DimECID, TargetType, TargetName, TargetValue, TargetTolerance, TargetOriginalValue)
+	Select	@DimPoolID,
+	        @DimECID,
+	        t.c.value(''''@Name[1]'''', ''''varchar(50)''''),
+	        t.c.value(''''@Name[1]'''', ''''varchar(50)''''),
+	        t.c.value(''''@Value[1]'''', ''''money''''),
+	        @TargetTolerance,
+	        t.c.value(''''@Value[1]'''', ''''money'''')
+	From @xmlEC.nodes(''''/main/Parameters/Parameter[@Name="PoolSize"]'''') As t(c)
+	
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

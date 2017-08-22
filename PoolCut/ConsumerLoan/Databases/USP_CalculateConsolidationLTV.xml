@@ -1,0 +1,202 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+/****** Object:  StoredProcedure [dbo].[USP_CalculateConsolidationLTV]    Script Date: 07/03/2012 13:06:16 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_CalculateConsolidationLTV]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_CalculateConsolidationLTV]
+'
+exec (@vchSQL)
+
+set @vchSQL ='
+CREATE PROCEDURE [dbo].[USP_CalculateConsolidationLTV]
+(
+	@DimPoolId bigint,
+	@LTVPassNo varchar(50)
+) 
+As 
+Begin
+   SET NOCOUNT ON
+   
+   declare @DimOrganisationId bigint
+   declare @DimReportingDateID bigint
+   declare @FlagThreshHold decimal(15,4) = 1
+   declare @msg varchar(200)
+   declare @LoanBalance table(DimLoanID bigint not null PRIMARY KEY,
+                              LoanBalance decimal(15, 2) null,
+                              CurrentLimit decimal(15, 2))
+                              
+   BEGIN TRY
+         select @DimOrganisationId = DimOrganisationId, @DimReportingDateID = DimReportingDateID
+         from tblFactLoan
+         where DimPoolId = @DimPoolId
+   END TRY
+   BEGIN CATCH
+          set @msg = ''''DimOrganisationID and DimReportinDateID are not unique for the poolId = '''' + cast(@DimPoolId as varchar)
+          RAISERROR(@msg, 16, 1)
+          RETURN -1
+   END CATCH
+   
+   delete tblFactConsolidation
+   where DimPoolID = @DimPoolId and LTVPassNo = @LTVPassNo
+   /*
+   populate tblFactConsolidation from tblFactConsolidationLoan and tblFactConsolidationSecurity
+   for @DimPollId and @LTVPassNo
+   */
+   
+   Insert tblFactConsolidation
+	(	DimPoolId
+		, DimConsolidationId
+		, LTVPassNo
+		, DimReportingDateID
+		, DimOrganisationId
+		, SecurityCount
+		, LoanCount
+		, ConsolidationNo
+	)
+   Select	l.DimPoolId
+			, l.DimConsolidationId
+			, @LTVPassNo
+			, @DimReportingDateID
+			, @DimOrganisationId
+			, IsNull(s.SecurityCount, 0)
+			, l.LoanCount
+			, Fl.AccountNo 
+   From ( Select DimPoolId, DimConsolidationId, count(DimLoanId) as LoanCount
+          From tblFactConsolidationLoan
+          Where DimPoolId = @DimPoolId and LTVPassNo = @LTVPassNo
+          Group By DimPoolId, DimConsolidationId ) l
+   Inner Join	dbo.tblFactLoan as fl on fl.DimLoanID = l.DimConsolidationID
+									 And fl.DimPoolID = l.DimPoolID
+   left outer join (select DimPoolId, DimConsolidationId, count(DimSecurityId) as SecurityCount
+                    from tblFactConsolidationSecurity
+                    where DimPoolId = @DimPoolId and LTVPassNo = @LTVPassNo
+                    group by DimPoolId, DimConsolidationId) s on l.DimPoolId = s.DimPoolId and l.DimConsolidationId = s.DimConsolidationId
+          
+   --LOanBalance = 0 if LoanStatus = ''''close'''' not required
+   insert @LoanBalance
+   select DimLoanId,
+          LoanBalance = CurrentPrincipalBalance,
+                        -- CASE
+                        --   WHEN LoanStatus = ''''close'''' THEN 0.0
+                        --   ELSE CurrentPrincipalBalance
+                        -- END,
+          CurrentLimit = CurrentLimit
+                        -- CASE
+                        --   WHEN LoanStatus = ''''close'''' THEN 0.0
+                        --   ELSE CurrentLimit
+                        -- END
+   from tblFactLoan
+   where DimPoolId = @DimPoolId
+
+   -- Calculate ConsolidationBalance
+   update tblFactConsolidation
+   set ConsolidationBalance = t.ConsolidationBalance,
+       ConsolidationLimitBalance = t.ConsolidationLimitBalance,
+       ConsolidationSeasoning = t.ConsolidationSeasoning,
+       WeightedSeasoning = t.WeightedSeasoning
+   from tblFactConsolidation c
+   inner join
+       (
+          select cl.DimConsolidationId,
+                 ConsolidationBalance = SUM(lb.LoanBalance),
+                 ConsolidationLimitBalance = SUM(lb.CurrentLimit),
+                 SUM(lb.LoanBalance * fl.Seasoning) as WeightedSeasoning,
+                 case
+                    when SUM(lb.LoanBalance) = 0 THEN 0
+                    else SUM(lb.LoanBalance * fl.Seasoning)/SUM(lb.LoanBalance)
+                 end as ConsolidationSeasoning
+          from tblFactConsolidationLoan cl
+          inner join tblFactLoan fl on cl.DimLoanId = fl.DimLoanId and fl.DimPoolId = @DimPoolID
+          inner join @LoanBalance lb on fl.DimLoanID = lb.DimLoanID
+          where cl.DimPoolId = @DimPoolID and cl.LTVPassNo = @LTVPassNo
+          group by cl.DimConsolidationId
+        ) t on c.DimConsolidationId = t.DimConsolidationId
+     where c.DimPoolId = @DimPoolID and c.LTVPassNo = @LTVPassNo
+     
+   -- Calculate ConsolidationValuation
+   update tblFactConsolidation
+   set ConsolidationValuation = t.ConsolidationValuation,
+       ConsolidationLTV =
+						   case
+							  when IsNull(t.ConsolidationValuation, 0) = 0.0 THEN 0.0
+							  else ConsolidationBalance/t.ConsolidationValuation
+						   end,
+       ConsolidationLimitLTV =
+						   case
+							  when IsNull(t.ConsolidationValuation, 0) = 0.0 THEN 0.0
+							  else ConsolidationLimitBalance/t.ConsolidationValuation
+						   end,						   
+	   WeightedConsolidationLTV = 
+	                              case
+	                                 when IsNull(t.ConsolidationValuation, 0) = 0.0 THEN 0.0
+	                                 else ConsolidationBalance * ConsolidationBalance/t.ConsolidationValuation
+	                              end,
+	   WeightedConsolidationLimitLTV = 
+	                              case
+	                                 when IsNull(t.ConsolidationValuation, 0) = 0.0 THEN 0.0
+	                                 else ConsolidationBalance * ConsolidationLimitBalance/t.ConsolidationValuation
+	                              end
+   from tblFactConsolidation c
+   left outer join
+        (
+          select cs.DimConsolidationId, SUM(IsNull(fs.SecurityValuationAmt, 0)) as ConsolidationValuation
+          from tblFactConsolidationSecurity cs
+          inner join tblFactSecurity fs on cs.DimSecurityId = fs.DimSecurityId and fs.DimPoolId = @DimPoolID
+          where cs.DimPoolId = @DimPoolID and cs.LTVPassNo = @LTVPassNo
+          group by cs.DimConsolidationId
+        ) t on c.DimConsolidationId = t.DimConsolidationId
+     where c.DimPoolId = @DimPoolID and c.LTVPassNo = @LTVPassNo
+     
+    exec USP_UpdateConsolidationDistributions @DimPoolID, @LTVPassNo
+    
+    Update	dbo.tblFactConsolidation 
+	Set		ConsolidationScrubbedLoanFlag = ( Case When Result.ScrubbedPercent >= @FlagThreshHold Then ''''Y'''' Else ''''N'''' End )
+			, ConsolidationPaymentTypeCode = ( Case When Result.PaymentTypePercent >= @FlagThreshHold Then ''''I'''' Else ''''N'''' End)
+			, ConsolidationDimTrustID = Result.MaxDimTrustId
+	From   dbo.tblFactConsolidation	FC	
+	Join
+	(
+		Select	distinct 
+				FC.DimConsolidationID
+				,	Case When FC.ConsolidationBalance = 0 Then 0
+						 Else 
+							SUM ( Case When DL.PaymentTypeCode = ''''I'''' Then FL.CurrentPrincipalBalance Else 0 End ) 
+							Over (PARTITION BY FC.DimConsolidationID) / FC.ConsolidationBalance
+					End As PaymentTypePercent  
+				,	Case When FC.ConsolidationBalance = 0 Then 0
+						 Else 
+							SUM ( Case When	DL.ScrubbedFlag = ''''Y'''' Then FL.CurrentPrincipalBalance Else 0 End) 
+							Over (PARTITION BY FC.DimConsolidationID) / FC.ConsolidationBalance 
+					End As ScrubbedPercent
+				,	MAX(FL.DimTrustID) Over (PARTITION BY FC.DimConsolidationID) As MaxDimTrustId
+		From	dbo.tblFactConsolidation FC
+		Join	dbo.tblFactConsolidationLoan FCL On FCL.DimPoolID = FC.DimPoolID
+												And FCL.DimConsolidationID = FC.DimConsolidationID
+												And FCL.LTVPassNo = FC.LTVPassNo
+		Join	dbo.tblFactLoan FL On FL.DimLoanID = FCL.DimLoanId
+								  And FL.DimPoolID = FCL.DimPoolID
+		Join	dbo.tblDimLoan DL on FL.DimLoanID = DL.DimLoanId
+								 and FL.DimPoolID = DL.DimPoolID
+		Where	FC.DimPoolID = @DimPoolId
+		And		FC.LTVPassNo = @LTVPassNo
+	) As Result on Result.DimConsolidationID = FC.DimConsolidationID
+	Where FC.DimPoolID = @DimPoolId
+	And	FC.LTVPassNo = @LTVPassNo
+    
+End'
+
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

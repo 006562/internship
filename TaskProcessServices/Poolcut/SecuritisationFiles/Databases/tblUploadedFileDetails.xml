@@ -1,0 +1,30 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+    <Parameters>
+        <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+    </Parameters>
+    <Query>
+        <![CDATA[
+declare @vchSQL  varchar(8000)
+set @vchSQL = 'use [' + @DBName + ']
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tblUploadedFileDetails]'') AND type in (N''U''))
+DROP TABLE [dbo].[tblUploadedFileDetails]
+
+SET ANSI_NULLS ON
+SET QUOTED_IDENTIFIER ON
+SET ANSI_PADDING ON
+
+CREATE TABLE [dbo].[tblUploadedFileDetails](
+	[UploadID] [bigint] NOT NULL,
+	[AccountNo] [varchar](20) NULL,
+	[AuditLoan] [bit] NULL,
+	[Included] [bit] NULL
+) ON [PRIMARY]'
+
+exec (@vchSQL)
+
+]]>
+    </Query>
+
+</main>

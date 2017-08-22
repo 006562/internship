@@ -1,0 +1,47 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <title></title>
+    <link href="../Contents/bootstrap.min.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Contents/bootstrap.min.js"></script>
+    <style>
+        .deleteTab {
+            margin-left: 1em;
+            cursor: pointer;
+            color: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        <li role="presentation" class="active"><a href="#home" role="tab" data-toggle="tab">Home</a></li>
+        <li role="presentation"><a href="#profile" role="tab" data-toggle="tab">Profile<span class="deleteTab">×</span></a></li>
+        <li role="presentation"><a href="#messages" role="tab" data-toggle="tab">Messages<span class="deleteTab">×</span></a></li>
+        <li role="presentation"><a href="#settings" role="tab" data-toggle="tab">Settings<span class="deleteTab">×</span></a></li>
+    </ul>
+
+    <!-- Tab panes -->
+    <div class="tab-content">
+        <div role="tabpanel" class="tab-pane active" id="home">...</div>
+        <div role="tabpanel" class="tab-pane" id="profile">...</div>
+        <div role="tabpanel" class="tab-pane" id="messages">...</div>
+        <div role="tabpanel" class="tab-pane" id="settings">...</div>
+    </div>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $(".deleteTab").bind("click", function () {
+                $(this).parent().parent().remove();
+                $($(this).parent().attr("href")).remove();
+                $("ul[role='tablist'] li a:last").tab("show")
+            })
+        });
+    </script>
+</body>
+</html>

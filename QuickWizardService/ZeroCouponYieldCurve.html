@@ -1,0 +1,92 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <title data-bind="text: Language.Title"></title>
+    <link rel="stylesheet" href="Contents/bootstrap.css" />
+    <link rel="stylesheet" href="Contents/model.css" />
+    <script src="Scripts/jquery-1.7.2.min.js"></script>
+    <script src="Scripts/jquery.cookie.js"></script>
+    <script src="Scripts/knockout-3.4.0.js"></script>
+    <script src="Scripts/knockout.mapping-latest.js"></script>
+    <script src="Scripts/dataOperate.js"></script>
+    <script src="Scripts/common.js"></script>
+    <script type="text/javascript">
+        var set;
+        var myModel = {
+            Language: {},
+        }
+        function getLanguage(set) {
+            var zh_CN = { SwitchLang: "Switch to English", Title: "固收产品定价与量化分析", TabTitle: "固收量化分析", 
+                            TabTitle01: "市场基础利率数据", TabTitle02: "自定义基准债券系列", TabTitle03: "现金流定价", 
+                            TabText01: "SHIBOR收益率曲线等", TabText02: "自定义基准债券系列", TabText03: "现金流定价"};
+            var en_US = { SwitchLang: "切换至中文", Title: "Fixed Income Pricing and Analytics", 
+                            TabTitle: "Fixed Income Analytics", 
+                            TabTitle01: "Market Benchmark Rates", TabTitle02: "Custom Benchmark Bonds",
+                            TabTitle03: "Cashflow Pricing", TabText01: "Yield Curves (SHIBOR, etc)",
+                            TabText02: "Custom Benchmark Bonds", TabText03: "Cashflow Pricing"};
+            switch (set) {
+                case "zh-CN":
+                    return zh_CN;
+                case "en-US":
+                    return en_US;
+            }
+        }
+        
+        set = getQueryString("set");
+        if(set == null) {
+            set=$.cookie('set'); 
+            if(set == null) {
+                set = 'zh-CN';
+            }
+        }
+    </script>
+</head>
+<body>
+
+    <div class="page">
+        <div class="aside">
+            <div class="step-box">
+                <div class="step-head">
+                    <div class="step-menu"><i class="icon icon-list"></i></div>
+                    <h2><span data-bind="text:Language.TabTitle"></span></h2>
+                </div>
+                <ul class="main-page-nav">
+                    <li data-url="Pages/ZCYCurve_0.html" data-mid="4" data-pid="18" style="cursor:pointer">
+                        <span class="no">1</span>
+                        <span class="flag"><i class="icon icon-right"></i></span>
+                        <h3 class="step-title"><span data-bind="text:Language.TabTitle01"></span></h3>
+                        <p class="step-text"><span data-bind="text:Language.TabText01"></span></p>
+                    </li>
+                    <li data-url="Pages/ZCYCurve_1.html" data-mid="4" data-pid="14" style="cursor:pointer">
+                        <span class="no">2</span>
+                        <span class="flag"><i class="icon icon-right"></i></span>
+                        <h3 class="step-title"><span data-bind="text:Language.TabTitle02"></span></h3>
+                        <p class="step-text"><span data-bind="text:Language.TabText02"></span></p>
+                    </li>
+                    <li data-url="Pages/ZCYCurve_2.html" data-mid="4" data-pid="15" style="cursor:pointer">
+                        <span class="no">3</span>
+                        <span class="flag"><i class="icon icon-right"></i></span>
+                        <h3 class="step-title"><span data-bind="text:Language.TabTitle03"></span></h3>
+                        <p class="step-text"><span data-bind="text:Language.TabText03"></span></p>
+                    </li>
+                </ul>
+                
+            </div>
+        </div>
+        <div class="work">
+            <button type="button" id="SwitchLang" onclick="switchLang()"><span data-bind="text:Language.SwitchLang"></span></button>
+            <iframe src="" frameborder="0"></iframe>
+        </div>
+    </div>
+<style type="text/css">
+    #SwitchLang { background:none;
+                  border:none;
+                  position:fixed;
+                  top:15px;
+                  right:20px; }
+</style>
+    <script src="MainPageIFrameSetting.js"></script>
+</body>
+</html>

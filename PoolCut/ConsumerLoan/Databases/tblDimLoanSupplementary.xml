@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+declare @vchSQL  varchar(8000)
+set @vchSQL = 'use [' + @DBName + ']
+
+/****** Object:  Table [dbo].[tblDimLoanSupplementary]    Script Date: 01/02/2013 17:24:24 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tblDimLoanSupplementary]'') AND type in (N''U''))
+DROP TABLE [dbo].[tblDimLoanSupplementary]
+
+/****** Object:  Table [dbo].[tblDimLoanSupplementary]    Script Date: 01/02/2013 17:24:24 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+SET ANSI_PADDING ON
+
+CREATE TABLE [dbo].[tblDimLoanSupplementary](
+	[DimLoanID] [bigint] NOT NULL,
+	[AccountNo] [varchar](20) NOT NULL,
+	[CrossCollateralisationFlag] [char](10) NULL,
+	[DocumentType] [varchar](20) NULL,
+	[MortgageInsuranceInd] [varchar](20) NULL,
+	[MortgageInsurerCode] [varchar](20) NULL,
+	[MortgageInsurerDesc] [varchar](300) NULL,
+	[OriginalBrand] [varchar](20) NULL,
+	[PaymentFrequency] [varchar](20) NULL,
+	[PurposeCode] [varchar](20) NULL,
+	[PurposeDesc] [varchar](300) NULL,
+	[SecuritisationDealNo] [varchar](20) NULL,
+	[MonthlyPaymentAmount] [decimal](15, 4) NULL,
+	[PaymentAmount] [decimal](15, 2) NULL,
+  [PendingSecuritisationNumber] [varchar](20) NULL,
+  [UCCCRegulated] [varchar](20) NULL,
+  [WarnCode] [varchar](20) NULL,
+  [EnforcementFlag]  [varchar](20) NULL,
+  [LitigationFlag]  [varchar](20) NULL,
+  [ProgressiveDrawdownFlag] [varchar](20) NULL,
+  [HardshipFlag] [varchar](1) NULL,
+  [LastInArrearsDate] [datetime] null,
+  [StaffIndicator] [varchar](20) NULL,
+  [FirstHomeBuyerInd] [varchar](20) NULL,
+  [SoldSecuritisationNo] [varchar](20) NULL,
+  [CustomerCode] [varchar](50) NULL,
+  [ResidentDesc] [varchar](50) NULL,
+  [InvolvementType] [varchar](20) NULL,
+  [Guarantee] [varchar](20) NULL,
+  [SelfEmploymentIndicator] [varchar](12) NULL,
+  [OffsetIndicator] [varchar](10) NULL
+  
+ CONSTRAINT [PK_tblDimLoanSupplimentary] PRIMARY KEY CLUSTERED 
+(
+	[DimLoanID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]'
+
+exec (@vchSQL)
+
+]]>
+  </Query>
+
+</main>

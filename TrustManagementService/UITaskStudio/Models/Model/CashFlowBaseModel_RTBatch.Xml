@@ -1,0 +1,78 @@
+﻿<Tool Name="CashFlowBaseModel">
+    <Actions>
+      <Action ActionCode="RBAApprove" ActionDisplayName="获取情景设置" FunctionName="RunSP" SequenceNo="1">
+        <Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+        <Parameter Name="ConnectionString" SessionParameterName="" Value="Data Source=poolcutsp\MSSQL;Initial Catalog=SFM_QuantDB_FixedIncome;Integrated Security=SSPI;" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="SPName" SessionParameterName="" Value="[RiskTransfer].[usp_GetRiskTransferScenarioParameters]" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="SessionId" SessionParameterName="SessionId" Value="" DataType="UniqueIdentifier" Usage="SQLParameter" IsConfigurable="false" />
+        <Parameter Name="ParentSessionId" SessionParameterName="ParentSessionId" Value="" DataType="UniqueIdentifier" Usage="SQLParameter" IsConfigurable="false" />
+        <Parameter Name="ScenarioNo" SessionParameterName="ScenarioNo" Value="" DataType="VarChar" Usage="SQLParameter" IsConfigurable="false" />
+      </Action>
+      <Action ActionCode="InitSessionVariable" ActionDisplayName="初始化模型变量" FunctionName="RunSP" SequenceNo="2">
+        <Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+        <Parameter Name="SPName" SessionParameterName="" Value="[Task].[usp_CopyTaskProcessContextToSessionContext]" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="ConnectionString" SessionParameterName="" Value="Server=mssql;Database=TaskProcess;Trusted_Connection=True;" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="SessionId" SessionParameterName="SessionId" Value="" DataType="UniqueIdentifier" Usage="SQLParameter" IsConfigurable="false" />
+        <Parameter Name="TaskCode" SessionParameterName="TaskCode" Value="" DataType="NVarChar" Usage="SQLParameter" IsConfigurable="false" />
+      </Action>
+      <Action ActionCode="InitSessionContextArray" ActionDisplayName="初始化模型数组变量" FunctionName="RunSP" SequenceNo="3">
+        <Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false"/>
+        <Parameter Name="SPName" SessionParameterName="" Value="[Task].[usp_CopyTaskProcessArrayToSessionContextArray]" DataType="String" Usage="Task" IsConfigurable="false"/>
+        <Parameter Name="ConnectionString" SessionParameterName="" Value="Server=mssql;Database=TaskProcess;Trusted_Connection=True;" DataType="String" Usage="Task" IsConfigurable="false"/>
+        <Parameter Name="SessionId" SessionParameterName="SessionId" Value="" DataType="UniqueIdentifier" Usage="SQLParameter" IsConfigurable="false"/>
+        <Parameter Name="TaskCode" SessionParameterName="TaskCode" Value="" DataType="NVarChar" Usage="SQLParameter" IsConfigurable="false"/>
+      </Action>
+      <Action ActionCode="PrepareSessionVariables" ActionDisplayName="初始化内存变量" FunctionName="InitializeMemoryObject" SequenceNo="4">
+        <Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+      </Action>
+      <Action ActionCode="InitCashFlowFromMemory" ActionDisplayName="初始化现金流变量" FunctionName="RunManagedMethodByPath" SequenceNo="5">
+        <Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+        <Parameter Name="AssemblyPath" SessionParameterName="" Value="E:\\TSSWCFServices\\TrustManagementService\\bin\\DADP.CashFlowStudioEntity.dll" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="TypeName" SessionParameterName="" Value="DADP.CashFlowStudioEntity.CashFlowInputProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="MethodName" SessionParameterName="" Value="InitSessionContextArrayFromMemory" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="sSessionId" SessionParameterName="SessionId" Value="" DataType="String" Usage="" IsConfigurable="false" />
+        <Parameter Name="sConnectionString" SessionParameterName="" Value="Server=mssql;Database=TaskProcess;Trusted_Connection=True;" DataType="String" Usage="" IsConfigurable="false" />
+        <Parameter Name="sAppDomain" SessionParameterName="" Value="Task" DataType="String" Usage="" IsConfigurable="false" />
+      </Action>
+      <Action ActionCode="CompileModel" ActionDisplayName="现金流模型编译" FunctionName="RunManagedMethodByPath" SequenceNo="6">
+        <Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+        <Parameter Name="AssemblyPath" SessionParameterName="" Value="E:\\TSSWCFServices\\TrustManagementService\\bin\\AddIn.CashflowScript.dll" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.CashFlowScriptAddIn" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="MethodName" SessionParameterName="" Value="CompileCashFlowEquationPlus" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="sSessionId" SessionParameterName="SessionId" Value="" DataType="String" Usage="" IsConfigurable="false" />
+        <Parameter Name="sConnectionString" SessionParameterName="" Value="Server=mssql;Database=TaskProcess;Trusted_Connection=True;" DataType="String" Usage="" IsConfigurable="false" />
+        <Parameter Name="sAppDomain" SessionParameterName="" Value="Task" DataType="String" Usage="" IsConfigurable="false" />
+        <Parameter Name="sDLLFilePath" SessionParameterName="" Value="C:\\TEMP\\" DataType="String" Usage="" IsConfigurable="false" />
+        <Parameter Name="sDLLFileName" SessionParameterName="" Value="CashFlowEquationScript" DataType="String" Usage="" IsConfigurable="false" />
+        <Parameter Name="thirdPartyDllPath" SessionParameterName="" Value="E:\\TSSWCFServices\\TrustManagementService\\bin\\AddIn.CashflowScript.dll" DataType="String" Usage="" IsConfigurable="false" />
+      </Action>
+      <Action ActionCode="CaculateCashFlowTask" ActionDisplayName="现金流计算任务" FunctionName="RunManagedMethodByPath" SequenceNo="151">
+        <Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="true" />
+        <Parameter Name="NumberFormat" SessionParameterName="" Value="{0:#,0.00}" DataType="String" Usage="CashFlow" IsConfigurable="true" />
+        <Parameter Name="InputType" SessionParameterName="" Value="Export" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+        <Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+        <Parameter Name="AssemblyPath" SessionParameterName="" Value="C:\\Temp\\CashFlowEquationScript.dll" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="MethodName" SessionParameterName="" Value="ExecuteAll" DataType="String" Usage="Task" IsConfigurable="true" />
+        <Parameter Name="startPosition" SessionParameterName="StartPeriod" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+        <Parameter Name="endPosition" SessionParameterName="EndPeriod" Value="0" DataType="Int16" Usage="" IsConfigurable="false" />
+      </Action>
+      <Action ActionCode="ExportModel" ActionDisplayName="模型输出(数据库)" FunctionName="RunManagedMethodByPath" SequenceNo="152">
+        <Parameter Name="InputType" SessionParameterName="" Value="Export" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+        <Parameter Name="AssemblyPath" SessionParameterName="" Value="E:\\TSSWCFServices\\TrustManagementService\\bin\\DADP.CashFlowStudioEntity.dll" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="TypeName" SessionParameterName="" Value="DADP.CashFlowStudioEntity.CashFlowInputProvider" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="MethodName" SessionParameterName="" Value="ExportDisplayCashFlowToDataBase" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="sSessionId" SessionParameterName="SessionId" Value="" DataType="String" Usage="" IsConfigurable="false" />
+        <Parameter Name="sConnectionString" SessionParameterName="" Value="Server=mssql;Database=TaskProcess;Trusted_Connection=True;" DataType="String" Usage="" IsConfigurable="false" />
+        <Parameter Name="sAppDomain" SessionParameterName="" Value="Task" DataType="String" Usage="" IsConfigurable="false" />
+      </Action>
+      <Action ActionCode="ExportModel" ActionDisplayName="现金流汇总计算" FunctionName="RunSP" SequenceNo="153">
+        <Parameter Name="InputType" SessionParameterName="" Value="Export" DataType="String" Usage="CashFlow" IsConfigurable="false" />
+        <Parameter Name="ConnectionString" SessionParameterName="" Value="Data Source=poolcutsp\MSSQL;Initial Catalog=SFM_QuantDB_FixedIncome;Integrated Security=SSPI;" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="SPName" SessionParameterName="" Value="[RiskTransfer].usp_RiskTransferCashflowAggregation" DataType="String" Usage="Task" IsConfigurable="false" />
+        <Parameter Name="ParentSessionId" SessionParameterName="ParentSessionId" Value="" DataType="UniqueIdentifier" Usage="SQLParameter" IsConfigurable="false" />
+        <Parameter Name="SessionId" SessionParameterName="SessionId" Value="" DataType="UniqueIdentifier" Usage="SQLParameter" IsConfigurable="false" />
+        <Parameter Name="ScenarioNo" SessionParameterName="ScenarioNo" Value="" DataType="VarChar" Usage="SQLParameter" IsConfigurable="false" />
+      </Action>
+    </Actions>
+</Tool>

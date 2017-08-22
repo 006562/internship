@@ -1,0 +1,39 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../js/jquery-1.12.1.min.js"></script>
+    <script src="../js/gs-admin-2.pages.js"></script>
+    <script type="text/javascript">
+        $(function () {
+
+            //The way how to get data from parent page transfer
+
+            var data = GSDialog.GetData();
+            $('#h3').html(JSON.stringify(data));
+        });
+        function fnBtnClick(submit) {
+            
+            // something else you'd like to do (eg: save the data to db) and then:
+
+            var result = submit ? 'ttt' : 'fff';//also this value can be any data
+            GSDialog.Close(result);
+        }
+        function test() {
+            GSDialog.Open('baidu','https://www.baidu.com',null,null,900,400);
+        }
+    </script>
+</head>
+<body>
+    <h1>I'm a dialog page!</h1>
+    
+    <h2>Followings are the data from parent page</h2>  
+    <h3 id="h3"></h3>    
+
+    <h3>Buttons in dialog page:</h3>
+    <p><button type="button" onclick="fnBtnClick(true)">Submit</button><button type="button" onclick="fnBtnClick()">Cancel</button></p>
+    <p>
+        <button type="button" onclick="test()">another dialog page will be displayed in this one</button>
+    </p>
+</body>
+</html>

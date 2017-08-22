@@ -1,0 +1,1160 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>资产设置</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+	<link href="js/bootstrap.css" rel="stylesheet" />
+	<link href="css/trustWizard.css" rel="stylesheet" />
+	<link href="js/jquery-ui.css" rel="stylesheet" type="text/css" />
+	
+	<script src="js/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="js/GlobalVariable.js"></script>
+    <script src="js/MathCalculate.js"></script>
+    <script src="js/calendar.min.js"></script>
+    <script src="js/jquery-ui-latest.js" type="text/javascript"></script>
+    <script src="js/knockout-3.4.0.js"></script>
+    <script src="js/knockout.mapping-latest.js"></script>
+    <script src="js/knockout.binding.rendercontrol.js"></script>
+    <script src="js/format.number.js"></script>
+    <script src="js/common.js"></script>
+    <script src="js/wcfProxy.js"></script>
+    <script src="js/anyDialog.js"></script>
+    <script src="js/showModalDialog.js"></script>
+    <script src="js/viewTrustWizard.js"></script>
+
+	<link href="css/pagerlist-style.css" rel="stylesheet" />
+    <!--  <script src="js/AssetDetailListKendoGrid.js"></script>  -->
+    <script src="js/jquery.datagrid.js"></script>
+    <script src="js/jquery.datagrid.options.js"></script>
+    <script src="js/PagerList.js"></script>
+	<script src="js/dataOperate.js"></script>
+	<script src="js/App.Global.js"></script>
+ 
+    <script type="text/javascript">
+		var trustId = getQueryString('id');
+        var FileVaraible = {
+            count: 0,
+            filePath: ""
+        }
+		var AssetKind='LargeBond';//getQueryString('AssetKind');
+        function date_input_func() {
+            $('.date-plugins').date_input();//.attr('readonly', true);
+        }
+        $(function () {
+            date_input_func();
+			if(AssetKind=='LargeBond'){
+				PagerListModule.Init(listCategory.LargeBondAssetList, 'usp_GetAssetListsWithPager', trustId,
+                GlobalVariable.DataProcessServiceUrl + 'CommonGetExecute?connConfig=TrustManagement&',
+                '#divDataList');
+			}else{
+				PagerListModule.Init(listCategory.OthersAssetList, 'usp_GetAssetListsWithPager', trustId,
+                GlobalVariable.DataProcessServiceUrl + 'CommonGetExecute?connConfig=TrustManagement&',
+                '#divDataList');
+			}
+            PagerListModule.FetchMetaData({
+                SPName: 'usp_GetDateByTrustId', SQLParams: [
+                    { Name: 'TrustId', value: trustId, DBType: 'int' }
+                ]
+            }, function (data) {
+                var html = '';//'<option value="">所有</option>';
+                //  sortData(data, 'OptionValue');
+                $.each(data, function (i, item) {
+                    var t = item.ReportingDate ? getStringDate(item.ReportingDate).dateFormat('yyyy-MM-dd') : '';
+                    html += '<option value="' + t + '">' + t + '</option>';
+                });
+                $('#selPayDateFilter').html(html);
+                PagerListModule.DataBind(function (haveData) { });
+                //console.log(kendouiGrid);
+                //kendouiGrid.RunderGrid();
+            });
+            $("#btnStatistics").anyDialog({
+                width: 1000,	// 弹出框内容宽度
+                height: 600, // 弹出框内容高度
+                title: '统计视图',	// 弹出框标题
+                url: './TrustFollowUp/statistics.html?trustId=' + trustId
+            });
+
+        });
+        function sortData(datalist, column) {
+            datalist = datalist.sort(function (b, a) {
+                return a[column] - b[column];
+            });
+        }
+        $('#btnReset').click(function () {
+            $('.list-filters .filter').val('');
+            PagerListModule.Filter({});
+        });
+        $('#btnSearch').click(function () {
+            searchWhere();
+            //kendouiGrid.RefreshGrid();
+        });
+        function searchWhere() {
+            var filterWhere = getWhere();
+            PagerListModule.Filter({ 'where': filterWhere, 'payDate': getPayDate() });
+        }
+        function getWhere() {
+            var filterWhere = '';
+            $('.list-filters .filter').each(function () {
+                var $this = $(this);
+                var value = $this.val();
+                if (!value || value.length < 1) { return true; }
+
+                var param = $this.attr('name');
+                if ($this.hasClass('like')) {
+                    filterWhere += ' and ' + param + ' like N\'%' + value + '%\'';
+                } else {
+                    filterWhere += ' and ' + param + ' = N\'' + value + '\'';
+                }
+            });
+            return filterWhere;
+        }
+        function getPayDate() {
+            return $("#selPayDateFilter").length > 0 ? ($("#selPayDateFilter").val() ? $("#selPayDateFilter").val() : '') : undefined;
+        }
+        $('#btnImport').click(function () {
+            importAsset = true;
+            $('#spanUploadProgressMsg').html('');
+            $('#btnUploadAssetSourceFile').attr('disabled', false);
+            $('#BasicAssetSourceFileUpload, #BasicAssetReportingDate').val('');
+            $('.upload-sourcefile').toggle(300);
+            $('.upload-cashflowfile').hide();
+            $('.upload-datafile').hide();
+            $('.export-cashflowfile').hide();
+        });
+
+        $('#btnImportCashFlow').click(function () {
+            importAsset = true;
+            $('#UploadCashFlowProgressMsg').html('');
+            $('#btnUploadCashFlowFile').attr('disabled', false);
+            $('#CashFlowUpload, #CashFlowReportingDate').val('');
+            $('.upload-cashflowfile').toggle(300);
+            $('.upload-sourcefile').hide();
+            $('.upload-datafile').hide();
+            $('.upload-exportfile').hide();
+            $('.export-cashflowfile').hide();
+
+        });
+
+        $('#btnImportData').click(function () {
+            importAsset = true;
+            $('#dataUploadProgressMsg').html('');
+            $('#databtnUploadAssetSourceFile').attr('disabled', false);
+            $('#dataBasicAssetSourceFileUpload, #dataBasicAssetReportingDate').val('');
+            $('.upload-datafile').toggle(300);
+            $('.upload-cashflowfile').hide();
+            $('.upload-sourcefile').hide();
+            $('.upload-exportfile').hide();
+            $('.export-cashflowfile').hide();
+
+        });
+
+        $('#btnExportData').click(function () {
+            importAsset = true;
+            $('#DownloadDataProgressMsg').html('');
+            $('#btnDownloadData').attr('disabled', false);
+            $('#DownloadDataReportingDate').val('');
+            $('.upload-exportfile').toggle(300);
+            $('.upload-cashflowfile').hide();
+            $('.upload-sourcefile').hide();
+            $('.upload-datafile').hide();
+            $('.export-cashflowfile').hide();
+        });
+
+        //$('#btnExportCashflow').click(function () {
+        //    importAsset = true;
+        //    $('#DownloadCashflowProgressMsg').html('');
+        //    $('#btnDownloadCashflow').attr('disabled', false);
+        //    $('#DownloadCashflowReportingDate').val('');
+        //    $('.export-cashflowfile').toggle(300);
+        //    $('.upload-exportfile').hide();
+        //    $('.upload-cashflowfile').hide();
+        //    $('.upload-sourcefile').hide();
+        //    $('.upload-datafile').hide();
+        //});
+
+        $('#btnImportRealData').click(function () {
+            importAsset = false;
+            $('#spanUploadProgressMsg').html('');
+            $('#btnUploadAssetSourceFile').attr('disabled', false);
+            $('#BasicAssetSourceFileUpload, #BasicAssetReportingDate').val('');
+            $('.upload-sourcefile').show();
+        });
+
+        $('#btnSyncTrustAsset').click(function () {
+            var sessionVariables = "<SessionVariables>"
+             + "<SessionVariable><Name>TrustId</Name><Value>" + trustId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+             + "</SessionVariables>";
+            TaskProcessWProxy.CreateSessionShowTask("Task", sessionVariables, "ImportTrustAssetByFactLoan");
+        });
+        //导入回款文件上传功能
+        $('#btnUploadAssetSourceFile').click(function () {
+            var rDate = $('#BasicAssetReportingDate').val();
+            if (!rDate) { alert('please set the reporting date value.'); return; }
+
+            var filePath = $('#BasicAssetSourceFileUpload').val();
+            var fileName = filePath.substring(filePath.lastIndexOf('\\') + 1);
+            var fileType = fileName.substring(fileName.lastIndexOf('.') + 1);
+
+            var filePathEx = $('#BasicAssetSourceFileUploadEx').val();
+            var fileNameEx = filePathEx.substring(filePathEx.lastIndexOf('\\') + 1);
+            var fileTypeEx = fileNameEx.substring(fileNameEx.lastIndexOf('.') + 1);
+
+            if (fileType !== 'xls' && fileType !== 'xlsx') {
+                alert('还款分类不是XLS或XLSX文件');
+                return;
+            }
+            if (fileTypeEx !== 'xls' && fileTypeEx !== 'xlsx') {
+                alert('还款明细不是XLS或XLSX文件');
+                return;
+            }
+
+            var args = 'trustId=' + trustId + '&fileFolder=Asset&fileName=' + encodeURIComponent(fileName);
+            var fileData = document.getElementById('BasicAssetSourceFileUpload').files[0];
+
+            var argsEx = 'trustId=' + trustId + '&fileFolder=Asset&fileName=' + encodeURIComponent(fileNameEx);
+            var fileDataEx = document.getElementById('BasicAssetSourceFileUploadEx').files[0];
+
+            $('#spanUploadProgressMsg').html('正在上传...').show();
+            $(this).attr('disabled', true);
+
+            uploadAssetFile(args, fileData);
+            uploadAssetFile(argsEx, fileDataEx);
+        });
+        //导入数据上传功能  1
+        $('#databtnUploadAssetSourceFile').click(function () {
+            var rDate = $('#dataBasicAssetReportingDate').val();
+            if (!rDate) { alert('please set the reporting date value.'); return; }
+
+            var filePath = $('#dataBasicAssetSourceFileUpload').val();
+            var fileName = filePath.substring(filePath.lastIndexOf('\\') + 1);
+            var fileType = fileName.substring(fileName.lastIndexOf('.') + 1);
+
+
+            if (fileType !== 'xls' && fileType !== 'xlsx') {
+                alert('还款分类不是XLS或XLSX文件');
+                return;
+            }
+
+            var args = 'trustId=' + trustId + '&fileFolder=Asset&fileName=' + encodeURIComponent(fileName);
+            var fileData = document.getElementById('dataBasicAssetSourceFileUpload').files[0];
+
+            $('#spanUploadProgressMsg').html('正在上传...').show();
+            $(this).attr('disabled', true);
+            // console.log(args,fileData);
+            uploadDataFile(args, fileData);
+
+        });
+        //导入数据上传功能  2
+        function uploadDataFile(args, fileData) {
+            var fileData = document.getElementById('dataBasicAssetSourceFileUpload').files[0];
+            $.ajax({
+                url: GlobalVariable.DataProcessServiceUrl + 'CommonFileUpload' + '?' + args,
+                type: 'POST',
+                data: fileData,
+                cache: false,
+                dataType: 'json',
+                processData: false,
+                success: function (data) {
+                    $('#dataUploadProgressMsg').html('上传成功。');
+                    console.log(data, typeof (data));
+                    callImportDataFileTaskProcess(data.CommonTrustFileUploadResult);
+                },
+                error: function (data) {
+                    $('#spanUploadProgressMsg').html('文件上传出现错误。');
+                }
+            });
+        }
+        //导入数据上传功能   3
+        function callImportDataFileTaskProcess(filePath) {
+            var fileName = filePath.substring(filePath.lastIndexOf('\\') + 1);
+            var fileDirectory = filePath.substring(0, filePath.lastIndexOf('\\'));
+            var rDate = $('#dataBasicAssetReportingDate').val();
+            var rDateId = rDate.replace(/-/g, '');
+            var excelPath = fileDirectory + '\\' + fileName;
+
+            console.log('name' + fileName + ' fileDir ' + fileDirectory + ' rDate ' + rDate + ' rDateId ' + rDateId);
+            $.ajax({
+                url: GlobalVariable.DataProcessServiceUrl + 'CommonGetExecute?connConfig=TrustManagement&appDomain=dbo&executeParams={"SPName":"usp_GetAssetTypeByTrustId","SQLParams":[{"Name":"trustId","Value":' + trustId + ',"DBType":"int"}]}&resultType=Common',
+                type: 'Get',
+                data: {},
+                cache: false,
+                dataType: 'json',
+                processData: false,
+                success: function (data) {
+                    //  alert(data);
+                    var a = JSON.parse(data);
+                    var b = a[0].AssetType;
+                    // console.log(a, a[0].AssetType, taskType[b]);
+
+                    wcfProxyInvokeTask(fileName, '', excelPath, rDate, rDateId, taskType[b]);
+                },
+                error: function (data) {
+
+                }
+            });
+
+        }
+
+
+        //导入现金流
+        $('#btnUploadCashFlow').click(function () {
+            var rDate = $('#CashFlowReportingDate').val();
+            if (!rDate) { alert('please set the reporting date value.'); return; }
+
+            var filePath = $('#CashFlowUpload').val();
+            var fileName = filePath.substring(filePath.lastIndexOf('\\') + 1);
+            var fileType = fileName.substring(fileName.lastIndexOf('.') + 1);
+
+
+            if (fileType !== 'xls' && fileType !== 'xlsx') {
+                alert('还款分类不是XLS或XLSX文件');
+                return;
+            }
+
+            var args = 'trustId=' + trustId + '&fileFolder=Asset&fileName=' + encodeURIComponent(fileName);
+            var fileData = document.getElementById('CashFlowUpload').files[0];
+
+            $('#UploadCashFlowProcessMsg').html('正在上传...').show();
+            $(this).attr('disabled', true);
+            // console.log(args,fileData);
+            uploadCashFlowData(args, fileData);
+
+        });
+        function uploadCashFlowData(args, fileData) {
+            var fileData = document.getElementById('CashFlowUpload').files[0];
+            $.ajax({
+                url: GlobalVariable.DataProcessServiceUrl + 'CommonFileUpload' + '?' + args,
+                type: 'POST',
+                data: fileData,
+                cache: false,
+                dataType: 'json',
+                processData: false,
+                success: function (data) {
+                    $('#UploadCashFlowProgressMsg').html('上传成功。');
+                    console.log(data);
+                    callImportCashFlowTaskProcess(data.CommonTrustFileUploadResult);
+                },
+                error: function (data) {
+                    $('#spanUploadProgressMsg').html('文件上传出现错误。');
+                }
+            });
+        }
+        function callImportCashFlowTaskProcess(filePath) {
+            var fileName = filePath.substring(filePath.lastIndexOf('\\') + 1);
+            var fileDirectory = filePath.substring(0, filePath.lastIndexOf('\\'));
+            var rDate = $('#CashFlowReportingDate').val();
+            var rDateId = rDate.replace(/-/g, '');
+            var excelPath = fileDirectory + '\\' + fileName;
+            console.log('name' + fileName + ' fileDir ' + fileDirectory + ' rDate ' + rDate + ' rDateId ' + rDateId);
+            wcfProxyInvokeTask(fileName, '', excelPath, rDate, rDateId, "LoadCashflow");
+        }
+        //导入现金流
+        //导出基础资产
+        $('#btnDownloadData').click(function () {
+            //console.log("hahahhhahhfdsfsd");
+            var rDate = $('#DownloadDataReportingDate').val();
+            if (!rDate) { alert('please set the reporting date value.'); return; }
+            var args = 'trustId=' + trustId + '&fileFolder=Asset';
+            $('#UploadCashFlowProcessMsg').html('正在上传...').show();
+            $(this).attr('disabled', true);
+            var rDateId = rDate.replace(/-/g, '');
+            callAction(trustId, rDate, rDateId, 'DownloadData');
+        });
+        function callAction(TrustId, rDate, rDateId, taskCode) {
+            //console.log("hahahhhahh");
+            var wProxy = new webProxy();
+            var sContext = {
+                appDomain: "Task",
+                sessionVariables: "<SessionVariables>"
+                    + "<SessionVariable><Name>TrustId</Name><Value>" + TrustId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>BusinessDate</Name><Value>" + rDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>DimReportingDateId</Name><Value>" + rDateId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                     + "<SessionVariable><Name>PoolCloseDate</Name><Value>" + trustPoolCloseDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "</SessionVariables>",
+                taskCode: taskCode
+            };
+            var appDomain = "Task";
+            wProxy.createSessionByTaskCode(sContext, function (response) {
+                wProxy.runTask(appDomain, response, function (response) {
+                    //alert(response);
+                });
+            });
+
+            //wProxy.createSessionByTaskCode(sContext, function (response) {
+            //    isSessionCreated = true;
+            //    sessionID = response;
+            //    taskCode = "ImportDataBySSIS";
+            //    IndicatorAppDomain = "Task";
+            //    PopupTaskProcessIndicatorForBasicAsset(function () {
+            //        $('#divDataList').datagrid('reset');
+            //        $('#divDataList').datagrid("fetch", {});
+            //        $('.upload-sourcefile').hide();
+            //    });
+            //});
+        }
+        //导出基础资产
+
+        //导出现金流
+        /*$('#btnDownloadCashflow').click(function () {
+            var rDate = $('#DownloadCashflowReportingDate').val();
+            if (!rDate) { alert('please set the reporting date value.'); return; }
+            var args = 'trustId=' + trustId + '&fileFolder=Asset';
+            $('#UploadCashFlowProcessMsg').html('正在上传...').show();
+            $(this).attr('disabled', true);
+            var rDateId = rDate.replace(/-/g, '');
+            callAction(trustId, rDate, rDateId, 'DownloadCashflow');
+        });
+        function callAction(TrustId, rDate, rDateId, taskCode) {
+            var wProxy = new webProxy();
+            var sContext = {
+                appDomain: "Task",
+                sessionVariables: "<SessionVariables>"
+                    + "<SessionVariable><Name>TrustId</Name><Value>" + TrustId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>BusinessDate</Name><Value>" + rDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>DimReportingDateId</Name><Value>" + rDateId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                     + "<SessionVariable><Name>PoolCloseDate</Name><Value>" + trustPoolCloseDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "</SessionVariables>",
+                taskCode: taskCode
+            };
+
+            wProxy.createSessionByTaskCode(sContext, function (response) {
+                isSessionCreated = true;
+                sessionID = response;
+                taskCode = "ImportDataBySSIS";
+                IndicatorAppDomain = "Task";
+                PopupTaskProcessIndicatorForBasicAsset(function () {
+                    $('#divDataList').datagrid('reset');
+                    $('#divDataList').datagrid("fetch", {});
+                    $('.upload-sourcefile').hide();
+                });
+            });
+        }*/
+
+        //导出现金流
+        $('#btnUploadAssetSourceFileCancel').click(function () { $('.upload-sourcefile').toggle(300); });
+        $('#databtnUploadAssetSourceFileCancel').click(function () { $('.upload-datafile').toggle(300); });
+        $('#btnUploadCashFlowCancel').click(function () { $('.upload-cashflowfile').toggle(300); });
+        $('#btnDownloadDataCancel').click(function () { $('.upload-exportfile').toggle(300); });
+        $('#btnDownloadCashflowCancel').click(function () { $('.export-cashflowfile').toggle(300); });
+
+        function uploadAssetFile(args, fileData) {
+            var fileData = document.getElementById('BasicAssetSourceFileUpload').files[0];
+            $.ajax({
+                url: GlobalVariable.DataProcessServiceUrl + 'CommonFileUpload' + '?' + args,
+                type: 'POST',
+                data: fileData,
+                cache: false,
+                dataType: 'json',
+                processData: false, // Don't process the files
+                //contentType: "application/octet-stream", // Set content type to false as jQuery will tell the server its a query string request
+                success: function (data) {
+                    console.log(1 + data);
+                    $('#spanUploadProgressMsg').html('上传成功。');
+                    if (importAsset) {
+                        if (FileVaraible.count > 0) {
+                            //当两个文件都上传成功时开始TASK
+                            FileVaraible.count = 0;
+                            callImportAssetDataTaskProcess(FileVaraible.filePath, data.CommonTrustFileUploadResult);
+                        }
+                        FileVaraible.filePath = data.CommonTrustFileUploadResult;
+                        FileVaraible.count++;
+                    }
+                    else {
+                        callImportActualPaymentDataTaskProcess(data.CommonTrustFileUploadResult);
+                    }
+                },
+                error: function (data) {
+                    $('#spanUploadProgressMsg').html('文件上传出现错误。');
+                }
+            });
+        }
+
+        function callImportAssetDataTaskProcess(filePath, filePathEx) {
+            var fileName = filePath.substring(filePath.lastIndexOf('\\') + 1);
+            var fileNameEx = filePathEx.substring(filePath.lastIndexOf('\\') + 1);
+
+            var fileDirectory = filePath.substring(0, filePath.lastIndexOf('\\'));
+
+            var rDate = $('#BasicAssetReportingDate').val();
+            var rDateId = rDate.replace(/-/g, '');
+            var svcUrl = GlobalVariable.DataProcessServiceUrl + "CommonExecuteGet?";
+            var executeParam = { SPName: 'usp_GetTrustTaskConfig', SQLParams: [] };
+            executeParam.SQLParams.push({ Name: 'trustId', value: trustId, DBType: 'int' });
+            var executeParams = encodeURIComponent(JSON.stringify(executeParam));
+            var sourceData = {};
+            $.ajax({
+                cache: false,
+                type: "GET",
+                async: false,
+                url: svcUrl + 'appDomain=TrustManagement&executeParams=' + executeParams + '&resultType=commom',
+                dataType: "json",
+                contentType: "application/xml;charset=utf-8",
+                data: {},
+                success: function (response) {
+                    if (typeof response === 'string') { sourceData = JSON.parse(response); }
+                    else { sourceData = response; }
+                    //debugger;
+                    if (sourceData && sourceData.length > 0) {
+                        wcfProxyInvokeTask(fileName, fileNameEx, fileDirectory, rDate, rDateId, sourceData[0].TaskCode);
+                    } else {
+                        alert('Get Import TaskCode Error!\n Can not find TaskCode for Current Trust.');
+                    }
+                },
+                error: function (response) { alert('Error occursed while requiring the TaskCode!1'); }
+            });
+        }
+
+        function callImportActualPaymentDataTaskProcess(filePath) {
+            var fileName = filePath.substring(filePath.lastIndexOf('\\') + 1);
+            var fileDirectory = filePath.substring(0, filePath.lastIndexOf('\\'));
+            var rDate = $('#BasicAssetReportingDate').val();
+            var rDateId = rDate.replace(/-/g, '');
+
+            wcfProxyInvokeTask(fileName, fileDirectory, rDate, rDateId, "ImportPaymentDataBySSIS");
+        }
+        function wcfProxyInvokeTask(fileName, fileNameEx, fileDirectory, rDate, rDateId, taskCode) {
+            var wProxy = new webProxy();
+            var sContext = {
+                appDomain: "Task",
+                sessionVariables: "<SessionVariables>"
+                    + "<SessionVariable><Name>ExcelFileName</Name><Value>" + fileNameEx + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>ExcelPath</Name><Value>" + fileDirectory + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>TrustId</Name><Value>" + trustId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>BusinessDate</Name><Value>" + rDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>DimReportingDateId</Name><Value>" + rDateId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>PoolCloseDate</Name><Value>" + trustPoolCloseDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "<SessionVariable><Name>ExcelFileNameEx</Name><Value>" + fileName + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                    + "</SessionVariables>",
+                taskCode: taskCode
+            };
+
+            wProxy.createSessionByTaskCode(sContext, function (response) {
+                isSessionCreated = true;
+                sessionID = response;
+                taskCode = "ImportDataBySSIS";
+                IndicatorAppDomain = "Task";
+                PopupTaskProcessIndicatorForBasicAsset(function () {
+                    $('#divDataList').datagrid('reset');
+                    $('#divDataList').datagrid("fetch", {});
+                    $('.upload-sourcefile').hide();
+                });
+            });
+        }
+        function PopupTaskProcessIndicatorForBasicAsset(fnCallBack) {
+            $("#taskIndicatorArea").dialog({
+                modal: true,
+                dialogClass: "TaskProcessDialogClass",
+                closeText: "",
+                //closeOnEscape:false,
+                height: 485,
+                width: 470,
+                close: function (event, ui) {
+                    window.location.reload();
+                }, // refresh report repository while close the task process screen.
+                //open: function (event, ui) { $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide(); },
+                title: "任务处理"
+            });
+        }
+        //$("#btnInterestAdjustments").click(function () {
+        //    SetInterestAdjustmentsRD();
+        //    $(".interest-adjustments").show();
+        //});
+       // $(function () {
+           // $("#interest_adjustments_div").find("input[data-attr='interest_adjustments_PoolCloseDate']").val(trustPoolCloseDate ? trustPoolCloseDate : '');
+       // }); 
+
+        $("#btnInterestAdjustments").click(function () {
+            $.anyDialog({
+                modal: true,
+                dialogClass: "TaskProcessDialogClass",
+                closeText: "",
+                html: $("#interest_adjustments_div").show(),
+                height: 315,
+                width: 600,
+                close: function (event, ui) {
+                },
+                title: "调息"
+            });
+        });
+        $("#btnInterestAdjustmentsOK").click(function () {
+            callInterestAdjustmentsTaskProcess();
+        });
+        function SetInterestAdjustmentsRD() {
+            $("#interest_adjustments_template select[name='InterestAdjustments_RDate']").html($("#selPayDateFilter").html());
+            $("#interest_adjustments_template select[name='InterestAdjustments_RDate'] option:contains('所有')").remove();
+        }
+        function RQcheck(RQ) {
+            var date = RQ;
+            var result = date.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/);
+
+            if (result == null)
+                return false;
+            var d = new Date(result[1], result[3] - 1, result[4]);
+            return (d.getFullYear() == result[1] && (d.getMonth() + 1) == result[3] && d.getDate() == result[4]);
+        }
+        $('#interest_adjustments_div .form-control').change(function () {
+            validControlValue($(this));
+        });
+        function callInterestAdjustmentsTaskProcess() {
+            var haveError = false;
+            $('#interest_adjustments_div .form-control').each(function () {
+                var $this = $(this);
+                if (!validControlValue($this)) { haveError = true; }
+            });
+            if (haveError) return;
+
+            var AdjustDate = $('#interest_adjustments_div input[data-attr="interest_adjustments_Date"]').val();
+            var AdjustEffectType = $('#interest_adjustments_div select[data-attr="interest_adjustments_AdjustEffectType"]').val();
+            var InterestAdjustType = $('#interest_adjustments_div select[data-attr="interest_adjustments_InterestAdjustType"]').val();
+            var InterestRateChange = $('#interest_adjustments_div input[data-attr="interest_adjustments_Fee"]').val();
+            var PeriodType = "M";
+            var PeriodNumber = "1";
+            var PoolCloseDate = $('#interest_adjustments_div input[data-attr="interest_adjustments_PoolCloseDate"]').val();
+            var IsMonthEndRule = "0";
+
+            var sessionVariables = "<SessionVariables>"
+                  + "<SessionVariable><Name>TrustId</Name><Value>" + trustId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                  + "<SessionVariable><Name>InterestRateChange</Name><Value>" + InterestRateChange + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                  + "<SessionVariable><Name>AdjustDate</Name><Value>" + AdjustDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                  + "<SessionVariable><Name>AdjustEffectType</Name><Value>" + AdjustEffectType + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                  + "<SessionVariable><Name>InterestAdjustType</Name><Value>" + InterestAdjustType + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                  + "<SessionVariable><Name>PoolCloseDate</Name><Value>" + PoolCloseDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                  + "<SessionVariable><Name>PeriodType</Name><Value>" + PeriodType + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                  + "<SessionVariable><Name>PeriodNumber</Name><Value>" + PeriodNumber + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                  + "<SessionVariable><Name>FirstImutationDate</Name><Value>" + PoolCloseDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                  + "<SessionVariable><Name>IsMonthEndRule</Name><Value>" + IsMonthEndRule + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                  + "</SessionVariables>";
+
+            TaskProcessWProxy.CreateSessionShowTask("Task", sessionVariables, "AdjustAssetPoolInterest");
+        };
+
+        $('#btnViewAssetCashFlow').click(function () {
+            showDialogPage('./TrustFollowUp/AssetPaymentSchedule.html?trustId=' + trustId, '信托基础资产现金流', 900, 550);
+        });
+
+
+        var TrustMngmtRegxCollection = {
+            int: /^([-]?[1-9]+\d*$|^0)?$/,
+            decimal: /^([-]?[1-9]+\d*(\.{1}\d+){0,1}$|^[-]{1}0\.\d*[1-9]\d*$|^0(\.\d+)?)?$/,
+            date: /^((\d{4})-(\d{2})-(\d{2}))?$/,
+            datetime: /^((\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2}))?$/
+        };
+        function validControlValue(obj) {
+            var $this = $(obj);
+            var objValue = $this.val();
+            var valids = $this.attr('data-valid');
+
+            //无data-valid属性，不需要验证
+            if (!valids || valids.length < 1) { return true; }
+
+            //如果有必填要求，必填验证
+            if (valids.indexOf('required') >= 0) {
+                if (!objValue || objValue.length < 1) {
+                    $this.addClass('red-border');
+                    return false;
+                } else {
+                    $this.removeClass('red-border');
+                }
+            }
+            //暂时只考虑data-valid只包含两个值： 必填和类型
+            var dataType = valids.replace('required', '').toLocaleLowerCase().trim();
+
+            //通过必填验证，做数据类型验证
+            var regx = TrustMngmtRegxCollection[dataType];
+            if (!regx) { return true; }
+
+            if (!regx.test(objValue)) {
+                $this.addClass('red-border');
+                return false;
+            } else {
+                $this.removeClass('red-border');
+            }
+            return true;
+        }
+        var TaskProcessWProxy = (function () {
+            function createSessionShowTask(appDomain, sessionVariables, taskCode) {
+                var sContext = {
+                    appDomain: appDomain,
+                    sessionVariables: sessionVariables,
+                    taskCode: taskCode
+                };
+
+                var wProxy = new webProxy();
+                wProxy.createSessionByTaskCode(sContext, function (response) {
+                    isSessionCreated = true;
+                    sessionID = response;
+                    taskCode = taskCode;
+                    IndicatorAppDomain = appDomain;
+
+                    //$(window.parent.document).find("#modal-mask").remove();
+                    //$(window.parent.document).find("#modal-layout").remove();
+                    $(window.parent.document).find('#modal-close').trigger('click');
+
+                    PopupTaskProcessIndicatorForBasicAsset(function () {
+                        $('#divDataList').datagrid('reset');
+                        $('#divDataList').datagrid("fetch", {});
+                        $('.interest-adjustments').hide();
+                    });
+                });
+            }
+
+            function PopupTaskProcessIndicatorForBasicAsset(fnCallBack) {
+                $("#taskIndicatorArea").dialog({
+                    modal: true,
+                    dialogClass: "TaskProcessDialogClass",
+                    closeText: "",
+                    height: 485,
+                    width: 470,
+                    close: function (event, ui) {
+                        window.location.reload();
+                        //以后把silverlight的局部刷新做好，就用callback，现在只能全部刷新了
+                        //fnCallBack();
+                    },
+                    title: "任务处理"
+                });
+            }
+
+            return { CreateSessionShowTask: createSessionShowTask }
+        })();
+        var AssetUnfoldKO = (function () {
+            var isloaded = false;
+            $(function () {
+                //loadData();
+
+                $('#AssetPoolUnfold_div .date-plugins').date_input();
+                $('#AssetPoolUnfold_div .form-control').change(function () {
+                    validControlValue($(this));
+                });
+                $("#btnAssetPoolUnfold").click(function () {
+                    $.anyDialog({
+                        modal: true,
+                        dialogClass: "TaskProcessDialogClass",
+                        closeText: "",
+                        html: $("#AssetPoolUnfold_div").show(),
+                        height: 315,
+                        width: 600,
+                        close: function (event, ui) {
+                        },
+                        title: "资产池现金流拆分"
+                    });
+                });
+                $("#btnAssetPoolUnfoldOK").click(function () {
+                    var haveError = false;
+                    $('#AssetPoolUnfold_div .form-control').each(function () {
+                        var $this = $(this);
+                        if (!validControlValue($this)) { haveError = true; }
+                    });
+                    if (haveError) return;
+
+                    //保存
+                    var PoolCloseDate = $.trim($("#AssetPoolUnfold_div input[name='PoolCloseDate']").val());
+                    PoolCloseDate = (PoolCloseDate == '' ? '1900-01-01' : PoolCloseDate);
+                    var EndDate = $("#AssetPoolUnfold_div input[name='EndDate']").val();
+                    var RemainTerm = $("#AssetPoolUnfold_div input[name='RemainTerm']").val();
+                    var PayDate = $("#AssetPoolUnfold_div input[name='PayDate']").val();
+                    var SpecifiedAmt = $.trim($("#AssetPoolUnfold_div input[name='SpecifiedAmt']").val());
+                    SpecifiedAmt = (SpecifiedAmt == '' ? '0' : SpecifiedAmt);
+                    console.log('PoolCloseDate:' + PoolCloseDate + ',SpecifiedAmt:' + SpecifiedAmt);
+                    var PeriodType = "M";
+                    var PeriodNumber = "1";
+                    var IsMonthEndRule = "0";
+
+                    var sessionVariables = "<SessionVariables>"
+                        + "<SessionVariable><Name>TrustId</Name><Value>" + trustId + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                        + "<SessionVariable><Name>EndDate</Name><Value>" + EndDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                        + "<SessionVariable><Name>RemainTerm</Name><Value>" + RemainTerm + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                        + "<SessionVariable><Name>PayDate</Name><Value>" + PayDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                        + "<SessionVariable><Name>PeriodType</Name><Value>" + PeriodType + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                        + "<SessionVariable><Name>PeriodNumber</Name><Value>" + PeriodNumber + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                        + "<SessionVariable><Name>PoolCloseDate</Name><Value>" + PoolCloseDate + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                        + "<SessionVariable><Name>IsMonthEndRule</Name><Value>" + IsMonthEndRule + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                        + "<SessionVariable><Name>SpecifiedAmt</Name><Value>" + SpecifiedAmt + "</Value><DataType>String</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>"
+                        + "</SessionVariables>";
+
+                    TaskProcessWProxy.CreateSessionShowTask("Task", sessionVariables, "AssetPoolUnfold");
+                });
+            });
+
+            function loadData() {
+                $("#AssetPoolUnfold_div").find("input[name='PoolCloseDate']").val(trustPoolCloseDate ? trustPoolCloseDate : '');
+                //$("#AssetUnfoldDiv input[name='StartDate']").val();
+                //$("#AssetUnfoldDiv input[name='LoanIssueDate']").val();
+                //$("#AssetUnfoldDiv input[name='EndDate']").val();
+                //$("#AssetUnfoldDiv input[name='RemainTerm']").val();
+            }
+
+            var TrustMngmtRegxCollection = {
+                int: /^([-]?[1-9]+\d*$|^0)?$/,
+                decimal: /^([-]?[1-9]+\d*(\.{1}\d+){0,1}$|^[-]{1}0\.\d*[1-9]\d*$|^0(\.\d+)?)?$/,
+                date: /^((\d{4})-(\d{2})-(\d{2}))?$/,
+                datetime: /^((\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2}):(\d{2}))?$/
+            };
+            function validControlValue(obj) {
+                var $this = $(obj);
+                var objValue = $this.val();
+                var valids = $this.attr('data-valid');
+                $this.removeAttr("title");
+
+                //无data-valid属性，不需要验证
+                if (!valids || valids.length < 1) { return true; }
+
+                //如果有必填要求，必填验证
+                if (valids.indexOf('required') >= 0) {
+                    if (!objValue || objValue.length < 1) {
+                        $this.addClass('red-border');
+                        return false;
+                    } else {
+                        $this.removeClass('red-border');
+                    }
+                }
+                //暂时只考虑data-valid只包含两个值： 必填和类型
+                var dataType = valids.replace('required', '').toLocaleLowerCase().trim();
+
+                //通过必填验证，做数据类型验证
+                var regx = TrustMngmtRegxCollection[dataType];
+                if (!regx) { return true; }
+
+                if (!regx.test(objValue)) {
+                    $this.addClass('red-border');
+                    return false;
+                } else {
+                    $this.removeClass('red-border');
+                }
+
+                if (dataType == 'int') {
+                    var title = '';
+                    if ($this.attr('data-min') && parseInt($this.attr('data-min')) == $this.attr('data-min')
+                        && parseInt($this.val()) < parseInt($this.attr('data-min'))) {
+                        title += (title.length > 0 ? ',且' : '') + '不小于' + $this.attr('data-min');
+                    }
+                    if ($this.attr('data-max') && parseInt($this.attr('data-max')) == $this.attr('data-max')
+                        && parseInt($this.val()) > parseInt($this.attr('data-max'))) {
+                        title += (title.length > 0 ? ',且' : '') + '不大于' + $this.attr('data-max');
+                    }
+                    if (title.length > 0) {
+                        $this.addClass('red-border');
+                        $this.attr("title", '输入值需' + title);
+                        return false;
+                    }
+                    else {
+                        $this.removeClass('red-border');
+                        $this.removeAttr("title");
+                    }
+                }
+
+                return true;
+            }
+
+            return { LoadData: loadData }
+        })();
+
+        $('#ifmerge').click(function () {
+		  //debugger;
+            if (this.checked == true) {
+                $('#divDataList').datagrid('reset');
+                $('#divDataList').datagrid("fetch", {});
+                PagerListModule.Init(listCategory.OthersAssetList, 'usp_GetAssetListsWithPagerMergeByCustomerName', trustId,
+                        'https://poolcutwcf/TrustManagementService/DataProcessService.svc/jsAccessEP/CommonGetExecute?connConfig=TrustManagement&' + 'CommonGetExecute?connConfig=TrustManagement&',
+                        '#divDataList');
+                $('.list-filters .filter').val('');
+                PagerListModule.Filter({});
+                //$("#ceshi").hide();
+                //alert("勾上了");
+            } else {
+                $('#divDataList').datagrid('reset');
+                $('#divDataList').datagrid("fetch", {});
+                PagerListModule.Init(listCategory.OthersAssetList, 'usp_GetAssetListsWithPager', trustId,
+                        'https://poolcutwcf/TrustManagementService/DataProcessService.svc/jsAccessEP/CommonGetExecute?connConfig=TrustManagement&' + 'CommonGetExecute?connConfig=TrustManagement&',
+                        '#divDataList');
+                $('.list-filters .filter').val('');
+                PagerListModule.Filter({});
+            }
+        });
+        function ifme(e) {
+            if (e.checked == true) {
+                $('#divDataList').datagrid('reset');
+                $('#divDataList').datagrid("fetch", {});
+                PagerListModule.Init(listCategory.OthersAssetList, 'usp_GetAssetListsWithPagerMergeByCustomerName', trustId,
+                        'https://poolcutwcf/TrustManagementService/DataProcessService.svc/jsAccessEP/CommonGetExecute?connConfig=TrustManagement&' + 'CommonGetExecute?connConfig=TrustManagement&',
+                        '#divDataList');
+                $('.list-filters .filter').val('');
+                PagerListModule.Filter({});
+                //$("#ceshi").hide();
+                //alert("勾上了");
+            } else {
+                $('#divDataList').datagrid('reset');
+                $('#divDataList').datagrid("fetch", {});
+                PagerListModule.Init(listCategory.OthersAssetList, 'usp_GetAssetListsWithPager', trustId,
+                        'https://poolcutwcf/TrustManagementService/DataProcessService.svc/jsAccessEP/CommonGetExecute?connConfig=TrustManagement&' + 'CommonGetExecute?connConfig=TrustManagement&',
+                        '#divDataList');
+                $('.list-filters .filter').val('');
+                PagerListModule.Filter({});
+            }
+        }
+    </script>
+    <style>
+        .nominheight {
+            min-height: inherit !important;
+        }
+
+        .rowNoPadding {
+            padding: 5px 5px !important;
+            line-height: 1em !important;
+        }
+    </style>
+</head>
+<body>
+    <div class="body-container form nobottom">
+        <div class="main">
+            
+            <h3 class="h3">
+                <span class="title">基础资产信息管理</span>
+            </h3>
+            <div class="form-panel drop upload-sourcefile">
+                <div class="pull-right">
+                    <span class="file-option" id="spanUploadProgressMsg">正在上传......</span>
+                    <span class="file-option">
+                        报表日期：<input type="text" id="BasicAssetReportingDate" class="date-plugins" readonly="readonly" />
+                    </span>
+                    <span class="file-option">
+                        还款分类：<input type="file" id="BasicAssetSourceFileUpload" />
+                    </span>
+
+                    <span class="file-option">
+                        还款明细：<input type="file" id="BasicAssetSourceFileUploadEx" />
+                    </span>
+
+                    <span class="file-option">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnUploadAssetSourceFile">上传</button>
+                        <button type="button" class="btn btn-default btn-sm" id="btnUploadAssetSourceFileCancel">取消</button>
+                    </span>
+                </div>
+            </div>
+
+            <div class="form-panel drop upload-datafile" style='display:none;padding:5px;'>
+                <div class="pull-right">
+                    <span class="file-option" id="dataUploadProgressMsg">正在上传......</span>
+                    <span class="file-option">
+                        报表日期：<input type="text" id="dataBasicAssetReportingDate" class="date-plugins" readonly="readonly" />
+                    </span>
+                    <span class="file-option">
+                        文件路径：<input type="file" id="dataBasicAssetSourceFileUpload" />
+                    </span>
+                    <span class="file-option">
+                        <button type="button" class="btn btn-primary btn-sm" id="databtnUploadAssetSourceFile">上传</button>
+                        <button type="button" class="btn btn-default btn-sm" id="databtnUploadAssetSourceFileCancel">取消</button>
+                    </span>
+                </div>
+            </div>
+            <div class="form-panel drop upload-cashflowfile" style='display:none;padding:5px;'>
+                <div class="pull-right">
+                    <span class="file-option" id="UploadCashFlowProgressMsg">正在上传......</span>
+                    <span class="file-option">
+                        报表日期：<input type="text" id="CashFlowReportingDate" class="date-plugins" readonly="readonly" />
+                    </span>
+                    <span class="file-option">
+                        文件路径：<input type="file" id="CashFlowUpload" />
+                    </span>
+                    <span class="file-option">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnUploadCashFlow">上传</button>
+                        <button type="button" class="btn btn-default btn-sm" id="btnUploadCashFlowCancel">取消</button>
+                    </span>
+                </div>
+            </div>
+            <div class="form-panel drop upload-exportfile" style='display:none;padding:5px;'>
+                <div class="pull-right">
+                    <span class="file-option" id="DownloadDataProgressMsg">正在下载......</span>
+                    <span class="file-option">
+                        报表日期：<input type="text" id="DownloadDataReportingDate" class="date-plugins" readonly="readonly" />
+                    </span>
+                    <span class="file-option">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnDownloadData">导出</button>
+                        <a href="../ConsumerLoan/Working/ExportData.xlsx"><button type="button" class="btn btn-primary btn-sm" id="btnDownloadExcelFile">下载</button></a>
+                        <button type="button" class="btn btn-default btn-sm" id="btnDownloadDataCancel">取消</button>
+                    </span>
+                </div>
+            </div>
+            <div class="form-panel drop export-cashflowfile" style='display:none;padding:5px;'>
+                <div class="pull-right">
+                    <span class="file-option" id="DownloadCashflowProgressMsg">正在下载......</span>
+                    <span class="file-option">
+                        报表日期：<input type="text" id="DownloadCashflowReportingDate" class="date-plugins" readonly="readonly" />
+                    </span>
+                    <span class="file-option">
+                        <button type="button" class="btn btn-primary btn-sm" id="btnDownloadCashflow">导出</button>
+                        <a href="../ConsumerLoan/Working/ExportData.xlsx"><button type="button" class="btn btn-primary btn-sm" id="btnDownloadCashflowFile">下载</button></a>
+
+                        <button type="button" class="btn btn-default btn-sm" id="btnDownloadCashflowCancel">取消</button>
+                    </span>
+                </div>
+            </div>
+            <div class="body-container form nobottom nominheight" id="interest_adjustments_div" style="display:none;">
+                <div class="main">
+                    <div class="form-panel drop nobottom">
+                        <div class=" form-panel drop list-filters" style="min-height:220px;">
+                            <div class="col-12">
+                                <div class="col-6 form-group autoLayout-plugins">
+                                    <div class="col-4">
+                                        <label>利息调整时间：</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control date-plugins"
+                                               data-attr="interest_adjustments_Date" data-valid="required date" />
+                                    </div>
+                                </div>
+                                <div class="col-6 form-group autoLayout-plugins">
+                                    <div class="col-4">
+                                        <label>利息调整方式：</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <select class="form-control" data-valid="required" data-attr="interest_adjustments_AdjustEffectType">
+                                            <option value="">请选择</option>
+                                            <option value="次年对月对日">次年对月对日</option>
+                                            <option value="下一季对日">下一季对日</option>
+                                            <option value="下一月对日">下一月对日</option>
+                                            <option value="次年第一天">次年第一天</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-6 form-group autoLayout-plugins">
+                                    <div class="col-4">
+                                        <label>利息生效方式：</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <select class="form-control" data-attr="interest_adjustments_InterestAdjustType" data-valid="required">
+                                            <option value="">请选择</option>
+                                            <option value="前置">前置</option>
+                                            <option value="后置">后置</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-2">
+                                    </div>
+                                </div>
+                                <div class="col-6 form-group autoLayout-plugins">
+                                    <div class="col-4">
+                                        <label>利率浮动：</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control" data-attr="interest_adjustments_Fee" data-valid="required decimal" />
+                                    </div>
+                                    <div class="col-2">
+                                    </div>
+                                </div>
+                                <div class="col-6 form-group autoLayout-plugins">
+                                    <div class="col-4">
+                                        <label>资产池封包日：</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <input type="text" class="form-control date-plugins"
+                                               data-attr="interest_adjustments_PoolCloseDate" data-valid="required date" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="padding:10px; text-align:right;">
+                            <button id="btnInterestAdjustmentsOK" type="button" class="btn btn-primary btn-next">确定</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="body-container form nobottom nominheight" id="AssetPoolUnfold_div" style="display:none;">
+                <div class="main">
+                    <div class="form-panel drop nobottom">
+                        <div class=" form-panel drop list-filters" style="min-height:220px;">
+                            <div class="col-12">
+                                <div class="col-6 form-group autoLayout-plugins">
+                                    <div class="col-4">
+                                        <label>结束日期</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="col-11">
+                                            <input type="text" class="form-control date-plugins" name="EndDate" data-valid="required date" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 form-group autoLayout-plugins">
+                                    <div class="col-4">
+                                        <label>剩余期数</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="col-11">
+                                            <input type="text" class="form-control" name="RemainTerm" data-valid="required int" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 form-group autoLayout-plugins">
+                                    <div class="col-4">
+                                        <label>兑付日</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="col-11">
+                                            <input type="text" class="form-control" name="PayDate" data-valid="required int" data-min="1" data-max="31" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="col-6 form-group autoLayout-plugins">
+                                    <div class="col-4">
+                                        <label>资产池封包日</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="col-11">
+                                            <input type="text" class="form-control date-plugins" name="PoolCloseDate" data-valid="date" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-6 form-group autoLayout-plugins">
+                                    <div class="col-4">
+                                        <label>指定金额</label>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="col-11">
+                                            <input type="text" class="form-control" name="SpecifiedAmt" data-valid="decimal" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="padding:10px; text-align:right;">
+                            <button id="btnAssetPoolUnfoldOK" type="button" class="btn btn-primary btn-next">确定</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-panel drop nobottom">
+                <div class="form-panel drop list-filters">
+                    <div class="col-12">
+                        <div class="col-4 form-group">
+                            <div class="col-5">
+                                <label>报告日期：</label>
+                            </div>
+                            <div class="col-7">
+                                <select class="form-control" name="PayDate" id="selPayDateFilter"></select>
+                            </div>
+                        </div>
+                  
+                        <div class="col-4 form-group">
+                            <div class="col-5">
+                                <label>按借款人合并</label>
+                            </div>
+                            <div class="col-2" id="ceshi1">
+                                <input id="ifmerge1" class="grp1" type="checkbox" style="margin-top:6px;vertical-align:middle;width:20px;height:20px" onclick="ifme(this)"/>
+                            </div>
+
+                        </div>
+
+                        <div class="col-4 form-group">
+                            <button type="button" class="btn btn-primary btn-sm" id="btnSearch">检索</button>
+                            <button type="button" class="btn btn-default btn-sm" id="btnReset">查询条件重置</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="grid"></div>
+                <div id="divDataList" class="list-container"></div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

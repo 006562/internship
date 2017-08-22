@@ -1,0 +1,63 @@
+<?xml version="1.0" standalone="yes"?>
+<gs branch="Hanover" Type="sales">
+    <CopyDir>
+        <SourceDir>TaskProcessServices</SourceDir>
+        <DestDir>E:\TSSWCFServices</DestDir>
+    </CopyDir>
+    <CopyDir>
+        <SourceDir>temp</SourceDir>
+        <DestDir>C:</DestDir>
+    </CopyDir>
+	<WebConfig>
+                <testurl>https://poolcutwcf/TaskProcessServices/UITaskStudio/TaskStudio.html</testurl>
+		<IISVersion>
+		9
+		</IISVersion>
+		<AppPools>
+			<AppName>TSSAppPool</AppName>
+			<RuntimeVersion>v4.0</RuntimeVersion>
+                        <!--LocalSystem,LocalService,NetworkService,SpecificUser,ApplicationPoolIdentity -->
+			<IdentityType>SpecificUser</IdentityType>
+			<UserName>dev\gslocaladmin</UserName>
+			<Password>PasswordGS15</Password>
+		</AppPools>
+		<WebSite>
+			<SiteName>TSS WCF Services</SiteName>
+			<Bingding>
+				<HostName>poolcutwcf</HostName>
+				<Protocol>http</Protocol>
+				<Address>*</Address>
+				<Port>80</Port>
+				<PhysicalPath>E:\TSSWCFServices</PhysicalPath>  
+			</Bingding>
+			<Bingding>
+				<HostName>poolcutwcf</HostName>
+				<Protocol>https</Protocol>
+				<Address>127.0.0.1</Address>
+				<Port>443</Port>
+				<PhysicalPath>E:\TSSWCFServices</PhysicalPath>  
+			</Bingding>
+			<AppPool>TSSAppPool</AppPool>
+			<Web>
+				<WebName>TaskProcessServices</WebName>
+				<PhysicalPath>E:\TSSWCFServices\TaskProcessServices</PhysicalPath> 
+				<AppPool>TSSAppPool</AppPool>
+			</Web>
+		</WebSite>
+		<Cert>
+			<CertName>poolcutwcf</CertName>
+			<CertPwd>poolcutwcf</CertPwd>
+			<BdAdr>127.0.0.1</BdAdr>
+			<BdPort>443</BdPort>
+		</Cert>
+	</WebConfig>
+	<SqlConfig>
+		<Server>MSSQL</Server>
+		<Uid>sa</Uid>
+		<Passwd>Password01</Passwd>
+		<DB>
+			<DBName>SFM_DAL_ConsumerLoan</DBName>
+			<BKFile>SFM_DAL_ConsumerLoan.bak</BKFile>
+		</DB>
+	</SqlConfig>
+</gs>

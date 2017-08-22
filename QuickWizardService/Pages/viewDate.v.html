@@ -1,0 +1,33 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>preview</title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link href="../Contents/common.css" rel="stylesheet" />
+    <link href="../Contents/previewPage.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+</head>
+<body>
+    <div class="wrap" style="width:800px;margin:0 auto">
+        <h3 data-bind="text: Language.DatePlan" class="pageTitle"></h3>
+        <div data-bind="foreach: DatePlan" class="content">
+            <div class="col-6 pageRow">
+                <span data-bind="text:ItemAliasValue" class="font12"></span>
+                <span class="font12">:</span>
+                <span data-bind="text:ItemValue" class="font12"></span>
+            </div>
+        </div>
+
+        <div data-bind="foreach: DateCal" class="content">
+            <div class="col-6 pageRow">
+                <span data-bind="text:ItemAliasValue" class="font12"></span>
+                <span class="font12">:</span>
+                <span data-bind="text:ItemValue" class="font12"></span>
+            </div>
+        </div>
+    </div>
+    <script src="viewDate.v.js"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+declare @vchSQL  varchar(8000)
+set @vchSQL = 'use [' + @DBName + ']
+
+/****** Object:  Table [dbo].[tblDimLoan]    Script Date: 18/09/2012 16:34:22 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tblDimLoan]'') AND type in (N''U''))
+DROP TABLE [dbo].[tblDimLoan]
+
+/****** Object:  Table [dbo].[tblDimLoan]    Script Date: 05/03/2012 16:34:22 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+SET ANSI_PADDING ON
+
+CREATE TABLE [dbo].[tblDimLoan](
+	[DimLoanID] [bigint] NOT NULL,
+  [AccountNo] [varchar](20) NOT NULL,
+	[PaymentTypeCode] [varchar](20) NULL,
+	[PaymentTypeCodeActual] [varchar](20) NULL,
+	[PaymentTypeDesc] [varchar](300) NULL,
+	[MortgageInsuranceInd] [varchar](20) NULL,
+	[MortgageInsurancePolicyNo] [varchar](20) NULL,
+	[MortgageInsurerCode] [varchar](20) NULL,
+	[MortgageInsurerDesc] [varchar](300) NULL,
+	[InterestRateTypeCode] [varchar](20) NULL,
+	[InterestRateTypeDesc] [varchar](50) NULL,
+	[ProductCode] [varchar](20) NULL,
+	[ProductType] [varchar](20) NULL,
+  [LoanStatus] [varchar](20) NULL,
+	[ProductDescription] [varchar](300) NULL,
+	[ProductSubCode] [varchar](20) NULL,
+	[OrganisationCode] [varchar](3) NULL,
+  [ScrubbedFlag] [varchar](20) NULL,
+	[DimPoolID] [bigint] NOT NULL,
+  [IncludedAuditLoan] bit NULL DEFAULT 0,
+  [OffsetIndicator] [varchar](10) NULL, 
+ CONSTRAINT [PK_tblDimLoan] PRIMARY KEY CLUSTERED 
+(
+	[DimLoanID] ASC,
+	[DimPoolID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]'
+
+exec (@vchSQL)
+
+]]>
+  </Query>
+
+</main>

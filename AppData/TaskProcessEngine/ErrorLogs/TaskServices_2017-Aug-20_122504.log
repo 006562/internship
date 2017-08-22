@@ -1,0 +1,57 @@
+[2017-08-20 12:25:04,050] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 75c39e85-0366-4083-9d5f-68d56676dd07 failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.IO.DirectoryNotFoundException: Could not find a part of the path 'E:\TSSWCFServices\PoolCut\ConsumerLoan\Document\65'.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileSystemEnumerableIterator`1.CommonInit()
+   at System.IO.DirectoryInfo.InternalGetFiles(String searchPattern, SearchOption searchOption)
+   at DocxCreation.DocxEngine.ProcessByFolder(String SessionId, String ServerName, String DBName, String TemplateFolder, String DestinationFolder, String mdxConnectionStringBase, String mdxConnectionStringJob, String ECPassNo, String TrustId, String PoolId, DirectoryInfo TheFolder, String DestFolder)
+   at DocxCreation.DocxEngine.NewBatchDocx(String SessionId, String ServerName, String DBName, String TemplateFolder, String DestinationFolder, String ZipName, String mdxConnectionStringBase, String mdxConnectionStringJob, String ECPassNo, String TrustId, String PoolId)
+   --- End of inner exception stack trace ---
+   at BL.TaskProcessService.OperationProvider.RunManagedMethod(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-20 12:26:14,314] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for e39f01ba-f765-4bdf-9b57-bd967bf0d692 failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.IO.DirectoryNotFoundException: Could not find a part of the path 'E:\TSSWCFServices\PoolCut\ConsumerLoan\Document\64'.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileSystemEnumerableIterator`1.CommonInit()
+   at System.IO.DirectoryInfo.InternalGetFiles(String searchPattern, SearchOption searchOption)
+   at DocxCreation.DocxEngine.ProcessByFolder(String SessionId, String ServerName, String DBName, String TemplateFolder, String DestinationFolder, String mdxConnectionStringBase, String mdxConnectionStringJob, String ECPassNo, String TrustId, String PoolId, DirectoryInfo TheFolder, String DestFolder)
+   at DocxCreation.DocxEngine.NewBatchDocx(String SessionId, String ServerName, String DBName, String TemplateFolder, String DestinationFolder, String ZipName, String mdxConnectionStringBase, String mdxConnectionStringJob, String ECPassNo, String TrustId, String PoolId)
+   --- End of inner exception stack trace ---
+   at BL.TaskProcessService.OperationProvider.RunManagedMethod(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-20 13:39:53,326] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for bf3e4b4d-6ded-478c-89fb-b4ad1a64a49f failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> Microsoft.AnalysisServices.OperationException: Internal error: The operation terminated unsuccessfully.
+Errors in the OLAP storage engine: The attribute key cannot be found when processing: Table: 'dbo_tblFactConsolidationCustomer', Column: 'DimCustomerId', Value: '24440170'; Table: 'dbo_tblFactConsolidationCustomer', Column: 'DimPoolID', Value: '132'. The attribute is 'Dim Customer ID'.
+Errors in the OLAP storage engine: The process operation ended because the number of errors encountered during processing reached the defined limit of allowable errors for the operation.
+Errors in the OLAP storage engine: An error occurred while processing the 'Tbl Fact Consolidation Customer' partition of the 'Tbl Fact Consolidation Customer' measure group for the 'Base Pool' cube from the Job_2_20170815_132 database.
+Server: The current operation was cancelled because another operation in the transaction failed.
+Errors in the OLAP storage engine: An error occurred while processing the 'Tbl Fact Consolidation Loan' partition of the 'Tbl Fact Consolidation Loan' measure group for the 'Base Pool' cube from the Job_2_20170815_132 database.
+OLE DB error: OLE DB or ODBC error: Operation canceled; HY008.
+Errors in the OLAP storage engine: An error occurred while processing the 'View Fact Loan Customer' partition of the 'View Fact Loan Customer' measure group for the 'Base Pool' cube from the Job_2_20170815_132 database.
+OLE DB error: OLE DB or ODBC error: Operation canceled; HY008.
+Errors in the OLAP storage engine: An error occurred while processing the 'View Loan Main Customer' partition of the 'View Loan Main Customer' measure group for the 'Base Pool' cube from the Job_2_20170815_132 database.
+
+   at Securitisation.Utilities.SSAS.UtilSSAS.ProcessSSASDBByName(String sDBName, String sSSASConnection)
+   at BL.TaskProcessService.OperationProvider.ProcessCube(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-20 14:34:51,682] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for d29ec96f-ddee-496a-902a-8e1b79272462 failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> Microsoft.AnalysisServices.OperationException: Errors in the OLAP storage engine: The attribute key cannot be found when processing: Table: 'dbo_tblFactConsolidationCustomer', Column: 'DimCustomerId', Value: '24440170'; Table: 'dbo_tblFactConsolidationCustomer', Column: 'DimPoolID', Value: '132'. The attribute is 'Dim Customer ID'.
+Errors in the OLAP storage engine: The process operation ended because the number of errors encountered during processing reached the defined limit of allowable errors for the operation.
+Errors in the OLAP storage engine: An error occurred while processing the 'Tbl Fact Consolidation Customer' partition of the 'Tbl Fact Consolidation Customer' measure group for the 'Base Pool' cube from the Job_2_20170815_132 database.
+Internal error: The operation terminated unsuccessfully.
+Server: The current operation was cancelled because another operation in the transaction failed.
+OLE DB error: OLE DB or ODBC error: Operation canceled; HY008.
+Errors in the OLAP storage engine: An error occurred while processing the 'Tbl Fact Consolidation Loan' partition of the 'Tbl Fact Consolidation Loan' measure group for the 'Base Pool' cube from the Job_2_20170815_132 database.
+OLE DB error: OLE DB or ODBC error: Operation canceled; HY008.
+Errors in the OLAP storage engine: An error occurred while processing the 'Tbl Fact Loan Customer EC Result' partition of the 'Tbl Fact Loan Customer EC Result' measure group for the 'Base Pool' cube from the Job_2_20170815_132 database.
+
+   at Securitisation.Utilities.SSAS.UtilSSAS.ProcessSSASDBByName(String sDBName, String sSSASConnection)
+   at BL.TaskProcessService.OperationProvider.ProcessCube(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63

@@ -1,0 +1,169 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <title></title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../Scripts/calendar.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <script src="../Scripts/magic/magic.core.js"></script>
+    <link href="../Scripts/magic/magic.dialog.css" rel="stylesheet" />
+    <script src="../Scripts/magic/magic.dialog.js"></script>
+    <style>
+        .form-provider{
+            width:78%;
+            padding-left:15px;
+            padding-right:15px;
+        }
+        .form-box {
+          border: 1px solid #ddd;
+          position: relative;
+          border-radius: 2px;
+          margin-bottom: 15px;
+        }
+        .form-box .role{
+            padding:8px 0;
+            border-bottom:1px solid #ddd;
+            vertical-align:middle;
+        }
+
+        .form-box .role .title{
+          font-size: 16px;
+          display:inline-block;
+          vertical-align:middle;
+          margin-right:10px;
+        }
+        .catalog{position: fixed;right: 30px;width: 200px;}
+        .catalog .catalog-box{margin-top: 30px;position: relative;height: 370px;}
+        .catalog .catalog-box .line{position: absolute;top: 0;width: 0;bottom: 0;background-color: #eaeaea;border: 1px solid #eaeaea;border-top: 0;border-bottom: 0;left: 5px;}
+        .catalog .catalog-box .line .circle{position: absolute;left: -5px;width: 10px;height: 10px;background: #fff;border:2px solid #ddd;zoom: 1;font-style: normal;border-radius: 50%}
+        .catalog .catalog-box .line .circle.top{top: 0;}
+        .catalog .catalog-box .line .circle.bottom{bottom: 0;}
+        .catalog .catalog-box .catalog-scroll{position: absolute;padding-top: 15px;top: 0;bottom: 0;left: 0;right: 0;overflow: auto;width: 200px;}
+        .catalog .catalog-box .catalog-scroll .catalog-list{width: 100%;}
+        .catalog .catalog-box .catalog-scroll .catalog-list .catalog-title{padding-left: 35px;margin-bottom: 7px;position: relative;cursor: pointer;}
+        .catalog .catalog-box .catalog-scroll .catalog-list .catalog-title .dot{position: absolute;left: 2px;margin-top: 9px;width: 8px;height: 8px;border-radius: 50%;display: block;background: #ddd}
+        .catalog .catalog-box .catalog-scroll .catalog-list .catalog-title .text{padding: 0 6px;background: #ededed;height: 26px;line-height: 26px;position: relative;color: #555;border-radius: 0 3px 3px 0}
+        .catalog .catalog-box .catalog-scroll .catalog-list .catalog-title .text:after{content:"";position: absolute;top: 5px;border:8px solid transparent;border-right-color: #ededed;left: -15px;}
+        .catalog .catalog-box .catalog-scroll .catalog-list .catalog-title.active,
+        .catalog .catalog-box .catalog-scroll .catalog-list .catalog-title:hover{padding-left: 25px;transition:.5s;}
+        .catalog .catalog-box .catalog-scroll .catalog-list .catalog-title.active .dot,
+        .catalog .catalog-box .catalog-scroll .catalog-list .catalog-title:hover .dot{background: #5F7EB3}
+        .catalog .catalog-box .catalog-scroll .catalog-list .catalog-title.active .text,
+        .catalog .catalog-box .catalog-scroll .catalog-list .catalog-title:hover .text{background: #5F7EB3;color: #FFF;padding-left: 13px;}
+        .catalog .catalog-box .catalog-scroll .catalog-list .catalog-title.active .text:after,
+        .catalog .catalog-box .catalog-scroll .catalog-list .catalog-title:hover .text:after{border-right-color: #5F7EB3}
+    </style>
+</head>
+<body>
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">Configuration Loading...</p>
+    </div>
+    <div class="main" id="TrustSPRoleDiv">
+        <h3 id="step-title" class="h3"><span class="title" data-bind="text:Language.Title"></span></h3>
+        <div class="form-panel">
+            <div class="catalog">
+                <div class="catalog-box">
+                    <div class="line">
+                        <em class="circle top"></em>
+                        <em class="circle bottom"></em>
+                    </div>
+                    <div class="catalog-scroll" data-bind="foreach: ServiceProviderRoles">
+                        <!-- ko  if: IsDisplay -->
+                        <dl class="catalog-list">
+                            <dt class="catalog-title" data-bind="attr: { labelIndex: $index }">
+                                <em class="dot"></em>
+                                <div class="text"><span data-bind="text: ItemAliasValue"></span></div>
+                            </dt>
+                        </dl>
+                        <!-- /ko -->
+                    </div>
+                </div>
+            </div>
+            <div class="form-provider form-horizontal">
+                <div class="row">
+                    <div class="col-12 form-drop">
+                        <div class="row">
+                            <div class="col-4">
+                                <select data-bind="foreach: ServiceProviderRoles" id="select_SPRole" class="form-control">
+                                    <!-- ko ifnot: IsDisplay -->
+                                    <option data-bind="attr:{value: ItemId}, text: ItemAliasValue"></option>
+                                    <!-- /ko -->
+                                </select>
+                            </div>
+                            <div class="col-2">
+                                <button type="button" class="btn btn-plus" onclick="addDisplaySPR()"><i class="icon icon-add"></i></button>
+                            </div>
+                            <div class="col-6">
+                                <button type="button" style="padding:2px 10px;display:none" class="btn btn-default pull-right"><i class="icon icon-setting" style="font-size:18px;"></i>配置费用偿还顺序</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" data-bind="foreach: ServiceProviderRoles">
+                    <!-- ko  if: IsDisplay -->
+                    <div class="form-box">
+                        <div class="col-12 form-row role">
+                            <div class="col-4">
+                                <span class="title" data-bind="text: ItemAliasValue"></span>
+                                <!-- ko  if: IsNew -->
+                                <button class="btn btn-remove" data-bind="attr: { itemId: ItemId() }" onclick="removeDisplaySPR(this)"><i class="icon icon-remove"></i></button>
+                                <!-- /ko -->
+                            </div>
+                            <div> <span class="col-4 pull-right" data-bind="renderControl:ItemId"></span></div>
+                        </div>
+                        <div class="form-item">
+                            <div class="col-12 form-drop">
+                                <div class="col-6">
+                                    <div class="row">
+                                        <div class="col-4 control-label">
+                                            <label>添加</label>
+                                        </div>
+                                        <div class="col-6">
+                                            <select data-bind="foreach: $data.Fields,attr:{id:('select_fields_'+ItemId())}" id="selOptionalFields" class="form-control">
+                                                <!-- ko  ifnot: IsDisplay -->
+                                                <option data-bind="attr: {value:  ItemId}, text: ItemAliasValue"></option>
+                                                <!-- /ko -->
+                                            </select>
+                                        </div>
+                                        <button type="button" class="btn btn-plus" data-bind="attr: { ItemId: ItemId() }" onclick="addSPRField(this)"><i class="icon icon-add"></i></button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 form-row" data-bind="foreach: $data.Fields">
+                                <!-- ko  if: IsDisplay -->
+                                <div class="col-6">
+                                    <div class="form-group">
+                                        <div class="col-4 control-label">
+                                            <label data-bind="text: ItemAliasValue">添加</label>
+                                        </div>
+                                        <div class="col-6">
+                                            <span data-bind="renderControl:ItemId"></span>
+                                        </div>
+                                        <!-- ko  if: IsNew -->
+                                        <button class="btn btn-remove" data-bind="attr: { fieldItemId: ItemId(), sprItemId:$parent.ItemId()}" onclick="removeSPRField(this)"><i class="icon icon-remove"></i></button>
+                                        <!-- /ko -->
+                                    </div>
+                                </div>
+                                <!-- /ko -->
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /ko -->
+                </div>
+            </div>
+        </div>
+        <div class="form-save">
+            <input type="button" class="btn btn-primary" onclick="saveItem()" data-bind="value:Language.BtnSave">
+        </div>
+    </div>
+    <script src="viewGroup.js"></script>
+</body>
+</html>

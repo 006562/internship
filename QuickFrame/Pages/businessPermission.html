@@ -1,0 +1,99 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <meta charset="utf-8" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/common.js"></script>
+    <script src="../Scripts/roleOperate.js"></script>
+    <script src="../Scripts/wcfProxy.js"></script>
+    <link href="../Contents/reset.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../Contents/common.css" />
+    <link href="../Contents/page.css" rel="stylesheet" />
+    <link href="../Contents/fontello/css/fontello.css" rel="stylesheet" />
+    <title></title>
+    <style>
+        .checkbox+label:before, .radio+label:before{
+            width:16px;
+            height:16px;
+        }
+        .checkbox+label:after{
+            width:5px;
+            height:10px;
+            left:5px;
+        }
+        .panel{
+            border:1px solid #ddd;
+            margin-bottom:15px;
+            border-radius:2px;
+            background:#fff;
+        }
+        .panel .panel-heading{
+            padding:8px 10px;
+            background:#f7f7f7;
+            border-bottom:1px solid #ddd;
+            font-size:14px;
+        }
+        .panel .panel-body{
+            padding:10px;
+        }
+        .panel .check-box{
+            width:33.333%;
+            display:inline-block;
+            vertical-align: middle;
+        }
+        .panel .check-box .checkbox-inner{
+            padding-left:30px;
+            margin-top:-5px;
+            font-size:12px;
+            color:#555;
+            margin-bottom:10px;
+        }
+        .submit{
+            padding:5px 15px;
+            border:none;
+            outline:none;
+            background:#5a77a9;
+            color:rgba(255,255,255,.8);
+            border-radius:2px;
+        }
+        .submit:hover,
+        .submit:active{
+            color:#fff;
+        }
+    </style>
+</head>
+<body style="background:#f1f1f1;">
+    <div class="panel panel-default mt-10">
+        <div class="panel-heading">
+            业务审批人
+        </div>
+        <div class="panel-body">
+            <div class="form-group margin0">
+                <label>审批人：</label>
+                <select id="UserSelect" class="form-control" style="padding:4px 10px;">
+                    <option>ddd</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            资产池
+        </div>
+        <div id="AssetPool" class="panel-body"></div>
+    </div>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            专项计划
+        </div>
+        <div id="TrustList" class="panel-body"></div>
+    </div>
+    <div class="mb-10">
+        <button id="saveOperation" type="submit" class="submit">保存</button>
+    </div>
+    <script src="../Config/globalVariable.js"></script>
+    <script src="businessPermission.js"></script>
+</body>
+</html>

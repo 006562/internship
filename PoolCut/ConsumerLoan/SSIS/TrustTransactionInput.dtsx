@@ -1,0 +1,3247 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/25/2015 5:58:12 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GS2106CNVDV002"
+  DTS:CreatorName="DEV\gslocaladmin"
+  DTS:DTSID="{350AB83E-4E79-4B83-A10C-4620AB324CBC}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="TrustInfoLoad"
+  DTS:PackageType="5"
+  DTS:VersionBuild="72"
+  DTS:VersionGUID="{920909FC-AE0A-4800-8273-B5F2A2465FD7}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Excel Connection]"
+      DTS:CreationName="EXCEL+"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{53ABFF14-1389-4076-9FDE-DC5A56F5B9F3}"
+      DTS:ObjectName="Excel Connection">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">"ExcelFilePath="+ @[User::SourceFilePath] + @[User::SourceFileName] +";FormatType=Auto;Recalculate=False;RetainSameConnection=True;"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <ConnectionManager
+          ConnectionString="ExcelFilePath=E:\Clients\ZhaoShang\收益分配输入模板20150525.xlsx;FormatType=Auto;Recalculate=False;RetainSameConnection=True;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[SFM_DAL_ConsumerLoan]"
+      DTS:CreationName="OLEDB"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{B057BA2B-AAE1-4097-A57B-6E8645B8C896}"
+      DTS:ObjectName="SFM_DAL_ConsumerLoan">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">"Data Source="+ @[User::DBServerName] +";Initial Catalog="+ @[User::DBName] +";Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=mssql;Initial Catalog=SFM_DAL_ConsumerLoan;Provider=SQLNCLI11.1;Integrated Security=SSPI;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[TrustInfoLoad.log]"
+      DTS:CreationName="FILE"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{F54E8EAB-A34F-49CA-8988-BA44408DCFA9}"
+      DTS:ObjectName="TrustInfoLoad.log">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::LogPath] + @[System::PackageName] + "_" +  (DT_WSTR, 4)DATEPART("yyyy", @[System::StartTime]) + RIGHT("0" + (DT_WSTR, 2)DATEPART("mm", @[System::StartTime]), 2) + RIGHT("0" + (DT_WSTR, 2)DATEPART("dd", @[System::StartTime]), 2) + RIGHT("0" + (DT_WSTR, 2)DATEPART("hh", @[System::StartTime]), 2) + RIGHT("0" + (DT_WSTR, 2)DATEPART("mi", @[System::StartTime]), 2) + RIGHT("0" + (DT_WSTR, 2)DATEPART("ss", @[System::StartTime]), 2)  +  ".log"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:FileUsageType="1"
+          DTS:ConnectionString="E:\TSSWCFServices\TaskProcessServices\ConsumerLoan\LogsTrustInfoLoad_20160622104956.log" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:LogProviders>
+    <DTS:LogProvider
+      DTS:ConfigString="TrustInfoLoad.log"
+      DTS:CreationName="Microsoft.LogProviderTextFile"
+      DTS:Description="Writes log entries for events to a CSV file"
+      DTS:DTSID="{A41D760E-D780-45D5-9180-2A08E45F187E}"
+      DTS:ObjectName="LogFile">
+      <DTS:ObjectData>
+        <InnerObject />
+      </DTS:ObjectData>
+    </DTS:LogProvider>
+  </DTS:LogProviders>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E7A69EBC-23DE-48AC-A192-03D92386AFEE}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DBName">
+      <DTS:VariableValue
+        DTS:DataType="8">SFM_DAL_ConsumerLoan</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{7B734803-9AA4-4F6E-B645-B7B1E35C03DF}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DBServerName">
+      <DTS:VariableValue
+        DTS:DataType="8">mssql</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E01E9273-2808-4C51-A930-5315D834C3A4}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="LogPath">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\TaskProcessServices\ConsumerLoan\Logs</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{34156861-8C7A-40B9-BE57-08881BA86E9A}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="OrgCode">
+      <DTS:VariableValue
+        DTS:DataType="8">CMS</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{6731E42E-A073-44AE-B1B8-7084C7BD31BC}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ReportingDate">
+      <DTS:VariableValue
+        DTS:DataType="8">2016-05-25</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1FA502A7-6695-4C9B-818B-5BF782026441}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceFileName">
+      <DTS:VariableValue
+        DTS:DataType="8">收益分配输入模板20150525.xlsx</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{01D1725B-21DE-4BE3-8867-064AD7072449}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceFilePath">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\Clients\ZhaoShang\</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{108E02BE-6CC3-493C-AE4B-1A362CE8F13D}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="TrustId">
+      <DTS:VariableValue
+        DTS:DataType="8">12</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{39678913-EB16-4AB8-987F-C49A7C20451B}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Delete from Working.TrustTransactionInput Where TrustId = &quot;+ @[User::TrustId] + &quot; Delete from TrustManagement.TrustTransactionInput Where TrustId = &quot;+ @[User::TrustId] + &quot; and TransactionDate = '&quot; + @[User::ReportingDate] + &quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_DeleteTrustTransactionInput">
+      <DTS:VariableValue
+        DTS:DataType="8">Delete from Working.TrustTransactionInput Where TrustId = 12 Delete from TrustManagement.TrustTransactionInput Where TrustId = 12 and TransactionDate = '2016-05-25'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{76DC5F22-B16B-4F90-9383-BEE2F7BC11F6}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Insert into TrustManagement.TrustTransactionInput([TrustId]&#xA;&#x9;, [Code]&#xA;&#x9;, [Name]&#xA;&#x9;, [Amount]&#xA;&#x9;, [InputSource]&#xA;&#x9;, [TransactionDate]) Select [TrustId]&#xA;&#x9;, [Code]&#xA;&#x9;, [Name]&#xA;&#x9;, Convert(decimal(19,6),[Amount]) as [Amount]&#xA;&#x9;, [InputSource]&#xA;&#x9;, dateadd(d,cast ([TransactionDate] as int),'1899-12-30') as [TransactionDate]&#xA;From Working.TrustTransactionInput&#xA;Where TrustId=&quot; + @[User::TrustId]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_LoanFromWorking">
+      <DTS:VariableValue
+        DTS:DataType="8">Insert into TrustManagement.TrustTransactionInput([TrustId]
+	, [Code]
+	, [Name]
+	, [Amount]
+	, [InputSource]
+	, [TransactionDate]) Select [TrustId]
+	, [Code]
+	, [Name]
+	, Convert(decimal(19,6),[Amount]) as [Amount]
+	, [InputSource]
+	, dateadd(d,cast ([TransactionDate] as int),'1899-12-30') as [TransactionDate]
+From Working.TrustTransactionInput
+Where TrustId=12</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:LoggingOptions
+    DTS:FilterKind="0"
+    DTS:LoggingMode="1">
+    <DTS:Property
+      DTS:DataType="8"
+      DTS:Name="EventFilter">2,7,OnError,13,OnInformation</DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnError"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnInformation"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:SelectedLogProviders>
+      <DTS:SelectedLogProvider
+        DTS:InstanceID="{A41D760E-D780-45D5-9180-2A08E45F187E}" />
+    </DTS:SelectedLogProviders>
+  </DTS:LoggingOptions>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Load Trust Info"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{F3C8AA9F-2AC1-4D73-B996-97583DFA8DC6}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Load Trust Info">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Load Trust Info\Delete Trust Transaction Input"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DelayValidation="True"
+          DTS:Description="Clean up Working Trust table"
+          DTS:DTSID="{0F9E5EA9-F03C-49A7-B63E-0E687967654E}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Delete Trust Transaction Input"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:LoggingOptions
+            DTS:FilterKind="0" />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B057BA2B-AAE1-4097-A57B-6E8645B8C896}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::V_DeleteTrustTransactionInput" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Trust Info\Execute SQL Task"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{718840A0-B790-4E3B-A732-166FD2E45F1A}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Execute SQL Task"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{B057BA2B-AAE1-4097-A57B-6E8645B8C896}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::V_LoanFromWorking" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Load Trust Info\Load"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:DelayValidation="True"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{EE62AB90-7400-44FF-A4C5-866EB4D9AE4C}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Load"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:LoggingOptions
+            DTS:FilterKind="0" />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Load Trust Info\Load\Derived Column"
+                  componentClassID="Microsoft.DerivedColumn"
+                  contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+                  name="Derived Column"
+                  usesDispositions="true">
+                  <inputs>
+                    <input
+                      refId="Package\Load Trust Info\Load\Derived Column.Inputs[Derived Column Input]"
+                      description="Input to the Derived Column Transformation"
+                      name="Derived Column Input">
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Trust Info\Load\Derived Column.Outputs[Derived Column Output]"
+                      description="Default Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      name="Derived Column Output"
+                      synchronousInputId="Package\Load Trust Info\Load\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Derived Column.Outputs[Derived Column Output].Columns[TrustId]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          length="50"
+                          lineageId="Package\Load Trust Info\Load\Derived Column.Outputs[Derived Column Output].Columns[TrustId]"
+                          name="TrustId"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::TrustId]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::TrustId]</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Load Trust Info\Load\Derived Column.Outputs[Derived Column Error Output]"
+                      description="Error Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Derived Column Error Output"
+                      synchronousInputId="Package\Load Trust Info\Load\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Trust Info\Load\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Trust Info\Load\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Trust Info\Load\Load into Trust Transaction Input"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="Load into Trust Transaction Input"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[Working].[TrustTransactionInput]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[SFM_DAL_ConsumerLoan]"
+                      connectionManagerRefId="Package.ConnectionManagers[SFM_DAL_ConsumerLoan]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].Columns[TrustId]"
+                          cachedDataType="wstr"
+                          cachedLength="50"
+                          cachedName="TrustId"
+                          externalMetadataColumnId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].ExternalColumns[TrustId]"
+                          lineageId="Package\Load Trust Info\Load\Derived Column.Outputs[Derived Column Output].Columns[TrustId]" />
+                        <inputColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].Columns[Code]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="Code"
+                          externalMetadataColumnId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].ExternalColumns[Code]"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[Code]" />
+                        <inputColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].Columns[Name]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="Name"
+                          externalMetadataColumnId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].ExternalColumns[Name]"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[Name]" />
+                        <inputColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].Columns[ Amount ]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName=" Amount "
+                          externalMetadataColumnId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].ExternalColumns[Amount]"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[ Amount ]" />
+                        <inputColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].Columns[InputSource]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="InputSource"
+                          externalMetadataColumnId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].ExternalColumns[InputSource]"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[InputSource]" />
+                        <inputColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].Columns[TransactionDate]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="TransactionDate"
+                          externalMetadataColumnId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].ExternalColumns[TransactionDate]"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[TransactionDate]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].ExternalColumns[TrustId]"
+                          dataType="i4"
+                          name="TrustId" />
+                        <externalMetadataColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].ExternalColumns[Code]"
+                          dataType="wstr"
+                          length="250"
+                          name="Code" />
+                        <externalMetadataColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].ExternalColumns[Name]"
+                          dataType="wstr"
+                          length="255"
+                          name="Name" />
+                        <externalMetadataColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].ExternalColumns[Amount]"
+                          dataType="wstr"
+                          length="255"
+                          name="Amount" />
+                        <externalMetadataColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].ExternalColumns[InputSource]"
+                          dataType="wstr"
+                          length="255"
+                          name="InputSource" />
+                        <externalMetadataColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input].ExternalColumns[TransactionDate]"
+                          dataType="wstr"
+                          length="255"
+                          name="TransactionDate" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Trust Info\Load\Load Trust Transaction Input File"
+                  componentClassID="Microsoft.ManagedComponentHost"
+                  contactInfo="Extracts data from Excel worksheet.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+                  description="Extracts data from Excel worksheet."
+                  name="Load Trust Transaction Input File"
+                  usesDispositions="true">
+                  <properties>
+                    <property
+                      dataType="System.Null"
+                      name="ComponentObject"
+                      typeConverter="NOTBROWSABLE" />
+                    <property
+                      dataType="System.String"
+                      description="Source Excel worksheet."
+                      expressionType="Notify"
+                      name="Worksheet"
+                      typeConverter="CozyRoc.SqlServer.SSIS.TableEditor, CozyRoc.SSISPlus.UI.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">TrustTransactionInput</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Specifies first row contains column names."
+                      name="FirstRowHasColumnName">true</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies source worksheet region."
+                      expressionType="Notify"
+                      name="Region">1, 9, -1, -1</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies output type."
+                      name="OutputType"
+                      typeConverter="CozyRoc.SqlServer.SSIS.ExcelSource+OutputTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">1</property>
+                    <property
+                      dataType="System.String"
+                      name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.ExcelSource, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Connections[EXCEL+]"
+                      connectionManagerID="Package.ConnectionManagers[Excel Connection]"
+                      connectionManagerRefId="Package.ConnectionManagers[Excel Connection]"
+                      description="COZYROC Excel Connection Manager"
+                      name="EXCEL+" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output]"
+                      name="Excel Source Plus Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[Code]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].ExternalColumns[Code]"
+                          length="250"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[Code]"
+                          name="Code"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[Name]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].ExternalColumns[Name]"
+                          length="250"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[Name]"
+                          name="Name"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[ Amount ]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].ExternalColumns[ Amount ]"
+                          length="250"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[ Amount ]"
+                          name=" Amount "
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[InputSource]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].ExternalColumns[InputSource]"
+                          length="250"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[InputSource]"
+                          name="InputSource"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[TransactionDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].ExternalColumns[TransactionDate]"
+                          length="250"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].Columns[TransactionDate]"
+                          name="TransactionDate"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].ExternalColumns[Code]"
+                          dataType="wstr"
+                          length="250"
+                          name="Code" />
+                        <externalMetadataColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].ExternalColumns[Name]"
+                          dataType="wstr"
+                          length="250"
+                          name="Name" />
+                        <externalMetadataColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].ExternalColumns[ Amount ]"
+                          dataType="wstr"
+                          length="250"
+                          name=" Amount " />
+                        <externalMetadataColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].ExternalColumns[InputSource]"
+                          dataType="wstr"
+                          length="250"
+                          name="InputSource" />
+                        <externalMetadataColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output].ExternalColumns[TransactionDate]"
+                          dataType="wstr"
+                          length="250"
+                          name="TransactionDate" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output]"
+                      isErrorOut="true"
+                      name="Excel Source Plus Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[Code]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[Code]"
+                          name="Code"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[Name]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[Name]"
+                          name="Name"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[ Amount ]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[ Amount ]"
+                          name=" Amount "
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[InputSource]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[InputSource]"
+                          name="InputSource"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[TransactionDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Error Output].Columns[TransactionDate]"
+                          name="TransactionDate"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Load Trust Info\Load.Paths[Derived Column Output]"
+                  endId="Package\Load Trust Info\Load\Load into Trust Transaction Input.Inputs[OLE DB Destination Input]"
+                  name="Derived Column Output"
+                  startId="Package\Load Trust Info\Load\Derived Column.Outputs[Derived Column Output]" />
+                <path
+                  refId="Package\Load Trust Info\Load.Paths[Excel Source Plus Output]"
+                  endId="Package\Load Trust Info\Load\Derived Column.Inputs[Derived Column Input]"
+                  name="Excel Source Plus Output"
+                  startId="Package\Load Trust Info\Load\Load Trust Transaction Input File.Outputs[Excel Source Plus Output]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Trust Info.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{33827CBA-660D-477C-A5C7-94B5A9AFAF29}"
+          DTS:From="Package\Load Trust Info\Load"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Load Trust Info\Execute SQL Task" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Load Trust Info.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{83508576-9A43-4454-9010-F55A34ED1A6E}"
+          DTS:From="Package\Load Trust Info\Delete Trust Transaction Input"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Load Trust Info\Load" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Prepare Trust Variable"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{1B24FBB2-FD0A-469D-92D5-38F3ADF53576}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Prepare Trust Variable">
+      <DTS:Variables />
+      <DTS:LoggingOptions
+        DTS:FilterKind="0" />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Prepare Trust Variable\Assign Trust Id"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{C1F61DDB-65E3-483F-854B-9CB5E1A2E40D}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Assign Trust Id"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:LoggingOptions
+            DTS:FilterKind="0" />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Prepare Trust Variable\Assign Trust Id\Assign Trust Id"
+                  componentClassID="Microsoft.ManagedComponentHost"
+                  contactInfo="Includes and runs custom script code. For example, apply a business rule that limits the range of valid values in an &quot;income&quot; column or add values in two columns and calculate the average of the sum.;Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;9"
+                  description="Includes and runs custom script code. For example, apply a business rule that limits the range of valid values in an &quot;income&quot; column or add values in two columns and calculate the average of the sum."
+                  name="Assign Trust Id"
+                  version="9">
+                  <properties>
+                    <property
+                      dataType="System.String"
+                      description="Stores the source code of the component"
+                      isArray="true"
+                      name="SourceCode"
+                      state="cdata">
+                      <arrayElements
+                        arrayElementCount="30">
+                        <arrayElement
+                          dataType="System.String"><![CDATA[ComponentWrapper.cs]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[/* THIS IS AUTO-GENERATED CODE THAT WILL BE OVERWRITTEN! DO NOT EDIT!
+*  Microsoft SQL Server Integration Services component wrapper
+*  This module defines the base class for your component
+*  THIS IS AUTO-GENERATED CODE THAT WILL BE OVERWRITTEN! DO NOT EDIT! */
+
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Pipeline;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using Microsoft.SqlServer.Dts.Runtime.Wrapper;
+
+public class UserComponent: ScriptComponent
+{
+    public Connections Connections;
+    public Variables Variables;
+    public UserComponent()
+    {
+        Connections = new Connections(this);
+        Variables = new Variables(this);
+    }
+
+    public override void ProcessInput(int InputID, string InputName, PipelineBuffer Buffer, OutputNameMap OutputMap)
+    {
+
+        if (InputName.Equals(@"Input 0", StringComparison.Ordinal))
+        {
+            Input0_ProcessInput(new Input0Buffer(Buffer, GetColumnIndexes(InputID), OutputMap));
+        }
+
+    }
+
+    public virtual void Input0_ProcessInput(Input0Buffer Buffer)
+    {
+        while (Buffer.NextRow())
+        {
+            Input0_ProcessInputRow(Buffer);
+        }
+    }
+
+    public virtual void Input0_ProcessInputRow(Input0Buffer Row)
+    {
+    }
+
+}
+
+public class Connections
+{
+    ScriptComponent ParentComponent;
+
+    public Connections(ScriptComponent Component)
+    {
+        ParentComponent = Component;
+    }
+
+}
+
+public class Variables
+{
+    ScriptComponent ParentComponent;
+
+    public Variables(ScriptComponent Component)
+    {
+        ParentComponent = Component;
+    }
+
+    public String TrustId
+    {
+        get
+        {
+            return (String)(ParentComponent.ReadWriteVariables["TrustId"].GetValueWithContext(ScriptComponent.EvaluatorContext));
+        }
+        set
+        {
+            ParentComponent.ReadWriteVariables["TrustId"].Value = value;
+        }
+    }
+
+}
+]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[Properties\Resources.resx]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+</root>]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[main.cs]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[#region Help:  Introduction to the Script Component
+/* The Script Component allows you to perform virtually any operation that can be accomplished in
+ * a .Net application within the context of an Integration Services data flow.
+ *
+ * Expand the other regions which have "Help" prefixes for examples of specific ways to use
+ * Integration Services features within this script component. */
+#endregion
+
+#region Namespaces
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using Microsoft.SqlServer.Dts.Runtime.Wrapper;
+#endregion
+
+/// <summary>
+/// This is the class to which to add your code.  Do not change the name, attributes, or parent
+/// of this class.
+/// </summary>
+[Microsoft.SqlServer.Dts.Pipeline.SSISScriptComponentEntryPointAttribute]
+public class ScriptMain : UserComponent
+{
+    #region Help:  Using Integration Services variables and parameters
+    /* To use a variable in this script, first ensure that the variable has been added to
+     * either the list contained in the ReadOnlyVariables property or the list contained in
+     * the ReadWriteVariables property of this script component, according to whether or not your
+     * code needs to write into the variable.  To do so, save this script, close this instance of
+     * Visual Studio, and update the ReadOnlyVariables and ReadWriteVariables properties in the
+     * Script Transformation Editor window.
+     * To use a parameter in this script, follow the same steps. Parameters are always read-only.
+     *
+     * Example of reading from a variable or parameter:
+     *  DateTime startTime = Variables.MyStartTime;
+     *
+     * Example of writing to a variable:
+     *  Variables.myStringVariable = "new value";
+     */
+    #endregion
+
+    #region Help:  Using Integration Services Connnection Managers
+    /* Some types of connection managers can be used in this script component.  See the help topic
+     * "Working with Connection Managers Programatically" for details.
+     *
+     * To use a connection manager in this script, first ensure that the connection manager has
+     * been added to either the list of connection managers on the Connection Managers page of the
+     * script component editor.  To add the connection manager, save this script, close this instance of
+     * Visual Studio, and add the Connection Manager to the list.
+     *
+     * If the component needs to hold a connection open while processing rows, override the
+     * AcquireConnections and ReleaseConnections methods.
+     * 
+     * Example of using an ADO.Net connection manager to acquire a SqlConnection:
+     *  object rawConnection = Connections.SalesDB.AcquireConnection(transaction);
+     *  SqlConnection salesDBConn = (SqlConnection)rawConnection;
+     *
+     * Example of using a File connection manager to acquire a file path:
+     *  object rawConnection = Connections.Prices_zip.AcquireConnection(transaction);
+     *  string filePath = (string)rawConnection;
+     *
+     * Example of releasing a connection manager:
+     *  Connections.SalesDB.ReleaseConnection(rawConnection);
+     */
+    #endregion
+
+    #region Help:  Firing Integration Services Events
+    /* This script component can fire events.
+     *
+     * Example of firing an error event:
+     *  ComponentMetaData.FireError(10, "Process Values", "Bad value", "", 0, out cancel);
+     *
+     * Example of firing an information event:
+     *  ComponentMetaData.FireInformation(10, "Process Values", "Processing has started", "", 0, fireAgain);
+     *
+     * Example of firing a warning event:
+     *  ComponentMetaData.FireWarning(10, "Process Values", "No rows were received", "", 0);
+     */
+    #endregion
+
+    /// <summary>
+    /// This method is called once, before rows begin to be processed in the data flow.
+    ///
+    /// You can remove this method if you don't need to do anything here.
+    /// </summary>
+    public override void PreExecute()
+    {
+        base.PreExecute();
+        /*
+         * Add your code here
+         */
+    }
+
+    private string trustId;
+
+    /// <summary>
+    /// This method is called after all the rows have passed through this component.
+    ///
+    /// You can delete this method if you don't need to do anything here.
+    /// </summary>
+    public override void PostExecute()
+    {
+        base.PostExecute();
+        /*
+         * Add your code here
+         */
+        this.Variables.TrustId = trustId;
+    }
+
+    /// <summary>
+    /// This method is called once for every row that passes through the component from Input0.
+    ///
+    /// Example of reading a value from a column in the the row:
+    ///  string zipCode = Row.ZipCode
+    ///
+    /// Example of writing a value to a column in the row:
+    ///  Row.ZipCode = zipCode
+    /// </summary>
+    /// <param name="Row">The row that is currently passing through the component</param>
+    public override void Input0_ProcessInputRow(Input0Buffer Row)
+    {
+        /*
+         * Add your code here
+         */
+
+        trustId = Row.TrustId.ToString();
+    }
+
+}
+]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[BufferWrapper.cs]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[/* THIS IS AUTO-GENERATED CODE THAT WILL BE OVERWRITTEN! DO NOT EDIT!
+*  Microsoft SQL Server Integration Services buffer wrappers
+*  This module defines classes for accessing data flow buffers
+*  THIS IS AUTO-GENERATED CODE THAT WILL BE OVERWRITTEN! DO NOT EDIT! */
+
+
+
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Pipeline;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+
+public class Input0Buffer: ScriptBuffer
+
+{
+    public Input0Buffer(PipelineBuffer Buffer, int[] BufferColumnIndexes, OutputNameMap OutputMap)
+        : base(Buffer, BufferColumnIndexes, OutputMap)
+    {
+    }
+
+    public Int32 TrustId
+    {
+        get
+        {
+            return Buffer.GetInt32(BufferColumnIndexes[0]);
+        }
+    }
+    public bool TrustId_IsNull
+    {
+        get
+        {
+            return IsNull(0);
+        }
+    }
+
+    new public bool NextRow()
+    {
+        return base.NextRow();
+    }
+
+    new public bool EndOfRowset()
+    {
+        return base.EndOfRowset();
+    }
+
+}
+]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[Properties\Settings.Designer.cs]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope="member", Target="SC_58a86178fdf94718bd69e044606cc443.Properties.Settings.get_Default():SC_58a86178fdf94718bd69e044606cc443.Properties.Sett" +
+    "ings")]
+
+namespace SC_58a86178fdf94718bd69e044606cc443.Properties {
+    
+    
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+        
+        [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+        private static Settings defaultInstance = new Settings();
+        
+        public static Settings Default {
+            get {
+                return defaultInstance;
+            }
+        }
+    }
+}
+]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[SC_58a86178fdf94718bd69e044606cc443.csproj]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectTypeGuids>{30D016F9-3734-4E33-A861-5E7D899E18F3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{f5253f47-1385-4aa2-9330-ee9bff2bcefc}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SC_58a86178fdf94718bd69e044606cc443</RootNamespace>
+    <AssemblyName>SC_58a86178fdf94718bd69e044606cc443</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>true</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>.\bin\Debug\</OutputPath>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>true</Optimize>
+    <OutputPath>.\bin\Release\</OutputPath>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.SqlServer.TxScript, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.DTSRuntimeWrap, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.DTSPipelineWrap, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.PipelineHost, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Compile Include="main.cs" />
+    <Compile Include="BufferWrapper.cs" />
+    <Compile Include="ComponentWrapper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppDesigner Include="Properties\" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <!-- Include the build rules for a C# project.-->
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- This section defines VSTA properties that describe the host-changable project properties. -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{30D016F9-3734-4E33-A861-5E7D899E18F3}">
+        <ProjectProperties HostName="ScriptComponent" HostPackage="{B3A685AA-7EAF-4BC6-9940-57959FA5AC07}" ApplicationType="usd" Language="cs" TemplatesPath="" DebugInfoExeName="" DebugInfoCommandLine="" DebugInfoWorkingDir="" IconImageList="" />
+        <Host Name="ScriptComponent" GeneratedNamespace="SC_58a86178fdf94718bd69e044606cc443" IconIndex="0"></Host>
+        <ProjectClient>
+          <HostIdentifier>SSIS_SC120</HostIdentifier>
+        </ProjectClient>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[Project]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF16LE]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[<?xml version="1.0" encoding="UTF-16" standalone="yes"?>
+<c:Project xmlns:c="http://schemas.microsoft.com/codeprojectml/2010/08/main" xmlns:msb="http://schemas.microsoft.com/developer/msbuild/2003" runtimeVersion="3.0" schemaVersion="1.0">
+	<msb:PropertyGroup>
+		<msb:CodeName>SC_58a86178fdf94718bd69e044606cc443</msb:CodeName>
+		<msb:Language>msBuild</msb:Language>
+		<msb:DisplayName>SC_58a86178fdf94718bd69e044606cc443</msb:DisplayName>
+		<msb:ProjectId>{5196AFF5-057C-4CE4-89F1-9F543CBCC250}</msb:ProjectId>
+	</msb:PropertyGroup>
+	<msb:ItemGroup>
+		<msb:Project Include="SC_58a86178fdf94718bd69e044606cc443.csproj"/>
+		<msb:File Include="Properties\AssemblyInfo.cs"/>
+		<msb:File Include="Properties\Settings.settings"/>
+		<msb:File Include="Properties\Resources.resx"/>
+		<msb:File Include="Properties\Resources.Designer.cs"/>
+		<msb:File Include="Properties\Settings.Designer.cs"/>
+		<msb:File Include="main.cs"/>
+		<msb:File Include="BufferWrapper.cs"/>
+		<msb:File Include="ComponentWrapper.cs"/>
+	</msb:ItemGroup>
+</c:Project>]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[Properties\AssemblyInfo.cs]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[using System.Reflection;
+using System.Runtime.CompilerServices;
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle("SC_58a86178fdf94718bd69e044606cc443")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("SC_58a86178fdf94718bd69e044606cc443")]
+[assembly: AssemblyCopyright("Copyright @  2015")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the '*' as shown below:
+
+[assembly: AssemblyVersion("1.0.*")]
+]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[Properties\Settings.settings]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[<?xml version='1.0' encoding='iso-8859-1'?>
+<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
+  <Profiles>
+    <Profile Name="(Default)" />
+  </Profiles>
+  <Settings />
+</SettingsFile>]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[Properties\Resources.Designer.cs]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope="member", Target="SC_58a86178fdf94718bd69e044606cc443.Properties.Resources.get_ResourceManager():System.Resources.Resou" +
+    "rceManager")]
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope="member", Target="SC_58a86178fdf94718bd69e044606cc443.Properties.Resources.get_Culture():System.Globalization.CultureIn" +
+    "fo")]
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope="member", Target="SC_58a86178fdf94718bd69e044606cc443.Properties.Resources.set_Culture(System.Globalization.CultureInfo" +
+    "):Void")]
+
+namespace SC_58a86178fdf94718bd69e044606cc443.Properties {
+    
+    
+    /// <summary>
+    ///   A strongly-typed resource class, for looking up localized strings, etc.
+    /// </summary>
+    // This class was auto-generated by the StronglyTypedResourceBuilder
+    // class via a tool like ResGen or Visual Studio.
+    // To add or remove a member, edit your .ResX file then rerun ResGen
+    // with the /str option, or rebuild your VS project.
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    internal class Resources {
+        
+        private static global::System.Resources.ResourceManager resourceMan;
+        
+        private static global::System.Globalization.CultureInfo resourceCulture;
+        
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        internal Resources() {
+        }
+        
+        /// <summary>
+        ///   Returns the cached ResourceManager instance used by this class.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Resources.ResourceManager ResourceManager {
+            get {
+                if ((resourceMan == null)) {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SC_58a86178fdf94718bd69e044606cc443.Properties.Resources", typeof(Resources).Assembly);
+                    resourceMan = temp;
+                }
+                return resourceMan;
+            }
+        }
+        
+        /// <summary>
+        ///   Overrides the current thread's CurrentUICulture property for all
+        ///   resource lookups using this strongly typed resource class.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Globalization.CultureInfo Culture {
+            get {
+                return resourceCulture;
+            }
+            set {
+                resourceCulture = value;
+            }
+        }
+    }
+}
+]]></arrayElement>
+                      </arrayElements>
+                    </property>
+                    <property
+                      dataType="System.String"
+                      description="Stores the binary representation of the component"
+                      isArray="true"
+                      name="BinaryCode"
+                      state="cdata">
+                      <arrayElements
+                        arrayElementCount="2">
+                        <arrayElement
+                          dataType="System.String"><![CDATA[SC_58a86178fdf94718bd69e044606cc443.dll]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAgAAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4gRE9TIG1v
+ZGUuDQ0KJAAAAAAAAABQRQAATAEDAMRbf1YAAAAAAAAAAOAAAiELAQsAABQAAAAIAAAAAAAADjMA
+AAAgAAAAQAAAAAAAEAAgAAAAAgAABAAAAAAAAAAEAAAAAAAAAACAAAAAAgAAAAAAAAMAQIUAABAA
+ABAAAAAAEAAAEAAAAAAAABAAAAAAAAAAAAAAALgyAABTAAAAAEAAAAgEAAAAAAAAAAAAAAAAAAAA
+AAAAAGAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAIAAACAAAAAAAAAAAAAAACCAAAEgAAAAAAAAAAAAAAC50ZXh0AAAAFBMAAAAgAAAAFAAAAAIA
+AAAAAAAAAAAAAAAAACAAAGAucnNyYwAAAAgEAAAAQAAAAAYAAAAWAAAAAAAAAAAAAAAAAABAAABA
+LnJlbG9jAAAMAAAAAGAAAAACAAAAHAAAAAAAAAAAAAAAAAAAQAAAQgAAAAAAAAAAAAAAAAAAAADw
+MgAAAAAAAEgAAAACAAUAuCIAAAAQAAABAAAAAAAAAAAiAAC4AAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAH4CKA0AAAoCAnMOAAAGfQEAAAQCAnMPAAAGfQIAAAQqkgRy
+AQAAcBpvDgAACiwVAgUCAygPAAAKDgRzCQAABm8DAAAGKkorBwIDbwQAAAYDbwwAAAYt8SoGKh4C
+KBEAAAoqYgIoEgAACgJ7AgAABAJ7AwAABG8RAAAGKgATMAIAFQAAAAEAABECA28KAAAGChIAKBMA
+AAp9AwAABCoeAigBAAAGKioCAwQFKBQAAAoqUgJ7FQAACgJ7FgAAChaUbxcAAAoqIgIWKBgAAAoq
+HgIoGQAACioeAigaAAAKKjoCKBsAAAoCA30EAAAEKjoCKBsAAAoCA30FAAAEKpYCewUAAARvHAAA
+CnIRAABwbx0AAAooHgAACm8fAAAKdBUAAAEqcgJ7BQAABG8cAAAKchEAAHBvHQAACgNvIAAACioe
+AigbAAAKKgATMAIALQAAAAIAABF+BgAABC0gciEAAHDQBwAAAigiAAAKbyMAAApzJAAACgoGgAYA
+AAR+BgAABCoafgcAAAQqHgKABwAABCoafggAAAQqLnMXAAAGgAgAAAQqHgIoJwAACioAAAAAALQA
+AADOyu++AQAAAJEAAABsU3lzdGVtLlJlc291cmNlcy5SZXNvdXJjZVJlYWRlciwgbXNjb3JsaWIs
+IFZlcnNpb249NC4wLjAuMCwgQ3VsdHVyZT1uZXV0cmFsLCBQdWJsaWNLZXlUb2tlbj1iNzdhNWM1
+NjE5MzRlMDg5I1N5c3RlbS5SZXNvdXJjZXMuUnVudGltZVJlc291cmNlU2V0AgAAAAAAAAAAAAAA
+UEFEUEFEULQAAABCU0pCAQABAAAAAAAMAAAAdjQuMC4zMDMxOQAAAAAFAGwAAACoBQAAI34AABQG
+AACIBwAAI1N0cmluZ3MAAAAAnA0AAJQAAAAjVVMAMA4AABAAAAAjR1VJRAAAAEAOAADAAQAAI0Js
+b2IAAAAAAAAAAgAAAVcVogEJAQAAAPolMwAWAAABAAAAIwAAAAgAAAAIAAAAGAAAAA4AAAAnAAAA
+DwAAAAIAAAAEAAAABgAAAAgAAAABAAAABQAAAAEAAAAAAAoAAQAAAAAABgDuAM0ABgD+AM0ACgAb
+ARQBDgA3ASIBEgB2Ac0ABgCFAc0ACgBhAlACCgCSAn0CCgBrA1EDCgCWA4QDCgCtA4QDCgDKA4QD
+CgDpA4QDCgACBIQDCgAbBIQDCgA2BIQDCgBRBIQDCgBqBIQDCgCjBIMECgDDBIMECgAFBRQBCgAM
+BRQBBgA1Bc0ACgBcBRQBFgDGBZ4FFgDuBZ4FBwAHBgAAFgA3Bp4FCgCABm0GCgCdBhQBCgCiBhQB
+CgDGBoQDDgDyBtwGDgALB9wGCgAgB4MEAAAAAAEAAAAAAAEAAQABABAAMgAAAAUAAQABAAEAEABA
+AAAACAADAAUAAQAQAEsAAAAJAAQACQABABAAWAAAAA0ABAAOAAEAEABkAAAADQAFAA8AAAAQAG4A
+eAANAAYAEgAAARAApwB4ABEACAAWAAYAWAATAAYAZAAXAAEA1gEvAAEANAJMAAEANAJMABEAcQJj
+ABEAngJnABEA4gKFAFAgAAAAAIYYTwEbAAEAcCAAAAAAxgCTAR8AAQCVIAAAAADGAaABKQAFAKgg
+AAAAAMYBtAEpAAYAqiAAAAAAxgDLARsABwCyIAAAAADGAN4BGwAHAMwgAAAAAMYAtAEpAAcA7SAA
+AAAAhhhPARsACAD1IAAAAACGGE8BMgAIAAAhAAAAAIYI6gE8AAsAFSEAAAAAhgj2AUAACwAeIQAA
+AACGAAkCQAALACYhAAAAAIYAEQJAAAsALiEAAAAAhhhPAVAACwA9IQAAAACGGE8BUAAMAEwhAAAA
+AIYI6gFWAA0AciEAAAAAhghEAloADQCPIQAAAACDGE8BGwAOAJghAAAAAJMIrgJrAA4A0SEAAAAA
+kwjCAnAADgDYIQAAAACTCM4CdQAOAOAhAAAAAJYI8gKJAA8A8yEAAAAAhhhPARsADwDnIQAAAACR
+GDsHBQEPAAAAAQAGAwAAAgAOAwAAAwAYAwAABAAfAwAAAQAYAwAAAQApAwAAAQApAwAAAQAYAwAA
+AgAtAwAAAwAfAwAAAQBBAwAAAQBBAwAAAQBLAwAAAQBLA0kATwFaAFEATwFaAFkATwFaAGEATwFa
+AGkATwFaAHEATwFaAHkATwFaAIEATwFaAIkATwFaAJEATwFaAJkATwGTAKEATwEbAAkATwEbAKkA
+HQWYAAkAJAWfALkATwEbAAkAywEbAAkA3gEbAMEAYgVWABEATwEyABEAGAOuABEALQOyACkAawW2
+ABEAdAW7ABEACQJAABEAEQJAABkATwEbAAkA1wXAAMkA/gXFAAkAIgbLANEATwbQANEAYwbWAOkA
+TwEbAPEAtAbbAPEAzwbiADkATwHoAAkBTwH1ABkBTwEbACEATwEbAC4AGwB6AS4AYwCgAS4ACwAJ
+AS4AEwBRAS4AIwB6AS4AKwB6AS4AMwBRAS4AOwCAAS4AQwB6AS4AWwCXAWMAgwClAIkAKwH8AKkA
+KwH8AOMACwGlAAEBMwGlAKoA8AAEAAEABgADAAcABAAIAAYAAAAdAkQAAAAlAkgAAAAdAl8AAABh
+AnsAAADaAoAAAAD+Ao4AAgAKAAMAAgALAAUAAQARAAcAAgAQAAcAAgATAAkAAgAUAAsAAQAVAAsA
+AgAWAA0ABIAAAAEAAADPFiJRAAAAAAAA4QQAAAwAAAAAAAAAAAAAAAEAsAAAAAAABAAAAAAAAAAA
+AAAACgALAQAAAAAEAAAAAAAAAAAAAAAKABQBAAAAAAwAAAAAAAAAAAAAAAEAVQEAAAAADAAAAAAA
+AAAAAAAAAQB7BQAAAAAAAAAAAQAAAEIHAAAAAAA8TW9kdWxlPgBTQ181OGE4NjE3OGZkZjk0NzE4
+YmQ2OWUwNDQ2MDZjYzQ0My5kbGwAVXNlckNvbXBvbmVudABTY3JpcHRNYWluAElucHV0MEJ1ZmZl
+cgBDb25uZWN0aW9ucwBWYXJpYWJsZXMAUmVzb3VyY2VzAFNDXzU4YTg2MTc4ZmRmOTQ3MThiZDY5
+ZTA0NDYwNmNjNDQzLlByb3BlcnRpZXMAU2V0dGluZ3MATWljcm9zb2Z0LlNxbFNlcnZlci5UeFNj
+cmlwdABNaWNyb3NvZnQuU3FsU2VydmVyLkR0cy5QaXBlbGluZQBTY3JpcHRDb21wb25lbnQAU2Ny
+aXB0QnVmZmVyAG1zY29ybGliAFN5c3RlbQBPYmplY3QAU3lzdGVtLkNvbmZpZ3VyYXRpb24AQXBw
+bGljYXRpb25TZXR0aW5nc0Jhc2UALmN0b3IATWljcm9zb2Z0LlNxbFNlcnZlci5QaXBlbGluZUhv
+c3QAUGlwZWxpbmVCdWZmZXIAT3V0cHV0TmFtZU1hcABQcm9jZXNzSW5wdXQASW5wdXQwX1Byb2Nl
+c3NJbnB1dABJbnB1dDBfUHJvY2Vzc0lucHV0Um93AFByZUV4ZWN1dGUAdHJ1c3RJZABQb3N0RXhl
+Y3V0ZQBnZXRfVHJ1c3RJZABnZXRfVHJ1c3RJZF9Jc051bGwATmV4dFJvdwBFbmRPZlJvd3NldABU
+cnVzdElkAFRydXN0SWRfSXNOdWxsAFBhcmVudENvbXBvbmVudABzZXRfVHJ1c3RJZABTeXN0ZW0u
+UmVzb3VyY2VzAFJlc291cmNlTWFuYWdlcgByZXNvdXJjZU1hbgBTeXN0ZW0uR2xvYmFsaXphdGlv
+bgBDdWx0dXJlSW5mbwByZXNvdXJjZUN1bHR1cmUAZ2V0X1Jlc291cmNlTWFuYWdlcgBnZXRfQ3Vs
+dHVyZQBzZXRfQ3VsdHVyZQBDdWx0dXJlAGRlZmF1bHRJbnN0YW5jZQBnZXRfRGVmYXVsdABEZWZh
+dWx0AElucHV0SUQASW5wdXROYW1lAEJ1ZmZlcgBPdXRwdXRNYXAAUm93AEJ1ZmZlckNvbHVtbklu
+ZGV4ZXMAQ29tcG9uZW50AHZhbHVlAFN5c3RlbS5SdW50aW1lLlZlcnNpb25pbmcAVGFyZ2V0RnJh
+bWV3b3JrQXR0cmlidXRlAFN5c3RlbS5SZWZsZWN0aW9uAEFzc2VtYmx5VGl0bGVBdHRyaWJ1dGUA
+QXNzZW1ibHlEZXNjcmlwdGlvbkF0dHJpYnV0ZQBBc3NlbWJseUNvbmZpZ3VyYXRpb25BdHRyaWJ1
+dGUAQXNzZW1ibHlDb21wYW55QXR0cmlidXRlAEFzc2VtYmx5UHJvZHVjdEF0dHJpYnV0ZQBBc3Nl
+bWJseUNvcHlyaWdodEF0dHJpYnV0ZQBBc3NlbWJseVRyYWRlbWFya0F0dHJpYnV0ZQBBc3NlbWJs
+eUN1bHR1cmVBdHRyaWJ1dGUAQXNzZW1ibHlWZXJzaW9uQXR0cmlidXRlAFN5c3RlbS5SdW50aW1l
+LkNvbXBpbGVyU2VydmljZXMAQ29tcGlsYXRpb25SZWxheGF0aW9uc0F0dHJpYnV0ZQBSdW50aW1l
+Q29tcGF0aWJpbGl0eUF0dHJpYnV0ZQBTQ181OGE4NjE3OGZkZjk0NzE4YmQ2OWUwNDQ2MDZjYzQ0
+MwBTdHJpbmcAU3RyaW5nQ29tcGFyaXNvbgBFcXVhbHMAR2V0Q29sdW1uSW5kZXhlcwBTU0lTU2Ny
+aXB0Q29tcG9uZW50RW50cnlQb2ludEF0dHJpYnV0ZQBJbnQzMgBUb1N0cmluZwBHZXRJbnQzMgBJ
+c051bGwATWljcm9zb2Z0LlNxbFNlcnZlci5EVFNSdW50aW1lV3JhcABNaWNyb3NvZnQuU3FsU2Vy
+dmVyLkR0cy5SdW50aW1lLldyYXBwZXIASURUU1ZhcmlhYmxlczEwMABnZXRfUmVhZFdyaXRlVmFy
+aWFibGVzAElEVFNWYXJpYWJsZTEwMABnZXRfSXRlbQBTY3JpcHRDb21wb25lbnRFdmFsQ29udGV4
+dABnZXRfRXZhbHVhdG9yQ29udGV4dABJRFRTRXZhbHVhdG9yQ29udGV4dDEwMABHZXRWYWx1ZVdp
+dGhDb250ZXh0AHNldF9WYWx1ZQBTeXN0ZW0uRGlhZ25vc3RpY3MARGVidWdnZXJOb25Vc2VyQ29k
+ZUF0dHJpYnV0ZQBUeXBlAFJ1bnRpbWVUeXBlSGFuZGxlAEdldFR5cGVGcm9tSGFuZGxlAEFzc2Vt
+Ymx5AGdldF9Bc3NlbWJseQBTeXN0ZW0uQ29tcG9uZW50TW9kZWwARWRpdG9yQnJvd3NhYmxlQXR0
+cmlidXRlAEVkaXRvckJyb3dzYWJsZVN0YXRlAENvbXBpbGVyR2VuZXJhdGVkQXR0cmlidXRlAC5j
+Y3RvcgBTQ181OGE4NjE3OGZkZjk0NzE4YmQ2OWUwNDQ2MDZjYzQ0My5Qcm9wZXJ0aWVzLlJlc291
+cmNlcy5yZXNvdXJjZXMAAAAAAA9JAG4AcAB1AHQAIAAwAAAPVAByAHUAcwB0AEkAZAAAcVMAQwBf
+ADUAOABhADgANgAxADcAOABmAGQAZgA5ADQANwAxADgAYgBkADYAOQBlADAANAA0ADYAMAA2AGMA
+YwA0ADQAMwAuAFAAcgBvAHAAZQByAHQAaQBlAHMALgBSAGUAcwBvAHUAcgBjAGUAcwAAAFrOyIel
+/tRHiOzFgE+QIAQACImEXc2AgMyRCLd6XFYZNOCJAwYSFAMGEhgDIAABCSAEAQgOEhUSGQUgAQES
+EAIGDgkgAwESFR0IEhkDIAAIAyAAAgMoAAgDKAACAwYSBQUgAQESBQMgAA4EIAEBDgMoAA4DBhId
+AwYSIQQAABIdBAAAEiEFAAEBEiEECAASHQQIABIhAwYSIAQAABIgBAgAEiAEIAEBCAYgAgIOEVkF
+IAEdCAgEAQAAAAMHAQgDBhIVAwYdCAQgAQgIBCABAggEIAASZQUgARJpHAQAABJtBSABHBJxBCAB
+ARwGAAESeRF9BSAAEoCBByACAQ4SgIEEBwESHQYgAQERgIkIAQACAAAAAAADAAABRwEAGi5ORVRG
+cmFtZXdvcmssVmVyc2lvbj12NC4wAQBUDhRGcmFtZXdvcmtEaXNwbGF5TmFtZRAuTkVUIEZyYW1l
+d29yayA0KAEAI1NDXzU4YTg2MTc4ZmRmOTQ3MThiZDY5ZTA0NDYwNmNjNDQzAAAFAQAAAAAWAQAR
+Q29weXJpZ2h0IEAgIDIwMTUAAAgBAAgAAAAAAB4BAAEAVAIWV3JhcE5vbkV4Y2VwdGlvblRocm93
+cwEA4DIAAAAAAAAAAAAA/jIAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPAyAAAAAAAAAAAAAAAA
+AAAAAF9Db3JEbGxNYWluAG1zY29yZWUuZGxsAAAAAAD/JQAgABAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAQAQAAAAGAAAgAAAAAAAAAAAAAAAAAAAAQABAAAAMAAAgAAAAAAAAAAAAAAAAAAAAQAAAAAA
+SAAAAFhAAACwAwAAAAAAAAAAAACwAzQAAABWAFMAXwBWAEUAUgBTAEkATwBOAF8ASQBOAEYATwAA
+AAAAvQTv/gAAAQAAAAEAIlHPFgAAAQAiUc8WPwAAAAAAAAAEAAAAAgAAAAAAAAAAAAAAAAAAAEQA
+AAABAFYAYQByAEYAaQBsAGUASQBuAGYAbwAAAAAAJAAEAAAAVAByAGEAbgBzAGwAYQB0AGkAbwBu
+AAAAAAAAALAEEAMAAAEAUwB0AHIAaQBuAGcARgBpAGwAZQBJAG4AZgBvAAAA7AIAAAEAMAAwADAA
+MAAwADQAYgAwAAAAcAAkAAEARgBpAGwAZQBEAGUAcwBjAHIAaQBwAHQAaQBvAG4AAAAAAFMAQwBf
+ADUAOABhADgANgAxADcAOABmAGQAZgA5ADQANwAxADgAYgBkADYAOQBlADAANAA0ADYAMAA2AGMA
+YwA0ADQAMwAAAEAADwABAEYAaQBsAGUAVgBlAHIAcwBpAG8AbgAAAAAAMQAuADAALgA1ADgAMwA5
+AC4AMgAwADcANwAwAAAAAABwACgAAQBJAG4AdABlAHIAbgBhAGwATgBhAG0AZQAAAFMAQwBfADUA
+OABhADgANgAxADcAOABmAGQAZgA5ADQANwAxADgAYgBkADYAOQBlADAANAA0ADYAMAA2AGMAYwA0
+ADQAMwAuAGQAbABsAAAASAASAAEATABlAGcAYQBsAEMAbwBwAHkAcgBpAGcAaAB0AAAAQwBvAHAA
+eQByAGkAZwBoAHQAIABAACAAIAAyADAAMQA1AAAAeAAoAAEATwByAGkAZwBpAG4AYQBsAEYAaQBs
+AGUAbgBhAG0AZQAAAFMAQwBfADUAOABhADgANgAxADcAOABmAGQAZgA5ADQANwAxADgAYgBkADYA
+OQBlADAANAA0ADYAMAA2AGMAYwA0ADQAMwAuAGQAbABsAAAAaAAkAAEAUAByAG8AZAB1AGMAdABO
+AGEAbQBlAAAAAABTAEMAXwA1ADgAYQA4ADYAMQA3ADgAZgBkAGYAOQA0ADcAMQA4AGIAZAA2ADkA
+ZQAwADQANAA2ADAANgBjAGMANAA0ADMAAABEAA8AAQBQAHIAbwBkAHUAYwB0AFYAZQByAHMAaQBv
+AG4AAAAxAC4AMAAuADUAOAAzADkALgAyADAANwA3ADAAAAAAAEgADwABAEEAcwBzAGUAbQBiAGwA
+eQAgAFYAZQByAHMAaQBvAG4AAAAxAC4AMAAuADUAOAAzADkALgAyADAANwA3ADAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAMAAAAEDMAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
+                      </arrayElements>
+                    </property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the Microsoft Visual Studio Tools for Applications project. Project names must be unique within a package."
+                      name="VSTAProjectName"
+                      typeConverter="NOTBROWSABLE">SC_58a86178fdf94718bd69e044606cc443</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the programming language used by the script."
+                      name="ScriptLanguage"
+                      typeConverter="Microsoft.SqlServer.VSTAHosting.ScriptingLanguages">CSharp</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies a comma-separated list of read-only variables."
+                      name="ReadOnlyVariables"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ScriptUIVariablePickerDlg"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies a comma-separated list of read/write variables."
+                      name="ReadWriteVariables"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ScriptUIWriteableVariablePickerDlg">User::TrustId</property>
+                    <property
+                      dataType="System.String"
+                      description="List of breakpoints present on the script."
+                      isArray="true"
+                      name="BreakpointCollection"
+                      typeConverter="NOTBROWSABLE">
+                      <arrayElements
+                        arrayElementCount="0" />
+                    </property>
+                    <property
+                      dataType="System.String"
+                      description="Checksum to match component metedata against compiled codes."
+                      name="MetadataChecksum"
+                      typeConverter="NOTBROWSABLE">e8a548447d8b1b867443d48df6f0d6f9</property>
+                    <property
+                      dataType="System.String"
+                      name="UserComponentTypeName">Microsoft.ScriptComponentHost</property>
+                  </properties>
+                  <inputs>
+                    <input
+                      refId="Package\Prepare Trust Variable\Assign Trust Id\Assign Trust Id.Inputs[Input 0]"
+                      hasSideEffects="true"
+                      name="Input 0">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\Assign Trust Id.Inputs[Input 0].Columns[TrustId]"
+                          cachedDataType="i4"
+                          cachedName="TrustId"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Outputs[Output].Columns[TrustId]" />
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                </component>
+                <component
+                  refId="Package\Prepare Trust Variable\Assign Trust Id\Check to Create Trust"
+                  componentClassID="Microsoft.ManagedComponentHost"
+                  contactInfo="Includes and runs custom script code. For example, apply a business rule that limits the range of valid values in an &quot;income&quot; column or add values in two columns and calculate the average of the sum.;Microsoft Corporation; Microsoft SQL Server; Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;9"
+                  description="Includes and runs custom script code. For example, apply a business rule that limits the range of valid values in an &quot;income&quot; column or add values in two columns and calculate the average of the sum."
+                  name="Check to Create Trust"
+                  version="9">
+                  <properties>
+                    <property
+                      dataType="System.String"
+                      description="Stores the source code of the component"
+                      isArray="true"
+                      name="SourceCode"
+                      state="cdata">
+                      <arrayElements
+                        arrayElementCount="30">
+                        <arrayElement
+                          dataType="System.String"><![CDATA[Properties\Settings.settings]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[<?xml version='1.0' encoding='iso-8859-1'?>
+<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
+  <Profiles>
+    <Profile Name="(Default)" />
+  </Profiles>
+  <Settings />
+</SettingsFile>]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[Properties\Resources.resx]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+</root>]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[main.cs]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[#region Help:  Introduction to the Script Component
+/* The Script Component allows you to perform virtually any operation that can be accomplished in
+ * a .Net application within the context of an Integration Services data flow.
+ *
+ * Expand the other regions which have "Help" prefixes for examples of specific ways to use
+ * Integration Services features within this script component. */
+#endregion
+
+#region Namespaces
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using Microsoft.SqlServer.Dts.Runtime.Wrapper;
+using System.Data.SqlClient;
+using System.Collections.Generic;
+#endregion
+
+/// <summary>
+/// This is the class to which to add your code.  Do not change the name, attributes, or parent
+/// of this class.
+/// </summary>
+[Microsoft.SqlServer.Dts.Pipeline.SSISScriptComponentEntryPointAttribute]
+public class ScriptMain : UserComponent
+{
+    #region Help:  Using Integration Services variables and parameters
+    /* To use a variable in this script, first ensure that the variable has been added to
+     * either the list contained in the ReadOnlyVariables property or the list contained in
+     * the ReadWriteVariables property of this script component, according to whether or not your
+     * code needs to write into the variable.  To do so, save this script, close this instance of
+     * Visual Studio, and update the ReadOnlyVariables and ReadWriteVariables properties in the
+     * Script Transformation Editor window.
+     * To use a parameter in this script, follow the same steps. Parameters are always read-only.
+     *
+     * Example of reading from a variable or parameter:
+     *  DateTime startTime = Variables.MyStartTime;
+     *
+     * Example of writing to a variable:
+     *  Variables.myStringVariable = "new value";
+     */
+    #endregion
+
+    #region Help:  Using Integration Services Connnection Managers
+    /* Some types of connection managers can be used in this script component.  See the help topic
+     * "Working with Connection Managers Programatically" for details.
+     *
+     * To use a connection manager in this script, first ensure that the connection manager has
+     * been added to either the list of connection managers on the Connection Managers page of the
+     * script component editor.  To add the connection manager, save this script, close this instance of
+     * Visual Studio, and add the Connection Manager to the list.
+     *
+     * If the component needs to hold a connection open while processing rows, override the
+     * AcquireConnections and ReleaseConnections methods.
+     * 
+     * Example of using an ADO.Net connection manager to acquire a SqlConnection:
+     *  object rawConnection = Connections.SalesDB.AcquireConnection(transaction);
+     *  SqlConnection salesDBConn = (SqlConnection)rawConnection;
+     *
+     * Example of using a File connection manager to acquire a file path:
+     *  object rawConnection = Connections.Prices_zip.AcquireConnection(transaction);
+     *  string filePath = (string)rawConnection;
+     *
+     * Example of releasing a connection manager:
+     *  Connections.SalesDB.ReleaseConnection(rawConnection);
+     */
+    #endregion
+
+    #region Help:  Firing Integration Services Events
+    /* This script component can fire events.
+     *
+     * Example of firing an error event:
+     *  ComponentMetaData.FireError(10, "Process Values", "Bad value", "", 0, out cancel);
+     *
+     * Example of firing an information event:
+     *  ComponentMetaData.FireInformation(10, "Process Values", "Processing has started", "", 0, fireAgain);
+     *
+     * Example of firing a warning event:
+     *  ComponentMetaData.FireWarning(10, "Process Values", "No rows were received", "", 0);
+     */
+    #endregion
+
+    private string dbConnectionString;
+    private string trustCode;
+    private string organisationCode;
+
+    /// <summary>
+    /// This method is called once, before rows begin to be processed in the data flow.
+    ///
+    /// You can remove this method if you don't need to do anything here.
+    /// </summary>
+    public override void PreExecute()
+    {
+        base.PreExecute();
+
+        dbConnectionString = string.Format("Server={0};Database={1};Trusted_Connection=True;", this.Variables.DBServerName, this.Variables.DBName);
+
+        byte[] emptyBytes = new byte[0];
+        this.Log("checkpoint " + dbConnectionString, 0, emptyBytes);
+          
+        /*
+         * Add your code here
+         */
+    }
+
+    /// <summary>
+    /// This method is called after all the rows have passed through this component.
+    ///
+    /// You can delete this method if you don't need to do anything here.
+    /// </summary>
+    public override void PostExecute()
+    {
+        base.PostExecute();
+
+        using (var sqlConnection = new SqlConnection(dbConnectionString))
+        {
+
+            string query = "Exec [TrustManagement].[usp_CreateTrustByCode] @OrganisationCode, @TrustCode";
+            sqlConnection.Open();
+            var sqlCommand = new SqlCommand(query, sqlConnection);
+        
+            sqlCommand.CommandTimeout = 0;
+
+            var parameters = new List<SqlParameter>();
+            var sqlParameter = new SqlParameter("OrganisationCode", SqlDbType.VarChar);
+            sqlParameter.Value = this.Variables.OrgCode;
+            sqlCommand.Parameters.Add(sqlParameter);
+
+            sqlParameter = new SqlParameter("TrustCode", SqlDbType.NVarChar);
+            sqlParameter.Value = this.trustCode;
+            sqlCommand.Parameters.Add(sqlParameter);
+            
+           
+            sqlCommand.ExecuteNonQuery();
+            
+        }
+
+        byte[] emptyBytes = new byte[0];
+        this.Log("checkpoint " + this.organisationCode, 0, emptyBytes);
+        this.Log("checkpoint " + this.trustCode, 0, emptyBytes);
+        /*
+         * Add your code here
+         */
+    }
+
+    /// <summary>
+    /// This method is called once for every row that passes through the component from Input0.
+    ///
+    /// Example of reading a value from a column in the the row:
+    ///  string zipCode = Row.ZipCode
+    ///
+    /// Example of writing a value to a column in the row:
+    ///  Row.ZipCode = zipCode
+    /// </summary>
+    /// <param name="Row">The row that is currently passing through the component</param>
+    public override void Input0_ProcessInputRow(Input0Buffer Row)
+    {
+        /*
+         * Add your code here
+         */
+        this.trustCode = Row.TrustCode;
+        
+    }
+
+}
+]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[BufferWrapper.cs]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[/* THIS IS AUTO-GENERATED CODE THAT WILL BE OVERWRITTEN! DO NOT EDIT!
+*  Microsoft SQL Server Integration Services buffer wrappers
+*  This module defines classes for accessing data flow buffers
+*  THIS IS AUTO-GENERATED CODE THAT WILL BE OVERWRITTEN! DO NOT EDIT! */
+
+
+
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Pipeline;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+
+public class Input0Buffer: ScriptBuffer
+
+{
+    public Input0Buffer(PipelineBuffer Buffer, int[] BufferColumnIndexes, OutputNameMap OutputMap)
+        : base(Buffer, BufferColumnIndexes, OutputMap)
+    {
+    }
+
+    public String TrustCode
+    {
+        get
+        {
+            return Buffer.GetString(BufferColumnIndexes[0]);
+        }
+    }
+    public bool TrustCode_IsNull
+    {
+        get
+        {
+            return IsNull(0);
+        }
+    }
+
+    new public bool NextRow()
+    {
+        return base.NextRow();
+    }
+
+    new public bool EndOfRowset()
+    {
+        return base.EndOfRowset();
+    }
+
+}
+]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[Properties\Settings.Designer.cs]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope="member", Target="SC_62b4e4efdc7648878c00fd0ee34dd140.Properties.Settings.get_Default():SC_62b4e4efdc7648878c00fd0ee34dd140.Properties.Sett" +
+    "ings")]
+
+namespace SC_62b4e4efdc7648878c00fd0ee34dd140.Properties {
+    
+    
+    internal sealed partial class Settings : global::System.Configuration.ApplicationSettingsBase {
+        
+        [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
+        private static Settings defaultInstance = new Settings();
+        
+        public static Settings Default {
+            get {
+                return defaultInstance;
+            }
+        }
+    }
+}
+]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[ComponentWrapper.cs]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[/* THIS IS AUTO-GENERATED CODE THAT WILL BE OVERWRITTEN! DO NOT EDIT!
+*  Microsoft SQL Server Integration Services component wrapper
+*  This module defines the base class for your component
+*  THIS IS AUTO-GENERATED CODE THAT WILL BE OVERWRITTEN! DO NOT EDIT! */
+
+using System;
+using System.Data;
+using Microsoft.SqlServer.Dts.Pipeline;
+using Microsoft.SqlServer.Dts.Pipeline.Wrapper;
+using Microsoft.SqlServer.Dts.Runtime.Wrapper;
+
+public class UserComponent: ScriptComponent
+{
+    public Connections Connections;
+    public Variables Variables;
+    public UserComponent()
+    {
+        Connections = new Connections(this);
+        Variables = new Variables(this);
+    }
+
+    public override void ProcessInput(int InputID, string InputName, PipelineBuffer Buffer, OutputNameMap OutputMap)
+    {
+
+        if (InputName.Equals(@"Input 0", StringComparison.Ordinal))
+        {
+            Input0_ProcessInput(new Input0Buffer(Buffer, GetColumnIndexes(InputID), OutputMap));
+        }
+
+    }
+
+    public virtual void Input0_ProcessInput(Input0Buffer Buffer)
+    {
+        while (Buffer.NextRow())
+        {
+            Input0_ProcessInputRow(Buffer);
+        }
+    }
+
+    public virtual void Input0_ProcessInputRow(Input0Buffer Row)
+    {
+    }
+
+}
+
+public class Connections
+{
+    ScriptComponent ParentComponent;
+
+    public Connections(ScriptComponent Component)
+    {
+        ParentComponent = Component;
+    }
+
+}
+
+public class Variables
+{
+    ScriptComponent ParentComponent;
+
+    public Variables(ScriptComponent Component)
+    {
+        ParentComponent = Component;
+    }
+
+    public String DBName
+    {
+        get
+        {
+            return (String)(ParentComponent.ReadOnlyVariables["DBName"].GetValueWithContext(ScriptComponent.EvaluatorContext));
+        }
+    }
+
+    public String DBServerName
+    {
+        get
+        {
+            return (String)(ParentComponent.ReadOnlyVariables["DBServerName"].GetValueWithContext(ScriptComponent.EvaluatorContext));
+        }
+    }
+
+    public String OrgCode
+    {
+        get
+        {
+            return (String)(ParentComponent.ReadOnlyVariables["OrgCode"].GetValueWithContext(ScriptComponent.EvaluatorContext));
+        }
+    }
+
+}
+]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[Project]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF16LE]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[<?xml version="1.0" encoding="UTF-16" standalone="yes"?>
+<c:Project xmlns:c="http://schemas.microsoft.com/codeprojectml/2010/08/main" xmlns:msb="http://schemas.microsoft.com/developer/msbuild/2003" runtimeVersion="3.0" schemaVersion="1.0">
+	<msb:PropertyGroup>
+		<msb:CodeName>SC_62b4e4efdc7648878c00fd0ee34dd140</msb:CodeName>
+		<msb:Language>msBuild</msb:Language>
+		<msb:DisplayName>SC_62b4e4efdc7648878c00fd0ee34dd140</msb:DisplayName>
+		<msb:ProjectId>{DF8B2B90-3F1B-4ABC-A68D-E385FBBD5E96}</msb:ProjectId>
+	</msb:PropertyGroup>
+	<msb:ItemGroup>
+		<msb:Project Include="SC_62b4e4efdc7648878c00fd0ee34dd140.csproj"/>
+		<msb:File Include="Properties\AssemblyInfo.cs"/>
+		<msb:File Include="Properties\Settings.settings"/>
+		<msb:File Include="Properties\Resources.resx"/>
+		<msb:File Include="Properties\Resources.Designer.cs"/>
+		<msb:File Include="Properties\Settings.Designer.cs"/>
+		<msb:File Include="main.cs"/>
+		<msb:File Include="BufferWrapper.cs"/>
+		<msb:File Include="ComponentWrapper.cs"/>
+	</msb:ItemGroup>
+</c:Project>]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[Properties\AssemblyInfo.cs]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[using System.Reflection;
+using System.Runtime.CompilerServices;
+
+//
+// General Information about an assembly is controlled through the following 
+// set of attributes. Change these attribute values to modify the information
+// associated with an assembly.
+//
+[assembly: AssemblyTitle("SC_62b4e4efdc7648878c00fd0ee34dd140")]
+[assembly: AssemblyDescription("")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("")]
+[assembly: AssemblyProduct("SC_62b4e4efdc7648878c00fd0ee34dd140")]
+[assembly: AssemblyCopyright("Copyright @  2016")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+//
+// Version information for an assembly consists of the following four values:
+//
+//      Major Version
+//      Minor Version 
+//      Build Number
+//      Revision
+//
+// You can specify all the values or you can default the Revision and Build Numbers 
+// by using the '*' as shown below:
+
+[assembly: AssemblyVersion("1.0.*")]
+]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[SC_62b4e4efdc7648878c00fd0ee34dd140.csproj]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectTypeGuids>{30D016F9-3734-4E33-A861-5E7D899E18F3};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{8f23c243-431c-49c6-bc25-d286cc3be361}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>SC_62b4e4efdc7648878c00fd0ee34dd140</RootNamespace>
+    <AssemblyName>SC_62b4e4efdc7648878c00fd0ee34dd140</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>true</ResolveAssemblyReferenceIgnoreTargetFrameworkAttributeVersionMismatch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>.\bin\Debug\</OutputPath>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DebugSymbols>false</DebugSymbols>
+    <Optimize>true</Optimize>
+    <OutputPath>.\bin\Release\</OutputPath>
+    <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.SqlServer.TxScript, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.DTSRuntimeWrap, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.DTSPipelineWrap, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Reference Include="Microsoft.SqlServer.PipelineHost, Version=12.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91" />
+    <Compile Include="main.cs" />
+    <Compile Include="BufferWrapper.cs" />
+    <Compile Include="ComponentWrapper.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppDesigner Include="Properties\" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <!-- Include the build rules for a C# project.-->
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <!-- This section defines VSTA properties that describe the host-changable project properties. -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{30D016F9-3734-4E33-A861-5E7D899E18F3}">
+        <ProjectProperties HostName="ScriptComponent" HostPackage="{B3A685AA-7EAF-4BC6-9940-57959FA5AC07}" ApplicationType="usd" Language="cs" TemplatesPath="" DebugInfoExeName="" DebugInfoCommandLine="" DebugInfoWorkingDir="" IconImageList="" />
+        <Host Name="ScriptComponent" GeneratedNamespace="SC_62b4e4efdc7648878c00fd0ee34dd140" IconIndex="0"></Host>
+        <ProjectClient>
+          <HostIdentifier>SSIS_SC120</HostIdentifier>
+        </ProjectClient>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[Properties\Resources.Designer.cs]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[UTF8]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[//------------------------------------------------------------------------------
+// <auto-generated>
+//     This code was generated by a tool.
+//
+//     Changes to this file may cause incorrect behavior and will be lost if
+//     the code is regenerated.
+// </auto-generated>
+//------------------------------------------------------------------------------
+
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope="member", Target="SC_62b4e4efdc7648878c00fd0ee34dd140.Properties.Resources.get_ResourceManager():System.Resources.Resou" +
+    "rceManager")]
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope="member", Target="SC_62b4e4efdc7648878c00fd0ee34dd140.Properties.Resources.get_Culture():System.Globalization.CultureIn" +
+    "fo")]
+[assembly: global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode", Scope="member", Target="SC_62b4e4efdc7648878c00fd0ee34dd140.Properties.Resources.set_Culture(System.Globalization.CultureInfo" +
+    "):Void")]
+
+namespace SC_62b4e4efdc7648878c00fd0ee34dd140.Properties {
+    
+    
+    /// <summary>
+    ///   A strongly-typed resource class, for looking up localized strings, etc.
+    /// </summary>
+    // This class was auto-generated by the StronglyTypedResourceBuilder
+    // class via a tool like ResGen or Visual Studio.
+    // To add or remove a member, edit your .ResX file then rerun ResGen
+    // with the /str option, or rebuild your VS project.
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+    internal class Resources {
+        
+        private static global::System.Resources.ResourceManager resourceMan;
+        
+        private static global::System.Globalization.CultureInfo resourceCulture;
+        
+        [global::System.Diagnostics.CodeAnalysis.SuppressMessageAttribute("Microsoft.Performance", "CA1811:AvoidUncalledPrivateCode")]
+        internal Resources() {
+        }
+        
+        /// <summary>
+        ///   Returns the cached ResourceManager instance used by this class.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Resources.ResourceManager ResourceManager {
+            get {
+                if ((resourceMan == null)) {
+                    global::System.Resources.ResourceManager temp = new global::System.Resources.ResourceManager("SC_62b4e4efdc7648878c00fd0ee34dd140.Properties.Resources", typeof(Resources).Assembly);
+                    resourceMan = temp;
+                }
+                return resourceMan;
+            }
+        }
+        
+        /// <summary>
+        ///   Overrides the current thread's CurrentUICulture property for all
+        ///   resource lookups using this strongly typed resource class.
+        /// </summary>
+        [global::System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
+        internal static global::System.Globalization.CultureInfo Culture {
+            get {
+                return resourceCulture;
+            }
+            set {
+                resourceCulture = value;
+            }
+        }
+    }
+}
+]]></arrayElement>
+                      </arrayElements>
+                    </property>
+                    <property
+                      dataType="System.String"
+                      description="Stores the binary representation of the component"
+                      isArray="true"
+                      name="BinaryCode"
+                      state="cdata">
+                      <arrayElements
+                        arrayElementCount="2">
+                        <arrayElement
+                          dataType="System.String"><![CDATA[SC_62b4e4efdc7648878c00fd0ee34dd140.dll]]></arrayElement>
+                        <arrayElement
+                          dataType="System.String"><![CDATA[TVqQAAMAAAAEAAAA//8AALgAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAgAAAAA4fug4AtAnNIbgBTM0hVGhpcyBwcm9ncmFtIGNhbm5vdCBiZSBydW4gaW4gRE9TIG1v
+ZGUuDQ0KJAAAAAAAAABQRQAATAEDAOMt6lYAAAAAAAAAAOAAAiELAQsAABoAAAAIAAAAAAAATjgA
+AAAgAAAAQAAAAAAAEAAgAAAAAgAABAAAAAAAAAAEAAAAAAAAAACAAAAAAgAAAAAAAAMAQIUAABAA
+ABAAAAAAEAAAEAAAAAAAABAAAAAAAAAAAAAAAPg3AABTAAAAAEAAAAgEAAAAAAAAAAAAAAAAAAAA
+AAAAAGAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAIAAACAAAAAAAAAAAAAAACCAAAEgAAAAAAAAAAAAAAC50ZXh0AAAAVBgAAAAgAAAAGgAAAAIA
+AAAAAAAAAAAAAAAAACAAAGAucnNyYwAAAAgEAAAAQAAAAAYAAAAcAAAAAAAAAAAAAAAAAABAAABA
+LnJlbG9jAAAMAAAAAGAAAAACAAAAIgAAAAAAAAAAAAAAAAAAQAAAQgAAAAAAAAAAAAAAAAAAAAAw
+OAAAAAAAAEgAAAACAAUA+CMAAAAUAAABAAAAAAAAAEAjAAC4AAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAH4CKA0AAAoCAnMOAAAGfQEAAAQCAnMPAAAGfQIAAAQqkgRy
+AQAAcBpvDgAACiwVAgUCAygPAAAKDgRzCQAABm8DAAAGKkorBwIDbwQAAAYDbwwAAAYt8SoGKgAA
+EzAEAEwAAAABAAARAigRAAAKAnIRAABwAnsCAAAEbxEAAAYCewIAAARvEAAABigSAAAKfQMAAAQW
+jRgAAAEKAnJzAABwAnsDAAAEKBMAAAoWBigUAAAKKhswBADSAAAAAgAAEQIoFQAACgJ7AwAABHMW
+AAAKCnKLAABwCwZvFwAACgcGcxgAAAoMCBZvGQAACnMaAAAKJnImAQBwHxZzGwAACg0JAnsCAAAE
+bxIAAAZvHAAACghvHQAACglvHgAACiZySAEAcB8McxsAAAoNCQJ7BAAABG8cAAAKCG8dAAAKCW8e
+AAAKJghvHwAACibeCgYsBgZvIAAACtwWjRgAAAETBAJycwAAcAJ7BQAABCgTAAAKFhEEKBQAAAoC
+cnMAAHACewQAAAQoEwAAChYRBCgUAAAKKgAAARAAAAIAEgB7jQAKAAAAADYCA28KAAAGfQQAAAQq
+HgIoAQAABioqAgMEBSghAAAKKlICeyIAAAoCeyMAAAoWlG8kAAAKKiICFiglAAAKKh4CKCYAAAoq
+HgIoJwAACio6AigoAAAKAgN9BgAABCo6AigoAAAKAgN9BwAABCqWAnsHAAAEbykAAApyXAEAcG8q
+AAAKKCsAAApvLAAACnQVAAABKpYCewcAAARvKQAACnJqAQBwbyoAAAooKwAACm8sAAAKdBUAAAEq
+lgJ7BwAABG8pAAAKcoQBAHBvKgAACigrAAAKbywAAAp0FQAAASoeAigoAAAKKgATMAIALQAAAAMA
+ABF+CAAABC0gcpQBAHDQBwAAAiguAAAKby8AAApzMAAACgoGgAgAAAR+CAAABCoafgkAAAQqHgKA
+CQAABCoafgoAAAQqLnMYAAAGgAoAAAQqHgIoMwAACioAtAAAAM7K774BAAAAkQAAAGxTeXN0ZW0u
+UmVzb3VyY2VzLlJlc291cmNlUmVhZGVyLCBtc2NvcmxpYiwgVmVyc2lvbj00LjAuMC4wLCBDdWx0
+dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkjU3lzdGVtLlJlc291
+cmNlcy5SdW50aW1lUmVzb3VyY2VTZXQCAAAAAAAAAAAAAABQQURQQURQtAAAAEJTSkIBAAEAAAAA
+AAwAAAB2NC4wLjMwMzE5AAAAAAUAbAAAAHAGAAAjfgAA3AYAAAQJAAAjU3RyaW5ncwAAAADgDwAA
+CAIAACNVUwDoEQAAEAAAACNHVUlEAAAA+BEAAAgCAAAjQmxvYgAAAAAAAAACAAABVxWiCQkBAAAA
++iUzABYAAAEAAAAtAAAACAAAAAoAAAAZAAAADQAAADMAAAAPAAAAAwAAAAQAAAAIAAAACQAAAAEA
+AAABAAAABgAAAAEAAAAAAAoAAQAAAAAABgDuAM0ABgD+AM0ACgAbARQBDgA3ASIBEgB2Ac0ABgCF
+Ac0ACgDHArYCCgD4AuMCCgDRA7cDCgD8A+oDCgATBOoDCgAwBOoDCgBPBOoDCgBoBOoDCgCBBOoD
+CgCcBOoDCgC3BOoDCgDQBOoDCgAJBekECgApBekECgBrBRQBCgByBRQBBgCbBc0ACgDJBRQBFgD7
+BeUFFgAcBgkGFgAuBuUFFgA5BgkGCgBxBlYGFgB4BuUFFgCFBtkFFgCPBgkGFgClBuUFCgDfBhQB
+GgBPBycHGgB2BycHBwCPBwAAGgC/BycHCgD+B+sHCgAbCBQBCgAgCBQBCgBECOoDDgBwCFoIDgCJ
+CFoICgCeCOkEAAAAAAEAAAAAAAEAAQABABAAMgAAAAUAAQABAAEAEABAAAAACAADAAUAAQAQAEsA
+AAAJAAYACQABABAAWAAAAA0ABgAOAAEAEABkAAAADQAHAA8AAAAQAG4AeAANAAgAEwAAARAApwB4
+ABEACgAXAAYAWAATAAYAZAAXAAEAywEvAAEA3gEvAAEA6AEvAAEAYgJMAAEAYgJMABEA1wJWABEA
+BANaABEASAN4AFAgAAAAAIYYTwEbAAEAcCAAAAAAxgCTAR8AAQCVIAAAAADGAaABKQAFAKggAAAA
+AMYBtAEpAAYArCAAAAAAxgD5ARsABwAEIQAAAADGAAQCGwAHAPQhAAAAAMYAtAEpAAcAAiIAAAAA
+hhhPARsACAAKIgAAAACGGE8BMgAIABUiAAAAAIYIEAI8AAsAKiIAAAAAhggeAkAACwAzIgAAAACG
+ADMCQAALADsiAAAAAIYAOwJAAAsAQyIAAAAAhhhPAVAACwBSIgAAAACGGE8BUAAMAGEiAAAAAIYI
+cgI8AA0AhyIAAAAAhgh9AjwADQCtIgAAAACGCI4CPAANANMiAAAAAIMYTwEbAA0A3CIAAAAAkwgU
+A14ADQAVIwAAAACTCCgDYwANABwjAAAAAJMINANoAA0AJCMAAAAAlghYA3wADgA3IwAAAACGGE8B
+GwAOACsjAAAAAJEYuQhLAQ4AAAABAGwDAAACAHQDAAADAH4DAAAEAIUDAAABAH4DAAABAI8DAAAB
+AI8DAAABAH4DAAACAJMDAAADAIUDAAABAKcDAAABAKcDAAABALEDSQBPAYYAUQBPAYYAWQBPAYYA
+YQBPAYYAaQBPAYYAcQBPAYYAeQBPAYYAgQBPAYYAiQBPAYYAkQBPAYYAmQBPAYsAoQBPARsACQBP
+ARsAqQCDBZAACQCKBZcAuQBPARsACQD5ARsAqQDCBaIAqQDOBakACQDVBa8ACQAEAhsAyQBPAYYA
+0QApBhsA2QBPAbwA4QBDBosADABPARsA8QBPAcoAAQGbBtEA2QC8BtYACQHLBtwA4QDPBuMAEQHr
+BhsAEQBPATIAEQB+A/MAEQCTA/cAKQDzBvsAEQD9BgABEQAzAkAAEQA7AkAAGQBPARsACQBgBwUB
+GQGGBwsBCQCqBxIBIQHXBxgBOQFPARsAQQEyCB8BQQFNCCgBOQBPAS4BWQFPATsBaQFPARsAIQBP
+ARsALgAbAMABLgBjAOYBLgALAE8BLgATAJcBLgAjAMABLgArAMABLgAzAJcBLgA7AMYBLgBDAMAB
+LgBbAN0BYwCDAJ0AyQCLAUIB4wBrAZ0A6QCLAUIBQQGTAZ0AtwDnADYBBAABAAYAAwAHAAYACAAI
+AAAARwJEAAAAUQJIAAAAmgJEAAAAoQJEAAAArgJEAAAAxwJuAAAAQANzAAAAZAOBAAIACgADAAIA
+CwAFAAIAEAAHAAIAEQAJAAIAEgALAAIAFAANAAIAFQAPAAEAFgAPAAIAFwARAMMABIAAAAEAAAAg
+F3FVAAAAAAAARwUAAAwAAAAAAAAAAAAAAAEAsAAAAAAABAAAAAAAAAAAAAAACgALAQAAAAAEAAAA
+AAAAAAAAAAAKABQBAAAAAAwAAAAAAAAAAAAAAAEAVQEAAAAABAAAAAAAAAAAAAAACgDZBQAAAAAM
+AAAAAAAAAAAAAAABAAQHAAAAAAAAAAABAAAAwAgAAAAAAAAAPE1vZHVsZT4AU0NfNjJiNGU0ZWZk
+Yzc2NDg4NzhjMDBmZDBlZTM0ZGQxNDAuZGxsAFVzZXJDb21wb25lbnQAU2NyaXB0TWFpbgBJbnB1
+dDBCdWZmZXIAQ29ubmVjdGlvbnMAVmFyaWFibGVzAFJlc291cmNlcwBTQ182MmI0ZTRlZmRjNzY0
+ODg3OGMwMGZkMGVlMzRkZDE0MC5Qcm9wZXJ0aWVzAFNldHRpbmdzAE1pY3Jvc29mdC5TcWxTZXJ2
+ZXIuVHhTY3JpcHQATWljcm9zb2Z0LlNxbFNlcnZlci5EdHMuUGlwZWxpbmUAU2NyaXB0Q29tcG9u
+ZW50AFNjcmlwdEJ1ZmZlcgBtc2NvcmxpYgBTeXN0ZW0AT2JqZWN0AFN5c3RlbS5Db25maWd1cmF0
+aW9uAEFwcGxpY2F0aW9uU2V0dGluZ3NCYXNlAC5jdG9yAE1pY3Jvc29mdC5TcWxTZXJ2ZXIuUGlw
+ZWxpbmVIb3N0AFBpcGVsaW5lQnVmZmVyAE91dHB1dE5hbWVNYXAAUHJvY2Vzc0lucHV0AElucHV0
+MF9Qcm9jZXNzSW5wdXQASW5wdXQwX1Byb2Nlc3NJbnB1dFJvdwBkYkNvbm5lY3Rpb25TdHJpbmcA
+dHJ1c3RDb2RlAG9yZ2FuaXNhdGlvbkNvZGUAUHJlRXhlY3V0ZQBQb3N0RXhlY3V0ZQBnZXRfVHJ1
+c3RDb2RlAGdldF9UcnVzdENvZGVfSXNOdWxsAE5leHRSb3cARW5kT2ZSb3dzZXQAVHJ1c3RDb2Rl
+AFRydXN0Q29kZV9Jc051bGwAUGFyZW50Q29tcG9uZW50AGdldF9EQk5hbWUAZ2V0X0RCU2VydmVy
+TmFtZQBnZXRfT3JnQ29kZQBEQk5hbWUAREJTZXJ2ZXJOYW1lAE9yZ0NvZGUAU3lzdGVtLlJlc291
+cmNlcwBSZXNvdXJjZU1hbmFnZXIAcmVzb3VyY2VNYW4AU3lzdGVtLkdsb2JhbGl6YXRpb24AQ3Vs
+dHVyZUluZm8AcmVzb3VyY2VDdWx0dXJlAGdldF9SZXNvdXJjZU1hbmFnZXIAZ2V0X0N1bHR1cmUA
+c2V0X0N1bHR1cmUAQ3VsdHVyZQBkZWZhdWx0SW5zdGFuY2UAZ2V0X0RlZmF1bHQARGVmYXVsdABJ
+bnB1dElEAElucHV0TmFtZQBCdWZmZXIAT3V0cHV0TWFwAFJvdwBCdWZmZXJDb2x1bW5JbmRleGVz
+AENvbXBvbmVudAB2YWx1ZQBTeXN0ZW0uUnVudGltZS5WZXJzaW9uaW5nAFRhcmdldEZyYW1ld29y
+a0F0dHJpYnV0ZQBTeXN0ZW0uUmVmbGVjdGlvbgBBc3NlbWJseVRpdGxlQXR0cmlidXRlAEFzc2Vt
+Ymx5RGVzY3JpcHRpb25BdHRyaWJ1dGUAQXNzZW1ibHlDb25maWd1cmF0aW9uQXR0cmlidXRlAEFz
+c2VtYmx5Q29tcGFueUF0dHJpYnV0ZQBBc3NlbWJseVByb2R1Y3RBdHRyaWJ1dGUAQXNzZW1ibHlD
+b3B5cmlnaHRBdHRyaWJ1dGUAQXNzZW1ibHlUcmFkZW1hcmtBdHRyaWJ1dGUAQXNzZW1ibHlDdWx0
+dXJlQXR0cmlidXRlAEFzc2VtYmx5VmVyc2lvbkF0dHJpYnV0ZQBTeXN0ZW0uUnVudGltZS5Db21w
+aWxlclNlcnZpY2VzAENvbXBpbGF0aW9uUmVsYXhhdGlvbnNBdHRyaWJ1dGUAUnVudGltZUNvbXBh
+dGliaWxpdHlBdHRyaWJ1dGUAU0NfNjJiNGU0ZWZkYzc2NDg4NzhjMDBmZDBlZTM0ZGQxNDAAU3Ry
+aW5nAFN0cmluZ0NvbXBhcmlzb24ARXF1YWxzAEdldENvbHVtbkluZGV4ZXMAU1NJU1NjcmlwdENv
+bXBvbmVudEVudHJ5UG9pbnRBdHRyaWJ1dGUARm9ybWF0AEJ5dGUAQ29uY2F0AExvZwBTeXN0ZW0u
+RGF0YQBTeXN0ZW0uRGF0YS5TcWxDbGllbnQAU3FsQ29ubmVjdGlvbgBTeXN0ZW0uRGF0YS5Db21t
+b24ARGJDb25uZWN0aW9uAE9wZW4AU3FsQ29tbWFuZABEYkNvbW1hbmQAc2V0X0NvbW1hbmRUaW1l
+b3V0AFN5c3RlbS5Db2xsZWN0aW9ucy5HZW5lcmljAExpc3RgMQBTcWxQYXJhbWV0ZXIAU3FsRGJU
+eXBlAERiUGFyYW1ldGVyAHNldF9WYWx1ZQBTcWxQYXJhbWV0ZXJDb2xsZWN0aW9uAGdldF9QYXJh
+bWV0ZXJzAEFkZABFeGVjdXRlTm9uUXVlcnkASURpc3Bvc2FibGUARGlzcG9zZQBHZXRTdHJpbmcA
+SXNOdWxsAE1pY3Jvc29mdC5TcWxTZXJ2ZXIuRFRTUnVudGltZVdyYXAATWljcm9zb2Z0LlNxbFNl
+cnZlci5EdHMuUnVudGltZS5XcmFwcGVyAElEVFNWYXJpYWJsZXMxMDAAZ2V0X1JlYWRPbmx5VmFy
+aWFibGVzAElEVFNWYXJpYWJsZTEwMABnZXRfSXRlbQBTY3JpcHRDb21wb25lbnRFdmFsQ29udGV4
+dABnZXRfRXZhbHVhdG9yQ29udGV4dABJRFRTRXZhbHVhdG9yQ29udGV4dDEwMABHZXRWYWx1ZVdp
+dGhDb250ZXh0AFN5c3RlbS5EaWFnbm9zdGljcwBEZWJ1Z2dlck5vblVzZXJDb2RlQXR0cmlidXRl
+AFR5cGUAUnVudGltZVR5cGVIYW5kbGUAR2V0VHlwZUZyb21IYW5kbGUAQXNzZW1ibHkAZ2V0X0Fz
+c2VtYmx5AFN5c3RlbS5Db21wb25lbnRNb2RlbABFZGl0b3JCcm93c2FibGVBdHRyaWJ1dGUARWRp
+dG9yQnJvd3NhYmxlU3RhdGUAQ29tcGlsZXJHZW5lcmF0ZWRBdHRyaWJ1dGUALmNjdG9yAFNDXzYy
+YjRlNGVmZGM3NjQ4ODc4YzAwZmQwZWUzNGRkMTQwLlByb3BlcnRpZXMuUmVzb3VyY2VzLnJlc291
+cmNlcwAAAA9JAG4AcAB1AHQAIAAwAABhUwBlAHIAdgBlAHIAPQB7ADAAfQA7AEQAYQB0AGEAYgBh
+AHMAZQA9AHsAMQB9ADsAVAByAHUAcwB0AGUAZABfAEMAbwBuAG4AZQBjAHQAaQBvAG4APQBUAHIA
+dQBlADsAABdjAGgAZQBjAGsAcABvAGkAbgB0ACAAAICZRQB4AGUAYwAgAFsAVAByAHUAcwB0AE0A
+YQBuAGEAZwBlAG0AZQBuAHQAXQAuAFsAdQBzAHAAXwBDAHIAZQBhAHQAZQBUAHIAdQBzAHQAQgB5
+AEMAbwBkAGUAXQAgAEAATwByAGcAYQBuAGkAcwBhAHQAaQBvAG4AQwBvAGQAZQAsACAAQABUAHIA
+dQBzAHQAQwBvAGQAZQAAIU8AcgBnAGEAbgBpAHMAYQB0AGkAbwBuAEMAbwBkAGUAABNUAHIAdQBz
+AHQAQwBvAGQAZQAADUQAQgBOAGEAbQBlAAAZRABCAFMAZQByAHYAZQByAE4AYQBtAGUAAA9PAHIA
+ZwBDAG8AZABlAABxUwBDAF8ANgAyAGIANABlADQAZQBmAGQAYwA3ADYANAA4ADgANwA4AGMAMAAw
+AGYAZAAwAGUAZQAzADQAZABkADEANAAwAC4AUAByAG8AcABlAHIAdABpAGUAcwAuAFIAZQBzAG8A
+dQByAGMAZQBzAAAAAFyNyRSzguBLiMhZVE7cV8AACImEXc2AgMyRCLd6XFYZNOCJAwYSFAMGEhgD
+IAABCSAEAQgOEhUSGQUgAQESEAIGDgkgAwESFR0IEhkDIAAOAyAAAgMoAA4DKAACAwYSBQUgAQES
+BQMGEh0DBhIhBAAAEh0EAAASIQUAAQESIQQIABIdBAgAEiEDBhIgBAAAEiAECAASIAQgAQEOBCAB
+AQgGIAICDhFZBSABHQgIBAEAAAAGAAMODhwcBQACDg4OByADAQ4IHQUEBwEdBQYgAgEOEmUGFRJ1
+ARJ5BiACAQ4RfQQgAQEcBSAAEoCFBiABEnkSeQMgAAgLBwUSZQ4SbRJ5HQUDBhIVAwYdCAQgAQ4I
+BCABAggFIAASgI0GIAESgJEcBQAAEoCVBiABHBKAmQgAARKAoRGApQUgABKAqQcgAgEOEoCpBAcB
+Eh0GIAEBEYCxCAEAAgAAAAAAAwAAAUcBABouTkVURnJhbWV3b3JrLFZlcnNpb249djQuMAEAVA4U
+RnJhbWV3b3JrRGlzcGxheU5hbWUQLk5FVCBGcmFtZXdvcmsgNCgBACNTQ182MmI0ZTRlZmRjNzY0
+ODg3OGMwMGZkMGVlMzRkZDE0MAAABQEAAAAAFgEAEUNvcHlyaWdodCBAICAyMDE2AAAIAQAIAAAA
+AAAeAQABAFQCFldyYXBOb25FeGNlcHRpb25UaHJvd3MBAAAAIDgAAAAAAAAAAAAAPjgAAAAgAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAADA4AAAAAAAAAAAAAAAAAAAAAF9Db3JEbGxNYWluAG1zY29yZWUu
+ZGxsAAAAAAD/JQAgABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AQAQAAAAGAAAgAAAAAAAAAAAAAAAAAAAAQABAAAAMAAAgAAAAAAAAAAAAAAAAAAAAQAAAAAASAAA
+AFhAAACwAwAAAAAAAAAAAACwAzQAAABWAFMAXwBWAEUAUgBTAEkATwBOAF8ASQBOAEYATwAAAAAA
+vQTv/gAAAQAAAAEAcVUgFwAAAQBxVSAXPwAAAAAAAAAEAAAAAgAAAAAAAAAAAAAAAAAAAEQAAAAB
+AFYAYQByAEYAaQBsAGUASQBuAGYAbwAAAAAAJAAEAAAAVAByAGEAbgBzAGwAYQB0AGkAbwBuAAAA
+AAAAALAEEAMAAAEAUwB0AHIAaQBuAGcARgBpAGwAZQBJAG4AZgBvAAAA7AIAAAEAMAAwADAAMAAw
+ADQAYgAwAAAAcAAkAAEARgBpAGwAZQBEAGUAcwBjAHIAaQBwAHQAaQBvAG4AAAAAAFMAQwBfADYA
+MgBiADQAZQA0AGUAZgBkAGMANwA2ADQAOAA4ADcAOABjADAAMABmAGQAMABlAGUAMwA0AGQAZAAx
+ADQAMAAAAEAADwABAEYAaQBsAGUAVgBlAHIAcwBpAG8AbgAAAAAAMQAuADAALgA1ADkAMgAwAC4A
+MgAxADgANwAzAAAAAABwACgAAQBJAG4AdABlAHIAbgBhAGwATgBhAG0AZQAAAFMAQwBfADYAMgBi
+ADQAZQA0AGUAZgBkAGMANwA2ADQAOAA4ADcAOABjADAAMABmAGQAMABlAGUAMwA0AGQAZAAxADQA
+MAAuAGQAbABsAAAASAASAAEATABlAGcAYQBsAEMAbwBwAHkAcgBpAGcAaAB0AAAAQwBvAHAAeQBy
+AGkAZwBoAHQAIABAACAAIAAyADAAMQA2AAAAeAAoAAEATwByAGkAZwBpAG4AYQBsAEYAaQBsAGUA
+bgBhAG0AZQAAAFMAQwBfADYAMgBiADQAZQA0AGUAZgBkAGMANwA2ADQAOAA4ADcAOABjADAAMABm
+AGQAMABlAGUAMwA0AGQAZAAxADQAMAAuAGQAbABsAAAAaAAkAAEAUAByAG8AZAB1AGMAdABOAGEA
+bQBlAAAAAABTAEMAXwA2ADIAYgA0AGUANABlAGYAZABjADcANgA0ADgAOAA3ADgAYwAwADAAZgBk
+ADAAZQBlADMANABkAGQAMQA0ADAAAABEAA8AAQBQAHIAbwBkAHUAYwB0AFYAZQByAHMAaQBvAG4A
+AAAxAC4AMAAuADUAOQAyADAALgAyADEAOAA3ADMAAAAAAEgADwABAEEAcwBzAGUAbQBiAGwAeQAg
+AFYAZQByAHMAaQBvAG4AAAAxAC4AMAAuADUAOQAyADAALgAyADEAOAA3ADMAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAwAAAMAAAAUDgAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA]]></arrayElement>
+                      </arrayElements>
+                    </property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the Microsoft Visual Studio Tools for Applications project. Project names must be unique within a package."
+                      name="VSTAProjectName"
+                      typeConverter="NOTBROWSABLE">SC_62b4e4efdc7648878c00fd0ee34dd140</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the programming language used by the script."
+                      name="ScriptLanguage"
+                      typeConverter="Microsoft.SqlServer.VSTAHosting.ScriptingLanguages">CSharp</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies a comma-separated list of read-only variables."
+                      name="ReadOnlyVariables"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ScriptUIVariablePickerDlg">User::DBName,User::DBServerName,User::OrgCode</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies a comma-separated list of read/write variables."
+                      name="ReadWriteVariables"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ScriptUIWriteableVariablePickerDlg"></property>
+                    <property
+                      dataType="System.String"
+                      description="List of breakpoints present on the script."
+                      isArray="true"
+                      name="BreakpointCollection"
+                      typeConverter="NOTBROWSABLE">
+                      <arrayElements
+                        arrayElementCount="0" />
+                    </property>
+                    <property
+                      dataType="System.String"
+                      description="Checksum to match component metedata against compiled codes."
+                      name="MetadataChecksum"
+                      typeConverter="NOTBROWSABLE">4f03e5a4459d801a4288647d8a178f02</property>
+                    <property
+                      dataType="System.String"
+                      name="UserComponentTypeName">Microsoft.ScriptComponentHost</property>
+                  </properties>
+                  <inputs>
+                    <input
+                      refId="Package\Prepare Trust Variable\Assign Trust Id\Check to Create Trust.Inputs[Input 0]"
+                      hasSideEffects="true"
+                      name="Input 0">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\Check to Create Trust.Inputs[Input 0].Columns[TrustCode]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="TrustCode"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Output].Columns[TrustCode]" />
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Prepare Trust Variable\Assign Trust Id\Check to Create Trust.Outputs[Output 0]"
+                      name="Output 0"
+                      synchronousInputId="Package\Prepare Trust Variable\Assign Trust Id\Check to Create Trust.Inputs[Input 0]">
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column"
+                  componentClassID="Microsoft.DerivedColumn"
+                  contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+                  name="Derived Column"
+                  usesDispositions="true">
+                  <inputs>
+                    <input
+                      refId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Inputs[Derived Column Input]"
+                      description="Input to the Derived Column Transformation"
+                      name="Derived Column Input">
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Outputs[Derived Column Output]"
+                      description="Default Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      name="Derived Column Output"
+                      synchronousInputId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          length="50"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]"
+                          name="OrganisationCode"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::OrgCode]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::OrgCode]</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Outputs[Derived Column Error Output]"
+                      description="Error Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Derived Column Error Output"
+                      synchronousInputId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File"
+                  componentClassID="Microsoft.ManagedComponentHost"
+                  contactInfo="Extracts data from Excel worksheet.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+                  description="Extracts data from Excel worksheet."
+                  name="Load Trust Info File"
+                  usesDispositions="true">
+                  <properties>
+                    <property
+                      dataType="System.Null"
+                      name="ComponentObject"
+                      typeConverter="NOTBROWSABLE" />
+                    <property
+                      dataType="System.String"
+                      description="Source Excel worksheet."
+                      expressionType="Notify"
+                      name="Worksheet"
+                      typeConverter="CozyRoc.SqlServer.SSIS.TableEditor, CozyRoc.SSISPlus.UI.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">TrustTransactionInput</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Specifies first row contains column names."
+                      name="FirstRowHasColumnName">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies source worksheet region."
+                      expressionType="Notify"
+                      name="Region">1, 3, 1, 1</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies output type."
+                      name="OutputType"
+                      typeConverter="CozyRoc.SqlServer.SSIS.ExcelSource+OutputTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">1</property>
+                    <property
+                      dataType="System.String"
+                      name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.ExcelSource, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Connections[EXCEL+]"
+                      connectionManagerID="Package.ConnectionManagers[Excel Connection]"
+                      connectionManagerRefId="Package.ConnectionManagers[Excel Connection]"
+                      description="COZYROC Excel Connection Manager"
+                      name="EXCEL+" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Output]"
+                      name="Excel Source Plus Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Output].Columns[TrustCode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Output].ExternalColumns[Column1]"
+                          length="250"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Output].Columns[TrustCode]"
+                          name="TrustCode"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Output].ExternalColumns[Column1]"
+                          dataType="wstr"
+                          length="250"
+                          name="Column1" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Error Output]"
+                      isErrorOut="true"
+                      name="Excel Source Plus Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                        <outputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Error Output].Columns[Column1]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Error Output].Columns[Column1]"
+                          name="Column1"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId"
+                  componentClassID="Microsoft.ManagedComponentHost"
+                  contactInfo="Lookup multiple values in a reference dataset by using exact matching.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+                  description="Lookup multiple values in a reference dataset by using exact matching."
+                  name="TrustId, OrganisationId">
+                  <properties>
+                    <property
+                      dataType="System.String"
+                      name="LookupMetadataXml"
+                      typeConverter="NOTBROWSABLE">&lt;lookups&gt;&lt;lookup inputColumn="TrustCode" onNull="0" noMatch="-1"&gt;&lt;result name="TrustId" /&gt;&lt;reference connectionType="OLEDB" runtimeConnectionName="Connection1" sourceType="Query" source="select TrustCode,TrustId from TrustManagement.Trust" keyColumn="TrustCode" valueColumn="TrustId" /&gt;&lt;/lookup&gt;&lt;lookup inputColumn="OrganisationCode" onNull="0" noMatch="-1"&gt;&lt;result name="DimOrganisationID" /&gt;&lt;reference connectionType="OLEDB" runtimeConnectionName="Connection1" sourceType="Query" source="select OrganisationCode, DimOrganisationID from dbo.tblDimOrganisation" keyColumn="OrganisationCode" valueColumn="DimOrganisationID" /&gt;&lt;/lookup&gt;&lt;/lookups&gt;</property>
+                    <property
+                      dataType="System.String"
+                      name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.LookupPlus, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Connections[Connection1]"
+                      connectionManagerID="Package.ConnectionManagers[SFM_DAL_ConsumerLoan]"
+                      connectionManagerRefId="Package.ConnectionManagers[SFM_DAL_ConsumerLoan]"
+                      description="SFM_DAL_ConsumerLoan"
+                      name="Connection1" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Inputs[Input]"
+                      name="Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Inputs[Input].Columns[TrustCode]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="TrustCode"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Output].Columns[TrustCode]" />
+                        <inputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Inputs[Input].Columns[OrganisationCode]"
+                          cachedDataType="wstr"
+                          cachedLength="50"
+                          cachedName="OrganisationCode"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]" />
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Outputs[Output]"
+                      name="Output"
+                      synchronousInputId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Inputs[Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Outputs[Output].Columns[TrustId]"
+                          dataType="i4"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Outputs[Output].Columns[TrustId]"
+                          name="TrustId" />
+                        <outputColumn
+                          refId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Outputs[Output].Columns[DimOrganisationID]"
+                          dataType="i4"
+                          lineageId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Outputs[Output].Columns[DimOrganisationID]"
+                          name="DimOrganisationID" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Prepare Trust Variable\Assign Trust Id.Paths[Derived Column Output]"
+                  endId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Inputs[Input]"
+                  name="Derived Column Output"
+                  startId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Outputs[Derived Column Output]" />
+                <path
+                  refId="Package\Prepare Trust Variable\Assign Trust Id.Paths[Excel Source Plus Output]"
+                  endId="Package\Prepare Trust Variable\Assign Trust Id\Check to Create Trust.Inputs[Input 0]"
+                  name="Excel Source Plus Output"
+                  startId="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File.Outputs[Excel Source Plus Output]" />
+                <path
+                  refId="Package\Prepare Trust Variable\Assign Trust Id.Paths[Output]"
+                  endId="Package\Prepare Trust Variable\Assign Trust Id\Assign Trust Id.Inputs[Input 0]"
+                  name="Output"
+                  startId="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId.Outputs[Output]" />
+                <path
+                  refId="Package\Prepare Trust Variable\Assign Trust Id.Paths[Output 0]"
+                  endId="Package\Prepare Trust Variable\Assign Trust Id\Derived Column.Inputs[Derived Column Input]"
+                  name="Output 0"
+                  startId="Package\Prepare Trust Variable\Assign Trust Id\Check to Create Trust.Outputs[Output 0]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{C3F368BD-C39E-4EB4-91C9-0C8A037E3A5C}"
+      DTS:From="Package\Prepare Trust Variable"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Load Trust Info" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="224,41.6"
+          Id="Package\Load Trust Info\Delete Trust Transaction Input"
+          TopLeft="18.5523823991114,11.2627503946168" />
+        <NodeLayout
+          Size="224,41.6"
+          Id="Package\Load Trust Info\Execute SQL Task"
+          TopLeft="18.5523823991114,168.047064837948" />
+        <NodeLayout
+          Size="224,41.6"
+          Id="Package\Load Trust Info\Load"
+          TopLeft="18.5523823991114,89.6549076162822" />
+        <EdgeLayout
+          Id="Package\Load Trust Info.PrecedenceConstraints[Constraint]"
+          TopLeft="130.552382399111,131.254907616282">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,36.7921572216654"
+              Start="0,0"
+              End="0,29.2921572216654">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29.2921572216654" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Trust Info.PrecedenceConstraints[Constraint 1]"
+          TopLeft="130.552382399111,52.8627503946168">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,36.7921572216654"
+              Start="0,0"
+              End="0,29.2921572216654">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,29.2921572216654" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="282.4,264.8"
+          Size="282.4,308"
+          Id="Package\Load Trust Info"
+          TopLeft="9.98639472789037,295.325455678034" />
+        <NodeLayout
+          Size="150.4,41.6"
+          Id="Package\Prepare Trust Variable\Assign Trust Id"
+          TopLeft="58.3673469109716,35.5294114215151" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="282.4,144.8"
+          Size="282.4,188"
+          Id="Package\Prepare Trust Variable"
+          TopLeft="9.98639472789037,65.2549028759597" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="151.18639472789,253.25490287596">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,42.0705528020743"
+              Start="0,0"
+              End="0,34.5705528020743">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,34.5705528020743" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Load Trust Info\Load">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="236.8,41.6"
+          Id="Package\Load Trust Info\Load\Load Trust Transaction Input File"
+          TopLeft="103.42857318995,42.2117652978864" />
+        <NodeLayout
+          Size="236.8,41.6"
+          Id="Package\Load Trust Info\Load\Load into Trust Transaction Input"
+          TopLeft="105.82857318995,269.270591787318" />
+        <NodeLayout
+          Size="236.8,41.6"
+          Id="Package\Load Trust Info\Load\Derived Column"
+          TopLeft="103.42857318995,148.8" />
+        <EdgeLayout
+          Id="Package\Load Trust Info\Load.Paths[Excel Source Plus Output]"
+          TopLeft="221.82857318995,83.8117652978864">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,64.9882347021136"
+              Start="0,0"
+              End="0,57.4882347021136">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,57.4882347021136" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Trust Info\Load.Paths[Derived Column Output]"
+          TopLeft="223.02857318995,190.4">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,78.8705917873179"
+              Start="0,0"
+              End="0,71.3705917873179">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,71.3705917873179" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Trust Info\Load\Load into Trust Transaction Input">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\Prepare Trust Variable\Assign Trust Id">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="180.8,41.6"
+          Id="Package\Prepare Trust Variable\Assign Trust Id\Check to Create Trust"
+          TopLeft="101.71428744647,122.964707606887" />
+        <NodeLayout
+          Size="188.8,41.6"
+          Id="Package\Prepare Trust Variable\Assign Trust Id\Assign Trust Id"
+          TopLeft="103.54285716232,333.505883305296" />
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\Prepare Trust Variable\Assign Trust Id\Derived Column"
+          TopLeft="108.000001839229,193.411767048159" />
+        <NodeLayout
+          Size="188.8,41.6"
+          Id="Package\Prepare Trust Variable\Assign Trust Id\Load Trust Info File"
+          TopLeft="103.42857318995,42.2117652978864" />
+        <NodeLayout
+          Size="188.8,41.6"
+          Id="Package\Prepare Trust Variable\Assign Trust Id\TrustId, OrganisationId"
+          TopLeft="102.85714460879,262.800004156899" />
+        <EdgeLayout
+          Id="Package\Prepare Trust Variable\Assign Trust Id.Paths[Excel Source Plus Output]"
+          TopLeft="194.97143031821,83.8117652978864">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,39.1529423090002"
+              Start="0,0"
+              End="0,31.6529423090002">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.6529423090002" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Prepare Trust Variable\Assign Trust Id.Paths[Derived Column Output]"
+          TopLeft="184.800001839229,235.011767048159">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="12.4571427695608,27.7882371087393"
+              Start="0,0"
+              End="12.4571427695608,20.2882371087393">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,9.89411855436963" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,9.89411855436963"
+                    Point2="0,13.8941185543696"
+                    Point3="4,13.8941185543696" />
+                  <mssgle:LineSegment
+                    End="8.45714276956082,13.8941185543696" />
+                  <mssgle:CubicBezierSegment
+                    Point1="8.45714276956082,13.8941185543696"
+                    Point2="12.4571427695608,13.8941185543696"
+                    Point3="12.4571427695608,17.8941185543696" />
+                  <mssgle:LineSegment
+                    End="12.4571427695608,20.2882371087393" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Prepare Trust Variable\Assign Trust Id.Paths[Output 0]"
+          TopLeft="188.45714464285,164.564707606887">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,28.8470594412723"
+              Start="0,0"
+              End="0,21.3470594412723">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.3470594412723" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Prepare Trust Variable\Assign Trust Id.Paths[Output]"
+          TopLeft="197.600000885555,304.400004156899">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,29.1058791483971"
+              Start="0,0"
+              End="0,21.6058791483971">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,21.6058791483971" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="0,0,0,0"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

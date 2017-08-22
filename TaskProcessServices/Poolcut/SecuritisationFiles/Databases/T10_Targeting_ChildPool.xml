@@ -1,0 +1,145 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL  nvarchar(max)
+Declare @bigsql nvarchar(max)
+
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_Targeting_ChildPool]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_Targeting_ChildPool]
+'
+exec (@vchSQL)
+
+--**************************************************
+--USP_Targeting_ChildPool
+--**************************************************
+Set @vchSQL ='Create Procedure [dbo].[USP_Targeting_ChildPool]
+   @DimPoolID bigint,
+   @DimECID bigint = null,
+   @SourceLTVPassNo nvarchar(100),
+   @ResultLTVPassNo nvarchar(100),
+   @TargetTolerance decimal(15,2)
+AS
+    Declare @BalanceColumnName nvarchar(100)
+    Declare @PoolDBName nvarchar(100)
+    Declare @Query nvarchar(4000)
+    Declare @LoanBalanceQuery  nvarchar(4000)
+    Declare @TargetOriginalBalance decimal(15,2)
+    Declare @TargetBalance decimal(15,2)
+    Declare @TotalBalance decimal(15,2)
+    Declare @TargetingSource TargetingSource
+    Declare @TargetResult Table(DimId bigint not null PRIMARY KEY NONCLUSTERED)
+    Declare @TotalBalanceResult table (TotalBalance decimal(15,2))
+    
+    Set @PoolDBName = DB_Name()
+    Set @BalanceColumnName = ''''FL.CurrentPrincipalBalance''''
+    
+    If @DimECID is Null or @DimECID = ''
+	  Select  @DimECID = DimECID
+	  From    dbo.tblDimEC
+	  Where   DimPoolID = @DimPoolID 
+      And     CriteriaName = ''''ECT2_Targeting_Size'''' 
+      And     IsEnabled = 1
+         
+
+    If @DimECID is not null begin
+    
+		-- ***************************************************************************
+		-- Step 1. Clean Up the TargetingPass Link Loan, and Reset the Target Balance
+		-- ***************************************************************************
+		Delete From dbo.tblFactLoanECResult Where DimECID = @DimECId And DimPoolID = @DimPoolId
+		EXECUTE dbo.USP_UpdateIsIncludeForECResult @DimPoolId
+		 
+		exec dbo.USP_Targeting_Size_SetupConfiguration @DimPoolID, @DimECID, @TargetTolerance
+		
+		Select	@TargetBalance = TargetValue
+				, @TargetTolerance = TargetTolerance
+		From	tblTargetingConfig
+		Where	DimPoolId = @DimPoolID 
+		And		DimECID = @DimECID
+		And		TargetName = ''''PoolSize''''
+
+		Set @LoanBalanceQuery = dbo.Fun_Targeting_GetComputedQueryHeader(@BalanceColumnName, @SourceLTVPassNo, ''''SumBalanceLoan'''', @DimPoolId, @DimECID)
+		Delete @TotalBalanceResult
+		Insert Into @TotalBalanceResult EXEC SP_EXECUTESQL @LoanBalanceQuery
+		Select @TargetOriginalBalance = TotalBalance From @TotalBalanceResult
+
+		-- ***************************************************************************
+		-- Step 2. Do The Consolidation Level Size Targeting
+		-- ***************************************************************************
+		Set @Query = dbo.Fun_Targeting_GetComputedQueryHeader(@BalanceColumnName, @SourceLTVPassNo, ''''Size_Consolidation'''', @DimPoolId, @DimECID)
+		Insert Into @TargetingSource EXEC SP_EXECUTESQL @Query
+
+		Delete From @TargetResult
+		Insert Into @TargetResult
+		EXECUTE dbo.USP_Targeting_SizeExcludeResults @TargetingSource, @TargetOriginalBalance, @TargetBalance
+
+		Insert Into dbo.tblFactLoanECResult (DimPoolID, DimECID, DimLoanID)
+		Select	Distinct 
+				@DimPoolId As DimPoolId
+				, @DimECID As DimECId
+				, FCL.DimLoanId
+		From	@TargetResult
+		Join	dbo.tblFactConsolidationLoan FCL on FCL.DimConsolidationID = DimId
+		Where	FCL.DimPooLId = @DimPoolId
+		And		FCL.LTVPassNo = @SourceLTVPassNo
+		And		FCL.DimLoanId Not in
+		(
+			Select Distinct DimLoanId From dbo.tblFactLoanECResult Where DimPoolID = @DimPoolId And DimECID = @DimECID
+		)
+		EXECUTE dbo.USP_UpdateIsIncludeForECResult @DimPoolId
+		EXECUTE dbo.USP_PoolLinkLoan @DimPoolId, @ResultLTVPassNo
+		EXECUTE dbo.USP_CalculateConsolidationLTV  @DimPoolId, @ResultLTVPassNo
+		
+		-- ***************************************************************************
+		-- Step 2. Do The Loan Level Size Targeting
+		-- ***************************************************************************
+		Set @LoanBalanceQuery = dbo.Fun_Targeting_GetComputedQueryHeader(@BalanceColumnName, @ResultLTVPassNo, ''''SumBalanceLoan'''', @DimPoolId, @DimECID)
+		Delete @TotalBalanceResult
+		Insert Into @TotalBalanceResult EXEC SP_EXECUTESQL @LoanBalanceQuery
+		Select @TargetOriginalBalance = TotalBalance From @TotalBalanceResult
+		
+		If @TargetOriginalBalance > @TargetBalance Begin
+			
+			Delete From @TargetingSource
+			Set @Query = dbo.Fun_Targeting_GetComputedQueryHeader(@BalanceColumnName, @SourceLTVPassNo, ''''Size_Loan'''', @DimPoolId, @DimECID)
+			Insert Into @TargetingSource EXEC SP_EXECUTESQL @Query
+
+			Delete From @TargetResult
+			Insert Into @TargetResult
+			EXECUTE dbo.USP_Targeting_SizeExcludeResults @TargetingSource, @TargetOriginalBalance, @TargetBalance
+
+			Insert Into dbo.tblFactLoanECResult (DimPoolID, DimECID, DimLoanID)
+			Select	Distinct 
+					@DimPoolId As DimPoolId
+					, @DimECID As DimECId
+					, DimId As DimLoanId
+			From	@TargetResult
+			Where	DimId Not in
+			(
+				Select Distinct DimLoanId From dbo.tblFactLoanECResult Where DimPoolID = @DimPoolId And DimECID = @DimECID
+			)
+			
+			EXECUTE dbo.USP_UpdateIsIncludeForECResult @DimPoolId
+			EXECUTE dbo.USP_PoolLinkLoan @DimPoolId, @ResultLTVPassNo
+			EXECUTE dbo.USP_CalculateConsolidationLTV  @DimPoolId, @ResultLTVPassNo
+		End
+
+		ALTER INDEX ALL ON dbo.tblFactConsolidation REBUILD
+		ALTER INDEX ALL ON dbo.tblFactConsolidationLoan REBUILD
+		ALTER INDEX ALL ON dbo.tblFactConsolidationSecurity REBUILD
+		ALTER INDEX ALL ON dbo.tblFactLoanECResult REBUILD
+
+      End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

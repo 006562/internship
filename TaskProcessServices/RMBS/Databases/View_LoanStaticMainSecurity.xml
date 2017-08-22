@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+declare @vchSQL  varchar(8000)
+Declare @vchFullSQL varchar(8000)
+set @vchSQL = 'use [' + @DBName + ']  
+
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N''[dbo].[View_LoanStaticMainSecurity]''))
+DROP VIEW [dbo].[View_LoanStaticMainSecurity]
+'
+exec(@vchSQL)
+set @vchSQL = '
+CREATE VIEW [dbo].[View_LoanStaticMainSecurity] 
+AS
+  Select FCL.DimLoanID, FCMS.DimSecurityID, FCL.DimConsolidationID, FCL.LTVPassNo, FCL.DimPoolID
+  From  dbo.tblFactConsolidationLoan FCL (nolock)
+  inner join (
+         Select	DimConsolidationID
+            , DimPoolID
+	        , DimSecurityID
+	        , LTVPassNo
+	        From
+	        (
+		        Select		FCS.DimConsolidationID
+							, FCS.DimPoolID
+					        , FS.DimSecurityID
+					        , LTVPassNo
+					        , ROW_NUMBER() OVER 
+					        (
+							        PARTITION BY FCS.DimConsolidationID, FCS.DimPoolID, LTVPassNo
+							        ORDER BY FS.SecurityValuationAmt DESC, FS.SecurityNo DESC
+					        ) AS SecurityRanking
+		        From		dbo.tblFactConsolidationSecurity FCS (nolock) 
+		        Inner Join dbo.tblFactSecurity FS (nolock) on FS.DimPoolID = FCS.DimPoolID and FS.DimSecurityID = FCS.DimSecurityId 
+            Inner Join dbo.tblDimSecurity DS (nolock) on FS.DimPoolID = DS.DimPoolID and FS.DimSecurityID = DS.DimSecurityId and DS.StaticSecurityFlag = ''''Y''''     
+	        ) As ConsolidationSecurityRanking
+	        Where SecurityRanking = 1 
+  ) FCMS  on FCL.DimPoolID = FCMS.DimPoolID and FCL.DimConsolidationID = FCMS.DimConsolidationID And FCL.LTVPassNo = FCMS.LTVPassNo
+  '
+
+SET @vchFullSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @vchFullSQL
+EXEC (@vchFullSQL)
+
+]]>
+  </Query>
+</main>

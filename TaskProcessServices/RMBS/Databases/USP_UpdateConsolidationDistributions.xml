@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_BASE' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+/****** Object:  StoredProcedure [dbo].[USP_UpdateConsolidationDistributions]    Script Date: 07/03/2012 13:06:16 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_UpdateConsolidationDistributions]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_UpdateConsolidationDistributions]
+'
+exec (@vchSQL)
+
+set @vchSQL ='
+CREATE PROCEDURE [dbo].[USP_UpdateConsolidationDistributions]
+(
+	@DimPoolId bigint,
+	@LTVPassNo varchar(50)
+) 
+As 
+Begin
+   SET NOCOUNT ON
+   
+     
+   --DimConsolidationBalanceDistributionID
+   update tblFactConsolidation
+   set DimConsolidationBalanceDistributionID =  DD.DimDistributionsID
+   from tblFactConsolidation FC
+   inner join DAL_SEC.dbo.tblDimDistributions DD on round(IsNull(FC.ConsolidationBalance, 0), 2) between cast(IsNULL(DD.FromValue, ''''-99999'''') as decimal(19,6))
+                                                    and  cast(IsNull(DD.ToValue, ''''100000'''') as decimal(19,6))
+   where FC.DimPoolID = @DimPoolId and  FC.LTVPassNo = @LTVPassNo and  DD.DistributionsType = ''''CurrentBalance''''
+   
+   --DimConsolidationLimitBalanceDistributionID
+   update tblFactConsolidation
+   set DimConsolidationLimitBalanceDistributionID =  DD.DimDistributionsID
+   from tblFactConsolidation FC
+   inner join DAL_SEC.dbo.tblDimDistributions DD on round(IsNull(FC.ConsolidationLimitBalance, 0), 2) between cast(IsNULL(DD.FromValue, ''''-99999'''') as decimal(19,6))
+                                                    and  cast(IsNull(DD.ToValue, ''''100000'''') as decimal(19,6))
+   where FC.DimPoolID = @DimPoolId and FC.LTVPassNo = @LTVPassNo and  DD.DistributionsType = ''''CurrentBalance''''
+   
+   --DimConsolidationOriginalBalanceDistributionID
+   update tblFactConsolidation
+   set DimConsolidationOriginalBalanceDistributionID =  DD.DimDistributionsID
+   from tblFactConsolidation FC
+   inner join DAL_SEC.dbo.tblDimDistributions DD on round(IsNull(FC.ConsolidationOriginalBalance, 0), 2) between cast(IsNULL(DD.FromValue, ''''-99999'''') as decimal(19,6))
+                                                    and  cast(IsNull(DD.ToValue, ''''100000'''') as decimal(19,6))
+   where FC.DimPoolID = @DimPoolId and FC.LTVPassNo = @LTVPassNo and  DD.DistributionsType = ''''CurrentBalance''''   
+   
+   --DimConsolidationLTVDistributionID
+   update tblFactConsolidation
+   set DimConsolidationLTVDistributionID =  DD.DimDistributionsID
+   from tblFactConsolidation FC
+   inner join DAL_SEC.dbo.tblDimDistributions DD on round(IsNull(FC.ConsolidationLTV, 0) * 100, 2) between cast(IsNULL(DD.FromValue, ''''-99999'''') as decimal(19,6))
+                                                    and  cast(IsNull(DD.ToValue, ''''100000'''') as decimal(19,6))
+   where FC.DimPoolID = @DimPoolId and FC.LTVPassNo = @LTVPassNo and  DD.DistributionsType = ''''CurrentLoanToValueRatio''''
+
+   --DimConsolidationLimitLTVDistributionID
+   update tblFactConsolidation
+   set DimConsolidationLimitLTVDistributionID =  DD.DimDistributionsID
+   from tblFactConsolidation FC
+   inner join DAL_SEC.dbo.tblDimDistributions DD on round(IsNull(FC.ConsolidationLimitLTV, 0) * 100, 2) between cast(IsNULL(DD.FromValue, ''''-99999'''') as decimal(19,6))
+                                                    and  cast(IsNull(DD.ToValue, ''''100000'''') as decimal(19,6))
+   where FC.DimPoolID = @DimPoolId and FC.LTVPassNo = @LTVPassNo and  DD.DistributionsType = ''''Current Limit Loan To Value Ratio''''
+   
+   --DimConsolidationSeasoningDistributionID
+   update tblFactConsolidation
+   set DimConsolidationSeasoningDistributionID =  DD.DimDistributionsID
+   from tblFactConsolidation FC
+   inner join DAL_SEC.dbo.tblDimDistributions DD on Round(IsNull(FC.ConsolidationSeasoning, 0), 2) between 12.00 * cast(IsNULL(DD.FromValue, ''''-99999'''') as decimal(19,6))
+                                               and 12.00 * cast(IsNull(DD.ToValue, ''''100000'''') as decimal(19,6))
+   where FC.DimPoolID = @DimPoolId and FC.LTVPassNo = @LTVPassNo and  DD.DistributionsType = ''''LoanSeasoning''''
+   
+      
+End
+'
+
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

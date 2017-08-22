@@ -1,0 +1,208 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+    <Parameters>
+        <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+    </Parameters>
+    <Query>
+        <![CDATA[
+Declare @vchSQL varchar(max)
+Declare @bigsql varchar(max)
+
+set @vchSQL = 'use [' + @DBName + ']  
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[usp_PopulateUIAggregationData]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[usp_PopulateUIAggregationData]
+'
+exec (@vchSQL)
+
+set @vchSQL ='
+Create PROCEDURE [dbo].[usp_PopulateUIAggregationData]
+
+@DimPoolId bigint,
+@ResultLTVPassNo varchar(50)
+
+AS
+
+declare @TotalLoanCount bigint 
+declare @ConsolidationSoldLoanCount bigint 
+declare @SoldLoanBalance decimal(19,4)
+declare @TotalBalance decimal(19,4)
+declare @Seasoning decimal(15,2)
+declare @ConsolidationLTV decimal(15,4)
+declare @InvestmentPropertyFlag decimal(15,4)
+declare @ScurbbedFlag decimal(15,4)
+declare @PaymentTypeCode decimal(15,4)
+declare @TotalSecurityCount bigint
+declare @TotalValuation decimal(24,6)
+
+Update Statistics  dbo.tblFactLoan 
+Update Statistics  dbo.tblFactSecurity 
+Update Statistics  dbo.tblFactLoanSecurity 
+Update Statistics  dbo.tblDimLoan 
+Update Statistics  dbo.tblDimSecurity 
+
+
+Select	@TotalSecurityCount = COUNT(Distinct FCS.DimSecurityId)
+From	dbo.tblFactConsolidationSecurity FCS 
+Where	FCS.DimPoolID = @DimPoolId
+And		FCS.LTVPassNo = @ResultLTVPassNo
+
+Select	@TotalValuation = SUM(ISNULL(FC.ConsolidationValuation,0))
+From	dbo.tblFactConsolidation FC
+Where	FC.DimPoolID = @DimPoolId
+And		FC.LTVPassNo = @ResultLTVPassNo
+
+Select	@TotalLoanCount = COUNT(Distinct FL.DimLoanID)
+From	dbo.tblFactLoan FL
+Join	dbo.tblFactConsolidationLoan FCL on FCL.DimPoolID = FL.DimPoolID
+										And FCL.DimLoanId = FL.DimLoanID
+Where	FCL.DimPoolID = @DimPoolId
+And		FCL.LTVPassNo = @ResultLTVPassNo
+
+Select	@ConsolidationSoldLoanCount = COUNT(Distinct FCL.DimLoanID)
+From	dbo.tblFactConsolidation FC
+Join	dbo.tblFactConsolidationLoan FCL on FCL.DimPoolID = FC.DimPoolID
+										And FCL.DimConsolidationID = FC.DimConsolidationID
+										And FCL.LTVPassNo = FC.LTVPassNo
+Where	FC.DimPoolID = @DimPoolId
+And		FC.ConsolidationDimTrustID > 0
+And		FC.LTVPassNo = @ResultLTVPassNo
+
+Select  @SoldLoanBalance = SUM(CurrentPrincipalBalance)
+From	dbo.tblFactLoan
+Where	DimPoolID = @DimPoolId
+And		DimLoanID in
+(
+	Select	Distinct FCL.DimLoanID
+	From	dbo.tblFactConsolidation FC
+	Join	dbo.tblFactConsolidationLoan FCL on FCL.DimPoolID = FC.DimPoolID
+											And FCL.DimConsolidationID = FC.DimConsolidationID
+											And FCL.LTVPassNo = FC.LTVPassNo
+	Join	dbo.tblFactLoan FL on FL.DimPoolID = FCL.DimPoolID
+							  And FL.DimLoanID = FCL.DimLoanId
+	Where	FC.DimPoolID = @DimPoolId
+	And		FC.LTVPassNo = @ResultLTVPassNo
+	And		FL.DimTrustID > 0
+)
+
+--Select	@TotalBalance = Sum(ISNULL(FC.ConsolidationBalance,0))
+--From	dbo.tblFactConsolidation FC
+--Where	DimPoolID = @DimPoolId
+--And		LTVPassNo = @ResultLTVPassNo
+
+Select  @TotalBalance = SUM(CurrentPrincipalBalance)
+From    dbo.tblFactLoan fl
+Where   fl.DimPoolID = @DimPoolId
+And fl.DimLoanID in
+(
+	Select	Distinct FL.DimLoanID
+	From	dbo.tblFactConsolidationLoan FCL
+	Join	dbo.tblFactLoan FL on FL.DimPoolID = FCL.DimPoolID
+							  And FL.DimLoanID = FCL.DimLoanId
+	Where	FCL.LTVPassNo = @ResultLTVPassNo
+	And		FCL.DimPoolID = @DimPoolId
+)
+
+
+Select	@Seasoning = Sum(ISNULL(FL.CurrentPrincipalBalance * FL.Seasoning, 0)) / @TotalBalance
+From	dbo.tblFactLoan FL
+Join	dbo.tblFactConsolidationLoan FCL on FCL.DimPoolID = FL.DimPoolID
+										And FCL.DimLoanId = FL.DimLoanID
+										And FCL.LTVPassNo = @ResultLTVPassNo
+Where	FL.DimPoolID = @DimPoolId
+
+
+Select	@ConsolidationLTV = SUM(FC.WeightedConsolidationLTV) / @TotalBalance
+From	dbo.tblFactConsolidation FC
+Where	LTVPassNo = @ResultLTVPassNo
+And		FC.DimPoolID = @DimPoolId
+
+Select		@InvestmentPropertyFlag = SUM(FL.CurrentPrincipalBalance) / @TotalBalance
+From		dbo.tblFactLoan FL
+Inner Join	dbo.View_LoanMainSecurity LMS on FL.DimLoanID = LMS.DimLoanId
+										 And FL.DimPoolID = LMS.DimPoolID
+										 And LMS.LTVPassNo = @ResultLTVPassNo
+Inner JOin	dbo.tblDimSecurity DS on DS.DimSecurityID = LMS.DimSecurityId
+								 And DS.DimPoolID = LMS.DimPoolID
+Where		FL.DimPoolID = @DimPoolId
+And			DS.InvestmentPropertyFlag = ''''Y''''
+
+Select	@ScurbbedFlag = SUM(FL.CurrentPrincipalBalance) / @TotalBalance
+From	dbo.tblFactLoan FL
+Join	dbo.tblFactConsolidationLoan FCL on FCL.DimPoolID = FL.DimPoolID
+										And FCL.DimLoanId = FL.DimLoanID
+										And FCL.LTVPassNo = @ResultLTVPassNo
+Join	dbo.tblDimLoan DL on DL.DimLoanId = FL.DimLoanID
+						 And DL.DimPoolID = FL.DimPoolID
+Where	FL.DimPoolID = @DimPoolId
+And		ScrubbedFlag = ''''Y''''
+
+Select	@PaymentTypeCode = SUM(FL.CurrentPrincipalBalance) / @TotalBalance 
+From	dbo.tblFactLoan FL
+Join	dbo.tblFactConsolidationLoan FCL on FCL.DimPoolID = FL.DimPoolID
+										And FCL.DimLoanId = FL.DimLoanID
+										And FCL.LTVPassNo = @ResultLTVPassNo
+Join	dbo.tblDimLoan DL on DL.DimLoanId = FL.DimLoanID
+						 And DL.DimPoolID = FL.DimPoolID
+Where	FL.DimPoolID = @DimPoolId
+And		PaymentTypeCode = ''''I''''
+
+---------------------------
+
+delete dbo.tblUIDataAggregation where DimPoolID = @DimPoolId and LTVPassNo = @ResultLTVPassNo
+
+---------------------------
+insert into dbo.tblUIDataAggregation(DimPoolID,LTVPassNo,AggregationCategory,AggregationItem,Value,UnitOfMeasure,FormatString,IsEnabled) Values
+(@DimPoolId  ,@ResultLTVPassNo, ''''Total'''', ''''LoanCount'''', @TotalLoanCount,''''Count'''','''''''',1 )
+,(@DimPoolId ,@ResultLTVPassNo, ''''Total'''', ''''CurrentPrincipalBalance'''', @TotalBalance,''''Dollar'''','''''''',1)
+,(@DimPoolId ,@ResultLTVPassNo, ''''Total'''', ''''SoldLoanBalance'''', @SoldLoanBalance,''''Dollar'''','''''''',1)
+,(@DimPoolId ,@ResultLTVPassNo, ''''Total'''', ''''SecurityCount'''', @TotalSecurityCount,''''Count'''','''''''',1)
+,(@DimPoolId ,@ResultLTVPassNo, ''''Total'''', ''''SecurityValuation'''', @TotalValuation,''''Dollar'''','''''''',1)
+,(@DimPoolId ,@ResultLTVPassNo, ''''WeightedAverage'''', ''''ConsolidationLTV'''', @ConsolidationLTV,''''Percent'''','''''''',1)
+,(@DimPoolId ,@ResultLTVPassNo, ''''WeightedAverage'''', ''''Seasoning'''', @Seasoning,''''Months'''','''''''',1)
+,(@DimPoolId ,@ResultLTVPassNo, ''''DL.PaymentTypeCode'''', ''''I'''', @PaymentTypeCode,''''Percent'''','''''''',1)
+,(@DimPoolId ,@ResultLTVPassNo, ''''DS.InvestmentPropertyFlag'''', ''''Y'''', @InvestmentPropertyFlag,''''Percent'''','''''''',1)
+,(@DimPoolId ,@ResultLTVPassNo, ''''DL.ScrubbedFlag'''', ''''Y'''', @ScurbbedFlag,''''Percent'''','''''''',1)
+
+insert into dbo.tblUIDataAggregation(DimPoolID,LTVPassNo,AggregationCategory,AggregationItem,Value,UnitOfMeasure,FormatString,IsEnabled) 
+Select	@DimPoolId ,@ResultLTVPassNo, ''''DS.State'''', DS.State, SUM(FL.CurrentPrincipalBalance)/@TotalBalance,''''Percent'''','''''''',1
+From	dbo.tblFactLoan FL
+Join	dbo.View_LoanMainSecurity LMS on FL.DimLoanID = LMS.DimLoanId
+									 And FL.DimPoolID = LMS.DimPoolID
+									 And LMS.LTVPassNo = @ResultLTVPassNo 
+									 And FL.DimPoolID = @DimPoolId 
+Join	dbo.tblDimSecurity DS on DS.DimSecurityID = LMS.DimSecurityId and DS.DimPoolID = LMS.DimPoolID  
+Group By DS.State 
+
+insert into dbo.tblUIDataAggregation(DimPoolID,LTVPassNo,AggregationCategory,AggregationItem,Value,UnitOfMeasure,FormatString,IsEnabled)  
+Select	@DimPoolId ,@ResultLTVPassNo, ''''DS.Region'''', DS.Region, SUM(FL.CurrentPrincipalBalance)/@TotalBalance,''''Percent'''','''''''',1
+From	dbo.tblFactLoan FL
+Join	dbo.View_LoanMainSecurity LMS on FL.DimLoanID = LMS.DimLoanId
+									 And FL.DimPoolID = LMS.DimPoolID
+									 And LMS.LTVPassNo = @ResultLTVPassNo 
+									 And FL.DimPoolID = @DimPoolId 
+Join	dbo.tblDimSecurity DS on DS.DimSecurityID = LMS.DimSecurityId and DS.DimPoolID = LMS.DimPoolID 
+Group By DS.Region 
+
+insert into dbo.tblUIDataAggregation(DimPoolID,LTVPassNo,AggregationCategory,AggregationItem,Value,UnitOfMeasure,FormatString,IsEnabled)  
+Select	@DimPoolId ,@ResultLTVPassNo
+		, ''''DS.MetropolitanFlag''''
+		, MetropolitanFlag
+		, SUM(FL.CurrentPrincipalBalance)/@TotalBalance
+		, ''''Percent''''
+		, ''''''''
+		, 1
+From	dbo.tblFactLoan FL
+Join	dbo.View_LoanMainSecurity LMS on FL.DimLoanID = LMS.DimLoanId
+									 And FL.DimPoolID = LMS.DimPoolID
+									 And LMS.LTVPassNo = @ResultLTVPassNo 
+									 And FL.DimPoolID = @DimPoolId 
+Join	dbo.tblDimSecurity DS on DS.DimSecurityID = LMS.DimSecurityId and DS.DimPoolID = LMS.DimPoolID 
+Group By DS.MetropolitanFlag
+'
+
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+EXEC (@BigSQL)
+]]>
+    </Query>
+
+</main>

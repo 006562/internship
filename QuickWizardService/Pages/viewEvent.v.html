@@ -1,0 +1,48 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>preview</title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link href="../Contents/common.css" rel="stylesheet" />
+    <link href="../Contents/previewPage.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+</head>
+<body>
+    <div id="TrustEventDiv" class="wrap" style="width:800px;margin:0 auto">
+        <h3 data-bind="text: Language.Title" class="pageTitle"></h3>
+        <div data-bind="foreach: eventItems" class="content">
+            <!-- ko if: IsDisplay -->
+            <div class="col-12 pt15">
+                <div data-bind="text:ItemAliasValue" class="pageItem"></div>
+                <!--ko foreach:ItemValueList-->
+                <div class="pageRow">
+                    <span data-bind="text:$data" class="font12"></span>
+                </div>
+                <!--/ko-->
+             </div>
+             <!--/ko-->
+         </div>
+
+        <div data-bind="foreach: tearItems" class="content">
+            <!-- ko if: IsDisplay -->
+            <div class="col-12 pt15">
+                <div data-bind="text:ItemAliasValue" class="pageItem"></div>
+                <div data-bind="foreach: ItemValueNameList">
+                    <div style="overflow:hidden" class="pt15 row">
+                        <div data-bind="text:$data" class="col-6 font12"></div>
+                        <div class="col-4 font12">
+                            <span data-bind="text:viewModel.Language.Valve"></span>
+                            <span class="font12">:</span>&nbsp;
+                            <span data-bind="text:$parent.operat.valve" class="font12"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--/ko-->
+        </div>
+    </div>
+    <script src="viewEvent.v.js"></script>
+</body>
+</html>

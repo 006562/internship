@@ -1,0 +1,71 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+    <Parameters>
+        <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+    </Parameters>
+    <Query>
+        <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[usp_RollBackIncludeExcludeLoansByUploadID]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[usp_RollBackIncludeExcludeLoansByUploadID]
+'
+exec (@vchSQL)
+
+set @vchSQL ='
+CREATE PROCEDURE [dbo].[usp_RollBackIncludeExcludeLoansByUploadID]
+(
+	@UploadedID bigint,
+	@DimPoolId bigint,
+    @ExcludeECName nvarchar(100) =''''LoansExclusion'''' ,
+	@IncludeECName nvarchar(100) =''''LoansInclusion'''' 
+) 
+AS
+Begin
+
+    Declare @DimExcludeECID bigint
+	Declare @DimIncludeECID bigint
+    select @DimExcludeECID = DimECID from dbo.tblDimEC where CriteriaName = @ExcludeECName and DimPoolID = @DimPoolId
+    select @DimIncludeECID = DimECID from dbo.tblDimEC where CriteriaName = @IncludeECName and DimPoolID = @DimPoolId
+
+    update dbo.tblDimLoan set IncludedAuditLoan = 0 
+	    where DimPoolID = @DimPoolId and DimLoanID in (
+		    SELECT  fl.DimLoanID 
+		    FROM dbo.tblUploadedFileDetails AS ufd WITH (nolock)   
+		    INNER JOIN   dbo.tblDimLoan AS fl WITH (nolock) ON ufd.AccountNo = fl.AccountNo  
+		    where ufd.Included = 1 and fl.DimPoolID = @DimPoolId and UploadID = @UploadedID and ufd.AuditLoan =1 
+	    )
+    
+        update dbo.tblFactLoan set IsIncluded = 1 where DimPoolID= @DimPoolId and DimLoanID 
+		in (select DimLoanID from dbo.tblFactLoanECResult where DimPoolID = @DimPoolId and  DimECID =  @DimExcludeECID)
+
+        delete dbo.tblFactLoanECResult where DimPoolID =@DimPoolId  -- without and DimECID = @DimExcludeECID
+        delete dbo.tblFactLoanReturnResult where DimPoolID =@DimPoolId  -- without and DimECID = @DimExcludeECID
+        delete dbo.tblFactConsolidationECResult where DimPoolID =@DimPoolId
+        delete dbo.tblFactSecurityECResult where DimPoolID =@DimPoolId
+        delete dbo.tblFactLoanSecurityECResult where DimPoolID =@DimPoolId
+        delete dbo.tblFactSecurityReturnResult where DimPoolID =@DimPoolId
+        
+        delete dbo.tblFactLoan where DimPoolID = @DimPoolId and DimLoanID not in (select DimLoanId from dbo.tblFactConsolidationLoan where LTVPassNo = ''''SourcePass'''' and DimPoolID = @DimPoolId)
+		delete dbo.tblDimLoan where DimPoolID = @DimPoolId and DimLoanID not in (select DimLoanId from dbo.tblFactConsolidationLoan where LTVPassNo = ''''SourcePass'''' and DimPoolID = @DimPoolId)
+		delete dbo.tblFactLoanSecurity where DimPoolID = @DimPoolId and DimLoanID not in (select DimLoanId from dbo.tblFactConsolidationLoan where LTVPassNo = ''''SourcePass'''' and DimPoolID = @DimPoolId)
+		delete dbo.tblFactSecurity where DimPoolID = @DimPoolId and DimSecurityID not in (select DimSecurityID from dbo.tblFactConsolidationSecurity where LTVPassNo = ''''SourcePass'''' and DimPoolID = @DimPoolId)
+		delete dbo.tblDimSecurity where DimPoolID = @DimPoolId and DimSecurityID<>0 and DimSecurityID not in (select DimSecurityID from dbo.tblFactConsolidationSecurity where LTVPassNo = ''''SourcePass'''' and DimPoolID = @DimPoolId)
+		 
+		delete dbo.tblFactConsolidation where  LTVPassNo <> ''''SourcePass'''' and DimPoolID = @DimPoolId
+		delete dbo.tblFactConsolidationLoan where  LTVPassNo <> ''''SourcePass'''' and DimPoolID = @DimPoolId
+		delete dbo.tblFactConsolidationSecurity where  LTVPassNo <> ''''SourcePass'''' and DimPoolID = @DimPoolId
+		
+		update dbo.tblDimPool set UploadID = null where DimPoolID = @DimPoolId 
+	
+End'
+
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+EXEC (@BigSQL)
+
+]]>
+    </Query>
+
+</main>

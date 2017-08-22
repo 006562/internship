@@ -1,0 +1,188 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=10" />
+    <title></title>
+
+    <script src="../Libraries/Scripts/common.js"></script>
+    <script src="../Libraries/Scripts/jquery.json.js"></script>
+    <script src="../Libraries/Scripts/jquery-2.2.3.min.js"></script>
+    <script src="../Libraries/Scripts/lodash.min.js"></script>
+    <script src="../Libraries/Scripts/webProxy.js"></script>
+    <script src="../Libraries/Scripts/dataProcess.js"></script>
+
+</head>
+<body>
+    <div style="width:100px;height:50px;padding:10px;margin-left:20px;">
+        <select id="selectMethod">
+            <option value=""></option>
+            <option value="taskobject">taskobject</option>
+            <option value="taskmodel">taskmodel</option>
+            <option vallue="singleactionmodel">singleactionmodel</option>
+            <option value="combActionmodel">combActionModel</option>
+            <option value="variablemodel">variablemodel</option>
+            <option value="ecmodel">ecmodel</option>
+            <option value="metadata">metadata</option>
+            <option value="exitingparams">exitingparams</option>
+            <option value="functiontemp">functiontemp</option>
+            <option value="banklist">banklist</option>
+            <option value="gettaskscript">gettaskscript</option>
+        </select>
+
+        <select id="selectMethodXML">
+            <option value=""></option>
+            <option value="taskXml">taskXML</option>
+            <option value="ecXml">ecXML</option>
+            <option value="sessionContentRunXml">sessionContentRunXml</option>
+            <option value="sessionContentXml">sessionContentXml</option>
+            <option value="taskArrayXml">taskArrayXml</option>
+            <option value="verifyECXml">verifyECXml</option>
+        </select>
+
+        <select id="cellMethod">
+            <option value=""></option>
+            <option value="bankcombactionmodel">bankcombactionmodel</option>
+        </select>
+    </div>
+    <div style="position:absolute">
+        <div id="content" style="float:left;height:650px;width:1250px;padding:20px;margin-left:20px; border:solid 1px #ddd;resize: none;overflow-y:scroll; outline:none;"></div>
+    </div>
+
+    <script type="text/javascript">
+        var taskModel;
+        var ecModel;
+        $(function () {
+            $("#selectMethod").change(function () {
+                switch ($(this).val()) {
+                    case "taskobject":
+                        //Load加载TaskCodeList
+                        webProxy.getTaskCodeListByTaskType("Task", function (arrayObj) {
+                            var taskObject = dataProcess.taskObject(arrayObj);
+                            show(taskObject);
+                        });
+                        break;
+                    case "taskmodel":
+                        //双击获取TaskModel
+                        webProxy.getTaskXmlByTaskCode("Task", "CashFlowDemo", function (taskXml) {
+                            taskModel = dataProcess.taskXmlToJson(taskXml);
+                            show(taskModel);
+                        });
+                        break;
+                    case "singleactionmodel":
+                        //获取singleActionModel
+                        webProxy.getSingleActionTemplates(function (singleXml) {
+                            var singleActionModel = dataProcess.singleActionToJson(singleXml);
+                            show(singleActionModel);
+                        });
+                        break;
+                    case "combActionmodel":
+                        //获取combinationActionModel
+                        webProxy.getCombinationActionTemplates(function (combActionXml) {
+                            var combActionModel = dataProcess.combinationActionToJson(combActionXml);
+                            show(combActionModel);
+                        });
+                        break;
+                    case "variablemodel":
+                        //获取variablemodel
+                        webProxy.getTaskSessionContextByTaskCode("Task", "CashFlowDemo", function (strVariableXml) {
+                            var combActionModel = dataProcess.variableXmlToJson(strVariableXml);
+                            show(combActionModel);
+                        });
+                        break;
+                    case "ecmodel":
+                        //获取ecModel
+                        webProxy.getCriteriasByECSetCode("Task", "CashFlowScriptEquations", function (ecXml) {
+                            ecModel = dataProcess.ecXmlToJson(ecXml);
+                            show(ecModel);
+                        });
+                        break;
+                    case "metadata":
+                        //根据TaskModel获取metadata数据
+                        var metadataModel = dataProcess.metaDataModelByTaskModel(taskModel);
+                        show(metadataModel);
+                    case "exitingparams":
+                        //根据ecModel获取存在的去重复ec函数参数
+                        var exitingparamModel = dataProcess.exitParameterModelByECModel(ecModel);
+                        show(exitingparamModel);
+                    case "banklist":
+                        //获取banklist
+                        webProxy.getBankList(function (bankModelXml) {
+                            var bankModel = dataProcess.bankListToJson(bankModelXml);
+                            show(bankModel);
+                        });
+                        break;
+                    case "gettaskscript":
+                        //operate, newTaskCode, oldTaskCode, ecCode, taskMolde, variableMolde,rangeMolde
+                        var taskscript = dataProcess.getTaskScript("update", 'CashFlowDemoTest', 'CashFlowDemo', 'CashFlowScriptEquations', taskModel);
+                        showXML(taskscript); break;
+                    default:
+                        break;
+                }
+            })
+
+            $("#selectMethodXML").change(function () {
+                $("#content").empty();
+                switch ($(this).val()) {
+                    case "taskXml"://根据taskModel转换taskXml
+                        var taskXml = dataProcess.taskModelToXml(taskModel);
+                        showXML(taskXml);
+                        break;
+                    case "ecXml"://根据ecModel转换ecXml
+                        var ecXml = dataProcess.ecModelToXml(ecModel);
+                        showXML(ecXml);
+                        break;
+                    case "sessionContentRunXml"://cell wcf 获取sessioncontent(即：variable模型变量)，再根据eccode与taskcode组合成执行的xml
+                        webProxy.getTaskSessionContextByTaskCode("Task", "CashFlowDemo", function (response) {
+                            var sessionContentXML = dataProcess.taskSessionContentRunXml("CashFlowScriptEquations", "CashFlowDemo", response);
+                            showXML(sessionContentXML);
+                        });
+                        break;
+                    case "sessionContentXml"://cell wcf 获取sessioncontent(即：variable模型变量)
+                        webProxy.getTaskSessionContextByTaskCode("Task", "CashFlowDemo", function (response) {
+                            var sessionContentXML = dataProcess.taskSessionContentXml(response);
+                            showXML(sessionContentXML);
+                        });
+                        break;
+                    case "taskArrayXml":
+                        webProxy.getProcessTaskArrayByTaskCode("Task", "CashFlowDemo", function (response) {
+                            var taskArrayXML = dataProcess.taskArrayObjectToXml(response);
+                            showXML(taskArrayXML);
+                        });
+                        break;
+                    case "verifyECXml"://取某一个ecXml
+                        var ecXml = dataProcess.ecModelToXml(ecModel[1]);
+                        showXML(ecXml.replace("<Methods>", "").replace("</Methods>", ""));
+                        break;
+                    default:
+                        break;
+                }
+            })
+
+            $("#cellMethod").change(function () {
+                switch ($(this).val()) {
+                    case "bankcombactionmodel":
+                        webProxy.getBankCombinationActionTemplatesByPath("Models/ZhaoShang/CashFlowAllocation2tranchesModel.Xml", function (combActionXml) {
+                            var combActionModel = dataProcess.bankCombinationActionToJson(combActionXml);
+                            show(combActionModel);
+                        });
+                        break;
+                    default:
+                        break;
+                }
+            })
+        })
+
+        var show = function (content) {
+            var json_str = JSON.stringify(content);
+            var result = new JSONFormat(json_str, 4).toString();
+            $('#content').html(result);
+        }
+
+        var showXML = function (xml) {
+            $('#content').html('<textarea style="width:100%;height:100%;border:0;resize:none;">' + xml + '</textarea>');
+        }
+
+    </script>
+
+</body>
+</html>

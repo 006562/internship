@@ -1,0 +1,173 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+       
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="renderer" content="webkit" />
+        <title>存续期管理</title>
+        <link rel="stylesheet" href="Contents/bootstrap.css" />
+        <link rel="stylesheet" href="Contents/model.css" />
+        <link rel="stylesheet" href="Contents/NewModel.css" />
+        <script src="Scripts/jquery-1.7.2.min.js"></script>
+        <script src="Scripts/dataOperate.js"></script>
+        <script src="Scripts/common.js"></script>
+        <script type="text/javascript" src="model.js"></script>
+
+        
+    </head>
+    <body>
+        <header class="Duration-header">
+            <div class="Duration-title">
+                    <h1>存续期管理</h1>
+                </div>
+            <div class="Duration-menu">
+                <ul class="clearfix" id="BtnList">
+                  <!--  <li data-url="Pages/viewStand.html?mid=1&pid=1" class="active pull-left btn btn-default btnActive" id="btnActive">存续期管理配置向导</li>-->
+                    <li data-url="Pages/TransactionManagement/viewTransaction.html?mid=1&pid=1" class="active pull-left btn btn-default btnActive" id="TransactionManagement">交易管理</li>
+                    <li data-url="Pages/AccountingCalculation/financialAccount_1.html?mid=1&pid=1" class="pull-left btn btn-default" id="AccountingCalculation">会计核算</li>
+
+                </ul>
+            </div>
+        </header>
+        <section class="Duration-content ">
+            <div class="work row">
+                <!-- 存续期管理向导-->
+                <!--<div class="Duration-content-aside col-3" id="GuideList">
+                    <ul>
+                        <li class="active" data-url="Pages/viewStand.html?mid=1&pid=2">
+                            <span class="no">1</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">产品信息</h3>
+                            <p class="step-text">完善产品信息</p>
+                        </li>
+                        <li data-url="Pages/viewGrid.html?mid=1&pid=1" style="cursor:pointer">
+                            <span class="no">2</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">分层信息</h3>
+                            <p class="step-text">完善债券分层信息</p>
+                        </li>
+                        <li data-url="Pages/viewDate.html?mid=1&pid=6" style="cursor:pointer">
+                            <span class="no">3</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">日期设置</h3>
+                            <p class="step-text">设置信托相关日期</p>
+                        </li>
+                        <li data-url="Pages/viewGroup.html?mid=1&pid=3" style="cursor:pointer">
+                            <span class="no">4</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">相关参与方</h3>
+                            <p class="step-text">完善相关参与方信息</p>
+                        </li>
+                        <li data-url="Pages/viewEvent.html?mid=1&pid=4" style="cursor:pointer">
+                            <span class="no">5</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">专项事件及增信</h3>
+                            <p class="step-text">专项计划事件及增信</p>
+                        </li>
+                        <li data-url="Pages/viewCash.html?mid=1&pid=5" style="cursor:pointer">
+                            <span class="no">6</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">专项计划现金流</h3>
+                            <p class="step-text">专项计划及现金流信息</p>
+                        </li>
+                        <li data-url="Pages/viewFile.html?mid=1&pid=7" style="cursor:pointer">
+                            <span class="no">7</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">交易文档</h3>
+                            <p class="step-text">交易文档信息</p>
+                        </li>
+                        <li data-url="Pages/preview.html?mid=1" style="cursor:pointer">
+                            <span class="no">8</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">预览及打印</h3>
+                            <p class="step-text">预览及打印以上信息</p>
+                        </li>
+                    </ul>
+                </div>--> 
+                <!-- 资产管理 -->
+                <div class="Duration-content-aside col-3" id="Assets" >
+                    <ul>
+                        <li class="active" data-url="Pages/TransactionManagement/viewTransaction_0.html?mid=1&pid=1">
+                            <span class="no">1</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">交易管理</h3>
+                            <p class="step-text">资产转让管理</p>
+                        </li>
+                        <li data-url="Pages/TransactionManagement/viewTransaction_2.html?mid=1&pid=2" style="cursor:pointer">
+                            <span class="no">2</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">交易管理</h3>
+                            <p class="step-text">信托对价分配</p>
+                        </li>
+                        <li data-url="Pages/TransactionManagement/viewTransaction_3.html?mid=1&pid=3" style="cursor:pointer">
+                            <span class="no">3</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">交易管理</h3>
+                            <p class="step-text">资产回收管理</p>
+                        </li>
+                        <li data-url="Pages/TransactionManagement/viewTransaction_4.html?mid=1&pid=4" style="cursor:pointer">
+                            <span class="no">4</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">交易管理</h3>
+                            <p class="step-text">资产回收上划</p>
+                        </li>
+                        <li data-url="Pages/TransactionManagement/viewTransaction_5.html?mid=1&pid=5" style="cursor:pointer">
+                            <span class="no">5</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">交易管理</h3>
+                            <p class="step-text">资产回收转付</p>
+                        </li>
+                        <li data-url="Pages/TransactionManagement/viewTransaction_6.html?mid=1&pid=6" style="cursor:pointer">
+                            <span class="no">6</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">交易管理</h3>
+                            <p class="step-text">资产赎回管理</p>
+                        </li>
+                        <li data-url="Pages/TransactionManagement/viewTransaction_7.html?mid=1&pid=7" style="cursor:pointer">
+                            <span class="no">7</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">交易管理</h3>
+                            <p class="step-text">清仓回购管理</p>
+                        </li>
+                        <li data-url="Pages/TransactionManagement/viewTransaction_8.html?mid=1&pid=8" style="cursor:pointer">
+                            <span class="no">8</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">交易管理</h3>
+                            <p class="step-text">回购资金上划</p>
+                        </li>
+                    </ul>
+                </div>
+                <!-- 会计核算 -->
+                <div class="Duration-content-aside col-3" id="accounting" style="display:none;">
+                    <ul>
+                        <li class="active" data-url="Pages/AccountingCalculation/financialAccount_1.html?mid=1&pid=1">
+                            <span class="no">1</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">会计核算</h3>
+                            <p class="step-text">会计账套管理</p>
+                        </li>
+                        <li data-url="Pages/AccountingCalculation/viewAccounting_1.html?mid=1&pid=2" style="cursor:pointer">
+                            <span class="no">2</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">会计核算</h3>
+                            <p class="step-text">会计科目管理</p>
+                        </li>
+                        <li data-url="Pages/AccountingCalculation/viewAccounting_2.html?mid=1&pid=3" style="cursor:pointer">
+                            <span class="no">3</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">会计核算</h3>
+                            <p class="step-text">会计场景配置</p>
+                        </li>
+                        <li data-url="Pages/AccountingCalculation/viewAccounting_3.html?mid=1&pid=4" style="cursor:pointer">
+                            <span class="no">4</span>
+                            <span class="flag"><i class="icon icon-right"></i></span>
+                            <h3 class="step-title">会计核算</h3>
+                            <p class="step-text">会计凭证查询</p>
+                        </li>
+                    </ul>
+                </div>
+                <iframe class="col-9" style="height:850px" src="" frameborder="0"></iframe>
+              </div>
+        </section>
+    </body>
+</html>

@@ -1,0 +1,776 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/13/2015 3:11:10 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GS2106CNVDV004"
+  DTS:CreatorName="DEV\gslocaladmin"
+  DTS:Description="copy assets from one db to another"
+  DTS:DTSID="{C5B6435D-283D-4C2A-B4D4-6595E1D40C56}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="1033"
+  DTS:MaxErrorCount="0"
+  DTS:ObjectName="CopyAssets"
+  DTS:VersionBuild="7"
+  DTS:VersionGUID="{1AFE58A6-B925-4D6D-9947-C468D7463CDA}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[DestinationConnectionOLEDB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{0535C713-DD88-4923-9161-9BAEE0A0466A}"
+      DTS:ObjectName="DestinationConnectionOLEDB">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::DestinationConnectionString]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=dal_sec;Initial Catalog=SFM_DAL_ConsumerLoan_T1;Provider=SQLOLEDB.1;Integrated Security=SSPI;Auto Translate=false;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[SourceConnectionOLEDB]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{6D1461CC-5B2F-465B-90E8-D918CDFFF4A0}"
+      DTS:ObjectName="SourceConnectionOLEDB">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::SourceConnectionString]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=dal_sec;Initial Catalog=SFM_DAL_ConsumerLoan;Provider=SQLOLEDB.1;Integrated Security=SSPI;Auto Translate=false;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F77258DA-C952-4D86-BE4D-4F4A16FC2A52}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DestinationConnectionString">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=dal_sec;Initial Catalog=SFM_DAL_ConsumerLoan_T1;Provider=SQLOLEDB.1;Integrated Security=SSPI;Auto Translate=false;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{0EFE8E14-37B0-4A0F-84D9-015EAB4D4D4F}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Filter">
+      <DTS:VariableValue
+        DTS:DataType="8">LoanStartDate &gt; '2015/7/17'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{93AEF934-0E84-4192-8882-2775F90E6785}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceConnectionString">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=dal_sec;Initial Catalog=SFM_DAL_ConsumerLoan;Provider=SQLOLEDB.1;Integrated Security=SSPI;Auto Translate=false;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{AE83AF8D-3546-4026-B18F-FE563A47DE3E}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;select * from PaymentSchedule.Asset where &quot; + @[User::Filter]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="_SqlByFilter">
+      <DTS:VariableValue
+        DTS:DataType="8">select * from PaymentSchedule.Asset where LoanStartDate &gt; '2015/7/17'</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Data Flow Task 1"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:DTSID="{C807CC44-ABA1-404D-8B2A-08A31DA96663}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:FailPackageOnFailure="True"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Data Flow Task 1"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          defaultBufferSize="3145728"
+          version="1">
+          <components>
+            <component
+              refId="Package\Data Flow Task 1\Destination - Asset"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="Destination - Asset"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[PaymentSchedule].[Asset]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task 1\Destination - Asset.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[DestinationConnectionOLEDB]"
+                  connectionManagerRefId="Package.ConnectionManagers[DestinationConnectionOLEDB]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].Columns[AccountNo]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="AccountNo"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[AccountNo]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[AccountNo]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].Columns[LoanAmount]"
+                      cachedDataType="numeric"
+                      cachedName="LoanAmount"
+                      cachedPrecision="18"
+                      cachedScale="2"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[LoanAmount]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanAmount]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].Columns[LoanStartDate]"
+                      cachedDataType="wstr"
+                      cachedLength="10"
+                      cachedName="LoanStartDate"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[LoanStartDate]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanStartDate]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].Columns[LoanMaturityDate]"
+                      cachedDataType="wstr"
+                      cachedLength="10"
+                      cachedName="LoanMaturityDate"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[LoanMaturityDate]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanMaturityDate]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].Columns[PrincipalPaymentType]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="PrincipalPaymentType"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[PrincipalPaymentType]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[PrincipalPaymentType]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].Columns[PrincipalPaymentSchedule]"
+                      cachedDataType="nText"
+                      cachedName="PrincipalPaymentSchedule"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[PrincipalPaymentSchedule]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[PrincipalPaymentSchedule]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].Columns[InterestPaymentType]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="InterestPaymentType"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[InterestPaymentType]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[InterestPaymentType]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].Columns[FloatPercentage]"
+                      cachedDataType="numeric"
+                      cachedName="FloatPercentage"
+                      cachedPrecision="18"
+                      cachedScale="5"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[FloatPercentage]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[FloatPercentage]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].Columns[FixOrFloatRate]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="FixOrFloatRate"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[FixOrFloatRate]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[FixOrFloatRate]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].Columns[LoanCurrentRate]"
+                      cachedDataType="numeric"
+                      cachedName="LoanCurrentRate"
+                      cachedPrecision="18"
+                      cachedScale="5"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[LoanCurrentRate]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanCurrentRate]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].Columns[InterestPayDay]"
+                      cachedDataType="wstr"
+                      cachedLength="100"
+                      cachedName="InterestPayDay"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[InterestPayDay]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[InterestPayDay]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].Columns[LoanTerm]"
+                      cachedDataType="i4"
+                      cachedName="LoanTerm"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[LoanTerm]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanTerm]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[AccountNo]"
+                      dataType="wstr"
+                      length="100"
+                      name="AccountNo" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[LoanAmount]"
+                      dataType="numeric"
+                      name="LoanAmount"
+                      precision="18"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[LoanStartDate]"
+                      dataType="wstr"
+                      length="10"
+                      name="LoanStartDate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[LoanMaturityDate]"
+                      dataType="wstr"
+                      length="10"
+                      name="LoanMaturityDate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[PrincipalPaymentType]"
+                      dataType="wstr"
+                      length="100"
+                      name="PrincipalPaymentType" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[PrincipalPaymentSchedule]"
+                      dataType="nText"
+                      name="PrincipalPaymentSchedule" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[InterestPaymentType]"
+                      dataType="wstr"
+                      length="100"
+                      name="InterestPaymentType" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[FloatPercentage]"
+                      dataType="numeric"
+                      name="FloatPercentage"
+                      precision="18"
+                      scale="5" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[FixOrFloatRate]"
+                      dataType="wstr"
+                      length="100"
+                      name="FixOrFloatRate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[LoanCurrentRate]"
+                      dataType="numeric"
+                      name="LoanCurrentRate"
+                      precision="18"
+                      scale="5" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[InterestPayDay]"
+                      dataType="wstr"
+                      length="100"
+                      name="InterestPayDay" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input].ExternalColumns[LoanTerm]"
+                      dataType="i4"
+                      name="LoanTerm" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task 1\Destination - Asset.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1\Destination - Asset.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Destination - Asset.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1\Destination - Asset.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Data Flow Task 1\Source - Asset"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="Source - Asset"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[PaymentSchedule].[Asset]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::_SqlByFilter</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task 1\Source - Asset.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[SourceConnectionOLEDB]"
+                  connectionManagerRefId="Package.ConnectionManagers[SourceConnectionOLEDB]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[AccountNo]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[AccountNo]"
+                      length="100"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[AccountNo]"
+                      name="AccountNo"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanAmount]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[LoanAmount]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanAmount]"
+                      name="LoanAmount"
+                      precision="18"
+                      scale="2"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanStartDate]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[LoanStartDate]"
+                      length="10"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanStartDate]"
+                      name="LoanStartDate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanMaturityDate]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[LoanMaturityDate]"
+                      length="10"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanMaturityDate]"
+                      name="LoanMaturityDate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[PrincipalPaymentType]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[PrincipalPaymentType]"
+                      length="100"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[PrincipalPaymentType]"
+                      name="PrincipalPaymentType"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[PrincipalPaymentSchedule]"
+                      dataType="nText"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[PrincipalPaymentSchedule]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[PrincipalPaymentSchedule]"
+                      name="PrincipalPaymentSchedule"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[InterestPaymentType]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[InterestPaymentType]"
+                      length="100"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[InterestPaymentType]"
+                      name="InterestPaymentType"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[FloatPercentage]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[FloatPercentage]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[FloatPercentage]"
+                      name="FloatPercentage"
+                      precision="18"
+                      scale="5"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[FixOrFloatRate]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[FixOrFloatRate]"
+                      length="100"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[FixOrFloatRate]"
+                      name="FixOrFloatRate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanCurrentRate]"
+                      dataType="numeric"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[LoanCurrentRate]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanCurrentRate]"
+                      name="LoanCurrentRate"
+                      precision="18"
+                      scale="5"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[InterestPayDay]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[InterestPayDay]"
+                      length="100"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[InterestPayDay]"
+                      name="InterestPayDay"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanTerm]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[LoanTerm]"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].Columns[LoanTerm]"
+                      name="LoanTerm"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[AccountNo]"
+                      dataType="wstr"
+                      length="100"
+                      name="AccountNo" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[LoanAmount]"
+                      dataType="numeric"
+                      name="LoanAmount"
+                      precision="18"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[LoanStartDate]"
+                      dataType="wstr"
+                      length="10"
+                      name="LoanStartDate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[LoanMaturityDate]"
+                      dataType="wstr"
+                      length="10"
+                      name="LoanMaturityDate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[PrincipalPaymentType]"
+                      dataType="wstr"
+                      length="100"
+                      name="PrincipalPaymentType" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[PrincipalPaymentSchedule]"
+                      dataType="nText"
+                      name="PrincipalPaymentSchedule" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[InterestPaymentType]"
+                      dataType="wstr"
+                      length="100"
+                      name="InterestPaymentType" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[FloatPercentage]"
+                      dataType="numeric"
+                      name="FloatPercentage"
+                      precision="18"
+                      scale="5" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[FixOrFloatRate]"
+                      dataType="wstr"
+                      length="100"
+                      name="FixOrFloatRate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[LoanCurrentRate]"
+                      dataType="numeric"
+                      name="LoanCurrentRate"
+                      precision="18"
+                      scale="5" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[InterestPayDay]"
+                      dataType="wstr"
+                      length="100"
+                      name="InterestPayDay" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output].ExternalColumns[LoanTerm]"
+                      dataType="i4"
+                      name="LoanTerm" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[AccountNo]"
+                      dataType="wstr"
+                      length="100"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[AccountNo]"
+                      name="AccountNo" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[LoanAmount]"
+                      dataType="numeric"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[LoanAmount]"
+                      name="LoanAmount"
+                      precision="18"
+                      scale="2" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[LoanStartDate]"
+                      dataType="wstr"
+                      length="10"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[LoanStartDate]"
+                      name="LoanStartDate" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[LoanMaturityDate]"
+                      dataType="wstr"
+                      length="10"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[LoanMaturityDate]"
+                      name="LoanMaturityDate" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[PrincipalPaymentType]"
+                      dataType="wstr"
+                      length="100"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[PrincipalPaymentType]"
+                      name="PrincipalPaymentType" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[PrincipalPaymentSchedule]"
+                      dataType="nText"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[PrincipalPaymentSchedule]"
+                      name="PrincipalPaymentSchedule" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[InterestPaymentType]"
+                      dataType="wstr"
+                      length="100"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[InterestPaymentType]"
+                      name="InterestPaymentType" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[FloatPercentage]"
+                      dataType="numeric"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[FloatPercentage]"
+                      name="FloatPercentage"
+                      precision="18"
+                      scale="5" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[FixOrFloatRate]"
+                      dataType="wstr"
+                      length="100"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[FixOrFloatRate]"
+                      name="FixOrFloatRate" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[LoanCurrentRate]"
+                      dataType="numeric"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[LoanCurrentRate]"
+                      name="LoanCurrentRate"
+                      precision="18"
+                      scale="5" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[InterestPayDay]"
+                      dataType="wstr"
+                      length="100"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[InterestPayDay]"
+                      name="InterestPayDay" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[LoanTerm]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[LoanTerm]"
+                      name="LoanTerm" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Data Flow Task 1.Paths[OLE DB Source Output]"
+              endId="Package\Data Flow Task 1\Destination - Asset.Inputs[Destination Input]"
+              name="OLE DB Source Output"
+              startId="Package\Data Flow Task 1\Source - Asset.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        <NodeLayout
+          Size="160,42"
+          Id="Package\Data Flow Task 1"
+          TopLeft="5.5,5.5" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Data Flow Task 1">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="168,42"
+          Id="Package\Data Flow Task 1\Destination - Asset"
+          TopLeft="5.50000000000001,107.5" />
+        <NodeLayout
+          Size="147,42"
+          Id="Package\Data Flow Task 1\Source - Asset"
+          TopLeft="16,5.5" />
+        <EdgeLayout
+          Id="Package\Data Flow Task 1.Paths[OLE DB Source Output]"
+          TopLeft="89.5,47.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task 1\Source - Asset">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

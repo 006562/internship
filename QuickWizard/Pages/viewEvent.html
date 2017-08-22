@@ -1,0 +1,192 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="renderer" content="webkit">
+  <title>event</title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link href="../Contents/common.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../Scripts/calendar.min.js"></script>
+    <script src='../Scripts/common.js'></script>
+    <script src='../Scripts/dataOperate.js'></script>
+    <script src="../Scripts/format.number.js"></script>
+    <script src='../Scripts/renderControl.js'></script>
+
+    <script src="../Scripts/magic/magic.core.js"></script>
+    <link href="../Scripts/magic/magic.dialog.css" rel="stylesheet" />
+    <script src="../Scripts/magic/magic.dialog.js"></script>
+
+</head>
+
+<body>
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">加载配置中...</p>
+    </div>
+    <div id="TrustEventDiv" class="main">
+        <h3 class="h3">
+            <span class="title" data-bind="text:Language.ProductInfo"></span>
+        </h3>
+        <div class="form-panel">
+            <div class="col-12 form-drop">
+                <div class="row">
+                    <div class="col-3">
+                        <select id="noCompulsoryEvent" class="form-control" data-bind="foreach:eventItems">
+                            <!--ko ifnot:IsDisplay-->
+                            <option data-bind="attr: {value: ItemCode}, text: ItemAliasValue"></option>
+                            <!-- /ko -->
+                        </select>
+                    </div>
+                    <button onclick="createEventCompulsory()" type="button" class="btn btn-plus">
+                        <i class="icon icon-add"></i>
+                    </button>
+                </div>
+            </div>
+            <table class="table table-bordered">
+                <thead>
+                    <tr class="active">
+                        <th data-bind="text:Language.Event">事件</thdata-bind>
+                        </th><th data-bind="text:Language.Desc">定性描述</th>
+                        <th width="40"></th>
+                    </tr>
+                </thead>
+                <tbody class="eventItem" data-bind="foreach:eventItems">
+                    <!-- ko if: IsDisplay -->
+                    <tr data-bind="attr: { itemId: ItemId }">
+                        <th data-bind="text:ItemAliasValue"></th>
+                        <td class="pt0">
+                            <!--ko foreach:ItemValueList-->
+                            <div class="form-group mt5 mb10">
+                                <div class="col-11">
+                                    <textarea class="form-control" data-bind="textInput:Text"></textarea>
+                                </div>
+                                <div class="col-1 text-left  mt10 pl0 pr0" data-bind="ifnot: $index, attr: { itemId: $parent.ItemId }" onclick="addFormGroup(this)">
+                                    <button type="button" class="btn btn-plus">
+                                        <i class="icon icon-add"></i>
+                                    </button>
+                                </div>
+                                <div class="col-1 text-left pl0 pr0" data-bind="if: $index, attr: { itemId: $parent.ItemId }" onclick="removeFormGroup(this)">
+                                    <button type="button" class="btn btn-remove">
+                                        <i class="icon icon-remove"></i>
+                                    </button>
+                                </div>
+                                <div class="clearfix"></div>
+                            </div>
+                            <!--/ko-->
+                        </td>
+
+                        <td>
+                            <!-- ko if: IsNew -->
+                            <button onclick="removeEventCompulsory(this)" data-bind="attr: { itemCode: ItemCode }" type="button" class="btn btn-remove mb5">
+                                <i class="icon icon-remove"></i>
+                            </button>
+                            <!-- /ko -->
+                        </td>
+                    </tr>
+                    <!-- /ko -->
+                </tbody>
+            </table>
+            <div class="clearfix"></div>
+            <h3 class="h3">
+                <span data-bind="text:Language.Default" class="title"></span>&nbsp;
+                <i class="collapse icon icon-top"></i>
+                <i class="collapse icon icon-bottom" style="display:none"></i>
+            </h3>
+            <div class="showList col-12 form-drop">
+                <div class="row">
+                    <div class="col-3">
+                        <select id="noCompulsoryTear" class="form-control" data-bind="foreach:tearItems">
+                            <!--ko ifnot:IsDisplay-->
+                            <option data-bind="attr: {value: ItemCode}, text: ItemAliasValue"></option>
+                            <!-- /ko -->
+                        </select>
+                    </div>
+                    <button onclick="createTearCompulsory()" type="button" class="btn btn-plus">
+                        <i class="icon icon-add"></i>
+                    </button>
+                </div>
+            </div>
+            <table class="showList table table-bordered">
+                <thead>
+                    <tr class="active">
+                        <th data-bind="text:Language.Default" rowspan="2" valign="top" width="120">违约条件</th>
+                        <th data-bind="text:Language.Trigger" rowspan="3" valign="top" width="200">触发事件</th>
+                        <th data-bind="text:Language.Test" colspan="4" valign="top">测试</th>
+                        <th rowspan="2" width="40"></th>
+                    </tr>
+                    <tr class="active">
+                        <th data-bind="text:Language.Check" width="100">检测</th>
+                        <th data-bind="text:Language.Assume" width="200">假定值</th>
+                        <th data-bind="text:Language.Condition" width="200">条件</th>
+                        <th data-bind="text:Language.Valve" width="200">阈值</th>
+                    </tr>
+                </thead>
+                <tbody data-bind="foreach:tearItems">
+                    <!--ko if:IsDisplay-->
+                    <tr data-bind="attr: { itemId: ItemId }">
+                        <th data-bind="text:ItemAliasValue"></th>
+                        <th class="selectItem" data-bind="foreach:$parent.eventItems">
+                            <div data-bind="if: IsDisplay" class="text-left">
+                                <label>
+                                    <input data-bind="attr: { itemId: ItemId },checked:IsChecked" onclick="pushList(this)" style="vertical-align:middle;margin-top:0" type="checkbox" />
+                                    <span style="vertical-align:middle" data-bind="text:ItemAliasValue"></span>
+                                </label>
+                            </div>
+                        </th>
+                        <th>
+                            <input data-bind="attr: { itemId: ItemId }, checked: IsTested" onclick="clearTest(this)" type="checkbox" />
+                        </th>
+                        <th>
+                            <!--ko if: IsTested-->
+                            <input data-bind="value:operat.assume" type="text" class="valbox form-control" />
+                            <!--/ko-->
+                        </th>
+                        <th>
+                            <!--ko if: IsTested-->
+                            <select data-bind="value: operat.operator" class="valbox form-control">
+                                <option value="NA">请选择</option>
+                                <option value="gt">></option>
+                                <option value="ge">>=</option>
+                                <option value="ne">&ne;</option>
+                                <option value="eq">=</option>
+                                <option value="lt"><</option>
+                                <option value="le"><=</option>
+                            </select>
+                            <!--/ko-->
+                        </th>
+                        <th>
+                            <div data-bind="if: IsTested" class="input-group">
+                                <input data-bind="value: operat.valve" type="text" class="valbox form-control" />
+                                <span class="input-group-btn">
+                                    <button data-bind="attr: { itemId: ItemId }" class="btn btn-default font13" type="button" onclick="operatTest(this)">测试</button>
+                                </span>
+                            </div>
+                        </th>
+                        <th>
+                            <!-- ko if: IsNew -->
+                            <button onclick="removeTearCompulsory(this)" data-bind="attr: { itemCode: ItemCode }" type="button" class="btn btn-remove">
+                                <i class="icon icon-remove"></i>
+                            </button>
+                            <!-- /ko -->
+                        </th>
+                    </tr>
+                    <!-- /ko -->
+                </tbody>
+            </table>
+            <div class="clearfix"></div>
+        </div>
+        <div class="form-save">
+            <button data-bind="text:Language.BtnSave" onclick="saveItems()" class="btn btn-primary" type="button"></button>
+        </div>
+    </div>
+    <script src="viewEvent.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,134 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="Scripts/jquery-1.7.2.min.js"></script>
+    <script src="Scripts/jquery-ui.min.js"></script>
+    <link href="Contents/bootstrap.css" rel="stylesheet" />
+    <link href="Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="Scripts/wcfProxy.js"></script>
+    <script type="text/javascript">
+
+        var sessionID, taskCode;
+        var clientName = 'CashFlowProcess';
+        var IndicatorAppDomain = 'Task';
+            
+        var IsSilverlightInitialized = false;
+        function InitParams() {
+            if (!IsSilverlightInitialized) {
+                IsSilverlightInitialized = true;
+            }
+
+            document.getElementById("TaskProcessCtl").Content.SL_Agent.InitParams(sessionID, IndicatorAppDomain, taskCode, clientName);
+        }
+
+        function PopupTaskProcessIndicator() {
+           
+
+            $("#taskIndicatorArea").dialog({
+                modal: true,
+                dialogClass: "TaskProcessDialogClass",
+                closeText: "",
+                //closeOnEscape:false,
+                height: 450,
+                width: 500,
+                close: function (event, ui) { }, // refresh report repository while close the task process screen.
+                //open: function (event, ui) { $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide(); },
+                title: "任务处理"
+            });
+        }
+
+        var getRunTaskSessionVariables = function (response) {
+            var strReturn = "";
+            var vVariableTemplate = "<SessionVariable><Name>{0}</Name><Value>{1}</Value><DataType>{2}</DataType><IsConstant>{3}</IsConstant><IsKey>{4}</IsKey><KeyIndex>{5}</KeyIndex></SessionVariable>";
+            var vECSetTemplate = "<SessionVariable><Name>CashFlowECSet</Name><Value>{0}</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>";
+            var vTaskCodeTemplate = "<SessionVariable><Name>TaskCode</Name><Value>{0}</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>";
+            var vStartPeriodTemplate = "<SessionVariable><Name>StartPeriod</Name><Value>0</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>";
+            var vEndPeriodTemplate = "<SessionVariable><Name>EndPeriod</Name><Value>11</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable>";
+            var startPeriodStr = "";
+            var endPeriodStr = "";
+            var variableXml = $.parseXML(response);
+            $(variableXml).find("SessionVariable").each(function (key, value) {
+                var sname = ($($(this).find("Name"))).text() == null ? "" : ($($(this).find("Name"))).text();
+                var svalue = ($($(this).find("Value"))).text() == null ? "" : ($($(this).find("Value"))).text();
+                var sDataType = ($($(this).find("DataType"))).text() == null ? "" : ($($(this).find("DataType"))).text();
+                var sIsConstant = ($($(this).find("IsConstant"))).text() == null ? "" : ($($(this).find("IsConstant"))).text();
+                var sIsKey = ($($(this).find("IsKey"))).text() == null ? "" : ($($(this).find("IsKey"))).text();
+                var sKeyIndex = ($($(this).find("KeyIndex"))).text() == null ? "" : ($($(this).find("KeyIndex"))).text();
+                if (sname == "StartPeriod") {
+                    startPeriodStr = vVariableTemplate.format(sname, svalue, sDataType, sIsConstant, sIsKey, sKeyIndex);
+                }
+                if (sname == "EndPeriod") {
+                    endPeriodStr = vVariableTemplate.format(sname, svalue, sDataType, sIsConstant, sIsKey, sKeyIndex);
+                }
+            })
+            if (startPeriodStr == "") {
+                startPeriodStr = vStartPeriodTemplate;
+            }
+            if (endPeriodStr == "") {
+                endPeriodStr = vEndPeriodTemplate;
+            }
+            strReturn = "<SessionVariables>{0}</SessionVariables>".format(vECSetTemplate.format("YD05_CashFlow") + vTaskCodeTemplate.format("YD05_CashFlow") + startPeriodStr + endPeriodStr);
+            return strReturn;
+        }
+
+        String.prototype.format = function () {
+            var args = arguments;
+            return this.replace(/{(\d+)}/g, function (match, number) {
+                return typeof args[number] != 'undefined'
+                ? args[number]
+                : match
+                ;
+            });
+        };
+
+        function ShowTaskProgressSL()
+        {
+               var variables = "<SessionVariables><SessionVariable><Name>EndPeriod</Name><Value>11</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>StartPeriod</Name><Value>0</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>NumberOfNotes_A</Name><Value>3000000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>InitialInvestedAmount_A</Name><Value>300000000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>BaseNoteMargin_A</Name><Value>0.036900</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>Denomination_A</Name><Value>100</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>NumberOfNotes_B</Name><Value>1050000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>InitialInvestedAmount_B</Name><Value>105000000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>BaseNoteMargin_B</Name><Value>0.041000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>Denomination_B</Name><Value>100</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>NumberOfNotes_C</Name><Value>19230000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>InitialInvestedAmount_C</Name><Value>1923000000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>BaseNoteMargin_C</Name><Value>0.042000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>Denomination_C</Name><Value>100</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>NumberOfNotes_D</Name><Value>3650000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>InitialInvestedAmount_D</Name><Value>365000000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>BaseNoteMargin_D</Name><Value>0.068000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>Denomination_D</Name><Value>100</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>NumberOfNotes_EquityClass</Name><Value>2128000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>InitialInvestedAmount_EquityClass</Name><Value>212800000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>BaseNoteMargin_EquityClass</Name><Value>0.030000</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>Denomination_EquityClass</Name><Value>100</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>ReportingDates</Name><Value>20160225</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>Precision</Name><Value>4</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>SpeedupPaymentSequence</Name><Value></Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable><SessionVariable><Name>IsSpeedupRepayment</Name><Value>0</Value><DataType>nvarchar</DataType><IsConstant>0</IsConstant><IsKey>0</IsKey><KeyIndex>0</KeyIndex></SessionVariable></SessionVariables>";
+            
+                var wProxy = new webProxy();
+                var sContext = {
+                    appDomain: 'Task',
+                    sessionVariables: getRunTaskSessionVariables(variables),
+                    taskCode: 'YD05_CashFlow'
+                };
+
+                wProxy.createSessionByTaskCode(sContext, function (response) {
+                    sessionID = response;
+                    taskCode = 'YD05_CashFlow';
+                    IndicatorAppDomain = 'Task';
+
+                    if (IsSilverlightInitialized) {
+                        PopupTaskProcessIndicator();
+                        InitParams();
+                    }
+                    else {
+                        PopupTaskProcessIndicator();
+                    }
+                  
+                    
+                });
+               
+
+          
+        }
+    </script>
+</head>
+<body>
+    <input id="Button1" type="button" value="ShowTaskProgressSL" onclick="ShowTaskProgressSL()" />
+    <div id="taskIndicatorArea" style=" text-align:center; display:none " >
+        <div style="width:450px; height:350px; margin:10px; text-align:center; ">
+            <object id="TaskProcessCtl" data="data:application/x-silverlight-2," type="application/x-silverlight-2" width="100%" height="100%">
+                <param name="source" value="/TaskProcessEngine/ClientBin/UI.TaskProcessIndicator.xap" />
+                <param name="onError" value="onSilverlightError" />
+                <param name="background" value="white" />
+                <param name="minRuntimeVersion" value="5.0.61118.0" />
+                <param name="autoUpgrade" value="true" />
+                <a href="http://go.microsoft.com/fwlink/?LinkID=149156&v=5.0.61118.0" style="text-decoration:none">
+                    <img src="http://go.microsoft.com/fwlink/?LinkId=161376" alt="Get Microsoft Silverlight" style="border-style:none" />
+                </a>
+            </object><iframe id="_sl_historyFrame" style="visibility:hidden;height:0px;width:0px;border:0px"></iframe>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,776 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="12/4/2015 1:58:23 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GS2106CNVDV004"
+  DTS:CreatorName="DEV\gslocaladmin"
+  DTS:DTSID="{1AD79832-4B00-4CC5-8243-49033198899F}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="AssetDataImport"
+  DTS:PackageType="5"
+  DTS:VersionBuild="26"
+  DTS:VersionGUID="{3C25AF49-E508-4B6D-8EA9-F3EBEBDE3050}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[DAL_SEC.SFM_DAL_CLO]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{D2C23F12-78D4-4666-9FF2-CE42980172E0}"
+      DTS:ObjectName="DAL_SEC.SFM_DAL_CLO">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::_ConnectionString]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=DAL_SEC;Initial Catalog=SFM_DAL_CLO ;Provider=SQLNCLI10.1;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Excel Connection Manager 2]"
+      DTS:CreationName="EXCEL+"
+      DTS:DTSID="{4429FDBF-4A40-451B-9A5B-670E93B93983}"
+      DTS:ObjectName="Excel Connection Manager 2">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">"ExcelFilePath="+@ExcelFilePath+";FormatType=Auto;Recalculate=False;RetainSameConnection=True;"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <ConnectionManager
+          ConnectionString="ExcelFilePath=C:\temp\AssetDataV2.xls;FormatType=Auto;Recalculate=False;RetainSameConnection=True;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1A9C049B-39B6-4078-AA96-0ED340147FE9}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DBName">
+      <DTS:VariableValue
+        DTS:DataType="8">SFM_DAL_CLO</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{7093163A-1879-40E7-9659-3F1F27818908}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DBServer">
+      <DTS:VariableValue
+        DTS:DataType="8">DAL_SEC</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{60440BE4-EA32-4549-B43B-3EFD032C84D3}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::SourceFilePath]  + @[User::SourceFileName]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="ExcelFilePath">
+      <DTS:VariableValue
+        DTS:DataType="8">C:\temp\AssetDataV2.xls</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{08819968-55D1-4048-823C-0052B84F1EC8}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceFileName">
+      <DTS:VariableValue
+        DTS:DataType="8">AssetDataV2.xls</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E6CB1784-07A6-49EA-8839-1CA49CF62DB4}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceFilePath">
+      <DTS:VariableValue
+        DTS:DataType="8">C:\temp\</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F49AA5E3-C673-43BE-9B9B-8C5E51160E3E}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Data Source=&quot; + @[User::DBServer] + &quot;;Initial Catalog=&quot; +@[User::DBName] +&quot; ;Provider=SQLNCLI10.1;Integrated Security=SSPI;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="_ConnectionString">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=DAL_SEC;Initial Catalog=SFM_DAL_CLO ;Provider=SQLNCLI10.1;Integrated Security=SSPI;</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Data Flow Task"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{63DC5F3B-769D-4F0C-9666-45D7174EBE33}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Data Flow Task">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\Data Flow Task\Excel Source Plus"
+              componentClassID="Microsoft.ManagedComponentHost"
+              contactInfo="Extracts data from Excel worksheet.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+              description="Extracts data from Excel worksheet."
+              name="Excel Source Plus"
+              usesDispositions="true">
+              <properties>
+                <property
+                  dataType="System.Null"
+                  name="ComponentObject"
+                  typeConverter="NOTBROWSABLE" />
+                <property
+                  dataType="System.String"
+                  description="Source Excel worksheet."
+                  expressionType="Notify"
+                  name="Worksheet"
+                  typeConverter="CozyRoc.SqlServer.SSIS.TableEditor, CozyRoc.SSISPlus.UI.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">Sheet1</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Specifies first row contains column names."
+                  name="FirstRowHasColumnName">true</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies source worksheet region."
+                  expressionType="Notify"
+                  name="Region">1, 1, 11, -1</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies output type."
+                  name="OutputType"
+                  typeConverter="CozyRoc.SqlServer.SSIS.ExcelSource+OutputTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">0</property>
+                <property
+                  dataType="System.String"
+                  name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.ExcelSource, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task\Excel Source Plus.Connections[EXCEL+]"
+                  connectionManagerID="Package.ConnectionManagers[Excel Connection Manager 2]"
+                  connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager 2]"
+                  description="COZYROC Excel Connection Manager"
+                  name="EXCEL+" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output]"
+                  name="Excel Source Plus Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[AccountNo]"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]"
+                      name="AccountNo"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanAmount]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanAmount]"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanAmount]"
+                      name="LoanAmount"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanStartDate]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanStartDate]"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanStartDate]"
+                      name="LoanStartDate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanMaturityDate]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanMaturityDate]"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanMaturityDate]"
+                      name="LoanMaturityDate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PrincipalPaymentType]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[PrincipalPaymentType]"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PrincipalPaymentType]"
+                      name="PrincipalPaymentType"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PrincipalPaymentSchedule]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[PrincipalPaymentSchedule]"
+                      length="1000"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PrincipalPaymentSchedule]"
+                      name="PrincipalPaymentSchedule"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[InterestPaymentType]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[InterestPaymentType]"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[InterestPaymentType]"
+                      name="InterestPaymentType"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FloatPercentage]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[FloatPercentage]"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FloatPercentage]"
+                      name="FloatPercentage"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FixOrFloatRate]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[FixOrFloatRate]"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FixOrFloatRate]"
+                      name="FixOrFloatRate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanCurrentRate]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanCurrentRate]"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanCurrentRate]"
+                      name="LoanCurrentRate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[InterestPayDay]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[InterestPayDay]"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[InterestPayDay]"
+                      name="InterestPayDay"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[AccountNo]"
+                      dataType="wstr"
+                      length="250"
+                      name="AccountNo" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanAmount]"
+                      dataType="wstr"
+                      length="250"
+                      name="LoanAmount" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanStartDate]"
+                      dataType="wstr"
+                      length="250"
+                      name="LoanStartDate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanMaturityDate]"
+                      dataType="wstr"
+                      length="250"
+                      name="LoanMaturityDate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[PrincipalPaymentType]"
+                      dataType="wstr"
+                      length="250"
+                      name="PrincipalPaymentType" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[PrincipalPaymentSchedule]"
+                      dataType="wstr"
+                      length="1000"
+                      name="PrincipalPaymentSchedule" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[InterestPaymentType]"
+                      dataType="wstr"
+                      length="250"
+                      name="InterestPaymentType" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[FloatPercentage]"
+                      dataType="wstr"
+                      length="250"
+                      name="FloatPercentage" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[FixOrFloatRate]"
+                      dataType="wstr"
+                      length="250"
+                      name="FixOrFloatRate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LoanCurrentRate]"
+                      dataType="wstr"
+                      length="250"
+                      name="LoanCurrentRate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[InterestPayDay]"
+                      dataType="wstr"
+                      length="250"
+                      name="InterestPayDay" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output]"
+                  isErrorOut="true"
+                  name="Excel Source Plus Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[AccountNo]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[AccountNo]"
+                      name="AccountNo"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanAmount]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanAmount]"
+                      name="LoanAmount"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanStartDate]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanStartDate]"
+                      name="LoanStartDate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanMaturityDate]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanMaturityDate]"
+                      name="LoanMaturityDate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[PrincipalPaymentType]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[PrincipalPaymentType]"
+                      name="PrincipalPaymentType"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[PrincipalPaymentSchedule]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="1000"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[PrincipalPaymentSchedule]"
+                      name="PrincipalPaymentSchedule"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[InterestPaymentType]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[InterestPaymentType]"
+                      name="InterestPaymentType"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[FloatPercentage]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[FloatPercentage]"
+                      name="FloatPercentage"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[FixOrFloatRate]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[FixOrFloatRate]"
+                      name="FixOrFloatRate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanCurrentRate]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LoanCurrentRate]"
+                      name="LoanCurrentRate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[InterestPayDay]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      length="250"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[InterestPayDay]"
+                      name="InterestPayDay"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\Data Flow Task\OLE DB Destination"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="OLE DB Destination"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[PaymentSchedule].[Asset]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\Data Flow Task\OLE DB Destination.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[DAL_SEC.SFM_DAL_CLO]"
+                  connectionManagerRefId="Package.ConnectionManagers[DAL_SEC.SFM_DAL_CLO]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[AccountNo]"
+                      cachedDataType="wstr"
+                      cachedLength="250"
+                      cachedName="AccountNo"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AccountNo]"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanAmount]"
+                      cachedDataType="wstr"
+                      cachedLength="250"
+                      cachedName="LoanAmount"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanAmount]"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanAmount]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanStartDate]"
+                      cachedDataType="wstr"
+                      cachedLength="250"
+                      cachedName="LoanStartDate"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanStartDate]"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanStartDate]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanMaturityDate]"
+                      cachedDataType="wstr"
+                      cachedLength="250"
+                      cachedName="LoanMaturityDate"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanMaturityDate]"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanMaturityDate]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PrincipalPaymentType]"
+                      cachedDataType="wstr"
+                      cachedLength="250"
+                      cachedName="PrincipalPaymentType"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PrincipalPaymentType]"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PrincipalPaymentType]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[PrincipalPaymentSchedule]"
+                      cachedDataType="wstr"
+                      cachedLength="1000"
+                      cachedName="PrincipalPaymentSchedule"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PrincipalPaymentSchedule]"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PrincipalPaymentSchedule]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[InterestPaymentType]"
+                      cachedDataType="wstr"
+                      cachedLength="250"
+                      cachedName="InterestPaymentType"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InterestPaymentType]"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[InterestPaymentType]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[FloatPercentage]"
+                      cachedDataType="wstr"
+                      cachedLength="250"
+                      cachedName="FloatPercentage"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FloatPercentage]"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FloatPercentage]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[FixOrFloatRate]"
+                      cachedDataType="wstr"
+                      cachedLength="250"
+                      cachedName="FixOrFloatRate"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FixOrFloatRate]"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[FixOrFloatRate]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanCurrentRate]"
+                      cachedDataType="wstr"
+                      cachedLength="250"
+                      cachedName="LoanCurrentRate"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanCurrentRate]"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LoanCurrentRate]" />
+                    <inputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[InterestPayDay]"
+                      cachedDataType="wstr"
+                      cachedLength="250"
+                      cachedName="InterestPayDay"
+                      externalMetadataColumnId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InterestPayDay]"
+                      lineageId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[InterestPayDay]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AccountNo]"
+                      dataType="wstr"
+                      length="100"
+                      name="AccountNo" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanAmount]"
+                      dataType="numeric"
+                      name="LoanAmount"
+                      precision="18"
+                      scale="2" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanStartDate]"
+                      dataType="dbDate"
+                      name="LoanStartDate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanMaturityDate]"
+                      dataType="dbDate"
+                      name="LoanMaturityDate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PrincipalPaymentType]"
+                      dataType="wstr"
+                      length="100"
+                      name="PrincipalPaymentType" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[PrincipalPaymentSchedule]"
+                      dataType="nText"
+                      name="PrincipalPaymentSchedule" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InterestPaymentType]"
+                      dataType="wstr"
+                      length="100"
+                      name="InterestPaymentType" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FloatPercentage]"
+                      dataType="numeric"
+                      name="FloatPercentage"
+                      precision="18"
+                      scale="5" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FixOrFloatRate]"
+                      dataType="wstr"
+                      length="100"
+                      name="FixOrFloatRate" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanCurrentRate]"
+                      dataType="numeric"
+                      name="LoanCurrentRate"
+                      precision="18"
+                      scale="5" />
+                    <externalMetadataColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InterestPayDay]"
+                      dataType="wstr"
+                      length="100"
+                      name="InterestPayDay" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\Data Flow Task.Paths[Excel Source Plus Output]"
+              endId="Package\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+              name="Excel Source Plus Output"
+              startId="Package\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph">
+        <NodeLayout
+          Size="151,42"
+          Id="Package\Data Flow Task"
+          TopLeft="82.5,78.5" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Data Flow Task">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="171,42"
+          Id="Package\Data Flow Task\OLE DB Destination"
+          TopLeft="190,168" />
+        <NodeLayout
+          Size="161,42"
+          Id="Package\Data Flow Task\Excel Source Plus"
+          TopLeft="199,86" />
+        <EdgeLayout
+          Id="Package\Data Flow Task.Paths[Excel Source Plus Output]"
+          TopLeft="277.5,128">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,40"
+              Start="0,0"
+              End="0,32.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Data Flow Task\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

@@ -1,0 +1,518 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+
+<head>
+    <title>UI.TaskProcessIndicator</title>
+    <style type="text/css">
+    html, body {
+	    height: 100%;
+	    overflow: auto;
+    }
+    body {
+	    padding: 0;
+	    margin: 0;
+	    font-family: "Trebuchet MS", "Helvetica", "Arial",  "Verdana", "sans-serif";
+	    font-size: 62.5%;
+    }
+	H3 {
+			font-size: 12px !important;
+	}
+	input {
+			font-size: 12px !important;
+	}
+	.ui-widget{
+		font-size: 12px !important;
+	}
+	
+    #silverlightControlHost {
+	    height: 100%;
+	    text-align:center;
+    }
+    			input {
+				font-family: Verdana, sans-serif;
+				font-size: 0.9em;
+				padding: 5px;
+				border: 2px solid #666;
+			}			
+			input.blur {
+				color: #999;
+			}
+    </style>
+    <link href="Scripts/complex.css" rel="stylesheet" type="text/css" />
+    <link href="Scripts/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="Silverlight.js"></script>
+    <script src="Scripts/complex.js" type="text/javascript"></script>
+    <script src="Scripts/jquery-latest.js" type="text/javascript"></script>
+    <script src="Scripts/jquery-ui-latest.js" type="text/javascript"></script>
+    <script src="Scripts/jquery.layout-latest.js" type="text/javascript"></script>
+    <script src="Scripts/jquery.hint.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var serviceHostBase = location.protocol + "//" + window.location.hostname + "/TaskProcessServices/";
+        
+        function onSilverlightError(sender, args) {
+            var appSource = "";
+            if (sender != null && sender != 0) {
+                appSource = sender.getHost().Source;
+            }
+
+            var errorType = args.ErrorType;
+            var iErrorCode = args.ErrorCode;
+
+            if (errorType == "ImageError" || errorType == "MediaError") {
+                return;
+            }
+              
+            var errMsg = "Unhandled Error in Silverlight Application " + appSource + "\n";
+
+            errMsg += "Code: " + iErrorCode + "    \n";
+            errMsg += "Category: " + errorType + "       \n";
+            errMsg += "Message: " + args.ErrorMessage + "     \n";
+
+            if (errorType == "ParserError") {
+                errMsg += "File: " + args.xamlFile + "     \n";
+                errMsg += "Line: " + args.lineNumber + "     \n";
+                errMsg += "Position: " + args.charPosition + "     \n";
+            }
+            else if (errorType == "RuntimeError") {
+                if (args.lineNumber != 0) {
+                    errMsg += "Line: " + args.lineNumber + "     \n";
+                    errMsg += "Position: " + args.charPosition + "     \n";
+                }
+                errMsg += "MethodName: " + args.methodName + "     \n";
+            }
+
+            throw new Error(errMsg);
+        }
+
+        var isSessionReady = false;
+        function CreateSession() {
+            var serviceUrl = serviceHostBase + "SessionManagementService.svc/jsAccessEP/CreateSessionByTaskCode";
+            var indicatorAppDomain_p = "Task";
+            var sessionVariables_p = document.getElementById("sessionFile").value;
+            sessionVariables_p = encodeURIComponent(sessionVariables_p);
+            var taskCode = 'Demo';
+            serviceUrl = serviceUrl + "?applicationDomain=" + indicatorAppDomain_p + "&sessionVariable=" + sessionVariables_p + "&taskCode=" + taskCode;
+            jQuery.support.cors = true;
+            $.ajax(
+                {
+                    type: "GET",
+                    url: serviceUrl,
+                    dataType: "jsonp",
+                    crossDomain: true,
+                    contentType: "application/json;charset=utf-8",
+                    success: CreateSessionCompleted,
+                    error: CreateSessionError
+                }
+            );
+        }
+
+        function search() {
+            var sText = document.getElementById("searchBox").value;
+            if (guidChecker.test(sText)) {
+                var serviceUrl = serviceHostBase + "SessionManagementService.svc/jsAccessEP/GetSessionById";
+                var indicatorAppDomain_p = "Task";
+                serviceUrl = serviceUrl + "?applicationDomain=" + indicatorAppDomain_p + "&sessionId=" + sText;
+                jQuery.support.cors = true;
+                $.ajax(
+                {
+                    type: "GET",
+                    url: serviceUrl,
+                    dataType: "jsonp",
+                    crossDomain: true,
+                    contentType: "application/json;charset=utf-8",
+                    success: function (response) {
+                        sessionID = response.SessionId;
+                        $('#sId').text("Session found : Session ID is " + sessionID + " , Session keywords :" + response.SessionName);
+                        $('#sresult').show();
+                        $('#sBox').hide();
+                        isSessionReady = true;
+                    },
+                    error: function (response) { alert(response); }
+                }
+                );
+            }
+            else {
+                var serviceUrl = serviceHostBase + "SessionManagementService.svc/jsAccessEP/GetSessionByKeyword";
+                var indicatorAppDomain_p = "Task";
+                serviceUrl = serviceUrl + "?applicationDomain=" + indicatorAppDomain_p + "&keyword=" + sText;
+                jQuery.support.cors = true;
+                $.ajax(
+                {
+                    type: "GET",
+                    url: serviceUrl,
+                    dataType: "jsonp",
+                    crossDomain: true,
+                    contentType: "application/json;charset=utf-8",
+                    success: function (response) {
+                        sessionID = response.SessionId;
+                        $('#sId').text("Session found : Session ID is " + sessionID + " , Session keywords :" + response.SessionName);
+                        $('#sresult').show();
+                        $('#sBox').hide();
+                        isSessionReady = true;
+                    },
+                    error: function (response) { alert(response); }
+                }
+                );
+            }
+        }   
+
+        function InitParams() {
+            if (isSessionReady) {
+                document.getElementById("taskProcessIndicator").Content.SL_Agent.InitParams(sessionID, "Task", "FileUploadToSP");
+            }
+        }
+
+        function InitByTaskFile() {
+            var taskFile = document.getElementById("taskFile").value;
+            document.getElementById("taskProcessIndicator").Content.SL_Agent.InitByTaskFile("Task", taskFile);
+        }
+
+        function ShowSessionId(sId) {
+            $('#sRId').text("Session created successfully with id : " + sId);
+            $('#sResult').show();
+        }
+
+        var sessionID;
+        function CreateSessionCompleted(response) {
+            sessionID = response;
+            isSessionReady = true;
+            $('#sessionId').text("Session created successfully with id : " + sessionID);
+            $('#csresult').show();
+            $('#csBox').hide();
+        }
+
+        function CreateSessionError(response) {
+            alert(response);
+        }
+
+        /*
+        * complex.html
+        *
+        * This is a demonstration page for the jQuery layout widget
+        *
+        *	NOTE: For best code readability, view this with a fixed-space font and tabs equal to 4-chars
+        */
+
+        var outerLayout, innerLayout;
+
+        /*
+        *#######################
+        *     ON PAGE LOAD
+        *#######################
+        */
+        var guidChecker = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+        $(document).ready(function () {
+            $('input[title!=""]').hint();
+            $("#sessionArea").accordion();
+            $("#taskArea").accordion();
+            $('#rcbtn').click(function () {
+                $('#csresult').hide();
+                $('#csBox').show();
+            });
+            $('#rsbtn').click(function () {
+                $('#sresult').hide();
+                $('#sBox').show();
+            });
+            // create the OUTER LAYOUT
+            outerLayout = $("body").layout(layoutSettings_Outer);
+
+            /*******************************
+            ***  CUSTOM LAYOUT BUTTONS  ***
+            *******************************
+            *
+            * Add SPANs to the east/west panes for customer "close" and "pin" buttons
+            *
+            * COULD have hard-coded span, div, button, image, or any element to use as a 'button'...
+            * ... but instead am adding SPANs via script - THEN attaching the layout-events to them
+            *
+            * CSS will size and position the spans, as well as set the background-images
+            */
+
+            // BIND events to hard-coded buttons in the NORTH toolbar
+            outerLayout.addToggleBtn("#tbarToggleNorth", "north");
+            outerLayout.addOpenBtn("#tbarOpenSouth", "south");
+            outerLayout.addCloseBtn("#tbarCloseSouth", "south");
+            outerLayout.addPinBtn("#tbarPinWest", "west");
+            outerLayout.addPinBtn("#tbarPinEast", "east");
+
+            // save selector strings to vars so we don't have to repeat it
+            // must prefix paneClass with "body > " to target ONLY the outerLayout panes
+            var westSelector = "body > .ui-layout-west"; // outer-west pane
+            var eastSelector = "body > .ui-layout-east"; // outer-east pane
+
+            // CREATE SPANs for pin-buttons - using a generic class as identifiers
+            $("<span></span>").addClass("pin-button").prependTo(westSelector);
+            $("<span></span>").addClass("pin-button").prependTo(eastSelector);
+            // BIND events to pin-buttons to make them functional
+            outerLayout.addPinBtn(westSelector + " .pin-button", "west");
+            outerLayout.addPinBtn(eastSelector + " .pin-button", "east");
+
+            // CREATE SPANs for close-buttons - using unique IDs as identifiers
+            $("<span></span>").attr("id", "west-closer").prependTo(westSelector);
+            $("<span></span>").attr("id", "east-closer").prependTo(eastSelector);
+            // BIND layout events to close-buttons to make them functional
+            outerLayout.addCloseBtn("#west-closer", "west");
+            outerLayout.addCloseBtn("#east-closer", "east");
+
+
+            /* Create the INNER LAYOUT - nested inside the 'center pane' of the outer layout
+            * Inner Layout is create by createInnerLayout() function - on demand
+            *
+            innerLayout = $("div.pane-center").layout( layoutSettings_Inner );
+            *
+            */
+
+
+            // DEMO HELPER: prevent hyperlinks from reloading page when a 'base.href' is set
+            $("a").each(function () {
+                var path = document.location.href;
+                if (path.substr(path.length - 1) == "#") path = path.substr(0, path.length - 1);
+                if (this.href.substr(this.href.length - 1) == "#") this.href = path + "#";
+            });
+
+        });
+
+
+        /*
+        *#######################
+        * INNER LAYOUT SETTINGS
+        *#######################
+        *
+        * These settings are set in 'list format' - no nested data-structures
+        * Default settings are specified with just their name, like: fxName:"slide"
+        * Pane-specific settings are prefixed with the pane name + 2-underscores: north__fxName:"none"
+        */
+        layoutSettings_Inner = {
+            applyDefaultStyles: true // basic styling for testing & demo purposes
+	        , minSize: 20 // TESTING ONLY
+	        , spacing_closed: 14
+	        , north__spacing_closed: 8
+	        , south__spacing_closed: 8
+	        , north__togglerLength_closed: -1 // = 100% - so cannot 'slide open'
+	        , south__togglerLength_closed: -1
+	        , fxName: "slide" // do not confuse with "slidable" option!
+	        , fxSpeed_open: 1000
+	        , fxSpeed_close: 2500
+	        , fxSettings_open: { easing: "easeInQuint" }
+	        , fxSettings_close: { easing: "easeOutQuint" }
+	        , north__fxName: "none"
+	        , south__fxName: "drop"
+	        , south__fxSpeed_open: 500
+	        , south__fxSpeed_close: 1000
+                    //,	initClosed:						true
+	        , center__minWidth: 200
+	        , center__minHeight: 200
+        };
+
+
+        /*
+        *#######################
+        * OUTER LAYOUT SETTINGS
+        *#######################
+        *
+        * This configuration illustrates how extensively the layout can be customized
+        * ALL SETTINGS ARE OPTIONAL - and there are more available than shown below
+        *
+        * These settings are set in 'sub-key format' - ALL data must be in a nested data-structures
+        * All default settings (applied to all panes) go inside the defaults:{} key
+        * Pane-specific settings go inside their keys: north:{}, south:{}, center:{}, etc
+        */
+        var layoutSettings_Outer = {
+            name: "outerLayout" // NO FUNCTIONAL USE, but could be used by custom code to 'identify' a layout
+            // options.defaults apply to ALL PANES - but overridden by pane-specific settings
+	        , defaults: {
+	            size: "auto"
+		        , minSize: 50
+		        , paneClass: "pane" 		// default = 'ui-layout-pane'
+		        , resizerClass: "resizer"	// default = 'ui-layout-resizer'
+		        , togglerClass: "toggler"	// default = 'ui-layout-toggler'
+		        , buttonClass: "button"	// default = 'ui-layout-button'
+		        , contentSelector: ".content"	// inner div to auto-size so only it scrolls, not the entire pane!
+		        , contentIgnoreSelector: "span"		// 'paneSelector' for content to 'ignore' when measuring room for content
+		        , togglerLength_open: 35			// WIDTH of toggler on north/south edges - HEIGHT on east/west edges
+		        , togglerLength_closed: 35			// "100%" OR -1 = full height
+		        , hideTogglerOnSlide: true		// hide the toggler when pane is 'slid open'
+		        , togglerTip_open: "Close This Pane"
+		        , togglerTip_closed: "Open This Pane"
+		        , resizerTip: "Resize This Pane"
+	            //	effect defaults - overridden on some panes
+		        , fxName: "slide"		// none, slide, drop, scale
+		        , fxSpeed_open: 750
+		        , fxSpeed_close: 1500
+		        , fxSettings_open: { easing: "easeInQuint" }
+		        , fxSettings_close: { easing: "easeOutQuint" }
+	        }
+	        , north: {
+	            spacing_open: 1			// cosmetic spacing
+		        , togglerLength_open: 0			// HIDE the toggler button
+		        , togglerLength_closed: -1			// "100%" OR -1 = full width of pane
+		        , resizable: false
+		        , slidable: false
+	            //	override default effect
+		        , fxName: "none"
+                , initClosed: false
+	        }
+	        , south: {
+	            maxSize: 200
+		        , spacing_closed: 0			// HIDE resizer & toggler when 'closed'
+		        , slidable: false		// REFERENCE - cannot slide if spacing_closed = 0
+		        , initClosed: true
+	            //	CALLBACK TESTING...
+		        , onhide_start: function () { return confirm("START South pane hide \n\n onhide_start callback \n\n Allow pane to hide?"); }
+		        , onhide_end: function () { alert("END South pane hide \n\n onhide_end callback"); }
+		        , onshow_start: function () { return confirm("START South pane show \n\n onshow_start callback \n\n Allow pane to show?"); }
+		        , onshow_end: function () { alert("END South pane show \n\n onshow_end callback"); }
+		        , onopen_start: function () { return confirm("START South pane open \n\n onopen_start callback \n\n Allow pane to open?"); }
+		        , onopen_end: function () { alert("END South pane open \n\n onopen_end callback"); }
+		        , onclose_start: function () { return confirm("START South pane close \n\n onclose_start callback \n\n Allow pane to close?"); }
+		        , onclose_end: function () { alert("END South pane close \n\n onclose_end callback"); }
+	            //,	onresize_start:			function () { return confirm("START South pane resize \n\n onresize_start callback \n\n Allow pane to be resized?)"); }
+		        , onresize_end: function () { alert("END South pane resize \n\n onresize_end callback \n\n NOTE: onresize_start event was skipped."); }
+	        }
+	        , west: {
+	            size: 320
+		        , spacing_closed: 10			// wider space when closed
+		        , togglerLength_closed: 21			// make toggler 'square' - 21x21
+		        , togglerAlign_closed: "top"		// align to top of resizer
+		        , togglerLength_open: 0			// NONE - using custom togglers INSIDE west-pane
+		        , togglerTip_open: "Close West Pane"
+		        , togglerTip_closed: "Open West Pane"
+		        , resizerTip_open: "Resize West Pane"
+		        , slideTrigger_open: "click" 	// default
+		        , initClosed: true
+	            //	add 'bounce' option to default 'slide' effect
+		        , fxSettings_open: { easing: "easeOutBounce" }
+	        }
+	        , east: {
+	            size: 320
+		        , spacing_closed: 10			// wider space when closed
+		        , togglerLength_closed: 21			// make toggler 'square' - 21x21
+		        , togglerAlign_closed: "top"		// align to top of resizer
+		        , togglerLength_open: 0 			// NONE - using custom togglers INSIDE east-pane
+		        , togglerTip_open: "Close East Pane"
+		        , togglerTip_closed: "Open East Pane"
+		        , resizerTip_open: "Resize East Pane"
+		        , slideTrigger_open: "mouseover"
+		        , initClosed: true
+	            //	override default effect, speed, and settings
+		        , fxName: "drop"
+		        , fxSpeed: "normal"
+		        , fxSettings: { easing: ""} // nullify default easing
+	        }
+	        , center: {
+	            paneSelector: "#mainContent" 			// sample: use an ID to select pane instead of a class
+		        , minWidth: 200
+		        , minHeight: 200
+	        }
+        };
+
+
+    </script>
+</head>
+<body>
+    <!--<form id="form1" runat="server" style="height:100%">-->
+    <div class="ui-layout-west">
+	    <div class="header">Task Area</div>
+        <div class="subhead"></div>
+	    <div class="content">
+            <div id="taskArea">
+                <h3>Create new session</h3>
+                <div>
+                    <textarea id="taskFile" cols="20" rows="20"></textarea><br />
+                    <input type="button" id="tfbtn" value="Create" onclick="javascript:InitByTaskFile();"/>
+                </div>                    
+                <div id="sResult" style="display:none">
+                    <p><label id="sRId"></label></p>
+                </div>
+            </div>
+	    </div>
+	    <div class="footer"></div>
+    </div>
+
+    <div class="ui-layout-east">
+	    <div class="header">Session Area</div>
+	    <div class="subhead">
+        </div>
+	    <div class="content">
+            <div id="sessionArea">
+               <h3>Search existing session</h3>
+                <div>
+                    <div id="sBox">
+                        <label for="search">Search:</label>
+			            <input type="text" name="seach" value="" size="30" id="searchBox" title="by session id or keyword ... " /><br />
+			            <input type="submit" value="Search" onclick="javascript:search();" />
+                    </div>
+                    <div id="sresult" style="display:none">
+                        <p><label id="sId"></label></p>
+                        <p><input type="button" id="Button2" value="Load task" onclick="javascript:InitParams();" /></p>
+                        <p><input type="button" id="rsbtn" value="ReSearch" /></p>
+                    </div>
+                </div>
+			   <h3>Create new session</h3>
+                <div>
+                    <div id="csBox">
+                        <p><textarea id="sessionFile" cols="20" rows="20"></textarea></p>
+                        <p><input type="button" id="sfbtn" value="Create" onclick="javascript:CreateSession();" /></p>
+                    </div>
+                    <div id="csresult" style="display:none">
+                        <p><label id="sessionId"></label></p>
+                        <p><input type="button" id="Button1" value="Load task" onclick="javascript:InitParams();" /></p>
+                        <p><input type="button" id="rcbtn" value="Start over" /></p>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+	    <div class="footer"></div>
+    </div>
+
+    <div class="ui-layout-north">
+	    <div class="header">Task Studio</div>
+	    <!--<div class="content"></div>-->
+	    <ul class="toolbar">
+		    <li id="tbarToggleNorth" class="first" style="display:none"><span></span>Toggle NORTH</li>
+		    <li id="tbarOpenSouth" style="display:none"><span></span>Open SOUTH</li>
+		    <li id="tbarCloseSouth" style="display:none"><span></span>Close SOUTH</li>
+		    <li id="tbarPinWest"><span></span>Show/Hide Task Area</li>
+		    <li id="tbarPinEast" class="last"><span></span>Show/Hide Session Area</li>
+	    </ul>
+    </div>
+
+    <div class="ui-layout-south">
+	    <div class="header">Outer - South</div>
+	    <div class="content">
+		
+	    </div>
+    </div>
+
+    <div id="mainContent" style="padding-top:0px">
+	    <!-- DIVs for the INNER LAYOUT -->
+	    <div class="ui-layout-center">
+		    <h3 class="header">Task Indicator</h3>
+		    <div class="ui-layout-content">
+                <div id="silverlightControlHost" class="ui-layout-east">
+                    <div style="width:450px; height:450px; margin:10px;">
+                        <object id="taskProcessIndicator" data="data:application/x-silverlight-2," type="application/x-silverlight-2" width="100%" height="100%">
+		                  <param name="source" value="ClientBin/UI.TaskProcessIndicator.xap"/>
+		                  <param name="onError" value="onSilverlightError" />
+		                  <param name="background" value="white" />
+		                  <param name="minRuntimeVersion" value="5.0.61118.0" />
+		                  <param name="autoUpgrade" value="true" />
+		                  <a href="http://go.microsoft.com/fwlink/?LinkID=149156&v=5.0.61118.0" style="text-decoration:none">
+ 			                  <img src="http://go.microsoft.com/fwlink/?LinkId=161376" alt="Get Microsoft Silverlight" style="border-style:none"/>
+		                  </a>
+	                    </object><iframe id="_sl_historyFrame" style="visibility:hidden;height:0px;width:0px;border:0px"></iframe>
+                    </div>
+                </div>	
+		    </div>
+		    <div class="footer"></div>
+	    </div>
+
+	    <div class="ui-layout-north"></div>
+	    <div class="ui-layout-south"></div>
+	    <div class="ui-layout-west"></div>
+	    <div class="ui-layout-east"></div>
+    </div>
+    <!--</form>-->
+</body>
+</html>

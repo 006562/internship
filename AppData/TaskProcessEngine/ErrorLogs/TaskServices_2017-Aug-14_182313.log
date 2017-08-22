@@ -1,0 +1,14 @@
+[2017-08-14 18:23:13,545] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 746cf91f-6fd0-4b10-8277-75eae23af9cb failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Exception: Source=Data Flow Task; Error Code=-1073548540; Error Description=An error occurred with the following error message: "System.Exception: 'transfer' sheet not found. Check connection's RetainSameConnection property.
+   at CozyRoc.SqlServer.SSIS.ExcelSource._GetColumnNames()
+   at CozyRoc.SqlServer.SSIS.ExcelSource._GetColumnIdx()
+   at CozyRoc.SqlServer.SSIS.ExcelSource.PrimeOutput(Int32 outputs, Int32[] outputIDs, PipelineBuffer[] buffers)".
+
+Source=Data Flow Task; Error Code=-2147467259; Error Description=Attempt to read message string for 0xc02090f5 failed with error 0xc02090f2. Make sure all message related files are registered.
+Source=Data Flow Task; Error Code=-1073450952; Error Description=SSIS Error Code DTS_E_PRIMEOUTPUTFAILED.  The PrimeOutput method on Excel Source Plus returned error code 0xC02090F5.  The component returned a failure code when the pipeline engine called PrimeOutput(). The meaning of the failure code is defined by the component, but the error is fatal and the pipeline stopped executing.  There may be error messages posted before this with more information about the failure.
+
+
+   at BL.TaskProcessService.OperationProvider.RunSSIS(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63

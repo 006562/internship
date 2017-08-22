@@ -1,0 +1,210 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+/****** Object:  StoredProcedure [dbo].[USP_PoolLinkLoan]    Script Date: 07/03/2012 13:06:16 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_PoolLinkLoan]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_PoolLinkLoan]
+'
+exec (@vchSQL)
+
+set @vchSQL ='Create Procedure [dbo].[USP_PoolLinkLoan]
+(
+	@DimPoolId bigint
+	, @LTVPassNo varchar(50)
+) AS Begin
+	SET NOCOUNT ON
+	SET FMTONLY OFF
+
+	Delete From dbo.tblFactConsolidationLoan Where DimPoolID = @DimPoolId And LTVPassNo = @LTVPassNo
+	Delete From dbo.tblFactConsolidationSecurity Where DimPoolID = @DimPoolId And LTVPassNo = @LTVPassNo
+	Delete From dbo.tblFactConsolidation Where DimPoolID = @DimPoolId And LTVPassNo = @LTVPassNo
+	
+	DECLARE @MaxLinkId integer = 0
+	DECLARE @MaxLinkIdNew integer = 0
+
+	CREATE TABLE #Linkages (	
+		RowId int IDENTITY(1,1)
+		, DimBaseLoanId bigint NOT NULL
+		, DimLinkedLoanId bigint NOT NULL	
+	)						
+							
+	CREATE TABLE #DeepLinkages (	
+		RowId int NOT NULL
+		, DimBaseLoanId bigint NOT NULL
+		, DimLinkedLoanId bigint NOT NULL
+		, DeeperDimLinkedLoanId	bigint NOT NULL	
+	)
+
+	CREATE TABLE #NewLinkages (	
+		DimBaseLoanId bigint NOT NULL
+		, DimLinkedLoanId bigint NOT NULL	
+	)
+
+	INSERT INTO #Linkages( DimBaseLoanId, DimLinkedLoanId)
+	
+	SELECT	DISTINCT 
+			CASE WHEN ls1.DimLoanID <= ls2.DimLoanID THEN ls1.DimLoanID
+				 ELSE ls2.DimLoanID
+			END	 AS DimBaseLoanId,
+			
+			CASE WHEN ls1.DimLoanID <= ls2.DimLoanID THEN ls2.DimLoanID
+				 ELSE ls1.DimLoanID
+			END	 AS DimLinkedLoanId
+
+	FROM	dbo.tblFactLoanSecurity ls1
+	Join	dbo.tblFactLoan l1 ON l1.DimLoanID = ls1.DimLoanID
+							  AND l1.DimPoolID = ls1.DimPoolID  
+							  AND l1.IsIncluded = 1
+	Join	dbo.tblFactSecurity s1 on s1.DimSecurityID = ls1.DimSecurityID
+							      And s1.DimPoolID = ls1.DimPoolID
+							      And s1.IsIncluded = 1
+
+	CROSS JOIN dbo.tblFactLoanSecurity ls2
+	JOIN dbo.tblFactLoan l2 ON l2.DimLoanID = ls2.DimLoanID
+						   AND l2.DimPoolID = ls2.DimPoolID
+						   AND l2.IsIncluded = 1
+	Join dbo.tblFactSecurity s2 on s2.DimSecurityID = ls2.DimSecurityID
+							   And s2.DimPoolID = ls2.DimPoolID
+							   And s2.IsIncluded = 1
+
+	WHERE	ls1.DimSecurityId = ls2.DimSecurityId	
+
+	AND		l1.DimPoolID = @DimPoolId
+	AND		l2.DimPoolID = @DimPoolId
+	And		ls1.IsIncluded = 1
+	And		ls2.IsIncluded = 1
+
+	DELETE FROM #Linkages
+	WHERE DimBaseLoanId = DimLinkedLoanId
+	AND DimLinkedLoanId IN
+	( SELECT DimLinkedLoanId FROM #Linkages GROUP BY DimLinkedLoanId HAVING	COUNT(*) > 1 )
+
+	SELECT @MaxLinkId = MAX(RowId) FROM #Linkages					
+
+	WHILE @MaxLinkId <> @MaxLinkIdNew BEGIN
+		
+			SELECT	@MaxLinkId = MAX(RowId) FROM #Linkages					
+		
+			INSERT INTO #DeepLinkages
+			SELECT		l1.RowId
+						, l1.DimBaseLoanId
+						, l1.DimLinkedLoanId
+						, l2.DimLinkedLoanId AS DeeperDimLinkedLoanId
+			FROM		#Linkages l1
+			INNER JOIN	#Linkages l2 ON l1.DimLinkedLoanId = l2.DimBaseLoanId
+			WHERE		l1.DimBaseLoanId <> l2.DimLinkedLoanId
+			
+			UNION
+			
+			SELECT		l1.RowId
+						, l1.DimBaseLoanId
+						, l1.DimLinkedLoanId
+						, l2.DimBaseLoanId AS DeeperDimLinkedLoanId
+			FROM		#Linkages l1
+			INNER JOIN	#Linkages l2 ON l1.DimLinkedLoanId = l2.DimLinkedLoanId
+			WHERE		l1.DimBaseLoanId <> l2.DimLinkedLoanId
+			AND			l1.DimBaseLoanId < l2.DimBaseLoanId
+			
+			INSERT INTO #NewLinkages
+			SELECT	DimBaseLoanId ,DeeperDimLinkedLoanId FROM #DeepLinkages
+			EXCEPT
+			SELECT	DimBaseLoanId ,DimLinkedLoanId FROM	#Linkages
+			
+			INSERT INTO #Linkages (DimBaseLoanId,DimLinkedLoanId)
+			SELECT DimBaseLoanId, DimLinkedLoanId FROM #NewLinkages
+
+			SELECT	@MaxLinkIdNew = MAX(RowId) FROM #Linkages
+			
+			Truncate Table #DeepLinkages
+			Truncate Table #NewLinkages
+		END
+
+	DELETE FROM #Linkages
+	WHERE DimBaseLoanId IN ( SELECT DimLinkedLoanId FROM #Linkages WHERE DimBaseLoanId <> DimLinkedLoanId )
+	
+	Insert Into dbo.tblFactConsolidationLoan(DimPoolID, DimConsolidationID, DimLoanId, LTVPassNo)
+	Select @DimPoolId As DimPoolId
+		   , DimBaseLoanId As DimConsolidationId
+		   , DimLinkedLoanId As DimLoanId
+		   , @LTVPassNo As LTVPassNo	
+	From #Linkages
+  
+  Insert Into dbo.tblFactConsolidationSecurity(DimPoolID, DimConsolidationID, DimSecurityId, LTVPassNo)
+	Select	Distinct @DimPoolId
+			, FCL.DimConsolidationID
+			, FLS.DimSecurityID
+			, @LTVPassNo
+	From		dbo.tblFactConsolidationLoan FCL
+	Inner Join	dbo.tblFactLoanSecurity FLS on FLS.DimLoanID = FCL.DimLoanId
+										   And FLS.DimPoolID = FCL.DimPoolID
+	Inner Join	dbo.tblFactSecurity FS on FS.DimSecurityID = FLS.DimSecurityID
+										  And FS.DimPoolID = FLS.DimPoolID
+	Where FCL.DimPoolID = @DimPoolId
+	And   FCL.LTVPassNo = @LTVPassNo
+	And	  FS.IsIncluded = 1
+	And	  FLS.IsIncluded = 1
+
+	Update dbo.tblFactConsolidationSecurity
+	Set		SecurityRank = CSR.SecurityRanking
+	From	dbo.tblFactConsolidationSecurity FCS
+	Inner Join	
+	(
+		Select	FCS.DimConsolidationID
+					, FCS.DimPoolId
+					, FS.DimSecurityID
+					, LTVPassNo
+					, ROW_NUMBER() OVER 
+					(
+							PARTITION BY FCS.DimConsolidationID, FCS.DimPoolID, LTVPassNo
+							ORDER BY FS.SecurityValuationAmt DESC, FS.SecurityNo DESC
+					) AS SecurityRanking
+		From		dbo.tblFactConsolidationSecurity FCS
+		Inner Join	dbo.tblFactSecurity FS on FS.DimPoolID = FCS.DimPoolID
+										  And FS.DimSecurityID = FCS.DimSecurityId
+		Where FCS.LTVPassNo = @LTVPassNo
+    And   FCS.DimpoolId = @DimPoolId
+	) As CSR on FCS.DimConsolidationID = CSR.DimConsolidationID
+			And FCS.DimPoolID = CSR.DimPoolID
+			And FCS.DimSecurityId = CSR.DimSecurityID
+			And FCS.LTVPassNo = CSR.LTVPassNo
+	Where FCS.DimPoolId = @DimPoolId
+	And	  FCS.LTVPassNo = @LTVPassNo
+  
+	Insert Into dbo.tblFactConsolidationLoan(DimPoolID, DimConsolidationID, DimLoanId, LTVPassNo)
+	Select @DimPoolId
+		   , FL.DimLoanId as DimConsolidationId	
+		   , FL.DimLoanID
+		   , @LTVPassNo
+	From dbo.tblFactLoan FL
+	Where FL.IsIncluded = 1
+	And	FL.DimPoolID = @DimPoolId
+	And FL.DimLoanID not in 
+	(
+		Select		Distinct DimLoanID 
+		From		dbo.tblFactLoanSecurity FLS
+		Inner Join	dbo.tblFactSecurity FS on FS.DimSecurityID = FLS.DimSecurityID
+										  And FS.DimPoolID = FLS.DimPoolID
+		WHERE	FLS.DimPoolID = @DimPoolId
+		And		FS.IsIncluded = 1
+		And		FLS.IsIncluded = 1
+	)
+	
+	Drop Table #Linkages
+	Drop Table #DeepLinkages
+	Drop Table #NewLinkages
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+</main>

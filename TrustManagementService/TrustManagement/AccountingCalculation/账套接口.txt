@@ -1,0 +1,161 @@
+    //会计核算（账套管理）获取数据
+    GetAccountSet: function (callback) {
+        var sContent = "{'SPName':'usp_GetAccountSet','Params':{}}";
+        var serviceUrl = DataOperate.wizardService + "DataRead?dbName=" + DataOperate.dbName + "&schema=" + DataOperate.schema + "&json=" + sContent;
+        console.info(serviceUrl)
+        $.ajax({
+            url: serviceUrl,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            //async: false,
+            beforeSend: function () {
+            },
+            success: function (data) {
+
+                var json = jQuery.parseJSON(data);
+                callback(json)
+            },
+            error: function (error) {
+                alert("error:" + error);
+            }
+        });
+
+    },
+    //会计核算（账套管理）修改之前的获取数据
+    GetAccountSetForUpdate: function (AccountSetNo,callback) {
+        var sContent = "{'SPName':'usp_GetAccountSetForUpdate','Params':{" +
+            "'AccountSetNo':'" + AccountSetNo + "'," +
+            "}}";
+        var serviceUrl = DataOperate.wizardService + "DataRead?dbName=" + DataOperate.dbName + "&schema=" + DataOperate.schema + "&json=" + sContent;
+        console.info(serviceUrl)
+        $.ajax({
+            url: serviceUrl,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            //async: false,
+            beforeSend: function () {
+            },
+            success: function (data) {
+
+                var json = jQuery.parseJSON(data);
+                callback(json)
+            },
+            error: function (error) {
+                alert("error:" + error);
+            }
+        });
+
+    },
+    //会计核算（账套管理）删除数据
+    DeleteAccountSet: function (AccountSetNo,callback) {
+        var sContent = "{'SPName':'usp_DeleteAccountSet','Params':{" +
+            "'AccountSetNo':'" + AccountSetNo + "'," +
+            "}}";
+        var serviceUrl = DataOperate.wizardService + "DataRead?dbName=" + DataOperate.dbName + "&schema=" + DataOperate.schema + "&json=" + sContent;
+        console.info(serviceUrl)
+        $.ajax({
+            url: serviceUrl,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            //async: false,
+            beforeSend: function () {
+            },
+            success: function (data) {
+                var json = jQuery.parseJSON(data);
+                callback(json)
+            },
+            error: function (error) {
+                alert("error:" + error);
+            }
+        });
+
+    },
+    //会计核算（账套管理）新建账套
+    NewAccountSet: function (AccountSetNo, AccountSetName, Remark, callback) {
+        var sContent = "{'SPName':'usp_NewAccountSet','Params':{" +
+            "'AccountSetNo':'" + AccountSetNo + "'," +
+            "'AccountSetName':'" + AccountSetName + "'," +
+            "'Remark':'" + Remark + "'" +
+            "}}";
+        var serviceUrl = DataOperate.wizardService + "DataRead?dbName=" + DataOperate.dbName + "&schema=" + DataOperate.schema + "&json=" + sContent;
+        console.info(serviceUrl)
+        $.ajax({
+            url: serviceUrl,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            //async: false,
+            beforeSend: function () {
+            },
+            success: function (data) {
+                console.log(data);
+                var json = jQuery.parseJSON(data);
+                callback(json);
+            },
+            error: function (error) {
+                alert("error:" + error);
+            }
+        });
+
+    },
+    //会计核算（账套管理）检索查询
+    QueryAccountSet: function (AccountSetNo,callback) {
+        var sContent = "{'SPName':'usp_QueryAccountSet','Params':{" +
+            "'AccountSetNo':'" + AccountSetNo + "'" +
+            "}}";
+        var serviceUrl = DataOperate.wizardService + "DataRead?dbName=" + DataOperate.dbName + "&schema=" + DataOperate.schema + "&json=" + sContent;
+        console.info(serviceUrl);
+        $.ajax({
+            url: serviceUrl,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            //async: false,
+            beforeSend: function () {
+            },
+            success: function (data) {
+                //$("#table-PoolDBName").val();
+                //$("#table-DevisionName").val();
+                //$("#table-ClearanceBuyBackDate").val();
+                //$("#table-PrincipalSum").val();
+                //$("#table-FactSum").val();
+                //$("#table-PropertyType").val();
+                var json = jQuery.parseJSON(data);
+                callback(json)
+            },
+            error: function (error) {
+                alert("error:" + error);
+            }
+        });
+
+    },
+    //会计核算（账套管理）编辑数据
+    UpdateAccountSet: function (AccountSetNo, AccountSetName, Remark,callback) {
+        var sContent = "{'SPName':'usp_UpdateAccountSet','Params':{" +
+            "'AccountSetNo':'" + AccountSetNo + "'," +
+            "'AccountSetName':'" + AccountSetName + "'," +
+            "'Remark':'" + Remark + "'" +
+            "}}";
+        var serviceUrl = encodeURI(DataOperate.wizardService + "DataRead?dbName=" + DataOperate.dbName + "&schema=" + DataOperate.schema + "&json=" + sContent);
+        $.ajax({
+            url: serviceUrl,
+            type: "GET",
+            contentType: "application/json; charset=utf-8",
+            dataType: "jsonp",
+            //async: false,
+            beforeSend: function () {
+            },
+            success: function (data) {
+                console.log(data);
+                var json = jQuery.parseJSON(data);
+                callback(json);
+            },
+            error: function (error) {
+                alert("error:" + error);
+            }
+        });
+
+    },

@@ -1,0 +1,377 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <link href="../Scripts/magic/magic.core.css" rel="stylesheet" />
+    <link href="../Scripts/magic/magic.grid.css" rel="stylesheet" />
+    <script src="../Scripts/jquery.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <script src="../Scripts/common.js"></script>
+    <script src="../Scripts/magic/magic.core.js"></script>
+    <script src="../Scripts/magic/magic.grid.js"></script>
+    <script src="../Scripts/magic/magic.pager.js"></script>
+    <script src="../Scripts/magic/magic.mousewheel.js"></script>
+    <link href="../Scripts/magic/magic.dialog.css" rel="stylesheet" />
+    <script src="../Scripts/magic/magic.dialog.js"></script>
+    <script src="../Scripts/dataOperate.Admin.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+
+    <script type="text/javascript">
+
+        $(function () {
+            loadCategory();
+        });
+
+        
+        function loadCategory() {
+            var categoryGrid = $('#categoryGrid').mac('grid', {
+                cols: [
+                    { field: 'CategoryId', title: 'CategoryId', width: 100 },
+                    {
+                        field: 'CategoryCode', title: 'CategoryCode', width:200, render: function (r, tr, vw) {
+                            var f = 'CategoryCode';
+                            if (!tr.hasClass('selected'))
+                                return r[f];
+                            var a = $('<input type="text" style="width:190px" />');
+                            a.attr('name', f).change(function () {
+                                var v = r[f] = a.val();
+                                //categoryGrid.onChangeValue(r, f, v);
+                            }).val(r[f]);
+                            return $('<div class="cell"></div>').append(a);
+                        }
+                    },
+                    {
+                        field: 'CategoryAlias', title: 'CategoryAlias', width: 200,
+                        render: function (r, tr, vw) {
+                            var f = 'CategoryAlias';
+                            if (!tr.hasClass('selected'))
+                                return r[f];
+                            var a = $('<input type="text" style="width:190px" />');
+                            a.attr('name', f).change(function () {
+                                var v = r[f] = a.val();
+                                //categoryGrid.onChangeValue(r, f, v);
+                            }).val(r[f]);
+                            return $('<div class="cell"></div>').append(a);
+                        }
+                    }
+                ],
+                loader: {
+                    appDomain: "QuickWizard",
+                    spName: "usp_Admin_GetItemCategoryPaging",
+                    params: { PageNo: 1, PageSize: 20 },
+                    autoLoad: true
+                },
+
+                pagerLength: 10,
+                onRowClick: function () {
+                    $('#itemDiv').css("display", "block");
+                    $('#itemAliasDiv').css("display", "none");
+                    var tr = $(this);
+                    var sr = categoryGrid.selected;
+                    if (tr.hasClass('selected'))
+                        return true;
+                    if (sr)
+                        categoryGrid.reRenderRow(sr.removeClass('selected'));
+                    categoryGrid.selected = tr.addClass('selected');
+                    categoryGrid.reRenderRow(tr);
+                    var k = tr.attr('name');
+                    var category = categoryGrid.data[k];
+                    loadItems(category.CategoryId);
+                    return true;
+                }
+            });
+
+            categoryGrid.reRenderRow = function (tr) {
+                var k = tr.attr('name');
+                $.each(categoryGrid.config.cols, function (n, c) {
+                    if (c.render && c.field != 'no') {
+                        var td = tr.find('.td[name=' + c.field + ']');
+                        td.empty().append(c.render(categoryGrid.data[k], tr, categoryGrid));
+                    }
+                });
+            }
+        }
+
+
+
+        function loadItems(categoryId) {
+            $("#itemAdd").find("#categoryId").eq(0).val(categoryId);
+            $('#itemGrid').html("");
+            var itemGrid = $('#itemGrid').mac('grid', {
+                cols: [
+                    { field: 'ItemId', title: 'ItemId', width: 100 },
+                    {
+                        field: 'ItemCode', title: 'ItemCode', width: 200,
+                        render: function (r, tr, vw) {
+                            var f = 'ItemCode';
+                            if (!tr.hasClass('selected'))
+                                return r[f];
+                            var a = $('<input type="text" style="width:190px" />');
+                            a.attr('name', f).change(function () {
+                                var v = r[f] = a.val();
+                               //itemGrid.onChangeValue(r, f, v);
+                            }).val(r[f]);
+                            return $('<div class="cell"></div>').append(a);
+                        }
+                    },
+                    {
+                        field: 'InnerAlias', title: 'InnerAlias', width: 200,
+                        render: function (r, tr, vw) {
+                            var f = 'InnerAlias';
+                            if (!tr.hasClass('selected'))
+                                return r[f];
+                            var a = $('<input type="text" style="width:190px" />');
+                            a.attr('name', f).change(function () {
+                                var v = r[f] = a.val();
+                                //itemGrid.onChangeValue(r, f, v);
+                            }).val(r[f]);
+                            return $('<div class="cell"></div>').append(a);
+                        }
+                    }
+                ],
+                loader: {
+                    appDomain: "QuickWizard",
+                    spName: "usp_Admin_GetItemsPaging",
+                    params: { CategoryId: categoryId, PageNo: 1, PageSize: 20 },
+                    autoLoad: true
+                },
+                onRowClick: function () {
+                    $('#itemAliasDiv').css("display", "block");
+                    var tr = $(this);
+                    var sr = itemGrid.selected;
+                    if (tr.hasClass('selected'))
+                        return true;
+                    if (sr)
+                        itemGrid.reRenderRow(sr.removeClass('selected'));
+                    itemGrid.selected = tr.addClass('selected');
+                    itemGrid.reRenderRow(tr);
+
+                    var k = tr.attr('name');
+                    var item = itemGrid.data[k];
+                    loadItemAlias(item.ItemId);
+                   
+                    return true;
+                },
+                pagerLength: 10
+
+            });
+
+            itemGrid.reRenderRow = function (tr) {
+                var k = tr.attr('name');
+                $.each(itemGrid.config.cols, function (n, c) {
+                    if (c.render && c.field != 'no') {
+                        var td = tr.find('.td[name=' + c.field + ']');
+                        td.empty().append(c.render(itemGrid.data[k], tr, itemGrid));
+                    }
+                });
+            }
+        }
+
+       
+        function loadItemAlias(itemId) {
+            $('#itemAliasGrid').html("");
+            $("#itemAliasAdd").find("#itemId").eq(0).val(itemId);
+            var itemAliasGrid = $('#itemAliasGrid').mac('grid', {
+                cols: [
+                    { field: 'ItemId', title: 'ItemId', width: 100 },
+                    { field: 'ItemCode', title: 'ItemCode', width: 200 },
+                    {
+                        field: 'ItemAliasValue', title: 'ItemAliasValue', width: 200, render: function (r, tr, vw) {
+                            var f = 'ItemAliasValue';
+                            if (!tr.hasClass('selected'))
+                                return r[f];
+                            var a = $('<input type="text" style="width:190px" />');
+                            a.attr('name', f).change(function () {
+                                var v = r[f] = a.val();
+                                //itemGrid.onChangeValue(r, f, v);
+                            }).val(r[f]);
+                            return $('<div class="cell"></div>').append(a);
+                        }
+                    },
+                    {
+                        field: 'ItemAliasSetName', title: 'ItemAliasSetName', width: 200, render: function (r, tr, vw) {
+                            var f = 'ItemAliasSetName';
+                            if (!tr.hasClass('selected'))
+                                return r[f];
+                            var a = $('<input type="text" style="width:190px" />');
+                            a.attr('name', f).change(function () {
+                                var v = r[f] = a.val();
+                                //itemGrid.onChangeValue(r, f, v);
+                            }).val(r[f]);
+                            return $('<div class="cell"></div>').append(a);
+                        }
+                    }
+                ],
+                loader: {
+                    appDomain: "QuickWizard",
+                    spName: "usp_Admin_GetItemAliasById",
+                    params: { ItemId: itemId },
+                    autoLoad: true
+                },
+                onRowClick: function () {
+                    var tr = $(this);
+                    var sr = itemAliasGrid.selected;
+                    if (tr.hasClass('selected'))
+                        return true;
+                    if (sr)
+                        itemAliasGrid.reRenderRow(sr.removeClass('selected'));
+                    itemAliasGrid.selected = tr.addClass('selected');
+                    itemAliasGrid.reRenderRow(tr);
+                }
+          
+            });
+
+            itemAliasGrid.reRenderRow = function (tr) {
+                var k = tr.attr('name');
+                $.each(itemAliasGrid.config.cols, function (n, c) {
+                    if (c.render && c.field != 'no') {
+                        var td = tr.find('.td[name=' + c.field + ']');
+                        td.empty().append(c.render(itemAliasGrid.data[k], tr, itemAliasGrid));
+                    }
+                });
+            }
+        }
+
+     
+
+        function getItemJson(spName)
+        {
+            var itemId = $("#itemAdd").find("#itemId").eq(0).val();
+            var itemCode = $("#itemAdd").find("#itemCode").eq(0).val();
+            var innerAlias = $("#itemAdd").find("#innerAlias").eq(0).val();
+            var categoryId = $("#itemAdd").find("#categoryId").eq(0).val();
+
+            var item = new Object();
+            item.ItemId = itemId;
+            item.ItemCode = itemCode;
+            item.InnerAlias = innerAlias;
+            item.CategoryId = categoryId;
+
+            var obj = new Object();
+            obj.AppDomain = "QuickWizard";
+            obj.SPName = spName;
+            obj.Params = item;
+            var json = JSON.stringify(obj);
+            return json;
+        }
+
+        function getItemAliasJson(spName) {
+            var itemId = $("#itemAliasAdd").find("#itemId").eq(0).val();
+            var itemAliasValue = $("#itemAliasAdd").find("#itemAliasValue").eq(0).val();
+            var itemAliasSetName = $("#itemAliasAdd").find("#itemAliasSetName").eq(0).val();
+
+            var itemAlias = new Object();
+            itemAlias.ItemId = itemId;
+            itemAlias.ItemAliasValue = itemAliasValue;
+            itemAlias.ItemAliasSetName = itemAliasSetName;
+
+            var obj = new Object();
+            obj.AppDomain = "QuickWizard";
+            obj.SPName = spName;
+            obj.Params = itemAlias;
+            var json = JSON.stringify(obj);
+            return json;
+        }
+
+        function getCategoryJson(spName) {
+            var categoryCode = $("#categoryAdd").find("#categoryCode").eq(0).val();
+            var categoryAlias = $("#categoryAdd").find("#categoryAlias").eq(0).val();
+         
+            var category = new Object();
+            category.CategoryCode = categoryCode;
+            category.CategoryAlias = categoryAlias;
+
+            var obj = new Object();
+            obj.AppDomain = "QuickWizard";
+            obj.SPName = spName;
+            obj.Params = category;
+            var json = JSON.stringify(obj);
+            return json;
+        }
+
+ 
+        function addCategory() {
+            var json = getCategoryJson("usp_Admin_AddCategory")
+            DataOperate.singleDataCUD(json, callback);
+            function callback(r) {
+                var r1 = JSON.parse(r);
+                if (r1.Result == 1) {
+                    var pop = mac.complete(r1.Message);
+                }
+                else {
+                    var pop = mac.alert(r1.Message);
+                }
+            }
+        }
+
+
+        function addItem()
+        {
+            var json = getItemJson("usp_Admin_AddItem")
+            DataOperate.singleDataCUD(json, callback);
+            function callback(r)
+            {
+                var r1 = JSON.parse(r);
+                if (r1.Result == 1) {
+                    var pop = mac.complete(r1.Message);
+                }
+                else {
+                    var pop = mac.alert(r1.Message);
+                }
+            }
+        }
+
+        function addItemAlias()
+        {
+            var json = getItemAliasJson("usp_Admin_AddItemAlias")
+            DataOperate.singleDataCUD(json, callback);
+            function callback(r) {
+                var r1 = JSON.parse(r);
+                if (r1.Result == 1) {
+                    var pop = mac.complete(r1.Message);
+                }
+                else {
+                    var pop = mac.alert(r1.Message);
+                }
+            }
+        }
+
+
+    </script>
+</head>
+<body>
+    
+   <a href="javascript:(0)" onclick="getReturn()">返回</a>
+   <div id="categoryDiv">
+            <div id="categoryGrid" class="view grid"></div>
+            <div id="categoryAdd">
+                CategoryCode: <input id="categoryCode" type="text" />
+                CategoryAlias:<input id="categoryAlias" type="text" />
+                <input id="btnAddCategory" type="button"  value="Add Category"  onclick="addCategory()"/>
+            </div>
+    </div>
+
+    <div id="itemDiv" style="display:none">
+        <div id="itemGrid" class="view grid"></div>
+        <div id="itemAdd">
+            <input id="categoryId" type="text" style="display:none" />
+            ItemId: <input id="itemId" type="text" />
+            ItemCode:<input id="itemCode" type="text" />
+            InnerAlias:<input id="innerAlias" type="text" />
+            <input id="btnAddItem" type="button" value="Add Item" onclick="addItem()" />
+        </div>
+    </div>
+
+    <div id="itemAliasDiv" style="display:none">
+        <div id="itemAliasGrid" class="view grid"></div>
+        <div id="itemAliasAdd">
+            <input id="itemId" type="text" style="display:none" />
+            ItemAliasValue:<input id="itemAliasValue" type="text" />
+            ItemAliasSetName:<input id="itemAliasSetName" type="text" />
+            <input id="btnAddItem" type="button" value="Add Item Alias" onclick="addItemAlias()" />
+        </div>
+    </div>
+    
+</body>
+</html>

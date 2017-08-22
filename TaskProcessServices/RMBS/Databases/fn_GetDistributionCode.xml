@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL  varchar(8000)
+Declare @bigsql varchar(8000)
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[fn_GetDistributionCode]'') AND type in (N''FN'', N''IF'', N''TF'', N''FS'', N''FT''))
+DROP FUNCTION [dbo].[fn_GetDistributionCode]
+'
+exec (@vchSQL)
+
+--**************************************************
+--fn_GetDistributionCode
+--**************************************************
+Set @vchSQL ='CREATE FUNCTION [dbo].[fn_GetDistributionCode]
+(
+	-- Add the parameters for the function here
+	@DistributionID int,
+	@DistributionType varchar(50) 
+)
+RETURNS varchar(50) 
+AS
+BEGIN
+
+	-- Add the T-SQL statements to compute the return value here
+	declare @DistributionDesc varchar(50)
+	
+	set @DistributionDesc = ( SELECT DistributionsDesc FROM dbo.vw_DimDistributions where DimDistributionsID=@DistributionID and DistributionsType=@DistributionType)
+	
+	-- Return the result of the function
+	RETURN @DistributionDesc
+
+END
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

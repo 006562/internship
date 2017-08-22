@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N''[dbo].[View_ConsolidationMainSecurity]''))
+DROP VIEW [dbo].[View_ConsolidationMainSecurity]
+'
+exec (@vchSQL)
+
+set @vchSQL ='CREATE VIEW [dbo].[View_ConsolidationMainSecurity] 
+AS
+	Select	Distinct DimConsolidationID
+          , DimPoolId
+			    , DimSecurityID
+			    , LTVPassNo
+	From    dbo.tblFactConsolidationSecurity FCS
+	Where SecurityRank = 1
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+</main>

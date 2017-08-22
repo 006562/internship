@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+	<Parameters>
+		<Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+	</Parameters>
+	<Query>
+    <![CDATA[
+declare @vchSQL  varchar(8000)
+set @vchSQL = 'use [' + @DBName + ']
+
+/****** Object:  Table [dbo].[tblDimEC]    Script Date: 05/03/2012 16:34:22 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tblDimEC]'') AND type in (N''U''))
+DROP TABLE [dbo].[tblDimEC]
+
+/****** Object:  Table [dbo].tblDimEC]  Script Date: 05/03/2012 16:34:22 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+SET ANSI_PADDING ON
+
+CREATE TABLE [dbo].[tblDimEC](
+	[DimPoolID] [bigint] NOT NULL,
+	[DimECID] [bigint] NOT NULL,
+	[CriteriaName] [nvarchar](100) NOT NULL,
+	[CriteriaDescription] [nvarchar](200) NOT NULL,
+	[CriteriaSetId] [bigint] NOT NULL,
+	[CriteriaSetTypeCode] [nvarchar] (200) NOT NULL,
+	[DimOrganisationId]	[Bigint] NOT NULL,
+	[CriteriaTypeCode] [nvarchar] (200) NOT NULL,
+	[IsEnabled] [bit] NOT NULL,
+	[ECPassNoCode] [nvarchar] (200) NOT NULL,
+	[XMLSqlQueryEC] [xml] NOT NULL,
+	[XMLSqlQueryDrillThrough] [xml] NULL,
+	[CriteriaTableTypeCode] [nvarchar] (200) NULL,
+	[SequenceNo] int NULL,
+  [IsFunctionEnabled] [bit] default 1,
+  [IsEditable] [bit] default 1
+ CONSTRAINT [PK_tblDimEC] PRIMARY KEY CLUSTERED 
+(
+	[DimPoolID] ASC,
+	[DimECID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON, FILLFACTOR = 70) ON [PRIMARY]
+) ON [PRIMARY]'
+
+exec (@vchSQL)
+
+]]>
+  </Query>
+
+</main>

@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+/****** Object:  StoredProcedure [dbo].[usp_SaveECEntity]    Script Date: 07/03/2012 13:06:16 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[usp_SaveECEntity]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[usp_SaveECEntity]
+'
+exec (@vchSQL)
+
+set @vchSQL ='
+CREATE PROCEDURE [dbo].[usp_SaveECEntity]
+   @PoolID bigint,
+	@CriteriaId bigint,
+  @ECSetType nvarchar(200),
+	@DimOrganisationID bigint,
+	@ECType nvarchar(200),
+	@CriteriaName nvarchar(100),
+	@CriteriaDesc nvarchar(200),
+	@IsEnabled bit,
+	@ECPassNo nvarchar(100),
+	@XmlSqlQueryEC xml,
+	@XMLSqlQueryDrillThrough xml = null,
+	@CriteriaTableTypeCode nvarchar(200),
+    @ECUpdateBy	nvarchar(100) = null  
+
+AS
+   SET NOCOUNT ON
+   SET NOCOUNT ON
+   
+   declare @msg nvarchar(4000)
+   
+   if exists(select DimECID 
+             from tblDimEC 
+             where DimECID = @CriteriaId)
+	Begin
+	  begin try
+	     begin tran
+           update tblDimEC 
+		   set IsEnabled = @IsEnabled
+				, XMLSqlQueryEC = @XmlSqlQueryEC
+				, XMLSqlQueryDrillThrough = @XMLSqlQueryDrillThrough
+		   where DimPoolID = @PoolID and DimECID = @CriteriaId
+	       
+		   update tblDimPool
+		   set UpdateECDate = GETDATE(),ECUpdateBy = @ECUpdateBy 
+		   where DimPoolID = @PoolID
+          commit tran
+       end try
+       begin catch
+          set @msg = ERROR_MESSAGE()
+          RAISERROR(@msg, 16, 1)
+          IF XACT_STATE() <> 0
+            ROLLBACK TRANSACTION;
+
+       end catch
+       
+       Select DimECID From dbo.tblDimEC Where DimECID = @CriteriaId
+    end '
+
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

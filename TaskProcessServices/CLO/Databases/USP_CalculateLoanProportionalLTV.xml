@@ -1,0 +1,103 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+/****** Object:  StoredProcedure [dbo].[USP_CalculateLoanProportionalLTV]    Script Date: 07/03/2012 13:06:16 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_CalculateLoanProportionalLTV]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_CalculateLoanProportionalLTV]
+'
+exec (@vchSQL)
+
+set @vchSQL ='Create Proc dbo.USP_CalculateLoanProportionalLTV
+(
+	@DimPoolId bigint
+) As Begin
+
+	CREATE TABLE #SecurityTotalBalance (	
+		DimSecurityId bigint
+		, SecurityValuationAmt decimal(20,4)
+		, TotalCurrentLoanBalance decimal(20,4)
+	)						
+
+	CREATE TABLE #LoanTotalValuation (	
+		DimLoanId bigint
+		, TotalSecurityValuationAmt decimal(15,4)
+	)						
+
+	-- Clean Up
+	Update	dbo.tblFactLoan 
+	Set		LoanProportionalLTV = null
+	Where	DimPoolID = @DimPoolId
+	
+	Update	dbo.tblFactLoanSecurity
+	Set		ProportionalValutionAmt = null
+	Where	DimPoolID = @DimPoolId
+	
+	-- Calculate TotalCurrentLoanBalance For each Security
+	Insert Into #SecurityTotalBalance (DimSecurityId, SecurityValuationAmt, TotalCurrentLoanBalance)
+	Select	FS.DimSecurityID
+			, FS.SecurityValuationAmt
+			, SUM(FL.CurrentPrincipalBalance) as TotalCurrentLoanBalance
+	From		dbo.tblFactSecurity FS
+	Inner Join	dbo.tblFactLoanSecurity FLS on FLS.DimSecurityID = FS.DimSecurityID
+										   And FLS.DimPoolID = FS.DimPoolID
+	Inner Join	dbo.tblFactLoan FL on FL.DimLoanID = FLS.DimLoanID
+								  And FL.DimPoolID = FLS.DimPoolID
+	Where	FL.IsIncluded = 1
+	And		FS.IsIncluded = 1
+	And		FS.DimPoolID = @DimPoolId
+	Group By FS.DimSecurityID, FS.SecurityValuationAmt 
+
+	-- Calculate ProportionalValutionAmt for each loan security link
+	Update		dbo.tblFactLoanSecurity 
+	Set			ProportionalValutionAmt = Case When STB.TotalCurrentLoanBalance = 0 Then 0
+											   Else (STB.SecurityValuationAmt * FL.CurrentPrincipalBalance ) / STB.TotalCurrentLoanBalance 
+											   End
+	From		dbo.tblFactLoanSecurity FLS
+	Inner Join	dbo.tblFactLoan FL on FL.DimLoanID = FLS.DimLoanID
+								  And FL.DimPoolID = FLS.DimPoolID
+								  And FL.IsIncluded = 1
+	Inner Join	#SecurityTotalBalance STB on STB.DimSecurityId = FLS.DimSecurityID
+	Where FLS.DimPoolID = @DimPoolId
+								  
+	-- Calculate TotalSecurityValuationAmt for each single loan
+	Insert Into #LoanTotalValuation (DimLoanId, TotalSecurityValuationAmt)
+	Select	FL.DimLoanId
+			, SUM(ProportionalValutionAmt) As TotalSecurityValuationAmt
+	From	dbo.tblFactLoan FL
+	Inner Join	dbo.tblFactLoanSecurity FLS on FLS.DimLoanID = FL.DimLoanID
+										   And FLS.DimPoolID = FL.DimPoolID
+										   And FL.IsIncluded = 1
+  Inner Join	dbo.tblFactSecurity FS on FS.DimSecurityID = FLS.DimSecurityID
+									    And FS.DimPoolID = FLS.DimPoolID
+									    And FS.IsIncluded = 1
+	Where FL.DimPoolID = @DimPoolId
+	Group By FL.DimLoanID
+			
+	-- Calculate LoanProportionalLTV
+	Update	dbo.tblFactLoan
+	Set		LoanProportionalLTV = Case	When LTV.TotalSecurityValuationAmt = 0 Then 0
+										Else FL.CurrentPrincipalBalance / LTV.TotalSecurityValuationAmt
+										End 
+	From		dbo.tblFactLoan FL
+	Inner Join	#LoanTotalValuation LTV on LTV.DimLoanId = FL.DimLoanID
+	Where FL.DimPoolID = @DimPoolId
+	And FL.IsIncluded = 1
+
+	Drop Table #SecurityTotalBalance
+	Drop Table #LoanTotalValuation
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+</main>

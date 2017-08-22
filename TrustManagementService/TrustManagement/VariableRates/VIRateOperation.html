@@ -1,0 +1,282 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title></title>
+
+    <link rel="stylesheet" href="../Common/css/trustWizard.css" />
+    <link href="../TrustFollowUp/css/pagerlist-style.css" rel="stylesheet" />
+    <link href="../Common/Scripts/jquery-ui.css" rel="stylesheet" type="text/css" />
+
+    <script src="../Common/Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../../Config/GlobalVariable.js"></script>
+    <script src="../Common/Scripts/common.js"></script>
+    <script src="../Common/Scripts/anyDialog.js"></script>
+    <script src="../Common/Scripts/calendar.min.js"></script>
+
+    <style>
+        .checkbox {
+            margin-bottom: 5px;
+        }
+
+            .checkbox label {
+                font-weight: bold;
+                margin-right: 10px;
+            }
+
+        .btn-options {
+            background: #fff;
+            /*background-image: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f3f3f3));
+            background-image: -webkit-linear-gradient(top, #f8f8f8, #f3f3f3);
+            background-image: -moz-linear-gradient(top, #f8f8f8, #f3f3f3);
+            background-image: -o-linear-gradient(top, #f8f8f8, #f3f3f3);
+            background-image: linear-gradient(to bottom, #f8f8f8, #f3f3f3);*/
+            border: 1px solid #dedede;
+            border-top: none;
+            padding: 3px 8px;
+            color: #666;
+            font-size: 12px;
+            cursor: pointer;
+            border-radius: 0 0 3px 3px;
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+        }
+
+            .btn-options:hover {
+                border-color: #ccc;
+            }
+
+            .btn-options i {
+                font-size: 10px;
+                font-style: normal;
+                color: #888;
+                font-weight: 300;
+                margin-left: 3px;
+            }
+    </style>
+
+</head>
+<body>
+
+    <div id="newVISet" style="border-bottom:1px solid #dedede;background:#f8f8f8;padding:10px 20px;">
+        <div class="col-4">
+            <label>公布时间(查询时历史匹配到上一个发布日)：</label>
+        </div>
+        <div class="col-7">
+            <input id="VIPubDate" type="text" class="date-plugins" data-attr="Date" data-valid="required date" />
+        </div>
+        <div id="type">
+            <label>利率类型：</label>
+            <select id="InterestType" class="form-control" data-valid="required" data-attr="interest_adjustments_AdjustEffectType">
+                <option value="">请选择</option>
+                <option value="deposit">存款</option>
+                <option value="loan" selected>贷款</option>
+            </select>
+        </div>
+        <div id="deposit" style="display:none">
+            <div class="">
+                <label for="">三个月:</label>
+                <input id="drate1" type="text" class="form-control filter" value="0" />
+            </div>
+            <div class="">
+                <label for="">六个月:</label>
+                <input id="drate2" type="text" class="form-control filter" value="0" />
+            </div>
+            <div class="">
+                <label for="">一年：</label>
+                <input id="drate3" type="text" class="form-control filter" value="0" />
+            </div>
+            <div class="">
+                <label for="">两年：</label>
+                <input id="drate4" type="text" class="form-control filter" value="0" />
+            </div>
+            <div class="">
+                <label for="">三年：</label>
+                <input id="drate5" type="text" class="form-control filter" value="0" />
+            </div>
+            <div class="">
+                <label for="">五年：</label>
+                <input id="drate6" type="text" class="form-control filter" value="0" />
+            </div>
+        </div>
+        <div id="loan">
+            <div class="">
+                <label for="within6months">不满6个月:</label>
+                <input id="lrate1" type="text" class="form-control filter" value="0" />
+            </div>
+            <div class="">
+                <label for="6MonthsTo1Years">6个月到一年:</label>
+                <input id="lrate2" type="text" class="form-control filter" value="0" />
+            </div>
+            <div class="">
+                <label for="1YearsTo3Years">一年到三年：</label>
+                <input id="lrate3" type="text" class="form-control filter" value="0" />
+            </div>
+            <div class="">
+                <label for="3YearsTo5Years">三年到五年：</label>
+                <input id="lrate4" type="text" class="form-control filter" value="0" />
+            </div>
+            <div class="">
+                <label for="MoreThan5Years">五年以上：</label>
+                <input id="lrate5" type="text" class="form-control filter" value="0" />
+            </div>
+        </div>
+    </div>
+    <div id="editVI" style="border-bottom:1px solid #dedede;background:#f8f8f8;padding:10px 20px;">
+        <div style="margin-bottom:5px;">
+            公布日期：<span id="VIDate2"></span>
+        </div>
+        <div class="">
+            <span id="viEditingSubCategory"></span>
+            <input id="viEditingRate" type="text" class="form-control filter" />
+        </div>
+    </div>
+    <div style="padding:20px;">
+        <div style="text-align:right;margin-top:10px;">
+            <button type="button" class="btn btn-primary btn-sm" id="btnSubmit">提交</button>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    function date_input_func() {
+        $('.date-plugins').date_input();//.attr('readonly', true);
+    }
+
+    function getQueryParam(url, name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var param = url.match(reg);
+        if (param != null) return unescape(param[2]);
+        return false;
+    };
+
+    $(function () {
+        date_input_func();
+
+        var operation = getQueryParam(window.location.search.substr(1), 'operation');
+        var subCategoryCode = getQueryParam(window.location.search.substr(1), 'subcategorycode');
+        var subCategory = getQueryParam(window.location.search.substr(1), 'subcategory');
+        var pubDate;
+        if (getQueryParam(window.location.search.substr(1), 'pubdate') != '')
+        {
+            pubDate = getStringDate(getQueryParam(window.location.search.substr(1), 'pubdate')).dateFormat("yyyy-MM-dd");
+        }
+           
+        var baserate = getQueryParam(window.location.search.substr(1), 'baserate');
+        var type = getQueryParam(window.location.search.substr(1), 'type');
+        var id = getQueryParam(window.location.search.substr(1), 'id');
+        var category = getQueryParam(window.location.search.substr(1), 'category');
+
+        $('#InterestType').change(function () {
+            if ($(this).val() == 'loan') {
+                $('#loan').show();
+                $('#deposit').hide();
+            }
+            else
+            {
+                $('#loan').hide();
+                $('#deposit').show();
+            }
+        });
+
+        if (operation == 'new') {
+            $('#editVI').hide();
+        }
+        else
+        {
+            $('#newVISet').hide();
+            $('#editVI #VIDate2').text(pubDate);
+            $('#viEditingRate').val(baserate);
+            $('#viEditingSubCategory').text(subCategory);
+        }
+
+        $('#btnSubmit').click(function () {
+            if (operation == 'new') {
+                var vitype = $('#InterestType').val();
+
+                var date = $('#VIPubDate').val();
+                var rate1;
+                var rate2;
+                var rate3;
+                var rate4;
+                var rate5;
+                var rate6;
+
+                if (vitype == 'loan') {
+                    var rate1 = $('#lrate1').val();
+                    var rate2 = $('#lrate2').val();
+                    var rate3 = $('#lrate3').val();
+                    var rate4 = $('#lrate4').val();
+                    var rate5 = $('#lrate5').val();
+                    $.when(
+                        addVIR('短期贷款', 'within6months', '不满6个月(含)', date, 'loan', rate1),
+                        addVIR('短期贷款', '6MonthsTo1Years', '六个月至一年（含）', date, 'loan', rate2),
+                        addVIR('中长期贷款', '1YearsTo3Years', '一至三年（含)', date, 'loan', rate3),
+                        addVIR('中长期贷款', '3YearsTo5Years', '三至五年（含)', date, 'loan', rate4),
+                        addVIR('中长期贷款', 'MoreThan5Years', '五年以上', date, 'loan', rate5)
+                        ).then(alert('Added'));
+                    
+                }
+                else {
+                    var rate1 = $('#drate1').val();
+                    var rate2 = $('#drate2').val();
+                    var rate3 = $('#drate3').val();
+                    var rate4 = $('#drate4').val();
+                    var rate5 = $('#drate5').val();
+                    var rate6 = $('#drate6').val();
+
+                    $.when(
+                        addVIR('短期存款', '3months', '三个月', date, 'deposit', rate1),
+                        addVIR('短期存款', '6months', '六个月', date, 'deposit', rate2),
+                        addVIR('短期存款', '1Year', '一年', date, 'deposit', rate3),
+                        addVIR('中期存款', '2Years', '两年', date, 'deposit', rate4),
+                        addVIR('中长期存款', '3Years', '三年', date, 'deposit', rate5),
+                        addVIR('长期存款', '5Years', '五年', date, 'deposit', rate6)
+                        ).then(alert('Added'));
+
+                }
+            }
+            else {
+                baserate = $('#viEditingRate').val();
+                updateVIR(id, category, subCategoryCode, subCategory, pubDate, type, baserate);
+            }
+        });       
+    });
+
+    function addVIR(category, subCategoryCode, subCategory, date, type, rate) {
+        var executeParam = {
+            SPName: 'usp_addtblPBCRates', SQLParams: [
+                { Name: 'Category', value: category, DBType: 'string' },
+                { Name: 'subCategoryCode', value: subCategoryCode, DBType: 'string' },
+                { Name: 'subCategory', value: subCategory, DBType: 'string' },
+                { Name: 'rate', value: rate, DBType: 'string' },
+                { Name: 'type', value: type, DBType: 'string' },
+                { Name: 'pubdate', value: date, DBType: 'date' },
+            ]
+        };
+        var svcUrl = GlobalVariable.DataProcessServiceUrl + "CommonExecutePost?";
+        var result = ExecutePostData(false, svcUrl, 'TrustManagement', executeParam);
+    }
+
+
+    function updateVIR(id, category, subCategoryCode, subCategory, date, type, rate) {
+        var executeParam = {
+            SPName: 'usp_updatetblPBCRates', SQLParams: [
+                { Name: 'id', value: id, DBType: 'int' },
+                { Name: 'Category', value: category, DBType: 'string' },
+                { Name: 'subCategoryCode', value: subCategoryCode, DBType: 'string' },
+                { Name: 'subCategory', value: subCategory, DBType: 'string' },
+                { Name: 'rate', value: rate, DBType: 'string' },
+                { Name: 'type', value: type, DBType: 'string' },
+                { Name: 'pubdate', value: date, DBType: 'date' },
+            ]
+        };
+        var svcUrl = GlobalVariable.DataProcessServiceUrl + "CommonExecutePost?";
+        var result = ExecutePostData(false, svcUrl, 'TrustManagement', executeParam);
+
+        if (result.CommonExecutePostResult == true)
+        {
+            alert('Updated');
+        }
+    }
+</script>

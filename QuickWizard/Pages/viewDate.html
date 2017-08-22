@@ -1,0 +1,155 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <title>Date</title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link href="../Contents/common.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../Scripts/calendar.min.js"></script>
+    <script src='../Scripts/common.js'></script>
+    <script src='../Scripts/dataOperate.js'></script>
+    <script src="../Scripts/format.number.js"></script>
+    <script src='../Scripts/renderControl.js'></script>
+
+    <script src="../Scripts/magic/magic.core.js"></script>
+    <link href="../Scripts/magic/magic.dialog.css" rel="stylesheet" />
+    <script src="../Scripts/magic/magic.dialog.js"></script>
+</head>
+<body>
+    <div class="main">
+        <div class="tab-columns">
+            <button type="button" class="btn btn-active" data-col="2">
+                <span class="bs bs2"></span>
+                <span class="bs bs2"></span>
+            </button>
+            <button type="button" class="btn" data-col="3">
+                <span class="bs bs1"></span>
+                <span class="bs bs1"></span>
+                <span class="bs bs1"></span>
+            </button>
+        </div>
+        <h3 class="h3">
+            <span class="title">专项计划日期</span>
+        </h3>
+        <div id="TrustExtensionDiv" class="form-panel">
+            <div class="col-12 form-drop">
+                <div class="row">
+                    <div class="col-3">
+                        <select class="form-control" id="tb_NoHaveDataListDDL" data-bind="foreach:DateSetList.NoHaveDataList">
+                            <option data-bind="html:ItemAliasValue,attr:{dataIndex: $index}"></option>
+                        </select>
+                    </div>
+                    <button id="addShowColumn" onclick="addShowColumn()" type="button" class="btn btn-plus">
+                        <i class="icon icon-add"></i>
+                    </button>
+                </div>
+            </div>
+            <div id="TrustExtensionInput"  class="col-12 form-row form-horizontal" data-bind="foreach:DateSetList.HaveDataList">
+                <div class="col-6 form-row autoLayout-plugins">
+                    <div class="form-group">
+                        <label data-bind="html:ItemAliasValue" class="col-4 control-label"></label>
+                        <div class="col-6">
+                            <!--<input data-bind="value:ItemValue" class="form-control text-center date-plugins" />-->
+                            <input data-bind="renderControl:ItemId,value:ItemValue" class="form-control text-center date-plugins" />
+                        </div>
+                        <!-- ko if: IsNew -->
+                        <button id="removeShowColumn" onclick="removeShowColumn(this)" title="删除" data-bind="attr:{ dataIndex: $index}" class="btn btn-remove">
+                            <i class="icon icon-remove"></i>
+                        </button>
+                        <!--/ko-->
+                    </div>
+                </div>
+            </div>
+            <div class="form-item">
+                <h3 class="h3">
+                    <span class="title">日期计算</span>
+                </h3>
+                <div id="addWorkDayDiv" class="col-12 form-drop form-horizontal">
+                    <div class="row">
+                        <div class="col-3">
+                            <select class="form-control" id="seJSRList" data-bind="foreach:JSRList.NoHaveDataList" onchange="changJSRItem()">
+                                <option data-bind="html:DisplayName,attr:{dataIndex: $index}"></option>
+                            </select>
+                        </div>
+                        <div class="col-3" data-bind="foreach:CurrentJSR">
+                            <input type="text" name="DateValue" disabled="disabled" class="form-control date-plugins" data-bind="value:ItemValue" />
+                        </div>
+                        <div class="col-3">
+                            <div class="row">
+                                <div class="col-3 control-label">
+                                    <label>距离</label>
+                                </div>
+                                <div class="col-9">
+                                    <select class="form-control" id="DateTypeSelect" name="DateType" data-bind="foreach: CompareTargetArry" onchange="changDateType()">
+                                        <option data-bind="html:ItemAliasValue,value:ItemCode"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <div class="col-6" data-bind="foreach:rangeDate">
+                                    <input type="text" id="addDateCount" name="DateCount" class="form-control text-center" data-bind="value:$parent.formatp(rangeDate()),event: {keyup:$parent.logkeyup.bind($data)}" />
+                                </div>
+                                <div class="col-6 control-label">
+                                    <label>个工作日</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <button id="addWorkDay" type="button" class="btn btn-plus" onclick="addJSR()">
+                                <i class="icon icon-add"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div data-bind="foreach:JSRList.HaveDataList" id="TrustExtensionJSRListHaveDataList" class="col-12 form-row form-horizontal">
+                    <div class="row mb15" data-bind="attr:{dataIndex: $index}">
+                        <div class="col-3">
+                            <label data-bind="html:DisplayName" class="control-label"></label>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" name="DateValue" class="form-control" disabled="disabled" data-bind="value:ItemValue" />
+                        </div>
+                        <div class="col-3">
+                            <div class="row">
+                                <div class="col-3 control-label">
+                                    <label>距离</label>
+                                </div>
+                                <div class="col-9  control-label">
+                                    <label name="DateType" data-bind="html:CompareTarget"></label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                            <div class="row">
+                                <div class="col-6">
+                                    <input type="text" class="form-control text-center" disabled="disabled" name="DateCount" data-bind="value:DateCount" />
+                                </div>
+                                <div class="col-6 control-label">
+                                    <label>个工作日</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-1">
+                            <button id="removeWorkDay" title="删除" data-bind="attr: { dataIndex: $index }" class="btn btn-remove" onclick="delJSR(this)">
+                                <i class="icon icon-remove"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="form-save">
+            <button type="button" class="btn btn-primary" onclick="saveItems()">保存信息</button>
+        </div>
+    </div>
+    <script src="viewDate.js"></script>
+</body>
+</html>

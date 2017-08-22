@@ -1,0 +1,194 @@
+﻿@charset "utf-8";
+/* 防止用户自定义背景颜色对网页的影响，添加让用户可以自定义字体 */
+html{color:#000;-webkit-text-size-adjust:none;}
+body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,code,form,fieldset,legend,input,textarea,p,blockquote,th,td,hr,button{margin:0;padding:0;}
+audio,canvas,video {display:inline-block;*display:inline;*zoom: 1;}
+body,button,input,select,textarea{font:12px/1.5 'Microsoft Yahei',tahoma,arial,\5b8b\4f53;outline:0;resize:none}
+table{border-collapse:collapse;border-spacing:0;}
+th{text-align:inherit;}/* IE bug fixed: th 不继承 text-align*/
+caption,th {text-align:left;}/* 对齐是排版最重要的因素, 别让什么都居中 */
+fieldset,img{border:0;}
+iframe{display:block;}/* ie6 7 8(q) bug 显示为行内表现 */
+del{text-decoration:line-through;}/* 一致的 del 样式 */
+address,caption,cite,code,dfn,em,th,var {font-style:normal;font-weight:500;}
+ol,ul {list-style:none;}/* 去掉列表前的标识, li 会继承 */
+h1,h2,h3,h4,h5,h6 {font-size:100%;font-weight:500;}
+a{text-decoration:none;color:#353535;}
+a:hover{text-decoration:underline;color:#000;}
+a{blr:expression(this.onFocus=this.blur())}/*fixed IE*/
+small {font-size: 0.75em;}
+h1 {font-size: 30px;}
+h2 {font-size: 26px;}
+h3 {font-size: 22px;}
+h4 {font-size: 18px;}
+h5 {font-size: 14px;}
+h6 {font-size: 12px;}
+@font-face {
+	font-family: "icon";
+	src: url('../font/iconfont.eot'); /* IE9*/
+	src: url('../font/iconfont.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+	url('../font/iconfont.woff') format('woff'), /* chrome, firefox */
+	url('../font/iconfont.ttf') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+	url('../font/iconfont.svg#iconfont') format('svg'); /* iOS 4.1- */
+}
+
+.icon {font-family:"icon";font-size:16px;font-style:normal;-webkit-font-smoothing: antialiased;-webkit-text-stroke-width: 0.2px;-moz-osx-font-smoothing: grayscale;}
+.icon-back:before { content: "\e600"; }
+.icon-bottom:before { content: "\e601"; }
+.icon-top:before { content: "\e602"; }
+.icon-right:before { content: "\e603"; }
+.icon-tongji:before { content: "\e604"; }
+.icon-roundcheck:before { content: "\e60a"; }
+.icon-list:before { content: "\e605"; }
+.icon-rankfill:before { content: "\e60b"; }
+.icon-close:before { content: "\e606"; }
+.icon-check:before { content: "\e607"; }
+.icon-warning:before { content: "\e608"; }
+.icon-asset:before { content: "\e609"; }
+.icon-plus:before { content: "\e60d"; }
+.icon-more:before { content: "\e60c"; }
+
+/* 清理浮动 */
+
+.clearfix:after {visibility:hidden;display:block;font-size:0;content:" ";clear:both;height:0;}
+.clearfix{clear:both;zoom:1;font-size:0;height:0; /* for IE6 IE7 */}
+
+.form-control {
+	position: relative;
+	display: block;
+	height:20px;
+	padding: 3px 10px;
+	font-size: 14px;
+	line-height: 20px;
+	color: #555;
+	background-color: #fff;
+	background-image: none;
+	border: 1px solid #ccc;
+	border-radius: 2px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+	-webkit-transition: border-color ease-in-out .15s, -webkit-box-shadow ease-in-out .15s;
+	-o-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+	transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+textarea.form-control {
+    height:60px;
+}
+.form-control:focus {
+	border-color: #66afe9;
+	outline: 0;
+	-webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 5px rgba(102, 175, 233, .6);
+	box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 5px rgba(102, 175, 233, .6);
+}
+.form-control[disabled]{
+	cursor: not-allowed;
+}
+.form-control[disabled], .form-control[readonly]{
+	background: #eee;
+	opacity: 1;
+}
+select.form-control {
+  height: 30px;
+  line-height: 30px;
+}
+.btn {
+	display: inline-block;
+	padding: 5px 12px;
+	margin-bottom: 0;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 1.42857143;
+	text-align: center;
+	white-space: nowrap;
+	vertical-align: middle;
+	-ms-touch-action: manipulation;
+	touch-action: manipulation;
+	cursor: pointer;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	  user-select: none;
+	background-image: none;
+	border: 1px solid transparent;
+	border-radius: 2px;
+}
+.btn.btn-sm{padding: 3px 10px;}
+.btn .icon{font-size: 12px;}
+.btn-primary{background-color: #4a6594;color: #fff;}
+.btn-primary:hover{background-color: #3c537b}
+
+.step-page{padding-left: 300px;}
+.aside{position: fixed;_position:absolute;top: 0;left: 0;bottom: 0;width: 300px;border-right: 1px solid #dedede;}
+.main{padding: 70px 60px 50px 60px;}
+.main .h3{color: #3c537b;border-bottom: 1px solid #dedede;padding-bottom: 15px;margin-bottom: 10px;box-shadow: 0 2px 5px rgba(0,0,0,)}
+
+.step-head{background: #3c537b;height: 80px;margin-right: -1px;line-height: 80px;color: #fff;padding: 20px;}
+.step-box{background: #fff;}
+.step-box ul{display: block;}
+.step-box ul li{position: relative;height: 40px;border-bottom: 1px solid #dedede;padding:10px 0 10px 50px;color: #ccc;cursor:default}
+.step-box ul li .no{float: left;margin-left: -40px;font-size: 30px;width: 40px;text-align: center;line-height: 40px;display: block;}
+.step-box ul li .flag{position: absolute;right: 20px;top: 18px;}
+.step-box ul li .step-title{font-size: 12px;margin-top: 5px;line-height: 14px;font-weight:bold}
+.step-box ul li .step-text{font-size: 14px;}
+.step-box ul li.active{background: #e3ecfb;color: #374c71;-moz-transition: 0.5s;-ms-transition: 0.5s;-o-transition: 0.5s;-webkit-transition: 0.5s;transition: 0.5s;}
+.step-btn{margin-right: 8px;}
+.step-btn-prev{display: none;}
+
+.form{padding: 20px 0;border-bottom: 1px solid #dedede;margin-bottom: 20px;}
+.form .form-group{width:45%;display: inline-block;margin-bottom: 10px;}
+.form .form-group label{display: inline-block;width: 30%;font-weight: bold;padding-right: 10px;}
+.form .form-group .form-control{display: inline-block;width: 40%}
+
+.form .form-tempgroup{width:60%;display: inline-block;margin-bottom: 10px;}
+.form .form-tempgroup label{display: inline-block;width: 22.5%;font-weight: bold;padding-right: 10px;}
+.form .form-tempgroup .form-control{display: inline-block;width: 30%}
+
+.date_selector,.date_selector *{width:auto;height:auto;border:none;background:0 0;margin:0;padding:0;text-align:left;text-decoration:none}
+.date_selector{background:#fff;border:1px solid #ccc;padding:10px;margin:0;margin-top:-1px;position:absolute;z-index:100000;display:none;border-radius:3px;box-shadow:0 0 5px #aaa;box-shadow:0 2px 2px #ccc;width:220px}
+.date_selector_ieframe{position:absolute;z-index:99999;display:none}
+.date_selector .nav{width:17.5em}
+.date_selector .nav p{clear:none}
+.date_selector .month_nav,.date_selector .year_nav{margin:0 0 3px 0;padding:0;display:block;position:relative;text-align:center}
+.date_selector .month_nav{float:left;width:55%}
+.date_selector .year_nav{float:right;width:42%;margin-right:-8px}
+.date_selector .month_name,.date_selector .year_name{font-weight:700;line-height:20px}
+.date_selector .button{display:block;position:absolute;top:3px;width:16px;height:16px;line-height:16px;color:#777;text-align:center;overflow:hidden;}
+.date_selector .button .icon{font-size: 14px;}
+.date_selector .button.hover,.date_selector .button:hover{cursor:pointer;color: #222}
+.date_selector .prev{left:0}
+.date_selector .next{right:0}
+.date_selector table{border-spacing:0;border-collapse:collapse;clear:both;margin:0;width:220px}
+.date_selector td,.date_selector th{width:2.5em;height:2em;padding:0!important;text-align:center!important;color:#666;font-weight:400}
+.date_selector th{font-size:12px}
+.date_selector td{border:1px solid #f1f1f1;line-height:2em;text-align:center;white-space:nowrap;color:#5985c7;background:#fff}
+.date_selector td.today{background:#eee}
+.date_selector td.unselected_month{color:#ccc}
+.date_selector td.selectable_day{cursor:pointer}
+.date_selector td.selected{background:#2b579a;color:#fff;font-weight:700}
+.date_selector td.selectable_day.hover,.date_selector td.selectable_day:hover{background:#5985c7;color:#fff}
+
+.tabs {border-bottom: 1px solid #ddd;}
+.tabs > li {display: inline-block;margin-bottom: -1px;}
+.tabs > li > a {margin-right: 2px;line-height: 1.42857143;border: 1px solid transparent;border-radius: 4px 4px 0 0;position: relative;display: block;padding: 8px 15px;text-decoration: none;}
+.tabs > li > a:hover {border-color: #eee #eee #ddd;}
+.tabs > li.active > a,
+.tabs > li.active > a:hover,
+.tabs > li.active > a:focus {
+	color: #555;
+	cursor: default;
+	border: 1px solid #ddd;
+	border-bottom-color: #fff;
+	font-weight: bold;
+}
+
+.tab-body{padding: 30px 10px;}
+.table{width:100%;max-width:100%;margin-bottom:20px;border:1px solid #ddd;}
+.table>tbody>tr>td,.table>tbody>tr>th,.table>tfoot>tr>td,.table>tfoot>tr>th,.table>thead>tr>td,.table>thead>tr>th{padding:5px;line-height:1.42857143;vertical-align:middle;border:1px solid #ddd;text-align: center;}
+.table>thead>tr>th,.table>thead>tr>td{vertical-align:bottom;border-bottom:2px solid #ddd}
+.table>caption+thead>tr:first-child>td,.table>caption+thead>tr:first-child>th,.table>colgroup+thead>tr:first-child>td,.table>colgroup+thead>tr:first-child>th,.table>thead:first-child>tr:first-child>td,.table>thead:first-child>tr:first-child>th{border-top:0}
+.table>tbody+tbody{border-top:2px solid #ddd}
+.table>thead{background-color:#f9f9f9}
+.table>tbody [role=edit]{border:1px solid transparent;padding: 3px 8px;}
+.table>tbody [role=edit]:hover{border:1px solid #ddd;background-color: #fff;}
+
+.table-select{width: 80px;overflow: hidden;}

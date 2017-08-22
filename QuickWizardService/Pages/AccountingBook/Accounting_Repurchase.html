@@ -1,0 +1,283 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <link href="../../Contents/bootstrap.css" rel="stylesheet" />
+    <link href="../../Scripts/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <style type="text/css">
+        .tb-curver { width: 100%; border: 1px solid #ccc; margin-top: 10px; border-radius: 5px 5px; }
+        .tb-curver td { vertical-align: top; min-height:500px }
+        .td-allcurvertree { width: 200px; overflow: hidden; border-right: 1px solid #ccc; }
+        .td-allcurvertree .divTree { width: 200px; min-height: 400px; overflow: auto; }
+        .tb-curver .divAllChart{min-height:500px;}
+    </style>
+</head>
+<body>
+
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">Configuration Loading...</p>
+    </div>
+
+    <div id="page_main_container" class="main">
+        <div class="main-section">
+            <h3 class="h3"><span class="title">XX部按赎回起算日的贷款本金</span></h3> 
+            <div class="form-panel">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                       <th style="width:35px;">&nbsp;</th>
+                        <th style="width:500px">会计科目</th>
+                        <th style="width:120px">日期</th>
+                        <th>金额</th>
+                        <th style="width:80px;">
+                            <button class="btn btn-plus" onclick="StepPage.AddLayer1()" type="button">
+                                <i class="icon icon-add" style="margin-right: 0px;"></i>
+                            </button>
+                        </th>
+                    </tr>
+                    <tbody data-bind="foreach: Table1">
+                        <tr>
+                            <td><span class="form-label" data-bind="text: $index()+1"></span></td>
+                            <td><select class="form-control" data-bind="options: $parent.Category1, optionsText: 'name', optionsValue: 'id', value:Category, optionsCaption: 'Choose...'"></select></td>
+                            <td><input type="text" class="form-control date-plugins" data-bind="value: Date" /></td>
+                            <td><input type="text" class="form-control" data-bind="value: Amount" /></td>
+                            <td>
+                                <button class="btn btn-plus" onclick="StepPage.CalculateRate(this)"
+                                        title="计算票面利率" data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-asset" style="margin-right: 0px;"></i>
+                                </button>&nbsp;
+                                <button class="btn btn-remove" onclick="StepPage.RemoveLayer1(this)"
+                                        data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-remove" style="margin-right: 0px;"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+		</div>
+		
+		
+		<div class="main-section">
+            <h3 class="h3"><span class="title">XX部按赎回价格中包含的先支付后应向客户收回的利息</span></h3> 
+            <div class="form-panel">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                       <th style="width:35px;">&nbsp;</th>
+                        <th style="width:500px">会计科目</th>
+                        <th style="width:120px">日期</th>
+                        <th>金额</th>
+                        <th style="width:80px;">
+                            <button class="btn btn-plus" onclick="StepPage.AddLayer2()" type="button">
+                                <i class="icon icon-add" style="margin-right: 0px;"></i>
+                            </button>
+                        </th>
+                    </tr>
+                    <tbody data-bind="foreach: Table2">
+                        <tr>
+                            <td><span class="form-label" data-bind="text: $index()+1"></span></td>
+                            <td><select class="form-control" data-bind="options: $parent.Category2, optionsText: 'name', optionsValue: 'id', value:Category, optionsCaption: 'Choose...'"></select></td>
+                            <td><input type="text" class="form-control date-plugins" data-bind="value: Date" /></td>
+                            <td><input type="text" class="form-control" data-bind="value: Amount" /></td>
+                            <td>
+                                <button class="btn btn-plus" onclick="StepPage.CalculateRate(this)"
+                                        title="计算票面利率" data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-asset" style="margin-right: 0px;"></i>
+                                </button>&nbsp;
+                                <button class="btn btn-remove" onclick="StepPage.RemoveLayer2(this)"
+                                        data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-remove" style="margin-right: 0px;"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+		</div>
+		
+		<div class="main-section">
+            <h3 class="h3"><span class="title">本公司垫付给受托机构/管理人的应收客户的利息款项</span></h3> 
+            <div class="form-panel">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                       <th style="width:35px;">&nbsp;</th>
+                        <th style="width:500px">会计科目</th>
+                        <th style="width:120px">日期</th>
+                        <th>金额</th>
+                        <th style="width:80px;">
+                            <button class="btn btn-plus" onclick="StepPage.AddLayer3()" type="button">
+                                <i class="icon icon-add" style="margin-right: 0px;"></i>
+                            </button>
+                        </th>
+                    </tr>
+                    <tbody data-bind="foreach: Table3">
+                        <tr>
+                            <td><span class="form-label" data-bind="text: $index()+1"></span></td>
+                            <td><select class="form-control" data-bind="options: $parent.Category3, optionsText: 'name', optionsValue: 'id', value:Category, optionsCaption: 'Choose...'"></select></td>
+                            <td><input type="text" class="form-control date-plugins" data-bind="value: Date" /></td>
+                            <td><input type="text" class="form-control" data-bind="value: Amount" /></td>
+                            <td>
+                                <button class="btn btn-plus" onclick="StepPage.CalculateRate(this)"
+                                        title="计算票面利率" data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-asset" style="margin-right: 0px;"></i>
+                                </button>&nbsp;
+                                <button class="btn btn-remove" onclick="StepPage.RemoveLayer3(this)"
+                                        data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-remove" style="margin-right: 0px;"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+		</div>
+		
+		<div class="main-section">
+            <h3 class="h3"><span class="title">XX部将赎回价款划付至受托机构/管理人指定账户</span></h3> 
+            <div class="form-panel">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                       <th style="width:35px;">&nbsp;</th>
+                        <th style="width:500px">会计科目</th>
+                        <th style="width:120px">日期</th>
+                        <th>金额</th>
+                        <th style="width:80px;">
+                            <button class="btn btn-plus" onclick="StepPage.AddLayer4()" type="button">
+                                <i class="icon icon-add" style="margin-right: 0px;"></i>
+                            </button>
+                        </th>
+                    </tr>
+                    <tbody data-bind="foreach: Table4">
+                        <tr>
+                            <td><span class="form-label" data-bind="text: $index()+1"></span></td>
+                            <td><select class="form-control" data-bind="options: $parent.Category4, optionsText: 'name', optionsValue: 'id', value:Category, optionsCaption: 'Choose...'"></select></td>
+                            <td><input type="text" class="form-control date-plugins" data-bind="value: Date" /></td>
+                            <td><input type="text" class="form-control" data-bind="value: Amount" /></td>
+                            <td>
+                                <button class="btn btn-plus" onclick="StepPage.CalculateRate(this)"
+                                        title="计算票面利率" data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-asset" style="margin-right: 0px;"></i>
+                                </button>&nbsp;
+                                <button class="btn btn-remove" onclick="StepPage.RemoveLayer4(this)"
+                                        data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-remove" style="margin-right: 0px;"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+		</div>
+		
+		
+		<div class="main-section">
+            <h3 class="h3"><span class="title">赎回起算日至回购交割日之间借款人归还本金及利息的</span></h3> 
+            <div class="form-panel">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                       <th style="width:35px;">&nbsp;</th>
+                        <th style="width:500px">会计科目</th>
+                        <th style="width:120px">日期</th>
+                        <th>金额</th>
+                        <th style="width:80px;">
+                            <button class="btn btn-plus" onclick="StepPage.AddLayer5()" type="button">
+                                <i class="icon icon-add" style="margin-right: 0px;"></i>
+                            </button>
+                        </th>
+                    </tr>
+                    <tbody data-bind="foreach: Table5">
+                        <tr>
+                            <td><span class="form-label" data-bind="text: $index()+1"></span></td>
+                            <td><select class="form-control" data-bind="options: $parent.Category5, optionsText: 'name', optionsValue: 'id', value:Category, optionsCaption: 'Choose...'"></select></td>
+                            <td><input type="text" class="form-control date-plugins" data-bind="value: Date" /></td>
+                            <td><input type="text" class="form-control" data-bind="value: Amount" /></td>
+                            <td>
+                                <button class="btn btn-plus" onclick="StepPage.CalculateRate(this)"
+                                        title="计算票面利率" data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-asset" style="margin-right: 0px;"></i>
+                                </button>&nbsp;
+                                <button class="btn btn-remove" onclick="StepPage.RemoveLayer5(this)"
+                                        data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-remove" style="margin-right: 0px;"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+		</div>
+		
+		<div class="main-section">
+            <h3 class="h3"><span class="title">赎回溢折价的会计处理</span></h3> 
+            <div class="form-panel">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                       <th style="width:35px;">&nbsp;</th>
+                        <th style="width:500px">会计科目</th>
+                        <th style="width:120px">日期</th>
+                        <th>金额</th>
+                        <th style="width:80px;">
+                            <button class="btn btn-plus" onclick="StepPage.AddLayer6()" type="button">
+                                <i class="icon icon-add" style="margin-right: 0px;"></i>
+                            </button>
+                        </th>
+                    </tr>
+                    <tbody data-bind="foreach: Table6">
+                        <tr>
+                            <td><span class="form-label" data-bind="text: $index()+1"></span></td>
+                            <td><select class="form-control" data-bind="options: $parent.Category6, optionsText: 'name', optionsValue: 'id', value:Category, optionsCaption: 'Choose...'"></select></td>
+                            <td><input type="text" class="form-control date-plugins" data-bind="value: Date" /></td>
+                            <td><input type="text" class="form-control" data-bind="value: Amount" /></td>
+                            <td>
+                                <button class="btn btn-plus" onclick="StepPage.CalculateRate(this)"
+                                        title="计算票面利率" data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-asset" style="margin-right: 0px;"></i>
+                                </button>&nbsp;
+                                <button class="btn btn-remove" onclick="StepPage.RemoveLayer6(this)"
+                                        data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-remove" style="margin-right: 0px;"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+		</div>
+		
+		
+		
+		
+		
+		
+		<div class="main-section">
+            <div class="form-save">
+                <div class="form-row form-horizontal">
+                    <div class="col-2 form-row">
+                        <button class="btn btn-primary" onclick="StepPage.Save()">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../../Scripts/jquery.min.js"></script>
+    <script src="../../Scripts/jquery.cookie.js"></script>
+    <script src="../../Scripts/App.Global.js"></script>
+    <script src="../../Scripts/common.js"></script>
+    <script src="../../Scripts/calendar.min.js"></script>
+    <script src="../../Scripts/knockout-3.4.0.js"></script>
+    <script src="../../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../../Scripts/renderControl.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap-table.min.js"></script>
+    <script src="../../Scripts/dataOperate.js"></script>
+    <script src="../../Scripts/highcharts.js"></script>
+    <script src="../../Scripts/highcharts_exporting.js"></script>
+    <script src="../../Scripts/zTree/js/jquery.ztree.core.min.js"></script>
+    <script src="../../Scripts/zTree/js/jquery.ztree.excheck.min.js"></script>
+    <script src="Accounting_Repurchase.js"></script>
+</body>
+</html>

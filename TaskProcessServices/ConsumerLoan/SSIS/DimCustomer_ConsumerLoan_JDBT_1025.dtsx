@@ -1,0 +1,1709 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/4/2015 3:14:37 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GS2106CNVDV003"
+  DTS:CreatorName="DEV\gslocaladmin"
+  DTS:DTSID="{E83B9414-3C5F-4543-80CC-1DD40EDA1EF0}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="DimCustomer_ConsumerLoan_JDBT"
+  DTS:PackageType="5"
+  DTS:VersionBuild="120"
+  DTS:VersionGUID="{937483D7-E608-494F-89C1-E1759D9292BC}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[SFM_DAL_CLO]"
+      DTS:CreationName="OLEDB"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{EAA094B8-C02E-4CD2-A335-87C8912CDC75}"
+      DTS:ObjectName="SFM_DAL_CLO">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::C_DAL_CLO_DB]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=mssql;Initial Catalog=SFM_DAL_ConsumerLoan;Provider=SQLNCLI10.1;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[SFM_STAGING_CLO]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{6B3DDD9E-0F90-4D19-83FC-18148778DA15}"
+      DTS:ObjectName="SFM_STAGING_CLO">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::C_STAGING_DB]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=mssql;Initial Catalog=SFM_STAGING;Provider=SQLNCLI10.1;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{74F3713A-0BC8-4317-9890-FC3865C08FF0}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Data Source=&quot; + @[User::DAL_CLO_SERVER] + &quot;;Initial Catalog=&quot;+@[User::DAL_CLO_DB] +&quot;;Provider=SQLNCLI10.1;Integrated Security=SSPI;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_DAL_CLO_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=mssql;Initial Catalog=SFM_DAL_ConsumerLoan;Provider=SQLNCLI10.1;Integrated Security=SSPI;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{2A24CC24-30E4-402C-A261-FAD5C7EF86AC}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_Organisation">
+      <DTS:VariableValue
+        DTS:DataType="8">JD</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D2627775-CFE7-4903-B40A-0650534D7E67}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_Reporting_Date">
+      <DTS:VariableValue
+        DTS:DataType="8">2016-05-22</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{CF55D7E8-C126-4995-A7EC-328F43E14986}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Data Source=&quot; + @[User::STAGING_SERVER]  + &quot;;Initial Catalog=&quot;+ @[User::STAGING_DB] +&quot;;Provider=SQLNCLI10.1;Integrated Security=SSPI;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_STAGING_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=mssql;Initial Catalog=SFM_STAGING;Provider=SQLNCLI10.1;Integrated Security=SSPI;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{CCB37915-1E53-4BE5-92E1-51F0BC9E325A}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DAL_CLO_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">SFM_DAL_ConsumerLoan</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{FE14901D-4EDF-4720-95AC-7AF92A5ECF6A}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DAL_CLO_SERVER">
+      <DTS:VariableValue
+        DTS:DataType="8">mssql</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{963C650D-36F9-4578-B5B5-B47A375ED0C4}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DataLineageId">
+      <DTS:VariableValue
+        DTS:DataType="8">595BE1D2-161C-42EB-BD25-085D5694E1A0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{3F7FB035-10D0-4612-9E3A-FE44529027F5}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;EXEC GetOrganisationIdByCode &quot;+&quot;'&quot;+ @[User::C_Organisation]   +&quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="GetOrganisationId">
+      <DTS:VariableValue
+        DTS:DataType="8">EXEC GetOrganisationIdByCode 'JD'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{3A650005-63D1-45E5-A15A-6F5BCD381CA0}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="OrganisationId">
+      <DTS:VariableValue
+        DTS:DataType="8">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{325CFB58-1F23-4124-8438-C50E68DF1255}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="STAGING_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">SFM_STAGING</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{FA4F3A24-84BF-4596-AC08-6D6F231C5E64}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="STAGING_SERVER">
+      <DTS:VariableValue
+        DTS:DataType="8">mssql</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{34B8CA5E-ED82-435B-93BC-A411EA992A60}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;truncate table  Working.tblDimCustomer&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_DeleteStatement">
+      <DTS:VariableValue
+        DTS:DataType="8">truncate table  Working.tblDimCustomer</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{ADAEF80B-1491-495D-B425-A6D6C91F53D4}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;exec [dbo].[usp_GetDimCustomer_JDBT]  &quot;+ &quot;'&quot;+@[User::C_Reporting_Date]+&quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_GetDimCustomerStatement">
+      <DTS:VariableValue
+        DTS:DataType="8">exec [dbo].[usp_GetDimCustomer_JDBT]  '2016-05-22'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{63787AD7-04D0-42F5-89C8-F0047BCA4D12}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;EXEC usp_tblDimCustomerSCD &quot;+&quot;'&quot;+@[User::C_Organisation]+&quot;','&quot;+@[User::C_Reporting_Date]+&quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_LoadDim">
+      <DTS:VariableValue
+        DTS:DataType="8">EXEC usp_tblDimCustomerSCD 'JD','2016-05-22'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{CAD528FE-19C1-4ECF-805B-A47849A20669}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_Rowcount_Source">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Delete existing data"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Delete existing data"
+      DTS:DTSID="{209CA35C-2FE5-4E41-A1A0-3A6EA3F01A17}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Delete existing data">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Delete existing data\Delete existing data from target table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{84358B91-61F0-481B-9278-029A5914D08D}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Delete existing data from target table"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; Microsoft SQL Server 2008; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{EAA094B8-C02E-4CD2-A335-87C8912CDC75}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::V_DeleteStatement" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Delete existing data\Get OrganisationId by code"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{5B2CF71A-D4DD-4FFA-AAE6-AE75F778D572}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get OrganisationId by code"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{EAA094B8-C02E-4CD2-A335-87C8912CDC75}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::GetOrganisationId"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="DimOrganisationID"
+                SQLTask:DtsVariableName="User::OrganisationId" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Delete existing data.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{D89EF3D9-83AD-46EB-9477-1B1FF8798B6C}"
+          DTS:From="Package\Delete existing data\Get OrganisationId by code"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Delete existing data\Delete existing data from target table" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Load data to DimCustomer"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Delete existing data"
+      DTS:DTSID="{7F872972-5D6D-4394-AC3C-CEC2CE2AED61}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Load data to DimCustomer">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Load data to DimCustomer\Load Data from working table to Dim table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{784BFB11-6920-4666-A709-AFCAAB5F375D}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Load Data from working table to Dim table"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; Microsoft SQL Server 2008; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{EAA094B8-C02E-4CD2-A335-87C8912CDC75}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::V_LoadDim" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@Organisation"
+                SQLTask:DtsVariableName="User::C_Organisation"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="130"
+                SQLTask:ParameterSize="-1" />
+              <SQLTask:ParameterBinding
+                SQLTask:ParameterName="@BusinessDate"
+                SQLTask:DtsVariableName="User::C_Reporting_Date"
+                SQLTask:ParameterDirection="Input"
+                SQLTask:DataType="7"
+                SQLTask:ParameterSize="0" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Load Data to Working table"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Add new loan records"
+      DTS:DTSID="{3EB0509F-7AEF-40B5-8582-73B19AA648EE}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Load Data to Working table">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Load Data to Working table\DataFlow Task"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:DelayValidation="True"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{4FF6A84D-ACB6-4E7A-97EA-CEADB7CA7FEB}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="DataFlow Task"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server v10; (C) 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              BLOBTempStoragePath=""
+              bufferTempStoragePath=""
+              defaultBufferMaxRows="200000"
+              version="1">
+              <components>
+                <component
+                  refId="Package\Load Data to Working table\DataFlow Task\Data Conversion"
+                  componentClassID="Microsoft.DataConvert"
+                  contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Data Conversion"
+                  name="Data Conversion"
+                  usesDispositions="true">
+                  <inputs>
+                    <input
+                      refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Inputs[Data Conversion Input]"
+                      name="Data Conversion Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Inputs[Data Conversion Input].Columns[CIS_CustomerID]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="CIS_CustomerID"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CIS_CustomerID]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Inputs[Data Conversion Input].Columns[Code]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="Code"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[Code]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Inputs[Data Conversion Input].Columns[DimOrganisationId]"
+                          cachedDataType="wstr"
+                          cachedLength="1"
+                          cachedName="DimOrganisationId"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationId]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Inputs[Data Conversion Input].Columns[UserStatus]"
+                          cachedDataType="i4"
+                          cachedName="UserStatus"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[UserStatus]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Inputs[Data Conversion Input].Columns[CustomerAreaLocation]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="CustomerAreaLocation"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CustomerAreaLocation]" />
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output]"
+                      exclusionGroup="1"
+                      name="Data Conversion Output"
+                      synchronousInputId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Inputs[Data Conversion Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of DimOrganisationId]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of DimOrganisationId]"
+                          name="Copy of DimOrganisationId"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the input column used as the source of data for the conversion."
+                              name="SourceInputColumnLineageID">#{Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationId]}</property>
+                            <property
+                              dataType="System.Boolean"
+                              description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                              name="FastParse">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of CIS_CustomerID]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="100"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of CIS_CustomerID]"
+                          name="Copy of CIS_CustomerID"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the input column used as the source of data for the conversion."
+                              name="SourceInputColumnLineageID">#{Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CIS_CustomerID]}</property>
+                            <property
+                              dataType="System.Boolean"
+                              description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                              name="FastParse">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Code]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="100"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Code]"
+                          name="Copy of Code"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the input column used as the source of data for the conversion."
+                              name="SourceInputColumnLineageID">#{Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[Code]}</property>
+                            <property
+                              dataType="System.Boolean"
+                              description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                              name="FastParse">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of UserStatus]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of UserStatus]"
+                          name="Copy of UserStatus"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the input column used as the source of data for the conversion."
+                              name="SourceInputColumnLineageID">#{Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[UserStatus]}</property>
+                            <property
+                              dataType="System.Boolean"
+                              description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                              name="FastParse">false</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of CustomerAreaLocation]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="255"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of CustomerAreaLocation]"
+                          name="Copy of CustomerAreaLocation"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.Int32"
+                              description="Specifies the input column used as the source of data for the conversion."
+                              name="SourceInputColumnLineageID">#{Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CustomerAreaLocation]}</property>
+                            <property
+                              dataType="System.Boolean"
+                              description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                              name="FastParse">false</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Data Conversion Error Output"
+                      synchronousInputId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Inputs[Data Conversion Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Data to Working table\DataFlow Task\Derived Column"
+                  componentClassID="Microsoft.DerivedColumn"
+                  contactInfo="Derived Column;Microsoft Corporation; Microsoft SqlServer v10; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Updates column values using expressions"
+                  localeId="1033"
+                  name="Derived Column"
+                  usesDispositions="true">
+                  <inputs>
+                    <input
+                      refId="Package\Load Data to Working table\DataFlow Task\Derived Column.Inputs[Derived Column Input]"
+                      description="Input to the Derived Column Transformation"
+                      name="Derived Column Input">
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output]"
+                      description="Default Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      name="Derived Column Output"
+                      synchronousInputId="Package\Load Data to Working table\DataFlow Task\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[BusinessDate]"
+                          dataType="date"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[BusinessDate]"
+                          name="BusinessDate"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::C_Reporting_Date]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::C_Reporting_Date]</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          length="3"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]"
+                          name="OrganisationCode"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::C_Organisation]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::C_Organisation]</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[SourceId]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[SourceId]"
+                          name="SourceId"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">1</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">1</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationId]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          length="1"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationId]"
+                          name="DimOrganisationId"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::OrganisationId]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::OrganisationId]</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Error Output]"
+                      description="Error Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Derived Column Error Output"
+                      synchronousInputId="Package\Load Data to Working table\DataFlow Task\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SqlServer v10; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  localeId="1033"
+                  name="Inserting the Working table 1"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[Working].[tblDimCustomer]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">ROWS_PER_BATCH = 100000</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">1000083647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[SFM_DAL_CLO]"
+                      connectionManagerRefId="Package.ConnectionManagers[SFM_DAL_CLO]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[BusinessDate]"
+                          cachedDataType="wstr"
+                          cachedLength="10"
+                          cachedName="BusinessDate"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[RowStartDate]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[BusinessDate]"
+                          name="BusinessDate" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[OrganisationCode]"
+                          cachedDataType="wstr"
+                          cachedLength="2"
+                          cachedName="OrganisationCode"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[OrganisationCode]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[DataLineageId]"
+                          cachedDataType="guid"
+                          cachedName="DataLineageId"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[DataLineageId]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[DataLineageId]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[SourceId]"
+                          cachedDataType="i4"
+                          cachedName="SourceId"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[SourceId]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output].Columns[SourceId]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[Copy of Code]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="Copy of Code"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[Code]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Code]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[Copy of CIS_CustomerID]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="Copy of CIS_CustomerID"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[CIS_CustomerId]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of CIS_CustomerID]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[AgeBucket]"
+                          cachedDataType="wstr"
+                          cachedLength="5"
+                          cachedName="AgeBucket"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[AgeBucket]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[AgeBucket]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[UserLevel]"
+                          cachedDataType="wstr"
+                          cachedLength="5"
+                          cachedName="UserLevel"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[UserLevel]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[UserLevel]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[CreditRating]"
+                          cachedDataType="wstr"
+                          cachedLength="20"
+                          cachedName="CreditRating"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[CreditRating]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CreditRating]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[CreditLimit]"
+                          cachedDataType="wstr"
+                          cachedLength="20"
+                          cachedName="CreditLimit"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[CreditLimit]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CreditLimit]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[Copy of DimOrganisationId]"
+                          cachedDataType="i4"
+                          cachedName="Copy of DimOrganisationId"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[DimOrganisationID]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of DimOrganisationId]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[Copy of UserStatus]"
+                          cachedDataType="i4"
+                          cachedName="Copy of UserStatus"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[UserStatus]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of UserStatus]" />
+                        <inputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].Columns[Copy of CustomerAreaLocation]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="Copy of CustomerAreaLocation"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[Address]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of CustomerAreaLocation]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[DimCustomerID]"
+                          dataType="i4"
+                          name="DimCustomerID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[Code]"
+                          dataType="wstr"
+                          length="100"
+                          name="Code" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[Name]"
+                          dataType="wstr"
+                          length="255"
+                          name="Name" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[RowIsCurrent]"
+                          dataType="wstr"
+                          length="1"
+                          name="RowIsCurrent" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[RowStartDate]"
+                          dataType="dbTimeStamp"
+                          name="RowStartDate" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[RowEndDate]"
+                          dataType="dbTimeStamp"
+                          name="RowEndDate" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[DataLineageId]"
+                          dataType="guid"
+                          name="DataLineageId" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[SourceId]"
+                          dataType="i4"
+                          name="SourceId" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[OrganisationCode]"
+                          dataType="wstr"
+                          length="50"
+                          name="OrganisationCode" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[OrganisationType]"
+                          dataType="wstr"
+                          length="255"
+                          name="OrganisationType" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[LegalEntityType]"
+                          dataType="wstr"
+                          length="255"
+                          name="LegalEntityType" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[CIS_CustomerId]"
+                          dataType="wstr"
+                          length="100"
+                          name="CIS_CustomerId" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[DocumentType]"
+                          dataType="wstr"
+                          length="50"
+                          name="DocumentType" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[DocumentNo]"
+                          dataType="wstr"
+                          length="50"
+                          name="DocumentNo" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[Suburb]"
+                          dataType="wstr"
+                          length="255"
+                          name="Suburb" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[Address]"
+                          dataType="wstr"
+                          length="255"
+                          name="Address" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[BusinessSizeCodeMIIT]"
+                          dataType="wstr"
+                          length="50"
+                          name="BusinessSizeCodeMIIT" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[BusinessSizeCodeAD]"
+                          dataType="wstr"
+                          length="50"
+                          name="BusinessSizeCodeAD" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[CorporationIndicator]"
+                          dataType="wstr"
+                          length="10"
+                          name="CorporationIndicator" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[GovFundingIndicator]"
+                          dataType="wstr"
+                          length="10"
+                          name="GovFundingIndicator" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[LGYSIndicator]"
+                          dataType="wstr"
+                          length="10"
+                          name="LGYSIndicator" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[BankDepartment]"
+                          dataType="wstr"
+                          length="50"
+                          name="BankDepartment" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[CustomerSector]"
+                          dataType="wstr"
+                          length="255"
+                          name="CustomerSector" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[CustomerSector1]"
+                          dataType="wstr"
+                          length="255"
+                          name="CustomerSector1" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[CustomerSector2]"
+                          dataType="wstr"
+                          length="255"
+                          name="CustomerSector2" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[CustomerSector3]"
+                          dataType="wstr"
+                          length="255"
+                          name="CustomerSector3" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[DateCreated]"
+                          dataType="dbTimeStamp"
+                          name="DateCreated" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[HistoricalDaysInArrears]"
+                          dataType="i4"
+                          name="HistoricalDaysInArrears" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[MaxDaysInArrears]"
+                          dataType="i4"
+                          name="MaxDaysInArrears" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[AgeBucket]"
+                          dataType="wstr"
+                          length="10"
+                          name="AgeBucket" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[UserLevel]"
+                          dataType="wstr"
+                          length="10"
+                          name="UserLevel" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[CreditRating]"
+                          dataType="wstr"
+                          length="10"
+                          name="CreditRating" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[CreditLimit]"
+                          dataType="wstr"
+                          length="10"
+                          name="CreditLimit" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[TimesInArrears]"
+                          dataType="i4"
+                          name="TimesInArrears" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[DimOrganisationID]"
+                          dataType="i4"
+                          name="DimOrganisationID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[MaritalStatus]"
+                          dataType="wstr"
+                          length="50"
+                          name="MaritalStatus" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[Education]"
+                          dataType="wstr"
+                          length="50"
+                          name="Education" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[MonthlyIncome]"
+                          dataType="wstr"
+                          length="255"
+                          name="MonthlyIncome" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[BorrowerType]"
+                          dataType="wstr"
+                          length="50"
+                          name="BorrowerType" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[CreditScore]"
+                          dataType="wstr"
+                          length="50"
+                          name="CreditScore" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input].ExternalColumns[UserStatus]"
+                          dataType="i4"
+                          name="UserStatus" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Data to Working table\DataFlow Task\Row Count - Source"
+                  componentClassID="Microsoft.RowCount"
+                  contactInfo="Row Count;Microsoft Corporation;Microsoft SqlServer v9; (C) 2005 Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Counts the rows in a dataset."
+                  localeId="1033"
+                  name="Row Count - Source">
+                  <properties>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable to hold the row count."
+                      name="VariableName">User::V_Rowcount_Source</property>
+                  </properties>
+                  <inputs>
+                    <input
+                      refId="Package\Load Data to Working table\DataFlow Task\Row Count - Source.Inputs[Row Count Input 1]"
+                      hasSideEffects="true"
+                      name="Row Count Input 1">
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Load Data to Working table\DataFlow Task\Row Count - Source.Outputs[Row Count Output 1]"
+                      name="Row Count Output 1"
+                      synchronousInputId="Package\Load Data to Working table\DataFlow Task\Row Count - Source.Inputs[Row Count Input 1]">
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SqlServer v10; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                  description="OLE DB Source"
+                  name="tblCustomer Source"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable">User::V_GetDimCustomerStatement</property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">exec [dbo].[usp_GetDimCustomer_ConsumerLoan]  ?</property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable">User::V_GetDimCustomerStatement</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.String"
+                      description="The mappings between the parameters in the SQL command and variables."
+                      name="ParameterMapping">"@ReportingDate:Input",{D2627775-CFE7-4903-B40A-0650534D7E67};</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[SFM_STAGING_CLO]"
+                      connectionManagerRefId="Package.ConnectionManagers[SFM_STAGING_CLO]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output]"
+                      name="OLE DB Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[DataLineageId]"
+                          dataType="guid"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[DataLineageId]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[DataLineageId]"
+                          name="DataLineageId"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[AgeBucket]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[AgeBucket]"
+                          length="5"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[AgeBucket]"
+                          name="AgeBucket"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[UserLevel]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[UserLevel]"
+                          length="5"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[UserLevel]"
+                          name="UserLevel"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CreditRating]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[CreditRating]"
+                          length="20"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CreditRating]"
+                          name="CreditRating"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CreditLimit]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[CreditLimit]"
+                          length="20"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CreditLimit]"
+                          name="CreditLimit"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CustomerAreaLocation]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[CustomerAreaLocation]"
+                          length="255"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CustomerAreaLocation]"
+                          name="CustomerAreaLocation"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CIS_CustomerID]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[CIS_CustomerID]"
+                          length="100"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[CIS_CustomerID]"
+                          name="CIS_CustomerID"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[Code]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[Code]"
+                          length="100"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[Code]"
+                          name="Code"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[UserStatus]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[UserStatus]"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].Columns[UserStatus]"
+                          name="UserStatus"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[Code]"
+                          dataType="wstr"
+                          length="100"
+                          name="Code" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[CIS_CustomerID]"
+                          dataType="wstr"
+                          length="100"
+                          name="CIS_CustomerID" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[DataLineageId]"
+                          dataType="guid"
+                          name="DataLineageId" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[AgeBucket]"
+                          dataType="wstr"
+                          length="5"
+                          name="AgeBucket" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[UserLevel]"
+                          dataType="wstr"
+                          length="5"
+                          name="UserLevel" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[CreditRating]"
+                          dataType="wstr"
+                          length="20"
+                          name="CreditRating" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[CreditLimit]"
+                          dataType="wstr"
+                          length="20"
+                          name="CreditLimit" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[CustomerAreaLocation]"
+                          dataType="wstr"
+                          length="255"
+                          name="CustomerAreaLocation" />
+                        <externalMetadataColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output].ExternalColumns[UserStatus]"
+                          dataType="i4"
+                          name="UserStatus" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output]"
+                      isErrorOut="true"
+                      name="OLE DB Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[DataLineageId]"
+                          dataType="guid"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[DataLineageId]"
+                          name="DataLineageId" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[CustomerAreaLocation]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[CustomerAreaLocation]"
+                          name="CustomerAreaLocation" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[AgeBucket]"
+                          dataType="wstr"
+                          length="5"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[AgeBucket]"
+                          name="AgeBucket" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[UserLevel]"
+                          dataType="wstr"
+                          length="5"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[UserLevel]"
+                          name="UserLevel" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[CreditRating]"
+                          dataType="wstr"
+                          length="20"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[CreditRating]"
+                          name="CreditRating" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[CreditLimit]"
+                          dataType="wstr"
+                          length="20"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[CreditLimit]"
+                          name="CreditLimit" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[UserStatus]"
+                          dataType="i4"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[UserStatus]"
+                          name="UserStatus" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[CIS_CustomerID]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[CIS_CustomerID]"
+                          name="CIS_CustomerID" />
+                        <outputColumn
+                          refId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[Code]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Error Output].Columns[Code]"
+                          name="Code" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Load Data to Working table\DataFlow Task.Paths[Data Conversion Output]"
+                  endId="Package\Load Data to Working table\DataFlow Task\Row Count - Source.Inputs[Row Count Input 1]"
+                  name="Data Conversion Output"
+                  startId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Outputs[Data Conversion Output]" />
+                <path
+                  refId="Package\Load Data to Working table\DataFlow Task.Paths[Derived Column Output]"
+                  endId="Package\Load Data to Working table\DataFlow Task\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Derived Column Output"
+                  startId="Package\Load Data to Working table\DataFlow Task\Derived Column.Outputs[Derived Column Output]" />
+                <path
+                  refId="Package\Load Data to Working table\DataFlow Task.Paths[OLE DB Source Output]"
+                  endId="Package\Load Data to Working table\DataFlow Task\Derived Column.Inputs[Derived Column Input]"
+                  name="OLE DB Source Output"
+                  startId="Package\Load Data to Working table\DataFlow Task\tblCustomer Source.Outputs[OLE DB Source Output]" />
+                <path
+                  refId="Package\Load Data to Working table\DataFlow Task.Paths[Row Count Output 1]"
+                  endId="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1.Inputs[OLE DB Destination Input]"
+                  name="Row Count Output 1"
+                  startId="Package\Load Data to Working table\DataFlow Task\Row Count - Source.Outputs[Row Count Output 1]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{0EAEC10E-73B6-4856-A594-0518DB9DFB08}"
+      DTS:From="Package\Delete existing data"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Load Data to Working table" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{BBE2CA43-F9C2-4142-B1A0-7A5F623840C0}"
+      DTS:From="Package\Load Data to Working table"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\Load data to DimCustomer" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="236,44"
+          Id="Package\Delete existing data\Delete existing data from target table"
+          TopLeft="32.5,88.5" />
+        <NodeLayout
+          Size="208,42"
+          Id="Package\Delete existing data\Get OrganisationId by code"
+          TopLeft="69,10" />
+        <EdgeLayout
+          Id="Package\Delete existing data.PrecedenceConstraints[Constraint]"
+          TopLeft="173,52">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-22.5,36.5"
+              Start="0,0"
+              End="-22.5,29">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,14.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,14.25"
+                    Point2="0,18.25"
+                    Point3="-4,18.25" />
+                  <mssgle:LineSegment
+                    End="-18.5,18.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-18.5,18.25"
+                    Point2="-22.5,18.25"
+                    Point3="-22.5,22.25" />
+                  <mssgle:LineSegment
+                    End="-22.5,29" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.924528301886795"
+          IsExpanded="True"
+          PanelSize="336,188"
+          Size="336,232"
+          Id="Package\Delete existing data"
+          TopLeft="401.179245283019,23.5849056603774" />
+        <NodeLayout
+          Size="236,44"
+          Id="Package\Load data to DimCustomer\Load Data from working table to Dim table"
+          TopLeft="5.5,5.5" />
+        <ContainerLayout
+          HeaderHeight="43.924528301886795"
+          IsExpanded="True"
+          PanelSize="247,104"
+          Size="247,148"
+          Id="Package\Load data to DimCustomer"
+          TopLeft="246.509433962269,417.207547169811" />
+        <NodeLayout
+          Size="223,46"
+          Id="Package\Load Data to Working table\DataFlow Task"
+          TopLeft="5.5,5.5" />
+        <ContainerLayout
+          HeaderHeight="43.924528301886795"
+          IsExpanded="True"
+          PanelSize="234,106"
+          Size="234,150"
+          Id="Package\Load Data to Working table"
+          TopLeft="24,256" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="401.179245283019,139.584905660377">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-143.179245283019,167.748427672956"
+              Start="0,0"
+              End="-135.679245283019,167.748427672956">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="-81.0008712102356,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-81.0008712102356,0"
+                    Point2="-85.0008712102356,0"
+                    Point3="-85.0008712102356,4" />
+                  <mssgle:LineSegment
+                    End="-85.0008712102356,163.748427672956" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-85.0008712102356,163.748427672956"
+                    Point2="-85.0008712102356,167.748427672956"
+                    Point3="-89.0008712102356,167.748427672956" />
+                  <mssgle:LineSegment
+                    End="-135.679245283019,167.748427672956" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="258,331">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="112.009433962269,86.207547169811"
+              Start="0,0"
+              End="112.009433962269,78.707547169811">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="108.009433962269,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="108.009433962269,0"
+                    Point2="112.009433962269,0"
+                    Point3="112.009433962269,4" />
+                  <mssgle:LineSegment
+                    End="112.009433962269,78.707547169811" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Load Data to Working table\DataFlow Task">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="173,42"
+          Id="Package\Load Data to Working table\DataFlow Task\Row Count - Source"
+          TopLeft="27.5,311.5" />
+        <NodeLayout
+          Size="156,42"
+          Id="Package\Load Data to Working table\DataFlow Task\Data Conversion"
+          TopLeft="387,225" />
+        <NodeLayout
+          Size="217,42"
+          Id="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1"
+          TopLeft="5.50000000000004,413.5" />
+        <NodeLayout
+          Size="154,42"
+          Id="Package\Load Data to Working table\DataFlow Task\Derived Column"
+          TopLeft="244,67" />
+        <NodeLayout
+          Size="173,42"
+          Id="Package\Load Data to Working table\DataFlow Task\tblCustomer Source"
+          TopLeft="28.5,5.5" />
+        <EdgeLayout
+          Id="Package\Load Data to Working table\DataFlow Task.Paths[Row Count Output 1]"
+          TopLeft="114,353.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,60"
+              Start="0,0"
+              End="0,52.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,52.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Data to Working table\DataFlow Task.Paths[OLE DB Source Output]"
+          TopLeft="201.5,26.5">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="42.5,61.5"
+              Start="0,0"
+              End="35,61.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="17.25,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="17.25,0"
+                    Point2="21.25,0"
+                    Point3="21.25,4" />
+                  <mssgle:LineSegment
+                    End="21.25,57.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="21.25,57.5"
+                    Point2="21.25,61.5"
+                    Point3="25.25,61.5" />
+                  <mssgle:LineSegment
+                    End="35,61.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Data to Working table\DataFlow Task.Paths[Derived Column Output]"
+          TopLeft="321,109">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="144,116"
+              Start="0,0"
+              End="144,108.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,54" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,54"
+                    Point2="0,58"
+                    Point3="4,58" />
+                  <mssgle:LineSegment
+                    End="140,58" />
+                  <mssgle:CubicBezierSegment
+                    Point1="140,58"
+                    Point2="144,58"
+                    Point3="144,62" />
+                  <mssgle:LineSegment
+                    End="144,108.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Load Data to Working table\DataFlow Task.Paths[Data Conversion Output]"
+          TopLeft="465,267">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-351,44.5"
+              Start="0,0"
+              End="-351,37">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,18.25"
+                    Point2="0,22.25"
+                    Point3="-4,22.25" />
+                  <mssgle:LineSegment
+                    End="-347,22.25" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-347,22.25"
+                    Point2="-351,22.25"
+                    Point3="-351,26.25" />
+                  <mssgle:LineSegment
+                    End="-351,37" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Data to Working table\DataFlow Task\Inserting the Working table 1">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Load Data to Working table\DataFlow Task\tblCustomer Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

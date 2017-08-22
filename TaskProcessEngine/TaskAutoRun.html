@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>TaskAutoRun</title>
+    <meta http-equiv="X-UA-compatible" content="IE=10">
+    <script src="Scripts/jquery-1.7.2.min.js"></script>
+    <script src="viewTaskAutoRun.js"></script>
+    <style>
+        @charset "utf-8";
+        /*选中文本修饰*/
+        ::selection {
+            background: #333;
+            color: white;
+        }
+        /* 防止用户自定义背景颜色对网页的影响，添加让用户可以自定义字体 */
+        html {
+            color: #000;
+            -webkit-text-size-adjust: none;
+        }
+
+        body, div, dl, dt, dd, ul, ol, li, h1, h2, h3, h4, h5, h6, pre, code, form, fieldset, legend, input, textarea, p, blockquote, th, td, hr, button {
+            margin: 0;
+            padding: 0;
+        }
+
+        audio, canvas, video {
+            display: inline-block;
+            *display: inline;
+            *zoom: 1;
+        }
+
+        body, button, input, select, textarea {
+            font: 12px/1.5 'Microsoft Yahei',tahoma,arial,\5b8b\4f53;
+            outline: 0;
+            resize: none;
+        }
+
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        th {
+            text-align: inherit;
+        }
+        /* IE bug fixed: th 不继承 text-align*/
+        caption, th {
+            text-align: left;
+        }
+        /* 对齐是排版最重要的因素, 别让什么都居中 */
+        fieldset, img {
+            border: 0;
+        }
+
+        iframe {
+            display: block;
+        }
+        /* ie6 7 8(q) bug 显示为行内表现 */
+        del {
+            text-decoration: line-through;
+        }
+        /* 一致的 del 样式 */
+        address, caption, cite, code, dfn, em, th, var {
+            font-style: normal;
+            font-weight: 500;
+        }
+
+        ol, ul {
+            list-style: none;
+        }
+        /* 去掉列表前的标识, li 会继承 */
+        a {
+            text-decoration: none;
+            color: #353535;
+        }
+
+        .run-loading {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 2;
+            font-size: 10px;
+            background: rgba(255,255,255,.7);
+        }
+
+            .run-loading .loading {
+                position: absolute;
+                top: 50%;
+                margin-top: -15px;
+                left: 50%;
+                margin-left: -12px;
+            }
+
+            .run-loading .rect {
+                background-color: #87A7E2;
+                height: 30px;
+                width: 6px;
+                display: inline-block;
+                -webkit-animation: stretchdelay 1.2s infinite ease-in-out;
+                animation: stretchdelay 1.2s infinite ease-in-out;
+            }
+
+            .run-loading .rect2 {
+                -webkit-animation-delay: -1.1s;
+                animation-delay: -1.1s;
+            }
+
+            .run-loading .rect3 {
+                -webkit-animation-delay: -1.0s;
+                animation-delay: -1.0s;
+            }
+
+            .run-loading .rect4 {
+                -webkit-animation-delay: -0.9s;
+                animation-delay: -0.9s;
+            }
+
+        .run-body {
+            font-size: 12px;
+        }
+
+            .run-body .run-result {
+                padding-top: 5px;
+                margin-left: 10px;
+            }
+
+        @-webkit-keyframes stretchdelay {
+            0%, 40%, 100% {
+                -webkit-transform: scaleY(0.4);
+            }
+
+            20% {
+                -webkit-transform: scaleY(1.0);
+            }
+        }
+
+        @keyframes stretchdelay {
+            0%, 40%, 100% {
+                transform: scaleY(0.4);
+                -webkit-transform: scaleY(0.4);
+            }
+
+            20% {
+                transform: scaleY(1.0);
+                -webkit-transform: scaleY(1.0);
+            }
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            var runObj = new viewTaskAutoRun();
+            runObj.createSession();
+        });
+    </script>
+</head>
+
+<body>
+    <div id="run-task">
+        <!-- 加载效果 -->
+        <div class="run-loading" id="divLoading">
+            <div class="loading">
+                <div class="rect"></div>
+                <div class="rect rect2"></div>
+                <div class="rect rect3"></div>
+                <div class="rect rect4"></div>
+            </div>
+        </div>
+        <div class="run-body">
+            <div id="runResult" class="run-result">计算任务正在执行...</div>
+        </div>
+    </div>
+</body>
+</html>

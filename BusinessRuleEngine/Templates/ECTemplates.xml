@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ECTemplate>
+  <ECCategory Name="Customer">
+      <QueryEC Description="排除的数据模板" Sort="1">
+        Select  Distinct @DimPoolId as DimPoolId
+        , @DimECId as DimECId
+        , dc.DimCustomerID as DimCustomerID
+        , dc.$filedName$
+        FROM dbo.tblFactLoanCustomer flc
+        Inner Join dbo.tblDimCustomer dc
+        On dc.DimCustomerID = flc.DimCustomerID"
+        And flc.DimReportingDateId = @DimReportingDateId"
+        And flc.DimOrganisationID = @DimOrganisationID"
+      </QueryEC>
+      <QueryECResult Description="查询排除后的结果模板" Sort="1">
+        Select  fcec.DimPoolID
+        , fcec.DimECID
+        , fcec.DimCustomerID
+        , dc.[OrganisationCode]
+        , dc.[Name]
+        , dc.$filedName$
+        FROM  dbo.tblFactCustomerECResult fcec
+        Inner join  dbo.tblDimCustomer as dc
+        On dc.DimCustomerID = fcec.DimCustomerID
+        Where fcec.DimECId = @DimECId And fcec.DimPoolId = @DimPoolId
+      </QueryECResult>
+  </ECCategory>
+  <ECCategory Name="Product">
+      <QueryEC Description="排除的数据模板" Sort="1">
+        Select Distinct @DimPoolId as DimPoolId
+        , @DimECId as DimECId
+        , dl.DimLoanID as DimLoanID
+        , dl.$filedName$
+        FROM dbo.tblFactLoan as fl
+        Inner Join dbo.tblDimLoan as dl
+        On dl.DimLoanID = fl.DimLoanID
+        And fl.DimReportingDateId = @DimReportingDateId
+        And fl.DimOrganisationID = @DimOrganisationID
+      </QueryEC>
+      <QueryECResult Description="查询排除后的结果模板" Sort="1">
+        Select dsfl.DimLoanId
+        , dsfl.TrustID
+        , dsfl.AccountNo
+        , dsfl.ReportingDate
+        , dsdl.$filedName$
+        FROM dbo.tblFactLoanECResult flec
+        Inner join  dbo.tblDimLoan dsdl On dsdl.DimLoanId = flec.DimLoanId
+        Inner join dbo.tblFactLoan dsfl On dsfl.DimLoanId = flec.DimLoanId
+        And dsfl.DimOrganisationId = @DimOrganisationId
+        And dsfl.DimReportingDateId = @DimReportingDateId
+        Where flec.DimECId = @DimECId And flec.DimPoolId = @DimPoolId
+      </QueryECResult>
+  </ECCategory>
+</ECTemplate>

@@ -1,0 +1,87 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>专项事件</title>
+    <!--<link href="./TrustEvents/trustEvent.css" rel="stylesheet" />-->
+    <script src="./TrustEvents/TrustEventView.js"></script>
+    <style type="text/css">
+        @keyframes blink{from {background-color:#FFFF77;}  to{background-color:#ffffff;}}
+        @-webkit-keyframes blink {from {background-color:#FFFF77;}  to{background-color:#ffffff;}}
+        @-moz-keyframes blink {from {background-color:#FFFF77;}  to{background-color:#ffffff;}}
+        @-ms-keyframes blink {from {background-color:#FFFF77;}  to{background-color:#ffffff;}}
+        @-o-keyframes blink {from {background-color:#FFFF77;}  to{background-color:#ffffff;}}
+        .blink{
+            animation: blink 5s linear infinite;
+            -webkit-animation: blink 5s linear infinite;
+            -moz-animation: blink 5s linear infinite;
+            -ms-animation: blink 5s linear infinite;
+            -o-animation: blink 5s linear infinite;
+            background-color:#FFFF77;
+        }
+        .page .main{padding:10px 20px !important;}
+        .table-scroll{margin-top:20px;overflow:auto;}
+        .condition-checking-false{color:red !important;}
+    </style>
+</head>
+<body>
+<div>
+    <div class="main">
+    <div class="form-body">
+        <h3 class="h3"><span class="title">专项事件</span></h3>
+        <div class="table-scroll">
+            <table id="tbListView" class="lst-view-tb table">
+                <thead style="background-color: #EEE;">
+                    <tr>
+                        <th rowspan="2" width="220px">专项事件</th>
+                        <th colspan="4">自动检测</th>
+                        <th rowspan="2" style="text-align:right; padding-right:20px;">状态</th>
+                        <th rowspan="2" width="180px">触发时间</th>
+                    </tr>
+                    <tr>
+                        <th width="220px">触发机制</th>
+                        <th width="100px">当前值</th>
+                        <th width="100px">条件</th>
+                        <th width="100px">阈值</th>
+                    </tr>
+                    <tr class="list-view-tr-emptymsg">
+                        <td colspan="7">当前视图没有可显示记录</td>
+                    </tr>
+                </thead>
+                <tbody id="TrustEventList" class="lst-view-tbody" data-bind="foreach: TrustEventItem">
+                    <tr data-bind="css:{'blink': (!checkingResult()&&EventStatus()!=='Y')}">
+                        <td data-bind="text: EventDescription"></td>
+                        <td colspan="4">
+                            <table data-bind="foreach: triggers" style="width:100%; padding-bottom:3px;">
+                                <tr data-bind="css:{'condition-checking-false': (!checkingResult())}">
+                                    <td width="220px" data-bind="text: EventDescription"></td>
+                                    <td width="100px" data-bind="text: CurrentValue"></td>
+                                    <td width="100px" data-bind="text: Operator"></td>
+                                    <td width="100px" data-bind="text: Threshold"></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="text-align:right; padding-right:20px;">
+                            <input type="checkbox" data-bind="checked: EventStatus()=='Y', attr: {itemIndex: $index()}"
+                                   onchange="gsTrustEvent.StatusChanged(this)" />
+                        </td>
+                        <td>
+                            <input type="text" class="date-plugins form-control"
+                                   data-bind="value: StartDate, enable: EventStatus()==='Y', attr:{id: 'startDate_txt'+$index()}" />
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="7" style="border: none !important; text-align: right; padding-top: 30px;">
+                            <button type="button" class="btn btn-primary" onclick="gsTrustEvent.PostUpdates()" id="btnTrustEventUpdate" disabled="disabled">更新</button>
+                            <button type="button" class="btn btn-default" onclick="btnCancelClick()">取消</button>
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+ </div>
+</div>
+</body>
+</html>

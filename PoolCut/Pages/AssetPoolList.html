@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>资产池列表</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+
+    <link href="../Contents/style.css" rel="stylesheet" />
+    <link href="../Contents/pagerlist-style.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="main">
+        <div id="grid"></div>
+        <div id="divDataList" class="list-container"></div>
+    </div>
+
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../UIFrame/js/gs-admin-2.pages.js"></script>
+    <script src="../Scripts/jquery.datagrid.js"></script>
+    <script src="../Scripts/jquery.datagrid.options.js"></script>
+    <script src="../Scripts/jquery.cookie.js"></script>
+    <script src="../Scripts/common.js"></script>
+
+    <script src="../Scripts/Kendo/js/kendo.all.min.js"></script>
+    <script src="../Scripts/Kendo/js/kendo.culture.zh-CN.js"></script>
+    <script src="../Scripts/Kendo/js/kendo.messages.zh-CN.js"></script>
+    <link href="../Scripts/Kendo/styles/kendo.common-material.min.css" rel="stylesheet" />
+    <link href="../Scripts/Kendo/styles/kendo.material.min.css" rel="stylesheet" />
+    
+    <script src="../Scripts/App.Global.js"></script>
+    <script src="../Scripts/PoolCutCommon.js"></script>
+    <script src="AssetPoolList.js"></script>
+    <script src="../Scripts/kendoGridModel.js"></script>
+    <script src="../Scripts/roleOperate.js"></script>
+    <script src="AssetPoolKendoList.js"></script>
+    
+
+    <script>
+        
+        $(function () {
+            if (sessionStorage.PoolId) {
+                window.location.href = 'BasePoolContent.html?PoolId={0}&PoolName={1}'.format(sessionStorage.PoolId, sessionStorage.PoolName);
+            }
+           
+        });
+
+       
+    </script>
+</body>
+</html>

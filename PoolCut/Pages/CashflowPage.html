@@ -1,0 +1,175 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>现金流日历</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+
+    <link href="../Contents/style.css" rel="stylesheet" />
+    <link href="../Contents/pagerlist-style.css" rel="stylesheet" />
+    <link href="../Scripts/fullCalendar/fullcalendar.min.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="main">
+        <h3 id="step-title" class="h3">
+            <span data-tab="#view_calendar" class="title tab-switcher">日历视图</span>
+            <span data-tab="#view_chart" class="title tab-switcher inactive ">统计视图</span>
+        </h3>
+        <div>
+            <div id="view_calendar"></div>
+            <div id="view_chart"></div>
+        </div>
+        <div id="view_gridlist" class="list-container"></div>
+    </div>
+
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../UIFrame/js/gs-admin-2.pages.js"></script>
+    <script src="../Scripts/jquery.datagrid.js"></script>
+    <script src="../Scripts/jquery.datagrid.options.js"></script>
+    <script src="../Scripts/App.Global.js"></script>
+    <script src="../Scripts/PoolCutCommon.js"></script>
+    <script src="../Scripts/common.js"></script>
+    <script src="../Scripts/fullCalendar/moment.min.js"></script>
+    <script src="../Scripts/fullCalendar/fullcalendar.min.js"></script>
+    <script src="../Scripts/fullCalendar/zh-cn.js"></script>
+    <script src="../Scripts/highcharts.js"></script>
+    <script src="../Scripts/highcharts_exporting.js"></script>
+    <script>
+        $(function () {
+            var poolHeader = GSDialog.GetData();
+            if (!poolHeader || !poolHeader.PoolId) return;
+
+            $('.tab-switcher').click(function () {
+                var $this = $(this);
+                var $target = $($this.data('tab'));
+                $this.removeClass('inactive').siblings().addClass('inactive');
+                $target.show().siblings().hide();
+            });
+
+            /////均在对应池的数据库中
+            //日历、柱状图： dbo.usp_GetScheduleImutation PoolId
+            //  传递TrustId时：dbo.usp_GetScheduleImutationByTrustId TrustId
+            GetCalendarAndChartData(poolHeader.TargetSqlConnection, poolHeader.PoolId, function (data) {
+                var events = [];
+                $.each(data, function (i, v) {
+                    var principal = {};
+                    var interest = {};
+                    principal['start'] = v.StartDate;
+                    principal['title'] = '本金金额：{0}'.format(v.PrincipalAmount);
+                    interest['start'] =  v.StartDate;
+                    interest['title'] = '利息金额：{0}'.format(v.InterestAmount);
+                    events.push(principal);
+                    events.push(interest);
+                });
+
+                $('#view_calendar').fullCalendar(BuildCalendarSettings('#view_calendar', events));
+                bindChartView('#view_chart', data);
+                $('#view_chart').hide();
+            });
+
+            //日历试图点击某天事件列表：dbo.usp_CashDetailsByDateRange
+            //日历试图点击某天事件列表，传递TrustId：dbo.usp_CashDetailsByTrustIdAndDateRange
+        });
+
+        function GetCalendarAndChartData(connStr, poolId, fnCallback) {
+            var executeParam = {
+                SPName: 'dbo.usp_GetScheduleImutation', SQLParams: [
+                    { Name: 'PoolId', value: poolId, DBType: 'int' }
+                ]
+            };
+
+            var sContent = encodeURIComponent(JSON.stringify(executeParam));
+            var serviceUrl = GlobalVariable.PoolCutServiceURL
+                + 'CommonGetWithConnStr?connStr={0}&exeParams={1}'.format(encodeURIComponent(connStr), sContent);
+            CallWCFSvc(serviceUrl, true, 'GET', fnCallback);
+        }
+
+        function BuildCalendarSettings(selector, data) {
+            var calendarSettings = {
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,basicWeek,basicDay'
+                },
+                editable: false,
+                timezone: 'local',
+                selectable: true,
+                eventOrder: 'start',
+                displayEventTime: false,
+                eventLimit: true,
+                events: data,
+                dayClick: function (date, jsEvent, view) {
+                    $(selector).fullCalendar('changeView', 'basicDay');
+                    $(selector).fullCalendar('gotoDate', date);
+                }
+            };
+
+            return calendarSettings;
+        }
+
+        function bindChartView(selector, data) {
+            var categories = data.map(function (v) { return  getStringDate(v.EndDate).dateFormat('yyyy-MM-dd'); });
+            var series = [{ name: '利息', data: data.map(function (v) { return v.InterestAmount; }) },
+                { name: '本金', data: data.map(function (v) { return v.PrincipalAmount; }) }];
+
+            var titleText = "现金流图";
+            var yAxisTitle = "本金及利息";
+
+            $(selector).highcharts({
+                chart: { type: 'column' },
+                title: { text: titleText },
+                xAxis: { categories: categories },
+                yAxis: {
+                    min: 0, title: { text: yAxisTitle },
+                    stackLabels: {
+                        enabled: false,
+                        style: { fontWeight: 'bold', color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray' }
+                    }
+                },
+                legend: {
+                    align: 'right', x: -25, y: -3, verticalAlign: 'top',
+                    floating: true, borderWidth: 1, borderColor: '#CCC', shadow: false,
+                    backgroundColor: (Highcharts.theme && Highcharts.theme.background2) || 'white'
+                },
+                tooltip: {
+                    headerFormat: '<b>{point.x}</b><br/>',
+                    pointFormat: '{series.name}: {point.y:.0f}<br/>共计: {point.stackTotal:.0f}'
+                },
+                plotOptions: {
+                    column: {
+                        stacking: 'normal',
+                        dataLabels: {
+                            enabled: false, style: { textShadow: '0 0 3px black' },
+                            color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+                        }
+                    }
+                },
+                series: series
+            });
+        }
+        if (!('map' in Array.prototype)) {
+            Array.prototype.map = function (mapper, that /*opt*/) {
+                var other = new Array(this.length);
+                for (var i = 0, n = this.length; i < n; i++)
+                    if (i in this)
+                        other[i] = mapper.call(that, this[i], i, this);
+                return other;
+            };
+        }
+        Highcharts.theme = {
+            colors: ["#7cb5ec", "#f7a35c", "#aaeeee", "#7798BF", "#ff0066", "#90ee7e", "#eeaaee", "#55BF3B", "#DF5353", "#7798BF", "#aaeeee"],
+            chart: { backgroundColor: null, style: { fontFamily: "Dosis, sans-serif" } },
+            credits: { enabled: false },
+            title: { style: { fontSize: '16px', fontWeight: 'bold', textTransform: 'uppercase' } },
+            tooltip: { borderWidth: 0, backgroundColor: 'rgba(219,219,216,0.8)', shadow: false },
+            legend: { itemStyle: { fontWeight: 'bold', fontSize: '13px' } },
+            xAxis: { gridLineWidth: 1, labels: { style: { fontSize: '12px' } } },
+            yAxis: { minorTickInterval: 'auto', title: { style: { textTransform: 'uppercase' } }, labels: { style: { fontSize: '12px' } } },
+            plotOptions: { candlestick: { lineColor: '#404048' } },
+            background2: '#F0F0EA'
+        };
+        Highcharts.setOptions(Highcharts.theme);
+    </script>
+</body>
+</html>

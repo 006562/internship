@@ -1,0 +1,80 @@
+[2017-08-18 13:46:12,692] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 6a2d89dc-c7f7-489e-98f4-902ce471102b failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentNullException: Value cannot be null.
+Parameter name: Can not find [DefaultCurve] from Session Context Array.
+The given key was not present in the dictionary.
+   at DADP.CashFlowStudioEntity.CashFlowInputProvider.InitSessionContextArrayFromMemory(String sSessionId, String sConnectionString, String sAppDomain, Dictionary`2& sessionContext, Dictionary`2& sessionContextArray)
+   --- End of inner exception stack trace ---
+   at BL.TaskProcessService.CashFlowProvider.RunManagedMethodByPath(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.CashflowService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\CashflowService.svc.cs:line 64
+[2017-08-18 16:27:08,597] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 277157c1-3992-4154-ba41-a0b275034067 failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Collections.Generic.KeyNotFoundException: The given key was not present in the dictionary.
+   at System.ThrowHelper.ThrowKeyNotFoundException()
+   at System.Collections.Generic.Dictionary`2.get_Item(TKey key)
+   at EquationProvider.CashFlowEquationProvider.EC_TrustPlanAccount_AssetPoolBalance(Int32 iCurrentPosition, String sCashFlowName, Dictionary`2& sessionContext, Dictionary`2& sessionContextArray)
+   at EquationProvider.CashFlowEquationProvider.ExecuteAllInLoop(Int32 CurrentPosition, Dictionary`2& sessionContext, Dictionary`2& sessionContextArray)
+   at EquationProvider.CashFlowEquationProvider.ExecuteAll(Int32 startPosition, Int32 endPosition, Dictionary`2& sessionContext, Dictionary`2& sessionContextArray)
+   --- End of inner exception stack trace ---
+   at BL.TaskProcessService.CashFlowProvider.RunManagedMethodByPath(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.CashflowService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\CashflowService.svc.cs:line 64
+[2017-08-18 16:29:40,750] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 2d352430-2699-497c-a83b-041079754c2e failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Exception: Source=Data Flow Task; Error Code=-1071607766; Error Description=The "Derived Column" failed because truncation occurred, and the truncation row disposition on "Derived Column.Outputs[Derived Column Output].Columns[SceneCode]" specifies failure on truncation. A truncation error occurred on the specified object of the specified component.
+
+Source=Data Flow Task; Error Code=-1073450974; Error Description=SSIS Error Code DTS_E_PROCESSINPUTFAILED.  The ProcessInput method on component "Derived Column" (41) failed with error code 0xC020902A while processing input "Derived Column Input" (42). The identified component returned an error from the ProcessInput method. The error is specific to the component, but the error is fatal and will cause the Data Flow task to stop running.  There may be error messages posted before this with more information about the failure.
+
+
+   at BL.TaskProcessService.OperationProvider.RunSSIS(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-18 16:32:26,096] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for e20a2f56-1c51-47f7-81cc-1294a47d6180 failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Exception: Source=Data Flow Task; Error Code=-1071607766; Error Description=The "Derived Column" failed because truncation occurred, and the truncation row disposition on "Derived Column.Outputs[Derived Column Output].Columns[SceneCode]" specifies failure on truncation. A truncation error occurred on the specified object of the specified component.
+
+Source=Data Flow Task; Error Code=-1073450974; Error Description=SSIS Error Code DTS_E_PROCESSINPUTFAILED.  The ProcessInput method on component "Derived Column" (41) failed with error code 0xC020902A while processing input "Derived Column Input" (42). The identified component returned an error from the ProcessInput method. The error is specific to the component, but the error is fatal and will cause the Data Flow task to stop running.  There may be error messages posted before this with more information about the failure.
+
+
+   at BL.TaskProcessService.OperationProvider.RunSSIS(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-18 20:47:05,821] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 3b309f1c-3124-4df3-b7de-572ebcc0b924 failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.IO.DirectoryNotFoundException: Could not find a part of the path 'E:\TSSWCFServices\PoolCut\ConsumerLoan\Document\0'.
+   at System.IO.__Error.WinIOError(Int32 errorCode, String maybeFullPath)
+   at System.IO.FileSystemEnumerableIterator`1.CommonInit()
+   at System.IO.DirectoryInfo.InternalGetFiles(String searchPattern, SearchOption searchOption)
+   at DocxCreation.DocxEngine.ProcessByFolder(String SessionId, String ServerName, String DBName, String TemplateFolder, String DestinationFolder, String mdxConnectionStringBase, String mdxConnectionStringJob, String ECPassNo, String TrustId, String PoolId, DirectoryInfo TheFolder, String DestFolder)
+   at DocxCreation.DocxEngine.NewBatchDocx(String SessionId, String ServerName, String DBName, String TemplateFolder, String DestinationFolder, String ZipName, String mdxConnectionStringBase, String mdxConnectionStringJob, String ECPassNo, String TrustId, String PoolId)
+   --- End of inner exception stack trace ---
+   at BL.TaskProcessService.OperationProvider.RunManagedMethod(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+[2017-08-18 21:42:30,824] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for ed42e81b-32a1-4153-9a00-68479596df0c failed
+System.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - The remote computer refused the network connection.) ---> System.ComponentModel.Win32Exception (0x80004005): The remote computer refused the network connection
+   at Securitisation.Utilities.SQL.UtilSqlRunQueryADONET.RunNonQueryADONETByQueryString(String sQueryString, List`1 glParameters, String sConnectionString)
+   at DADP.TaskEntity.SessionHelper.UpdateSessionStatus(Guid sessionId)
+   at BL.TaskProcessService.SessionProcessor.UpdateSessionStatus(Guid sessionId)
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:1225,State:0,Class:20
+[2017-08-18 21:42:30,824] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 70d86699-be22-426a-8ba7-2db5fe7d1020 failed
+System.Data.SqlClient.SqlException (0x80131904): A network-related or instance-specific error occurred while establishing a connection to SQL Server. The server was not found or was not accessible. Verify that the instance name is correct and that SQL Server is configured to allow remote connections. (provider: TCP Provider, error: 0 - The remote computer refused the network connection.) ---> System.ComponentModel.Win32Exception (0x80004005): The remote computer refused the network connection
+   at Securitisation.Utilities.SQL.UtilSqlRunQueryADONET.RunNonQueryADONETByQueryString(String sQueryString, List`1 glParameters, String sConnectionString)
+   at DADP.TaskEntity.SessionHelper.UpdateSessionStatus(Guid sessionId)
+   at BL.TaskProcessService.SessionProcessor.UpdateSessionStatus(Guid sessionId)
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63
+ClientConnectionId:00000000-0000-0000-0000-000000000000
+Error Number:1225,State:0,Class:20
+[2017-08-18 21:52:12,312] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 066a1b0b-91c0-4784-b393-e89121011e99 failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.Data.OleDb.OleDbException: External table is not in the expected format.
+   at AssetTemplate.AssetTemplateVerificator.CreateWorkingSchema(String excelFilePath, String connectionString, String tableName, String schema)
+   --- End of inner exception stack trace ---
+   at BL.TaskProcessService.OperationProvider.RunManagedMethod(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63

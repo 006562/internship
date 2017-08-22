@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>底部资产管理</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link href="css/style.css" rel="stylesheet" />
+    <script src="js/jquery-1.12.1.min.js"></script>
+    <script src="js/jquery.datagrid.js"></script>
+    <script src="js/jquery.datagrid.options.js"></script>
+
+    <script src="../TrustWizard/Scripts/common.js"></script>
+    <script src="js/PagerList.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            var trustId = getQueryString('trustId');
+            PagerListModule.Init(listCategory.AssetDetails, 'usp_GetAssetDetailsWithPager', trustId,
+                GlobalVariable.DataProcessServiceUrl + 'CommonExecuteGet?',
+                '#divDataList');
+            PagerListModule.DataBind(function (haveData) { });
+
+            $('#btnReset').click(function () {
+                $('.list-filters .filter').val('');
+                PagerListModule.Filter({});
+            });
+            $('#btnSearch').click(function () {
+                var filterWhere = '';
+                $('.list-filters .filter').each(function () {
+                    var $this = $(this);
+                    var value = $this.val();
+                    if (value.length < 1) { return true; }
+
+                    var param = $this.attr('name');
+                    if ($this.hasClass('like')) {
+                        filterWhere += ' and ' + param + ' like \'%' + value + '%\'';
+                    } else {
+                        filterWhere += ' and ' + param + ' = \'' + value + '\'';
+                    }
+                });
+                PagerListModule.Filter({ 'where': filterWhere });
+            });
+
+        });
+    </script>
+</head>
+<body>
+    <div class="body-container">
+        <h3 class="content-title">底部资产管理</h3>
+        <div class="list-filters">            
+            <ul>
+                <li><span class="filter-name">项目编号：</span>
+                    <input type="text" class="filter like" name="AccountNo" />
+                </li>
+                <li><span class="filter-name">客户名称：</span>
+                    <input type="text" class="filter like" name="CustomerName" />
+                </li>
+                <li>
+                    <span class="filter-name">是否逾期：</span>
+                    <select class="filter eq" name="IsTopUp">
+                        <option value="">所有</option>
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </li>
+                <li>
+                    <span class="filter-name">是否早偿：</span>
+                    <select class="filter eq" name="IsPrepaid">
+                        <option value="">所有</option>
+                        <option value="1">是</option>
+                        <option value="0">否</option>
+                    </select>
+                </li>
+            </ul>
+            <button type="reset" class="btn-search" id="btnReset">重置</button>
+            <button type="button" class="btn-search" id="btnSearch">检索</button>
+        </div>
+        <div id="divDataList" class="list-container"></div>
+    </div>
+</body>
+</html>

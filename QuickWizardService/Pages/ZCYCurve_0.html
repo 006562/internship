@@ -1,0 +1,208 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <title>page1</title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/knockout-3.4.0.js"></script>
+    <script src="../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../Scripts/calendar.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <script src="../Scripts/magic/magic.core.js"></script>
+    <link href="../Scripts/magic/magic.dialog.css" rel="stylesheet" />
+    <script src="../Scripts/magic/magic.dialog.js"></script>
+	<script src="../Scripts/wcfProxy.js"></script>
+	<script src="../Scripts/highcharts.js" type="text/javascript"></script>
+	<script src="../Scripts/viewFormCashFlowResult.js" type="text/javascript"></script>
+    <link href="../Scripts/jquery-ui.css" rel="stylesheet" />
+	<link href="../Scripts/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+	<script src="../Scripts/zTree/js/jquery.ztree.core.min.js"></script>
+    <script src="../Scripts/zTree/js/jquery.ztree.excheck.min.js"></script>
+    <script src="../Scripts/zTree/js/jquery.ztree.exedit.min.js"></script>
+	    <style type="text/css">
+table{text-align:center;margin:0 auto}
+table.imagetable {
+	font-family: verdana,arial,sans-serif;
+	font-size:15px;
+	color:#333333;
+	border-width: 1px;
+	border-color: #999999;
+	border-collapse: collapse;
+}
+table.imagetable th {
+	background:#b5cfd2;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #999999;
+}
+table.imagetable td {
+	background:#dcddc0;
+	border-width: 1px;
+	padding: 8px;
+	border-style: solid;
+	border-color: #999999;
+}
+h2{font-size:20px;color:999999}
+h3{font-size:18px;color:999999}
+/*content h1{text-align：center;margin:0 auto;position:absolute;}*/
+
+.fileUpload {
+			position: relative;
+			overflow: hidden;
+			margin: 0px;
+		}
+		.fileUpload input.upload {
+			position: absolute;
+			top: 0;
+			right: 0;
+			margin: 0;
+			padding: 0;
+			font-size: 20px;
+			cursor: pointer;
+			opacity: 0;
+			filter: alpha(opacity=0);
+		}
+
+
+
+</style>
+	<script type="text/javascript">
+	
+	var sessionID, taskCode;
+    var clientName = 'TaskProcess';
+    var IndicatorAppDomain = 'Task';
+    function InitParams() {
+    }
+    var IsSilverlightInitialized = false;
+    function InitParams() {
+        if (!IsSilverlightInitialized) {
+            IsSilverlightInitialized = true;
+        }
+        document.getElementById("TaskProcessCtl").Content.SL_Agent.InitParams(sessionID, IndicatorAppDomain, taskCode, clientName);
+		//alert(sessionId);
+    }
+
+    function PopupTaskProcessIndicator() {
+        $("#taskIndicatorArea").dialog({
+            modal: true,
+            dialogClass: "TaskProcessDialogClass",
+            closeText: "",
+            //closeOnEscape:false,
+            height: 485,
+            width: 470,
+            close: function (event, ui) { }, // refresh report repository while close the task process screen.
+            //open: function (event, ui) { $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide(); },
+            title: "任务处理"
+        });
+    }
+	
+	
+	</script>
+	  
+</head>
+<body>
+ <!--    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">configuration loading...</p>
+    </div> -->
+	<div id="taskIndicatorArea" style="display:none;width:440px; height:440px;">
+        <object id="TaskProcessCtl" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="display:block" width="100%" height="440px" class="ms-dlgDisable">
+            <param name="source" value="../ClientBin/UI.TaskProcessIndicator.xap" />
+            <param name="enablehtmlaccess" value="True" />
+        </object>
+    </div>
+		<HR />
+        <div class="form-save" style="margin-left:10px;">
+			<div style="float:left;">
+				<input type="button" id="loadSHIBOR" class="btn btn-primary" onclick="loadSHIBOR()" style="width:150px" data-bind="value:Language.BtnLoadSHIBOR" />
+				<button  id="viewHistoricalSHIBOR" class="btn btn-primary" onclick="viewHistoricalSHIBOR()" style="width:200px">
+					<span data-bind="text:Language.BtnViewHistoricalSHIBOR"></span></button>
+				<button  id="viewSHIBOR" class="btn btn-primary" onclick="viewCurves()" style="width:150px">
+					<span data-bind="text:Language.BtnViewSHIBOR"></span></button>
+			</div>
+			<div style="float:right;margin-right:10px;">
+				<input type="button" class="btn btn-primary" id="addLeaf" style="width:100%;margin-right:5%;" onclick="return false;" data-bind="value:Language.BtnUploadFile" /> 
+			</div>
+			<div class="fileUpload btn btn-primary" style="float:right;margin-right:10px;">
+				<span data-bind="text:Language.BtnChooseFile"></span><input id="file" type="file" class="upload" style="float:left;width:70%;"/>
+			</div>
+			<div style="display:none;">
+				<ul id="treeDemo" class="ztree"></ul>
+			</div>
+        </div>
+		
+        <div class="form-save" style="margin-left:10px;clear:both;">
+			<div style="float:left;">
+				<button  id="loadCHINABOND" class="btn btn-primary" onclick="loadCHINABOND()" style="width:150px">
+					<span data-bind="text:Language.BtnLoadChinaBond"></span></button>
+				<button  id="viewHistoricalCHINABOND" class="btn btn-primary" onclick="viewHistoricalCHINABOND()" style="width:200px">
+					<span data-bind="text:Language.BtnViewHistoricalChinaBond"></span></button>
+				<button  id="viewCHINABOND" class="btn btn-primary" onclick="viewCurves()" style="width:150px">
+					<span data-bind="text:Language.BtnViewChinaBond"></span>
+				</button>
+			</div>
+			<div style="float:right;margin-right:10px;">
+				<input type="button" class="btn btn-primary" id="addLeafCHINABOND" style="width:100%;margin-right:5%;" onclick="return false;" data-bind="value:Language.BtnUploadFile" />
+			</div>
+			<div class="fileUpload btn btn-primary" style="float:right;margin-right:10px;">
+				<span data-bind="text:Language.BtnChooseFile"></span><input id="fileCHINABOND" type="file" class="upload" style="float:left;width:70%;"/>
+			</div>
+			<div style="display:none;">
+				<ul id="treeDemo" class="ztree"></ul>
+			</div>
+        </div>
+
+		<div class="form-save" style="margin-left:10px;clear:both;">
+			<div style="float:left;">
+				<button  id="loadCHINABOND_ABS" class="btn btn-primary" onclick="loadCHINABOND_ABS()" style="width:150px">
+					<span data-bind="text:Language.BtnLoadABS"></span>
+				</button>
+				<button  id="viewHistoricalCHINABOND_ABS" class="btn btn-primary" onclick="viewHistoricalCHINABOND_ABS()" style="width:200px">
+					<span data-bind="text:Language.BtnViewHistoricalABS"></span>
+				</button>
+				<button  id="viewCHINABOND_ABS" class="btn btn-primary" onclick="viewCurves()" style="width:150px">
+					<span data-bind="text:Language.BtnViewABS"></span>
+				</button>
+			</div>
+			<div style="float:right;margin-right:10px;">
+				<input type="button" class="btn btn-primary" id="addLeafCHINABOND_ABS" style="width:100%;margin-right:5%;" onclick="return false;" data-bind="value:Language.BtnUploadFile" />
+			</div>
+			<div class="fileUpload btn btn-primary" style="float:right;margin-right:10px;">
+				<span data-bind="text:Language.BtnChooseFile"></span><input id="fileCHINABOND_ABS" type="file" class="upload" style="float:left;width:70%;"/>
+			</div>
+			<div style="display:none;">
+				<ul id="treeDemo" class="ztree"></ul>
+			</div>
+        </div>
+		
+		<br /><br />
+		<HR />
+		
+		<!--<div id="viewGrid" style="width:100%;margin:0;padding:0;text-align:left;overflow:auto">
+            <div id='divArrayPannel'></div>
+        </div>
+        <div id="viewChart" style="width:80%;margin:0;padding:0;text-align:center;overflow:auto;display:none;">
+            <div id='divChartPannel'>
+                <div class="chart-wrap">
+                    <div id="chinabond_chart1" class="chart"></div>
+                    <div id="chinabond_chart2" class="chart" style="display:none"></div>
+                </div>
+                <div class="chart-box">
+                    <div class="changeBox">
+                        <label><input type="radio" name="chartType" class="radioChart" value="1" checked />柱状图</label>
+                        <label><input type="radio" name="chartType" class="radioChart" value="2" />曲线图</label>
+                    </div>
+                </div>
+				<div class="opBox"></div>
+            </div>
+        </div>-->
+		<br /><br />
+		<HR/>
+    <script src="ZCYCurve_0.js"></script>
+</body>
+</html>

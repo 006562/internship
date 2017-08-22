@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+declare @vchSQL  varchar(8000)
+Declare @vchFullSQL varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+
+/****** Object:  View [dbo].[vw_ConsolidationSecurityLoanDetails]    Script Date: 18/09/2012 16:34:22 ******/
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N''[dbo].[vw_ConsolidationSecurityLoanDetails]''))
+DROP VIEW [dbo].[vw_ConsolidationSecurityLoanDetails]
+'
+exec (@vchSQL)
+
+set @vchSQL = '
+--Security view 
+
+CREATE VIEW [dbo].[vw_ConsolidationSecurityLoanDetails]
+AS
+SELECT  
+FS.DimPoolID				as [Pool Cut ID]
+,dt.TrustID					as [Trust]
+,FC.ConsolidationNo as [Consolidation No]
+,FC.LTVPassNo				as [Loan To Value Ratio Pass No]
+,FS.SecurityNo      as [Security No]
+,FL.AccountNo       as [Loan Account No]
+, case when ISNULL(FLS.DimLoanID,0) > 0 then 1 else 0 end  as [Security Loan Direct Linkage]
+,FC.SecurityCount			as [Consolidation Security Count]
+,FC.LoanCount				as [Consolidation Loan Count]
+,DS.OrganisationCode			     		as [Organisation]
+--, dsfl.ReportingDateID					as [Reporting Date]
+, DS.SecurityAdr1						as [Security Address1]
+, DS.SecurityAdr2						as [Security Address2]
+, DS.SecurityAdr3						as [Security Address3]
+, DS.SecurityAdr4						as [Security Address4]
+, DS.SecurityAdr5						as [Security Address5]
+, DS.Tenure								as [Tenure Code]
+, DS.PropertyTypeCode						as [Property Type]
+, DS.PropertyTypeDesc						as [Property Type Description]
+, DS.Suburb									as [Security Suburb]
+, DS.PostCode								as [Security Properties post code]
+, DS.State									as [Security State]
+, DS.Region									as [Security Region]
+, DS.CountryCode							as [Security Country Code]
+, FS.SecurityValuationAmt					as [Security Property Valuation Amount]
+, FS.SecurityValuationDate				as [Valuation Date]
+, DS.Nature								as [Security Nature]
+, DS.Type								as [Security Type]
+, FLS.DebtChargePosition as [Loan Security Debt Charge Position]
+, cast(FL.CurrentPrincipalBalance as decimal(15, 4)) * cast(FC.ConsolidationLTV as decimal(15, 4))				as [Weighted Consolidation LTV]
+, cast(FL.CurrentPrincipalBalance as decimal(15, 4)) * cast(FC.ConsolidationLimitLTV as decimal(15, 4))		as [Weighted Consolidation Limit LTV]
+, cast(FL.CurrentPrincipalBalance as decimal(15, 4)) * cast(FC.ConsolidationSeasoning as decimal(15, 4)) as [Weighted Seasoning]
+, ISNULL(FLS.DebtChargePosition,''''NULL'''')		       as [Debt Charge Position]
+, FCS.SecurityRank  as [SecurityRankingSequence]
+, FL.CurrentPrincipalBalance				as [Current Principal Balance]
+, FL.CurrentBalanceDistributionCode        as [Current Balance Distribution Code]
+, FL.Seasoning      as [Seasoning]      
+, FL.SeasoningDistributionCode             as [Seasoning Distribution Code]
+, FL.CurrentRate				as [Current Rate]		
+, FL.CurrentRateDistributionCode as [Current Rate Distribution]	
+, FL.DaysInArrears				as [Days in Arrears]
+, FL.DaysInArrearsDistributionCode	as [Days In Arrears Distribution]
+, FL.InterestOnlyRemainingTerm	as [EC_06_02 Remaining Interest Only Term]		
+, FL.DimInterestOnlyRemainingTermDistributionCode as [EC_06_02 Interest Only Remaining Term Distribution]	
+, cast(FC.ConsolidationBalance as decimal(15, 4))		as [Consolidation Balance]	
+, cast(FC.ConsolidationLimitBalance as decimal(15, 4))	as [Consolidation Limit Balance]
+, cast(FC.ConsolidationOriginalBalance as decimal(15, 4))	as [Consolidation Original Balance]
+, cast(FC.ConsolidationLTV as decimal(15, 4))			as [Consolidation LTV]
+, dbo.fn_GetDistributionCode(FC.DimConsolidationLTVDistributionID, ''''CurrentLoanToValueRatio'''')		as [Consolidation LTV Distribution] 
+, cast(FC.ConsolidationLimitLTV as decimal(15, 4))		as [Consolidation Limit LTV]
+, dbo.fn_GetDistributionCode(FC.DimConsolidationLimitLTVDistributionID, ''''Current Limit Loan To Value Ratio'''')		as [Consolidation LimitLTV Distribution]
+, cast(FC.ConsolidationSeasoning as decimal(15, 4))		as [Consolidation Seasoning]
+From dbo.tblFactConsolidation FC (nolock)
+JOIN dbo.tblFactConsolidationSecurity FCS (nolock) ON FC.DimPoolId=FCS.DimPoolId 
+	And FC.DimConsolidationId=FCS.DimConsolidationId 
+	And FC.LTVPassNo=FCS.LTVPassNo
+JOIN dbo.tblFactSecurity  FS (nolock)
+    ON FS.DimSecurityId=FCS.DimSecurityId 
+    And FS.DimPoolId=FCS.DimPoolId
+JOIN dbo.tblFactConsolidationLoan FCL (nolock)
+	ON FCL.DimPoolId=FC.DimPoolId
+	And FCL.DimConsolidationId=FC.DimConsolidationId
+	And FCL.LTVPassNo=FC.LTVPassNo
+JOIN dbo.tblFactLoan FL (nolock)
+    ON FL.DimLoanId=FCL.DimLoanId 
+    And  FL.DimPoolId=FCL.DimPoolId 
+LEFT JOIN dbo.tblFactLoanSecurity FLS (nolock)
+	ON FLS.DimSecurityId = FS.DimSecurityId
+    And FLS.DimPoolId=FS.DimPoolId
+    And FLS.DimLoanId=FL.DimLoanId
+JOIN dbo.tblDimSecurity   DS (nolock)
+    ON FS.DimSecurityId=DS.DimSecurityId
+    And FS.DimPoolId=DS.DimPoolId 
+JOIN dbo.view_DimTrust dt on fl.DimTrustID = dt.DimTrustID
+'
+SET @vchFullSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @vchFullSQL
+EXEC (@vchFullSQL)
+
+]]>
+  </Query>
+
+</main>

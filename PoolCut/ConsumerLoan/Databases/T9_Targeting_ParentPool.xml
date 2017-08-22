@@ -1,0 +1,77 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL  nvarchar(max)
+Declare @bigsql nvarchar(max)
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_Targeting_ParentPool]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_Targeting_ParentPool]
+'
+exec (@vchSQL)
+
+--**************************************************
+--USP_Targeting_ParentPool
+--**************************************************
+Set @vchSQL ='Create Procedure [dbo].[USP_Targeting_ParentPool]
+   @DimPoolID bigint,
+   @DimECID bigint,
+   @SourceLTVPassNo nvarchar(100),
+   @ResultLTVPassNo nvarchar(100),
+   @AutoAdjust bit,
+   @AdjustLoopCount int
+
+AS Set Nocount On
+    
+  Declare @BalanceColumnName nvarchar(100)
+  Declare @CriteriaTableTypeCode nvarchar(100)=''''''''
+    
+  Set @BalanceColumnName = ''''FL.CurrentPrincipalBalance''''
+	
+	Select	@CriteriaTableTypeCode = CriteriaTableTypeCode
+	From	dbo.tblDimEC
+	Where	DimECID = @DimECId
+	And		DimPoolID = @DimPoolId
+    
+  If @DimECID Is Null Begin
+		
+		Select	@DimECID = DimECID
+				, @CriteriaTableTypeCode = CriteriaTableTypeCode
+		From	dbo.tblDimEC
+		Where	DimPoolID = @DimPoolID 
+		And		CriteriaName = ''''ECT1_Targeting_Parent'''' 
+		And		IsEnabled = 1
+	
+	End
+         
+  -- Parent Pool Targeting   
+  If @DimECID Is Not NULL Begin
+
+     Execute dbo.USP_Targeting_SetupConfiguration @DimPoolId, @DimECID, @BalanceColumnName, @SourceLTVPassNo, @ResultLTVPassNo
+     
+     If @CriteriaTableTypeCode = ''''dbo.tblFactLoanECResult'''' Begin
+		
+		  Execute dbo.USP_Targeting_Parent @DimPoolId, @DimECID, @AutoAdjust, @AdjustLoopCount, @SourceLTVPassNo, @ResultLTVPassNo, @BalanceColumnName
+     
+     End Else If @CriteriaTableTypeCode = ''''dbo.tblFactConsolidationECResult'''' Begin
+		
+		  Execute dbo.USP_Targeting_ParentConsolidation @DimPoolId, @DimECID, @AutoAdjust, @AdjustLoopCount, @SourceLTVPassNo, @ResultLTVPassNo, @BalanceColumnName
+	   End
+     
+   ALTER INDEX ALL ON dbo.tblFactConsolidation REBUILD
+	 ALTER INDEX ALL ON dbo.tblFactConsolidationLoan REBUILD
+	 ALTER INDEX ALL ON dbo.tblFactConsolidationSecurity REBUILD
+	 ALTER INDEX ALL ON dbo.tblFactLoanECResult REBUILD
+       
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

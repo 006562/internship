@@ -1,0 +1,113 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+
+    <title data-bind="text: PageTitle"></title>
+
+    <link href="../../Contents/bootstrap.css" rel="stylesheet" />
+    <link href="../../Scripts/jquery-ui.css" rel="stylesheet" />
+    <style type="text/css">
+        .fixed-table-loading { display: none; }
+        .left { width: 220px; position: fixed; top: 0px; bottom: 0px; left: 0px; background-color: rgb(231,231,231); z-index: 200; overflow-y: auto; }
+        .left .head { padding: 20px; font-size: 22px; font-weight: bold; background-color: rgb(90,119,169); color: white; }
+        .left .list { margin-left: 20px; }
+        .left h3 { font-size: 15px; padding: 10px 0px 5px 20px; }
+        .left ul { list-style: none; display: block; }
+        .left ul li { padding: 4px 0px 4px 10px; }
+        .left ul li input, .left ul li label { display: inline-block; height: auto !important; vertical-align: middle; }
+        .left ul li label { margin-top: 8px; margin-left: 5px; }
+        .left ul li:hover, .left ul li.selected { background-color: white; }
+        .right { position: absolute; top: 0; left: 220px; overflow: auto; z-index: 100; }
+        .right .form-row { margin-bottom: 10px; }
+        .right .table { margin-bottom: 10px; }
+        .right .top5 { margin-top: 5px; }
+        .right th { cursor: pointer; }
+        .right th.choiced, .right td.choiced { background-color: rgb(231,231,231); }
+        .hidden { display: none !important; }
+        #tblDataList td, th { white-space: nowrap; word-wrap: normal; word-break: keep-all; }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loadpage">
+        <!--页面正在加载-->
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">Configuration Loading...</p>
+    </div>
+
+    <div class="left">
+        <div class="head">
+            <h2 data-bind="text: PageTitle"></h2>
+        </div>
+        <h3 data-bind="text: DefaultIntervals"></h3>
+        <div class="list">
+            <ul data-bind="foreach: Intervals">
+                <li>
+                    <input type="checkbox" data-bind="attr: { regionId: RegionId }" onchange="DefaultDataOperation.ckbCheckedChange(this)" />
+                    <label data-bind="text: RegionCode">0-30</label>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main-dialog right" data-bind="foreach: Intervals">
+
+        <div class="main-section hidden" data-loaded="0" data-bind="attr:{id: 'divDefaultData_'+ RegionId}">
+            <h3 class="h3"><span class="title" data-bind="text: RegionCode"></span></h3>
+            <table class="table table-bordered top5 hidden" data-bind="attr:{id: 'tblDataList_'+ RegionId}"></table>
+            <label class="hidden emptymsg top5" data-bind="text: $parent.EmptyMsg"></label>
+
+            <div class="col-12 form-row form-horizontal hidden" data-bind="attr:{id: 'divOperations_'+ RegionId}">
+                <div class="col-1 control-label">
+                    <label data-bind="text: $parent.MuLabel"></label>
+                </div>
+                <div class="col-1">
+                    <input type="input" class="form-control" data-bind="attr: { id: 'inputMuMultiplier_'+ RegionId }" />
+                </div>
+                <div class="col-1 control-label">
+                    <label data-bind="text: $parent.SigmaLabel"></label>
+                </div>
+                <div class="col-1">
+                    <input type="input" class="form-control" data-bind="attr: { id: 'inputSigmaMultiplier_'+ RegionId }" />
+                </div>
+                <div class="col-1 control-label">
+                    <label data-bind="text: $parent.RecoveryLabel"></label>
+                </div>
+                <div class="col-1">
+                    <input type="input" class="form-control" data-bind="attr: { id: 'inputRecovery_'+ RegionId }" />
+                </div>
+
+                <div class="col-4">
+                    <button class="btn btn-primary" data-bind="attr:{regionId: RegionId, regionCode: RegionCode}" onclick="DefaultDataOperation.calculateLossDistribution(this)">计算违约率分布</button>
+                    <button class="btn btn-primary" data-bind="attr:{regionId: RegionId, regionCode: RegionCode}" onclick="DefaultDataOperation.viewLossDistribution(this)">&nbsp;&nbsp;查看&nbsp;&nbsp;</button>
+                </div>
+            </div>
+
+            <div id="container"></div>
+        </div>
+
+    </div>
+
+    <div id="taskIndicatorArea" style="display:none;width:480px; height:540px;">
+        <object id="TaskProcessCtl" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="display:block" width="100%" height="440px" class="ms-dlgDisable">
+            <param name="source" value="/TaskProcessEngine/ClientBin/UI.TaskProcessIndicator.xap" />
+            <param name="enablehtmlaccess" value="True" />
+        </object>
+    </div>
+
+    <script src="../../Scripts/jquery.min.js"></script>
+    <script src="../../Scripts/jquery-ui.min.js"></script>
+    <script src="../../Scripts/App.Global.js"></script>
+    <script src="../../Scripts/jquery.cookie.js"></script>
+    <script src="../../Scripts/common.js"></script>
+    <script src="../../Scripts/dataOperate.js"></script>
+    <script src="../../Scripts/knockout-3.4.0.js"></script>
+    <script src="../../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap-table.min.js"></script>
+    <script src="../../Scripts/renderControl.js"></script>
+    <script src="../../Scripts/TaskIndicatorScript.js"></script>
+    <script src="ViewPoolData.js"></script>
+</body>
+</html>

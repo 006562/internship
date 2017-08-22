@@ -1,0 +1,863 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>现金流模型输出结果</title>
+    <meta http-equiv="X-UA-compatible" content="IE=10">
+    <link href="../css/CashFlowStudio.css" rel="stylesheet" />
+    <link href="../fontello/css/fontello.css" rel="stylesheet" />
+    <link href="../Scripts/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link data-jsfiddle="common" rel="stylesheet" media="screen" href="../Scripts/handsontable-0.24.1/dist/handsontable.full.css" />
+    <script src="../Scripts/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="../Scripts/jquery-ui-latest.js" type="text/javascript"></script>
+    <script src="../Scripts/jquery.layout-latest.js" type="text/javascript"></script>
+    <script src="../Scripts/handsontable-0.24.1/dist/handsontable.full.js"></script>
+    <script src="../Scripts/highcharts.js" type="text/javascript"></script>
+    <script src="../Scripts/jquery.modal.js"></script>
+    <script src="./CashFlowStudioJS/viewFormSessionCommon.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowResult.js" type="text/javascript"></script>
+    <style>
+        html{
+            width:100%;height:100%;
+        }
+        *{
+            margin:0;
+            padding:0
+        }
+        body{font-size: 12px;}
+
+        .navbar {
+          height: 30px;
+          border-bottom: 1px solid #ccc;
+        }
+
+        .navItem {
+          display: inline-block;
+          height: 30px;
+          margin-left: 10px;
+          margin-right: -15px;
+          line-height: 30px;
+          text-align: center;
+          vertical-align: text-bottom;
+          font-size: 12px;
+          cursor: pointer;
+        }
+
+        .navItem i {
+          color: #1BA21B;
+        }
+
+        .navItem#add {
+          width: 100px;
+        }
+
+        .navItem#refresh {
+          width: 80px;
+        }
+
+        .navItem#save {
+          width: 80px;
+        }
+
+        .navItem#add:hover {
+          font-size: 14px;
+        }
+
+        .navItem#refresh:hover {
+          font-size: 14px;
+        }
+
+        .navItem#save:hover {
+          font-size: 14px;
+        }
+
+        .navItem#cardAdd {
+          width: 100px;
+        }
+
+        .navItem#cardRefresh {
+          width: 80px;
+        }
+
+        .navItem#cardSave {
+          width: 80px;
+        }
+
+        .navItem#cardAdd:hover {
+          font-size: 14px;
+        }
+
+        .navItem#cardRefresh:hover {
+          font-size: 14px;
+        }
+
+        .navItem#cardSave:hover {
+          font-size: 14px;
+        }
+
+      .chart-wrap{
+        margin: 0 auto;
+        text-align: center;
+      }
+      .chart{
+        display: inline-block;
+        width: 970px;
+        height: 600px;
+        margin-left: 5px;
+        margin-right: 5px;
+      }
+      .chart-box{
+        width: 970px;
+        margin: -12px auto;
+        text-align: center;
+      }
+      .opBox,
+      .changeBox{
+        vertical-align: top;
+      }
+      .changeBox{
+        text-align: center;
+        color:#04f;
+      }
+      .changeBox.hide{
+        position: absolute;
+        width: 100px;
+        height: 100px;
+        margin: auto;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+      }
+      .chart-box label{
+        display: inline-block;
+        margin-top: 10px;
+        padding-right: 10px;
+        font-size: 12px;
+        font-weight: bold;
+        cursor:pointer;
+      }
+      .chart-box input{
+        vertical-align: middle;
+        margin-right: 5px;
+      }
+      .setChart {
+          position: absolute;
+          margin: auto;
+          top: 70px;
+          left: -9999px;
+          height: 390px;
+          width: 740px;
+          border: 1px solid #ccc;
+          box-shadow: 3px 3px 10px #ccc;
+          z-index: 3;
+        }
+
+        .setChart .topBar,
+        .setChart .bottomBar {
+          background-color: #f9f9f9;
+        }
+
+        .setChart.show {
+          right: 0;
+          left: 0;
+        }
+
+        .topBar {
+          height: 30px;
+          line-height: 28px;
+          border-bottom: 1px solid #ccc;
+        }
+
+        .topBar span {
+          padding-left: 4px;
+          cursor: default;
+        }
+
+        .topBar span.close {
+          float: right;
+          padding-right: 2px;
+          margin: 2px 2px 2px 2px;
+          line-height: 24px;
+          color: #71A7DC;
+          border: 1px solid transparent;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+
+        .topBar span.close:hover {
+          border: 1px solid #C1B1B1;
+          background-color: #efefef;
+        }
+
+        .bottomBar {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          height: 35px;
+          border-top: 1px solid #ccc;
+          line-height: 35px;
+          text-align: right;
+        }
+
+        .bottomBar .barItem {
+          display: inline-block;
+          width: 65px;
+          height: 26px;
+          margin-left: -4px;
+          margin-right: 4px;
+          border: 1px solid #ccc;
+          line-height: 26px;
+          font-size: 12px;
+          text-align: center;
+          border-radius: 3px;
+          background-color: #fff;
+        }
+
+        .bottomBar .tip {
+          display: none;
+          line-height: 20px;
+          color: #f00;
+          font-size: 13px;
+          vertical-align: text-bottom;
+        }
+
+        .bottomBar .barItem:hover {
+          background-color: #e8e3e3;
+          cursor: pointer;
+        }
+
+        .setContent {
+          height: 235px;
+        }
+
+        .changeChart {
+          float: left;
+          width: 120px;
+          height: 100%;
+          border-right: 1px solid #e8e3e3;
+        }
+
+        .changeChart span {
+          display: block;
+          padding-left: 3px;
+          height: 40px;
+          line-height: 40px;
+          color: #5A4747;
+          border-bottom: 1px solid #ccc;
+        }
+
+        .changeChart .snapshot {
+          height: 28px;
+          padding-left: 4px;
+          line-height: 28px;
+          background-color: #efefef;
+          cursor: default;
+        }
+
+        .changeChart .changeOp span:hover {
+          background-color: #D9F0FC;
+          cursor: pointer;
+        }
+
+        .changeChart .changeOp span.active {
+          background-color: #b7dbff;
+        }
+
+        .chartBox {
+          float: left;
+          width: 600px;
+          height: 100%;
+          padding: 0 8px 5px 8px;
+        }
+
+        .chartBox .opTitle {
+          height: 28px;
+          border-bottom: 1px solid #ccc;
+          line-height: 28px;
+          cursor: default;
+        }
+
+        .chartBox .opBox {
+          display: inline-block;
+          height: 205px;
+          width:100%;
+          overflow: auto;
+          line-height: 25px;
+        }
+
+        .opBox label {
+          margin-right: 15px;
+          cursor: pointer;
+        }
+
+        .chartWrap {
+          position: absolute;
+          width:100%;
+          margin: auto;
+          top: 70px;
+          left: -9999px;
+          bottom: 0;
+          overflow:auto;
+          text-align: center;
+        }
+
+        .chartWrap .chart {
+          display: inline-block;
+          position: relative;
+          height: 320px;
+          width: 400px;
+        }
+
+        .chartWrap.show {
+          right: 0;
+          left: 0;
+        }
+
+        .rightBtn {
+          position: absolute;
+          left: -9999px;
+          width: 90px;
+          height: 50px;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          box-shadow: 1px 1px 7px #D4D0D0;
+          z-index: 3;
+        }
+
+        .rightBtn span {
+          display: block;
+          height: 50%;
+          padding-left: 5px;
+          font-size: 12px;
+          line-height: 2;
+          text-align: left;
+          cursor: pointer;
+        }
+
+        .rightBtn span:hover {
+          background-color: #D8F1EF;
+        }
+
+        .rightBtn .edit {
+          border-bottom: 1px solid #ccc;
+        }
+
+        .rightBtn i {
+          color: #2D5F17;
+        }
+
+        .cardSetChart {
+          position: absolute;
+          margin: auto;
+          top: 70px;
+          left: -9999px;
+          height: 300px;
+          width: 600px;
+          border: 1px solid #ccc;
+          background-color: #fff;
+          box-shadow: 3px 3px 10px #ccc;
+          z-index: 3;
+        }
+
+        .cardSetChart .cardTopBar,
+        .cardSetChart .cardBottomBar {
+          background-color: #f9f9f9;
+        }
+
+        .cardSetChart.show {
+          right: 0;
+          left: 0;
+        }
+
+        .cardTopBar {
+          height: 30px;
+          line-height: 28px;
+          border-bottom: 1px solid #ccc;
+        }
+
+        .cardTopBar span {
+          padding-left: 4px;
+          cursor: default;
+        }
+
+        .cardTopBar span.cardEditTip {
+          display: none;
+          position: absolute;
+          width: 100px;
+          margin: auto;
+          left: 0;
+          right: 0;
+          font-size: 20px;
+          color: #f00;
+        }
+
+        .cardTopBar span.cardClose {
+          float: right;
+          padding-right: 2px;
+          margin: 2px 2px 2px 2px;
+          line-height: 24px;
+          color: #71A7DC;
+          border: 1px solid transparent;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+
+        .cardTopBar span.cardClose:hover {
+          border: 1px solid #C1B1B1;
+          background-color: #efefef;
+        }
+
+        .cardBottomBar {
+          position: absolute;
+          bottom: 0;
+          width: 100%;
+          height: 35px;
+          border-top: 1px solid #ccc;
+          line-height: 35px;
+          text-align: right;
+        }
+
+        .cardBottomBar .barItem {
+          display: inline-block;
+          width: 65px;
+          height: 26px;
+          margin-left: -4px;
+          margin-right: 4px;
+          border: 1px solid #ccc;
+          line-height: 26px;
+          font-size: 18px;
+          text-align: center;
+          border-radius: 3px;
+          background-color: #fff;
+        }
+
+        .cardBottomBar .cardTip {
+          display: none;
+          line-height: 20px;
+          color: #f00;
+          font-size: 13px;
+          vertical-align: text-bottom;
+        }
+
+        .cardBottomBar .barItem:hover {
+          background-color: #e8e3e3;
+          cursor: pointer;
+        }
+
+        .cardSetContent {
+          height: 235px;
+        }
+
+        .cardChangeChart {
+          float: left;
+          width: 120px;
+          height: 100%;
+          border-right: 1px solid #e8e3e3;
+        }
+
+        .cardChangeChart span {
+          display: block;
+          padding-left: 35px;
+          height: 40px;
+          line-height: 40px;
+          color: #5A4747;
+          border-bottom: 1px solid #ccc;
+        }
+
+        .cardChangeChart .snapshot {
+          height: 28px;
+          padding-left: 4px;
+          line-height: 28px;
+          background-color: #efefef;
+          cursor: default;
+        }
+
+        .cardChangeChart .cardChangeOp span:hover {
+          background-color: #b7dbff;
+          cursor: pointer;
+        }
+
+        .cardChangeChart .cardChangeOp span.active {
+          background-color: #b7dbff;
+        }
+
+        .cardChartBox {
+          float: left;
+          width: 460px;
+          height: 100%;
+          padding: 0 8px 5px 8px;
+        }
+
+        .cardChartBox .opTitle {
+          height: 28px;
+          border-bottom: 1px solid #ccc;
+          line-height: 28px;
+          cursor: default;
+        }
+
+        .cardChartBox .cardOpBox {
+          display: inline-block;
+          height: 205px;
+          width:100%;
+          overflow: auto;
+          line-height: 25px;
+        }
+
+        .cardOpBox label {
+          margin-right: 15px;
+          cursor: pointer;
+        }
+
+        .cardWrap {
+          position: absolute;
+          width:100%;
+          margin: auto;
+          top: 70px;
+          left: -9999px;
+          bottom: 0;
+          overflow:auto;
+          text-align: center;
+        }
+
+        .cardWrap .card {
+  display: inline-block;
+  position: relative;
+  margin: 15px 10px 15px 8px;
+  border: 1px solid #bbb;
+  border-left: 15px solid #4173AB;
+  height: 259px;
+  width: 400px;
+  overflow: hidden;
+  font-size: 12px;
+  color: #555;
+  font-family: Microsoft Yahei, sans-serif;
+  box-shadow: 0 1px 10px #ccc;
+  cursor: default;
+  text-align: left;
+}
+
+.cardWrap .card .card-more {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 40px;
+  border-top: 1px solid #ddd;
+  text-align: center;
+  background-color: #fff;
+}
+
+.cardWrap .card .card-more .btn {
+  outline: 0;
+  background-image: none;
+  background-color: #fff;
+  border: 1px solid transparent;
+  height: 100%;
+  cursor: pointer;
+}
+
+.btn.prev {
+  display: none;
+}
+
+.btn.back {
+  display: none;
+}
+
+.cardWrap .card .card-more .btn i {
+  color: #888;
+}
+
+.cardWrap .card .card-more .btn:hover {
+  background-color: #efefef;
+}
+
+.cardWrap .card .card-more .btn:hover i {
+  color: #4173AB
+}
+
+.cardWrap .card .card-list {
+  position: absolute;
+  width: 100%;
+}
+
+.cardWrap.show {
+  right: 0;
+  left: 0;
+}
+
+.card dl.card-box {
+  width: 100%;
+  padding: 12px 20px;
+  margin-top: -1px;
+  margin-left: -1px;
+  border: 1px solid #ddd;
+}
+
+.card dl.card-box dt {
+  font-size: 16px;
+  font-weight: bold;
+  height: 28px;
+  line-height: 28px;
+}
+
+.card dl.card-box dt small {
+  font-size: 12px;
+}
+
+.card dl.card-box dd {
+  line-height: 20px;
+  color: #999;
+  height: 20px;
+}
+
+.card dl:hover {
+  background-color: #60C3E6;
+  border-color: #60C3E6;
+  color: #fff
+}
+
+.card dl:hover dd {
+  color: #f5f5f5;
+}
+
+.card dl.col-1 {
+  border-left: 0;
+  border-right: 0;
+}
+
+.card dl.col-2 {
+  display: inline-block;
+  width: 159px;
+}
+
+        .clear:after {
+          visibility: hidden;
+          display: block;
+          font-size: 0;
+          content: " ";
+          clear: both;
+          height: 0;
+        }
+
+        .cardRightBtn {
+          position: absolute;
+          left: -9999px;
+          width: 90px;
+          height: 50px;
+          background-color: #fff;
+          border: 1px solid #ccc;
+          box-shadow: 1px 1px 7px #D4D0D0;
+          z-index: 3;
+        }
+
+        .cardRightBtn span {
+          display: block;
+          height: 50%;
+          padding-left: 5px;
+          font-size: 12px;
+          line-height: 2;
+          text-align: left;
+          cursor: pointer;
+        }
+
+        .cardRightBtn span:hover {
+          background-color: #D8F1EF;
+        }
+
+        .cardRightBtn .cardEdit {
+          border-bottom: 1px solid #ccc;
+        }
+
+        .cardRightBtn i {
+          color: #2D5F17;
+        }
+        .cardChangeChart .cardChangeOp i{
+          color: #3987CC;
+        }
+        .tab-columns{position: relative;}
+        .tab-columns strong{position: absolute;left: 10px;top: 11px;}
+
+        .tab-columns .bs{display: block;margin:1px;background:#888}
+        .tab-columns .bs1{width: 14px;height: 7px;}
+        .tab-columns .bs2{width: 6px;height: 15px;float: left;}
+    </style>
+    <script>
+        $(function () {
+            var getUrlParam = function (name) {
+                var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+                var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+                if (r != null) return unescape(r[2]); return null; //返回参数值
+            }
+            var getTaskCodeAndSessionIdFromTrustId = function (appDomain, trustId, callback) {
+                var serviceUrl = CashFlowStudioServiceBase + "GetTaskCodeAndSessionIdFromTrustId/" + appDomain + "/" + trustId + "?r=" + Math.random() * 150;;
+
+                $.ajax({
+                    type: "GET",
+                    url: serviceUrl,
+                    dataType: "json",
+                    contentType: "application/json;charset=utf-8",
+                    success: function (response) {
+                        callback(response);
+                    },
+                    error: function (response) {
+                        alert("load TaskCode And SessionId From TrustId error.");
+                    }
+                });
+            }
+
+            var loadPageByTrustId = function (response) {
+                var arrayObj = new viewFormCashFlowResult("Task", jQuery.parseJSON(response).SessionId, jQuery.parseJSON(response).TaskCode);
+                arrayObj.render();
+            }
+
+            var trustId = getUrlParam("TrustId");
+            if (trustId != null) {
+                getTaskCodeAndSessionIdFromTrustId("Task", trustId, loadPageByTrustId);
+            } else {
+                var obj = window.dialogArguments;
+                var arrayObj = new viewFormCashFlowResult(obj.appDomain, obj.sessionId, obj.taskCode);
+                arrayObj.render();
+            }
+            
+            var divHeight = window.screen.availHeight-75;
+            $("#viewGrid").css("height", divHeight + "px");
+            $("#viewChart").css("height", divHeight + "px");
+            $("#divCharList").css("height", divHeight - 40 + "px");
+            $("#divCardsList").css("height", divHeight - 40 + "px"); 
+        });
+    </script>
+</head>
+<body style="width:100%;height:100%">
+    <div id="studioTabs" style="width:100%;height:100%;border:none;margin:0;padding:0;float:left;">
+        <ul id="studioTabsUL">
+            <li><a href="#viewGrid">Grid View</a></li>
+            <li><a href="#viewCustomCard">Custom Card View</a></li>
+            <li><a href="#viewCustomChart">Custom Chart View</a></li>
+            <li><a href="#viewChart">Chart View</a></li>
+        </ul>
+        <div id="viewGrid" style="width:100%;margin:0;padding:0;text-align:left;overflow:auto">
+            <div id='divArrayPannel'></div>
+        </div>
+        <div id="viewChart" style="width:100%;margin:0;padding:0;text-align:center;overflow:auto">
+            <div id='divChartPannel'>
+                <div class="chart-wrap">
+                    <div id="chart1" class="chart"></div>
+                    <div id="chart2" class="chart" style="display:none"></div>
+                </div>
+                <div class="chart-box">
+                    <div class="changeBox">
+                        <label><input type="radio" name="chartType" class="radioChart" value="1" checked />柱状图</label>
+                        <label><input type="radio" name="chartType" class="radioChart" value="2" />曲线图</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="viewCustomCard" style="width:100%;margin:0;padding:0;text-align:left;overflow:auto">
+            <div id="divCustomCard">
+                <div class="navbar">
+                    <span id="cardAdd" class="navItem" title="Add"><i class="icon-plus"></i>New Card</span>
+                    <span id="cardRefresh" class="navItem" title="Refresh"><i class="icon-cw"></i>Refresh</span>
+                    <span id="cardSave" class="navItem" title="Save"><i class="icon-floppy"></i>Save</span>
+                </div>
+                <div class="cardSetChart hide">
+                    <div class="cardTopBar">
+                        <span class="changeTip">卡片配置</span>
+                        <span class="cardClose"><i class="icon-cancel"></i></span>
+                    </div>
+                    <div class="cardSetContent">
+                        <div class="cardChangeChart">
+                            <span class="snapshot">卡片类型</span>
+                            <div class="cardChangeOp">
+                                <span id="one" class="tab-columns active">
+                                    <strong>
+                                        <i class="bs bs1"></i>
+                                        <i class="bs bs1"></i>
+                                    </strong>
+                                    一列
+                                </span>
+                                <span id="two" class="tab-columns">
+                                    <strong>
+                                        <i class="bs bs2"></i>
+                                        <i class="bs bs2"></i>
+                                    </strong>
+                                    两列
+                                </span>
+                                <!--<span id="three">三列</span> -->
+                            </div>
+                        </div>
+                        <div class="cardChartBox">
+                            <div class="opTitle">
+                                请选择计算结果: 
+                                <label>
+                                    <input type="checkbox" class="checkbox cardCheckAll" value="全选" />&nbsp;全选
+                                </label>
+                            </div>
+                            <div class="cardOpBox">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bottomBar">
+                        <span class="tip">请选择至少一条计算结果!&nbsp;</span>
+                        <span class="cardOk barItem">Ok</span>
+                        <span class="cardCancel barItem">Cancel</span>
+                    </div>
+                </div>
+                <div id="divCardsList" class="cardWrap">
+                    <div id="cardsView" style="width:1310px;text-align:left;margin:0 auto;"></div>
+                    <div class="cardRightBtn">
+                        <span class="cardEdit"><i class="icon-pencil"></i>Edit</span>
+                        <span class="cardDelete"><i class="icon-trash"></i>Delete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="viewCustomChart" style="width:100%;margin:0;padding:0;text-align:left;overflow:auto">
+            <div id='divCustomChart'>
+                <div class="navbar">
+                    <span id="add" class="navItem" title="Add"><i class="icon-plus"></i>New Chart</span>
+                    <span id="refresh" class="navItem" title="Refresh"><i class="icon-cw"></i>Refresh</span>
+                    <span id="save" class="navItem" title="Save"><i class="icon-floppy"></i>Save</span>
+                </div>
+                <div class="setChart hide">
+                    <div class="topBar">
+                        <span class="chartChangeTip"><b> 配置</b></span><span style="color:#3987CC">(提示：请先选择图形样式再选择现金流.)</span>
+                        <span class="close"><i class="icon-cancel"></i></span>
+                    </div>
+                    <div class="setContent">
+                        <div class="changeChart">
+                            <span class="snapshot">图形样式</span>
+                            <div class="changeOp">
+                                <span id="spline" class="active" title="曲线图"><i class="icon-chart-line"></i> 曲线图</span>
+                                <span id="column" title='柱状图'><i class="icon-chart-bar"></i> 柱状图</span>
+                                <span id="area" title='区域图'><i class="icon-chart-area"></i> 区域图</span>
+                                <span id="scatter" title='散列图'><i class="icon-chart-line-1"></i> 散列图</span>
+                                <span id="stacked" title='堆叠图'><i class="icon-database"></i> 堆叠图</span>
+                            </div>
+                        </div>
+                        <div class="chartBox">
+                            <div class="opTitle">
+                                请选择现金流: <label><input type="checkbox" class="checkbox checkAll" value="全选" />&nbsp;全选</label>
+                                <label style="float:right">图形名称：<input type="text" style="width:300px" id="txtTitle" /></label>
+                            </div>
+                            <div class="opBox"></div>
+                        </div>
+                    </div>
+                    <div id="divSelected" style="padding-left:5px;border-top: 1px solid #ccc;width:724px;overflow:auto;height:81px"></div>
+                    <div class="bottomBar">
+                        <span class="tip">请选择至少一条现金流!&nbsp;</span>
+                        <span class="ok barItem">Ok</span>
+                        <span class="cancel barItem">Cancel</span>
+                    </div>
+                </div>
+                <div id="divCharList" class="chartWrap">
+                    <div id="chartsView" style="width:1250px;text-align:left;margin:0 auto;"></div>
+                    <div class="rightBtn">
+                        <span class="edit"><i class="icon-pencil"></i>Edit</span>
+                        <span class="delete"><i class="icon-trash"></i>Delete</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

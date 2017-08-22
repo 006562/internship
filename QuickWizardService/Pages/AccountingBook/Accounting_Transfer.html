@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+
+    <link href="../../Contents/bootstrap.css" rel="stylesheet" />
+    <link href="../../Scripts/zTree/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    <style type="text/css">
+        .tb-curver { width: 100%; border: 1px solid #ccc; margin-top: 10px; border-radius: 5px 5px; }
+        .tb-curver td { vertical-align: top; min-height:500px }
+        .td-allcurvertree { width: 200px; overflow: hidden; border-right: 1px solid #ccc; }
+        .td-allcurvertree .divTree { width: 200px; min-height: 400px; overflow: auto; }
+        .tb-curver .divAllChart{min-height:500px;}
+    </style>
+</head>
+<body>
+
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">Configuration Loading...</p>
+    </div>
+
+    <div id="page_main_container" class="main">
+        <div class="main-section">
+            <h3 class="h3"><span class="title">资产流转业务</span></h3> 
+            <div class="form-panel">
+                <table class="table table-bordered table-hover">
+                    <tr>
+                        <th style="width:35px;">&nbsp;</th>
+                        <th style="width:350px">会计科目</th>
+                        <th>金额</th>
+                        <th style="width:80px;">
+                            <button class="btn btn-plus" onclick="StepPage.AddLayer()" type="button">
+                                <i class="icon icon-add" style="margin-right: 0px;"></i>
+                            </button>
+                        </th>
+                    </tr>
+                    <tbody data-bind="foreach: BondLayers">
+                        <tr>
+                            <td><span class="form-label" data-bind="text: $index()+1"></span></td>
+                            <td><select class="form-control" data-bind="options: $parent.Categroy, optionsText: 'name', optionsValue: 'id', value:Categroy, optionsCaption: 'Choose...'"></select></td>
+                            <td><input type="text" class="form-control" data-bind="value: Amount" /></td>
+                            <td>
+                                <button class="btn btn-plus" onclick="StepPage.CalculateRate(this)"
+                                        title="计算票面利率" data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-asset" style="margin-right: 0px;"></i>
+                                </button>&nbsp;
+                                <button class="btn btn-remove" onclick="StepPage.RemoveLayer(this)"
+                                        data-bind="attr:{itemIndex: $index()}" type="button">
+                                    <i class="icon icon-remove" style="margin-right: 0px;"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="form-save">
+                <div class="form-row form-horizontal">
+                    <div class="col-2 form-row">
+                        <button class="btn btn-primary" onclick="StepPage.Save()">保存</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-section">
+        </div>
+
+    </div>
+
+    <script src="../../Scripts/jquery.min.js"></script>
+    <script src="../../Scripts/jquery.cookie.js"></script>
+    <script src="../../Scripts/App.Global.js"></script>
+    <script src="../../Scripts/common.js"></script>
+    <script src="../../Scripts/calendar.min.js"></script>
+    <script src="../../Scripts/knockout-3.4.0.js"></script>
+    <script src="../../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../../Scripts/renderControl.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap-table.min.js"></script>
+    <script src="../../Scripts/dataOperate.js"></script>
+    <script src="../../Scripts/highcharts.js"></script>
+    <script src="../../Scripts/highcharts_exporting.js"></script>
+    <script src="../../Scripts/zTree/js/jquery.ztree.core.min.js"></script>
+    <script src="../../Scripts/zTree/js/jquery.ztree.excheck.min.js"></script>
+    <script src="Accounting_Transfer.js"></script>
+</body>
+</html>

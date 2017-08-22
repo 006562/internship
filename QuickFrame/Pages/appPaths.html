@@ -1,0 +1,78 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="renderer" content="webkit" />
+    <title></title>
+    <script src="../Scripts/wcfProxy.js"></script>
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/jquery-ui.min.js"></script>
+    <link href="../Scripts/jquery-ui.css" rel="stylesheet" />
+    <script src="../Scripts/common.js"></script>
+    <script src="../Scripts/anyDialog.js"></script>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link rel="stylesheet" href="../Contents/common.css" />
+    <link href="../Contents/page.css" rel="stylesheet" />
+    <link href="../Contents/fontello/css/fontello.css" rel="stylesheet" />
+    <script src="../Scripts/Kendo/js/kendo.all.min.js"></script>
+    <link href="../Scripts/Kendo/styles/kendo.common-material.min.css" rel="stylesheet" />
+    <link href="../Scripts/Kendo/styles/kendo.material.min.css" rel="stylesheet" />
+    <script src="../Scripts/roleOperate.js"></script>
+    <script src="appPaths.js"></script>
+    <style>
+        .panel{
+            padding:20px 0 10px 0;
+            border-bottom:1px solid #ddd;
+        }
+        .table>tbody>tr>td{
+            word-break: break-all;
+            word-wrap:break-word;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="panel" style="border-top:1px solid #eee;">
+        <div class="form-horizontal">
+            <div class="form-group">
+                <label for="pathName" class="col-2 control-label">菜单名称：</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="pathName" placeholder="请输入菜单名称(英文字母组合)...">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Description" class="col-2 control-label">菜单描述：</label>
+                <div class="col-6">
+                    <input type="text" class="form-control" id="Description" placeholder="请输入菜单描述...">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="path" class="col-2 control-label">菜单链接：</label>
+                <div class="col-6">
+                    <input type="email" class="form-control" id="path" placeholder="请输入菜单链接地址...">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-offset-2 col-10">
+                    <button type="button" class="btn btn-primary" id="btnPathAdd">添加</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>菜单名称</th>
+                <th>菜单描述</th> 
+                <th width="300">菜单链接</th> 
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody id="list">
+        </tbody>
+    </table>
+</body>
+
+</html>

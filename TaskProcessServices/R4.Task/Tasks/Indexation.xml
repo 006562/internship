@@ -1,0 +1,20 @@
+﻿<Task>
+  <Action ActionCode="FileCopySPtoFS" ActionDisplayName="Download Data File" FunctionName="RunSSIS" SequenceNo="1">
+    <Parameter Name="SSISPackagePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\SSIS\FileCopySPtoFS.dtsx" DataType="String" Usage="Task" />
+    <Parameter Name="LogPath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="SPFileLocationURL" SessionParameterName="SourceFileURL" Value="" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="TargetFileLocation" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\Working" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="TargetFileName" SessionParameterName="SessionId" Value="" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="ActionMessage" SessionParameterName="" Value="" DataType="" String="" Usage="SSISPackageVariable" />
+  </Action>
+  <Action ActionCode="FileLoadToDB" ActionDisplayName="Load Indexation Data " FunctionName="RunSSIS" SequenceNo="2">
+    <Parameter Name="SSISPackagePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\SSIS\tblIndexation.dtsx" DataType="String" Usage="Task" />
+    <Parameter Name="LogFilePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs\" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="SourceFilePath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessServices\R4.Task\Working\" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="SourceFileName" SessionParameterName="SessionId" Value="" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="SessionID" SessionParameterName="SessionId" Value="" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="DBName" SessionParameterName="" Value="DAL_SEC" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="DBServer" SessionParameterName="" Value="DAL_SEC" DataType="String" Usage="SSISPackageVariable" />
+    <Parameter Name="ActionMessage" SessionParameterName="" Value="" DataType="" String="" Usage="SSISPackageVariable" />
+  </Action>
+</Task>

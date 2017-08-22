@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+    <Parameters>
+        <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+    </Parameters>
+    <Query>
+        <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[usp_GetDimPoolHeader]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[usp_GetDimPoolHeader]
+'
+exec (@vchSQL)
+
+set @vchSQL ='CREATE PROCEDURE [dbo].[usp_GetDimPoolHeader]
+	@DimPoolID bigint,
+	@LTVPassNo varchar(50) =''''''''
+AS 
+
+Begin
+
+	declare @loanCount bigint
+	declare @loanValue decimal(15,2) 
+
+	set @loanCount = (select value from dbo.tblUIDataAggregation where AggregationCategory=''''Total'''' and AggregationItem = ''''LoanCount'''' and DimPoolID = @DimPoolID and LTVPassNo = @LTVPassNo)
+	set @loanValue = (select value from dbo.tblUIDataAggregation where AggregationCategory=''''Total'''' and AggregationItem = ''''CurrentPrincipalBalance'''' and DimPoolID = @DimPoolID and LTVPassNo = @LTVPassNo)
+
+	Select 
+		* , @loanCount as ''''LoanCount'''', @loanValue as ''''LoanValue'''' 
+		From dbo.tblDimPool 
+		Where DimPoolID = @DimPoolID  
+
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+EXEC (@BigSQL)
+]]>
+    </Query>
+
+</main>

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+/****** Object:  StoredProcedure [dbo].[USP_UpdateIsIncludeForECResult]    Script Date: 07/03/2012 13:06:16 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_UpdateIsIncludeForECResult]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_UpdateIsIncludeForECResult]
+'
+exec (@vchSQL)
+
+set @vchSQL ='Create Proc [dbo].[USP_UpdateIsIncludeForECResult]
+(
+	@DimPoolId bigint
+) AS Begin
+
+	-- Return Loans
+	Delete	From dbo.tblFactLoanECResult
+	Where	DimPoolId = @DimPoolId
+  And DimLoanID in
+	(
+		Select distinct DimLoanID From dbo.tblFactLoanReturnResult Where DimPoolID = @DimPoolId
+	)
+  
+  -- Return Securities
+  Delete From dbo.tblFactSecurityECResult
+  Where DimPoolId = @DimPoolId
+  And DimSecurityID in
+  (
+    Select distinct DimSecurityID From dbo.tblFactSecurityReturnResult Where DimPoolID = @DimPoolId
+  )
+	
+	-- Set back to original status
+	Update dbo.tblFactLoan Set IsIncluded = 1 Where DimPoolID = @DimPoolId
+	Update dbo.tblFactSecurity Set IsIncluded = 1 Where DimPoolID = @DimPoolId
+	Update dbo.tblFactLoanSecurity Set IsIncluded = 1 Where DimPoolID = @DimPoolId 
+
+	-- Mark Failed Loans
+	Update	dbo.tblFactLoan 
+	Set		IsIncluded = 0
+	Where	DimPoolID = @DimPoolId
+	And		DimLoanID in
+	(
+		Select Distinct DimLoanID From dbo.tblFactLoanECResult Where DimPoolID = @DimPoolId
+	)
+
+	-- Mark Failed Securities
+	Update	dbo.tblFactSecurity
+	Set		IsIncluded = 0
+	Where	DimPoolID = @DimPoolId
+	And		DimSecurityID in
+	(
+		Select Distinct DimSecurityID From dbo.tblFactSecurityECResult Where DimPoolID = @DimPoolId
+	)
+	
+	-- Mark Failed LoanSecurities
+	Update	dbo.tblFactLoanSecurity
+	Set		IsIncluded = 0
+	From	dbo.tblFactLoanSecurity FLS
+	Join	dbo.tblFactLoanSecurityECResult FLSEC on FLS.DimLoanID = FLSEC.DimLoanID
+												 And FLS.DimSecurityID = FLSEC.DimSecurityID
+												 And FLS.DimPoolID = FLSEC.DimPoolID
+  Where FLS.DimPoolId = @DimPoolId
+
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+</main>

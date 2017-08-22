@@ -1,0 +1,159 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+/****** Object:  StoredProcedure [dbo].[usp_DeletePoolsByList]    Script Date: 07/03/2012 13:06:16 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[usp_DeletePoolsByList]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[usp_DeletePoolsByList]
+'
+exec (@vchSQL)
+
+set @vchSQL ='CREATE PROCEDURE [dbo].[usp_DeletePoolsByList]
+	@PoolList nvarchar (200)
+	
+AS BEGIN
+
+	SET NOCOUNT ON
+
+	Declare @PoolCount bigint
+	Declare @RemoveCount bigint
+	Declare @SqlCommand nvarchar(max)
+	Declare @TableList TABLE 
+	(
+		TableName	nvarchar(500)
+		,[Level]	bigint
+	)
+	Declare @CommandList TABLE 
+	(
+		CommandId bigint IDENTITY(1,1),
+		SqlCommand	nvarchar(max)
+	)
+	;
+	with fk_tables as 
+	(
+		Select	distinct s1.name as from_schema    
+				, o1.Name as from_table    
+				, s2.name as to_schema    
+				, o2.Name as to_table    
+		From	sys.foreign_keys fk    
+		Join	sys.objects o1 on fk.parent_object_id = o1.object_id    
+		Join	sys.schemas s1 on o1.schema_id = s1.schema_id 
+		Join	sys.columns c1 on c1.object_id = o1.object_id   
+		Join	sys.objects o2 on fk.referenced_object_id = o2.object_id    
+		Join	sys.schemas s2 on o2.schema_id = s2.schema_id   
+		Join	sys.columns c2 on c2.object_id = o2.object_id    
+		Where not ( s1.name = s2.name and o1.name = o2.name )
+		And	o1.name <> ''''sysdiagrams''''
+		And OBJECTPROPERTY(o1.object_id, N''''IsUserTable'''') = 1 
+		And	s1.name = ''''dbo''''
+		And	o2.name <> ''''sysdiagrams''''
+		And OBJECTPROPERTY(o2.object_id, N''''IsUserTable'''') = 1 
+		And	s2.name = ''''dbo''''
+	)
+	,ordered_tables AS (
+		Select	s.name as schemaName
+				, t.name as tableName
+				, 0 AS Level    
+		From	sys.tables  t
+		Join	sys.schemas s on t.schema_id = s.schema_id    
+		Join	sys.columns c on c.object_id = t.object_id                
+		Left Join	fk_tables fk  on s.name = fk.from_schema    
+								 and t.name = fk.from_table    
+		Where	t.name <> ''''sysdiagrams''''
+		And		OBJECTPROPERTY(t.object_id, N''''IsUserTable'''') = 1 
+		And		s.name = ''''dbo''''
+		And		c.name = ''''DimPoolId''''
+		And		fk.from_schema IS NULL
+	    
+		Union All
+	        
+		Select  fk.from_schema
+				, fk.from_table
+				, ot.Level + 1    
+		FROM    fk_tables fk    
+		Join	ordered_tables ot on fk.to_schema = ot.schemaName    
+								 and fk.to_table = ot.tableName
+	)
+	Insert	Into @TableList
+	Select	distinct	
+			ot.schemaName + ''''.'''' + ot.tableName as tablename
+			, ot.Level
+	From    ordered_tables ot
+	Join	(
+				Select   SchemaName
+						 , tableName
+						 , MAX(Level) maxLevel        
+				from    ordered_tables        
+				group    by schemaName,tableName
+			) mx on ot.schemaName = mx.schemaName
+				and ot.tableName = mx.tableName
+				and mx.maxLevel = ot.Level
+	Order by ot.Level desc, tableName desc
+	;
+
+		Delete	From @CommandList
+		
+		Insert	Into @CommandList
+		select ''''Delete dbo.tblTargetingConfigWorking
+		       From dbo.tblTargetingConfigWorking a 
+		       Join dbo.tblDimPool p on p.DimPoolId = a.DimPoolId
+		       Where p.DimPoolID in ('''' + @PoolList + '''')''''
+		
+
+		Insert	Into @CommandList
+		Select	''''Delete '''' + TableName + '''' From '''' + TableName + '''' a Join dbo.tblDimPool p on p.DimPoolId = a.DimPoolId Where p.DimPoolId in ('''' + @PoolList + '''')''''
+		From	@TableList	
+		Where	TableName <> ''''dbo.tblDimPool''''
+		Order by TableName desc
+		
+		Insert	Into @CommandList
+		Select	''''Delete From dbo.tblDimPool Where DimPoolId in ('''' + @PoolList + '''')''''
+		
+		Insert	Into @CommandList
+		Select	''''ALTER INDEX ALL ON '''' + TableName + '''' Rebuild''''
+		From	@TableList	
+		Order by TableName desc
+
+	
+	Begin Tran
+	BEGIN TRY
+	
+		DECLARE tableCursor CURSOR FOR 
+			Select SqlCommand From @CommandList Order By CommandId
+		FOR READ ONLY
+		--Open the cursor
+		OPEN tableCursor
+		--Get the first table name from the cursor
+		FETCH NEXT FROM tableCursor INTO @SqlCommand
+
+		--Loop until the cursor was not able to fetch
+		WHILE (@@Fetch_Status >= 0) BEGIN
+			EXEC sp_executesql @SqlCommand
+			FETCH NEXT FROM tableCursor INTO @SqlCommand
+		END
+
+		--Get rid of the cursor
+		CLOSE tableCursor
+		DEALLOCATE tableCursor
+		
+		Commit
+	End Try
+	Begin Catch
+		Rollback
+	End Catch
+End
+
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+</main>

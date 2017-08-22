@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>queryTool</title>
+    <link rel="stylesheet" href="./bootstrap.css">
+    <link rel="stylesheet" href="./queryTool.css">
+</head>
+<body>
+    <div id="queryTool" @click="showTextarea = false;">
+        <header>
+            <nav class="navbar navbar-default navbar-fixed-top">
+                <div class="input-group title-input-group">
+                    <span class="input-group-addon">ConnectionStrings</span>
+                    <input type="text" class="form-control" placeholder="ConnectionStrings" v-model="connectionStrings">
+                </div>
+                <button type="button" class="btn btn-primary dropdown-toggle" @click.stop="toggleTextarea">
+                    select from table
+                    <span class="icon-sort-down" v-show="!showTextarea"></span>
+                    <span class="icon-up-dir" v-else></span>
+                </button>
+                <button type="button" class="btn btn-default btn-success btn-submit" @click="submit">
+                    Submit
+                </button>
+            </nav>
+            <div class="dropdown-area" v-show="showTextarea">
+                <textarea class="form-control dropdown-textarea" placeholder="Query..." v-model="queryString" @click.stop></textarea>
+                <button class="btn btn-xs btn-default clear-btn" @click.stop="clearSql">Clear</button>
+            </div>
+        </header>
+        <main class="main-body">
+            <div class="amount-wraper">
+                <span class="pull-right">共{{count}}条</span>
+            </div>
+            <table class="table table-hover">
+                <thead>
+                    <tr class="info">
+                        <th v-for="title in ecDataTitle">{{title}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="ec in ecData">
+                        <td v-for="data in ec">
+                            {{data}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </main>
+        <script src="./vue.js"></script>
+        <script src="./queryTool.js"></script>
+</body>
+</html>

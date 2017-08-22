@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+IF  EXISTS (SELECT * FROM sys.views WHERE object_id = OBJECT_ID(N''[dbo].[View_FactConsolidation]''))
+DROP VIEW [dbo].[View_FactConsolidation]
+'
+exec (@vchSQL)
+
+set @vchSQL ='CREATE VIEW [dbo].[View_FactConsolidation] 
+AS
+	Select	Distinct 
+			FC.DimPoolId
+			, FC.LTVPassNo
+			, FC.DimConsolidationID As DimId
+			, FC.ConsolidationLTV * FC.ConsolidationBalance As WeightedLTV 
+			, FC.ConsolidationSeasoning * FC.ConsolidationBalance As WeightedSeasoning
+			, FC.ConsolidationBalance As BalanceAmount
+			, FC.ConsolidationLTV As LTV
+			, FC.ConsolidationSeasoning As Seasoning
+			, Case When FC.ConsolidationDimTrustID > 0 Then 1 Else 0 End As IsIgnore
+			, ConsolidationScrubbedLoanFlag As ScrubbedFlag
+			, ConsolidationPaymentTypeCode AS PaymentTypeCode
+	From	dbo.tblFactConsolidation FC
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

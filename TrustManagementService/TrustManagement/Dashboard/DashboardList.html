@@ -1,0 +1,388 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>存续期仪表盘</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <link href="./TrustFollowUp/css/pagerlist-style.css" rel="stylesheet" />
+    <link href="./Dashboard/css/demo.css" rel="stylesheet" />
+    <link href="./Dashboard/css/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+
+    <script src="../Config/GlobalVariable.js"></script>
+    <script src="./TrustFollowUp/js/jquery.datagrid.js"></script>
+    <script src="./TrustFollowUp/js/jquery.datagrid.options.js"></script>
+    <script src="./ContentSettings/js/jquery.ztree.core.js"></script>
+    <script src="./ContentSettings/js/jquery.ztree.excheck.js"></script>
+    <script src="./ContentSettings/js/jquery.ztree.exedit.js"></script>
+    <script src="./TrustFollowUp/FilePathConfig.js"></script>
+    <script src="./Dashboard/DashboardList.js"></script>
+    <script type="text/javascript">
+
+
+        //$(function () {
+        //var zNodes = [
+        //    { id: 1, pId: 0, name: "北京" },
+        //    { id: 2, pId: 0, name: "天津" },
+        //    { id: 3, pId: 0, name: "上海" },
+        //    { id: 6, pId: 0, name: "重庆" }
+        //];
+        //var paydate = new zTreeObj();
+        //paydate.Init("treePayDate", zNodes, $("#menuContentPayDate"));
+
+        //var zNodes = [
+        //    { id: 1, pId: 0, name: "北京1" },
+        //    { id: 2, pId: 0, name: "天津" },
+        //    { id: 3, pId: 0, name: "上海" },
+        //    { id: 6, pId: 0, name: "重庆" }
+        //];
+        //var trustcode = new zTreeObj();
+        //trustcode.Init("treeTrustCode", zNodes, $("#menuContentTrustCode"));
+
+        //$("#PayDate").bind("click", paydate.ShowMenu).attr('readonly', 'readonly');
+        //$("#TrustCode").bind("click", trustcode.ShowMenu).attr('readonly', 'readonly');
+        //});
+    </script>
+    <script type="text/javascript">
+        //function testlocal() {
+        //    if (localStorage.clickcount) {
+        //        localStorage.clickcount = Number(localStorage.clickcount) + 1;
+        //    }
+        //    else {
+        //        localStorage.clickcount = 1;
+        //    }
+        //    document.getElementById("result").innerHTML = "在这个会话中你已经点击了该按钮 " + localStorage.clickcount + " 次 ";
+        //}
+        //function testss() {
+        //    if (sessionStorage.clickcount) {
+        //        sessionStorage.clickcount = Number(sessionStorage.clickcount) + 1;
+        //    }
+        //    else {
+        //        sessionStorage.clickcount = 1;
+        //    }
+        //    document.getElementById("result").innerHTML = "在这个会话中你已经点击了该按钮 " + sessionStorage.clickcount + " 次 ";
+        //}
+        $(function () {
+            init();
+        })
+        $('#btnReset').click(function () {
+            $('.list-filters .filter').val('');
+            zTreePayDate.CheckedAllNodes();
+            zTreeTrustCode.CheckedAllNodes(false);
+
+            bindAssetPaymentStatistics(datagridData);
+            clearStore();
+        });
+        $('#btnSearch').click(function () {
+            searchList();
+            setStore();
+        });
+        function searchList() {
+            var data = getList();
+            bindAssetPaymentStatistics(data);
+        }
+        function getList() {
+            var list = datagridData;
+            $('.list-filters .filter').each(function () {
+                var $this = $(this);
+                var value = $this.val();
+                if (!value || value.length < 1) { return true; }
+
+                var param = $this.attr('name');
+                var value = $this.val();
+                var vls = value.split(',');
+                list = $.grep(list, function (n, i) {
+                    return $.inArray(n[param], vls) >= 0;
+                })
+            });
+            return list;
+        }
+        var preTrustCode = '';
+        $("#PayDate").click(function () {
+            if (preTrustCode != $("#TrustCode").val()) {
+                preTrustCode = $("#TrustCode").val();
+                bindPayData(datagridData);
+            }
+        });
+        var TaskProcessWProxy = (function () {
+            function createSessionShowTask(appDomain, sessionVariables, taskCode) {
+                var wProxy = new webProxy();
+                var sContext = {
+                    appDomain: appDomain,
+                    sessionVariables: sessionVariables,
+                    taskCode: taskCode
+                };
+                var isOver = 0;
+                wProxy.createSessionByTaskCode(sContext, function (response) {
+                    window.parent.parent.isSessionCreated = true;
+                    window.parent.parent.sessionID = response;
+                    window.parent.parent.taskCode = taskCode;
+                    window.parent.parent.IndicatorAppDomain = appDomain;
+                    console.log('taskCode:' + taskCode);
+                    if (window.parent.parent.IsSilverlightInitialized) {
+                        window.parent.parent.PopupTaskProcessIndicatorTM();
+                        window.parent.parent.InitParams();
+                    }
+                    else {
+                        window.parent.parent.PopupTaskProcessIndicatorTM();
+                    }
+                    isOver = 1;
+                });
+
+
+                var tmpInterval = setInterval(function () {
+                    if (isOver == 1) {
+                        $(window.parent.document).find("#modal-mask").remove();
+                        $(window.parent.document).find("#modal-layout").remove();
+                        window.clearInterval(tmpInterval);
+                    }
+                }, 10);
+            }
+
+            return { CreateSessionShowTask: createSessionShowTask }
+        })();
+    </script>
+    <style type="text/css">
+        #divDataList td .template {
+            text-align: left;
+        }
+
+        #divDataList td .mainform {
+            width: 250px;
+            overflow-x: hidden;
+            display: inline-block;
+        }
+
+        #divDataList td .template input {
+            margin-right: 10px;
+        }
+
+        #divDataList td .template a {
+            margin-right: 10px;
+        }
+
+        #divDataList td .template span {
+            margin-right: 10px;
+        }
+
+        #divDataList td .do .a {
+            margin-right: 10px;
+        }
+
+        .waitAudit {
+            background: #FCD5B4;
+        }
+
+        .waitHandUp {
+            background: #FCD5B4;
+        }
+
+        .isOk {
+            background: #D8E4BC;
+        }
+        .stateError {
+            background:pink;
+        }
+    </style>
+    <style>
+        /*body {
+            margin: 0px;
+            overflow: hidden;
+            background-color: #fff;
+            background-size: cover;
+            background-repeat: no-repeat;
+        }*/
+
+        .ms-link:visited {
+            color: #0072c6;
+            text-decoration: none;
+        }
+
+        .ms-cui-disabled {
+            color: #767676;
+        }
+
+        .ms-cui-ctl-large {
+            overflow: hidden;
+            display: inline-block;
+            text-align: center;
+            vertical-align: top;
+            margin-left: 1px;
+            margin-right: 1px;
+        }
+
+        a.ms-cui-ctl-large {
+            padding: 2px 0px 2px;
+            height: 63px;
+            cursor: default;
+        }
+
+        .ui-widget-content a {
+            color: #222222;
+        }
+
+        hr {
+            border-width: 0px;
+            border-top: 1px solid #c6c6c6;
+        }
+
+        img {
+            border: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .ms-cui-disabled * {
+            color: #5b626c !important;
+            cursor: default !important;
+        }
+
+        .ms-cui-ctl-largeIconContainer {
+            height: 33px;
+            padding: 2px 4px 0px;
+            display: block;
+        }
+
+        .ms-cui-ctl-largelabel, .ms-cui-ctl-mediumlabel {
+            color: #23272c;
+        }
+
+        .ms-cui-ctl-largelabel {
+            display: block;
+            padding: 2px 1px 0px;
+            line-height: 1em !important;
+        }
+
+        .ms-cui-img-container, .ms-cui-img-cont-float {
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            overflow: hidden;
+            text-align: left;
+            z-index: 10;
+        }
+
+        .ms-cui-img-cont-float {
+            display: inline-block;
+        }
+
+        .ms-cui-img-32by32 {
+            width: 32px;
+            height: 32px;
+        }
+
+        .ms-cui-disabled .ms-cui-img-container, .ms-cui-disabled .ms-cui-img-cont-float, .ms-cui-disabled .ms-cui-jewel-left, .ms-cui-disabled .ms-cui-jewel-middle, .ms-cui-disabled .ms-cui-jewel-right {
+            background-color: #fff !important;
+            opacity: 0.3;
+        }
+
+        .ms-cui-img-container img, .ms-cui-img-cont-float img {
+            position: absolute;
+            z-index: 5;
+        }
+
+        .ui-dialog-content {
+            border: 0px;
+        }
+    </style>
+
+</head>
+<body>
+    <div class="body-container form nobottom">
+        <div class="main">
+            <div class="pull-right">
+                <!--<button type="button" class="btn btn-default btn-sm" id="btnAddNew">新增</button>-->
+
+            </div>
+            <h3 class="h3">
+                <span class="title">存续期仪表盘</span>
+            </h3>
+            <div class="form-panel drop nobottom">
+                <div class="form-panel drop list-filters">
+                    <div class="col-12">
+                        <div class="col-5 form-group">
+                            <div class="col-3">
+                                <label>专项计划代码：</label>
+                            </div>
+                            <div class="col-8">
+                                <input class="filter <> form-control" name="TrustName" id="TrustCode" />
+                                <div id="menuContentTrustCode" class="menuContent" style="display:none; position: absolute;">
+                                    <ul id="treeTrustCode" class="ztree" style="margin-top:0; width:330px; height: 300px;"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-3 form-group">
+                            <div class="col-4">
+                                <label>兑付日期：</label>
+                            </div>
+                            <div class="col-7">
+                                <input class="filter <> form-control" name="ReportingEndDate" id="PayDate" />
+                                <div id="menuContentPayDate" class="menuContent" style="display:none; position: absolute;">
+                                    <ul id="treePayDate" class="ztree" style="margin-top:0; width:180px; height: 300px;"></ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-2 form-group">
+                            <button type="reset" class="btn btn-default btn-sm" id="btnReset">重置</button>
+                            <button type="button" class="btn btn-primary btn-sm" id="btnSearch">检索</button>
+                            <!--<button type="button" class="btn btn-primary btn-sm" onclick="testss();">检索</button>
+                            <button type="button" class="btn btn-primary btn-sm" onclick="testlocal();">检索</button>-->
+                            <span id="result"></span>
+                        </div>
+                    </div>
+                </div>
+                <div id="divDataList" class="list-container"></div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="ui-dialog-content ui-widget-content" id="targetStateArea" style="display:none;width: auto; height: 234.72px; min-height: 0px;margin:5px;" scrolltop="0" scrollleft="0">
+            <div id="statusHeader">
+                <!--<div style="padding: 10px 0px;">专项计划: <b>6</b>&nbsp;&nbsp;&nbsp;&nbsp;收款日期: <b>20210825</b><div></div></div><br>-->
+            </div>
+            <div id="nextStates">
+                <!--
+                        <a class="ms-cui-ctl-large generateReportRibbonButton" onclick="return false;" href="javascript:;">
+                        <span class="ms-cui-ctl-largeIconContainer">
+                            <span class=" ms-cui-img-32by32 ms-cui-img-cont-float ms-cui-imageDisabled">
+                                <img style="left: -68px; top: -34px;" alt="Loan Report" src="/_layouts/15/1033/images/formatmap32x32.png">
+                            </span>
+                        </span>
+                        <span class="ms-cui-ctl-largelabel">生成报表 <br></span>
+                    </a>&nbsp;
+                    <a class="ms-cui-ctl-large ms-cui-disabled approveRibbonButton" href="javascript:;">
+                        <span class="ms-cui-ctl-largeIconContainer">
+                            <span class="ms-cui-img-32by32 ms-cui-img-cont-float ms-cui-imageDisabled">
+                                <img style="left: -102px; top: -34px;" alt="Approve Report" src="/_layouts/15/1033/images/formatmap32x32.png">
+                            </span>
+                        </span>
+                        <span class="ms-cui-ctl-largelabel">审核通过<br></span>
+                    </a>&nbsp;
+                    <a class="ms-cui-ctl-large ms-cui-disabled distributeRibbonButton" onclick="return false;" href="javascript:;">
+                        <span class="ms-cui-ctl-largeIconContainer">
+                            <span class="ms-cui-img-32by32 ms-cui-img-cont-float ms-cui-imageDisabled">
+                                <img style="left: -442px; top: -68px;" alt="Distribute Report" src="/_layouts/15/1033/images/formatmap32x32.png">
+                            </span>
+                        </span>
+                        <span class="ms-cui-ctl-largelabel">上交报表  <br></span>
+                    </a>&nbsp;
+                    <a class="ms-cui-ctl-large ms-cui-disabled rejectRibbonButton" onclick="return false;" href="javascript:;">
+                        <span class="ms-cui-ctl-largeIconContainer">
+                            <span class="ms-cui-img-32by32 ms-cui-img-cont-float ms-cui-imageDisabled">
+                                <img style="left: 0px; top: -34px;" alt="Reject Report" src="/_layouts/15/1033/images/formatmap32x32.png">
+                            </span>
+                        </span>
+                        <span class="ms-cui-ctl-largelabel">拒绝审核<br></span>
+                    </a><hr>
+                    <a class="ms-cui-ctl-large ms-cui-disabled loanReportRibbonButton" onclick="return false;" href="javascript:;">
+                        <span class="ms-cui-ctl-largeIconContainer">
+                            <span class=" ms-cui-img-32by32 ms-cui-img-cont-float ms-cui-imageDisabled">
+                                <img style="left: -408px; top: -102px;" alt="Latest RBA Loan Report" src="/_layouts/15/1033/images/formatmap32x32.png">
+                            </span>
+                        </span>
+                        <span class="ms-cui-ctl-largelabel">下载信托服务报表<br></span>
+                    </a>
+                    -->
+            </div>
+        </div>
+    </div>
+</body>
+</html>

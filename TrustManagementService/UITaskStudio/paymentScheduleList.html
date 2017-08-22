@@ -1,0 +1,121 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <style>
+        table {
+            width: 600px;
+        }
+
+        table, td, th {
+            border-collapse: collapse;
+            border: 1px solid #666;
+        }
+
+        .columnWidth {
+            width:200px;
+        }
+
+        th {
+            background: #f8f8f8;
+            font-weight: bold;
+            padding: 2px;
+        }
+    </style>
+    <script type="text/javascript">
+
+        var backstep = -1;
+
+        var getUrlParameter = function getUrlParameter(sParam) {
+            var sPageURL = decodeURIComponent(window.location.search.substring(1)),
+                sURLVariables = sPageURL.split('&'),
+                sParameterName,
+                i;
+
+            for (i = 0; i < sURLVariables.length; i++) {
+                sParameterName = sURLVariables[i].split('=');
+
+                if (sParameterName[0] === sParam) {
+                    return sParameterName[1] === undefined ? true : sParameterName[1];
+                }
+            }
+        };
+
+        var ApplicationDomain = getUrlParameter("ApplicationDomain");
+        var PoolId = getUrlParameter("PoolId");
+        var TrustId = getUrlParameter("TrustId");
+        var EndDate = getUrlParameter("EndDate");
+        var StartDate = getUrlParameter("StartDate");
+        var ReportingDate = getUrlParameter("ReportingDate");
+
+        function RefreshData(entityCount)
+        {
+            var requestUrl = GlobalVariable.PaymentScheduleServiceUrl+'GetCashflowDetail/' + PoolId + '/' + ApplicationDomain + '/' + StartDate + '/' + EndDate;
+            if (TrustId) {
+                var requestUrl = GlobalVariable.PaymentScheduleServiceUrl+'GetCashflowDetailByTrust/' + TrustId + '/' + ApplicationDomain + '/' + StartDate + '/' + EndDate + '/' + ReportingDate;
+            }
+
+            $.ajax({
+                url: requestUrl,
+                dataType: "json",
+                success: function (data, textStatus, jqXHR) {
+                    // 
+                    if (entityCount>0) {
+                        drawTable(data, entityCount);
+                    }
+                    else {
+                        backstep = -2;
+                        drawTable(data);
+                    }
+                }
+            });
+        }
+
+        RefreshData(28);
+
+        function drawTable(data) {
+            $("#personDataTable").find("tr:gt(0)").remove();
+            for (var i = 0; i < data.length; i++) {
+                drawRow(data[i]);
+            }
+            $("#showAll").hide();
+        }
+
+        function drawTable(data, entityCount) {
+            var showCount = data.length;
+            if (data.length > entityCount)
+            {
+                showCount = entityCount;
+                $("#showAll").show();
+            }
+            for (var i = 0; i < showCount; i++) {
+                drawRow(data[i]);
+            }
+        }
+
+        function drawRow(rowData) {
+            var row = $("<tr />")
+            $("#personDataTable").append(row); //this will append tr element to table... keep its reference for a while since we will add cels into it
+            row.append($("<td>" + rowData.CustomerCode + "</td>"));
+            row.append($("<td>" + rowData.Date + "</td>"));
+            row.append($("<td>" + rowData.Principal + "</td>"));
+            row.append($("<td>" + rowData.Interest + "</td>"));
+        }
+    </script>
+</head>
+<body>
+    <a href="javascript:history.go(backstep);">返回日历</a>
+    <table id="personDataTable">
+        <tr>
+            <th class="columnWidth">客户编号</th>
+            <th class="columnWidth" style="width:200px">日期</th>
+            <th class="columnWidth">本金</th> 
+            <th class="columnWidth">利息</th>
+        </tr>
+
+    </table>
+    <a id="showAll" style="display:none" href="#" onclick="javascript: RefreshData(0);">全部显示</a>
+</body>
+</html>

@@ -1,0 +1,105 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=7" />
+    <title>CashFlow Studio</title>
+    <link href="../Scripts/jquery-ui.css" rel="stylesheet" type="text/css" />
+    <link href="../css/TaskStudio.css" rel="stylesheet" type="text/css" />
+    <link href="../css/TrustStudio.css" rel="stylesheet" type="text/css" />
+    <link href="../css/CashFlowStudio.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="../Silverlight.js"></script>
+    <script src="../Scripts/complex.js" type="text/javascript"></script>
+    <script src="../Scripts/jquery-1.7.2.min.js" type="text/javascript"></script>
+    <script src="../Scripts/jquery-ui-latest.js" type="text/javascript"></script>
+    <script src="../Scripts/jquery.layout-latest.js" type="text/javascript"></script>
+    <script src="../Scripts/jquery.hint.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioTask.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioTaskActions.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioTaskMethods.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioTaskVariables.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioTaskWork.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioTaskTools.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioSimpleTaskActions.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioSimpleTaskWork.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioSimpleTaskTools.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioTaskXml.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioEC.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioECMains.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioECTools.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioECWork.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioECVariables.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormCashFlowStudioECXml.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormObjectExplorer.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/viewFormSessionVariables.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/globalCashFlowStudio.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/application.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/controller.js" type="text/javascript"></script>
+    <script src="./CashFlowStudioJS/uiManager.js" type="text/javascript"></script>
+    <script src="./wcfProxy.js" type="text/javascript"></script>
+
+    <script type="text/javascript">
+
+		var sessionID, taskCode;
+		var clientName = 'CashFlowProcess';
+		var IndicatorAppDomain = 'Task';
+
+		function InitParams() {
+		}
+		var IsSilverlightInitialized = false;
+		function InitParams() {
+			if (!IsSilverlightInitialized) {
+				IsSilverlightInitialized = true;
+			}
+
+			document.getElementById("TaskProcessCtl").Content.SL_Agent.InitParams(sessionID, IndicatorAppDomain, taskCode, clientName);
+		}
+
+		function PopupTaskProcessIndicator() {
+			$("#taskIndicatorArea").dialog({
+				modal: true,
+				dialogClass: "TaskProcessDialogClass",
+				closeText: "",
+				//closeOnEscape:false,
+				height: 485,
+				width: 470,
+				close: function (event, ui) { }, // refresh report repository while close the task process screen.
+				//open: function (event, ui) { $(this).closest('.ui-dialog').find('.ui-dialog-titlebar-close').hide(); },
+				title: "任务处理"
+			});
+		}
+		$(function () {
+            uiManager.regisUiEvents();
+            application.init();
+        });
+    </script>
+</head>
+<body>
+    <div id="taskIndicatorArea" style="display:none;width:440px; height:440px;">
+        <object id="TaskProcessCtl" data="data:application/x-silverlight-2," type="application/x-silverlight-2" style="display:block" width="100%" height="440px" class="ms-dlgDisable">
+            <param name="source" value="../ClientBin/UI.TaskProcessIndicator.xap" />
+            <param name="enablehtmlaccess" value="True" />
+        </object>
+    </div>
+    <div style="text-align:center;">
+        <div style="text-align:left;width:1550px">
+            <div style="width:40px;height:848px;background-color:#293955;float:left;">
+                <div id="solutionBar" style="width:35px;margin-top:10px;cursor:default">
+                    <div style="width:10px;height:95px;background-color:#364E6F;float:left;"></div>
+                    <div style="height:20px;width:95px;color: #FFF;white-space:nowrap;float:left;filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=1);">Object Explorer</div>
+                </div>
+            </div>
+            <div id="viewSolution" style="margin-top:10px;display:none;min-width:310px;width:350px;height:833px;border-right:2px solid #293955;border-bottom:1px solid #293955;position:absolute;left:40px;z-index:99;background-color:#ffffff;padding:0;padding-left:1px"></div>
+            <div id="studioTabs" style="width:1500px;border:none;margin:0;padding:0;float:left;">
+                <ul id="studioTabsUL">
+                    <li><a href="#viewTask">Task View</a></li>
+                    <li><a href="#viewEC">Caculation View</a></li>
+                </ul>
+                <div id="viewTask" style="border-bottom:5px solid #293955;margin:0;padding:0;text-align:left"></div>
+                <div id="viewEC" style="border-bottom:5px solid #293955;margin:0;padding:0;text-align:left"></div>
+            </div>
+            <div style="width:10px;height:848px;background-color:#293955;float:left;"></div>
+            <div style="clear:both"></div>
+        </div>
+    </div>
+</body>
+</html>

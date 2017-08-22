@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL  nvarchar(max)
+Declare @bigsql nvarchar(max)
+set @vchSQL = 'use [' + @DBName + ']
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[USP_Targeting_AdjustConfigSize]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[USP_Targeting_AdjustConfigSize]
+'
+exec (@vchSQL)
+
+--**************************************************
+--USP_Targeting_AdjustConfigSize
+--**************************************************
+Set @vchSQL ='Create Procedure [dbo].[USP_Targeting_AdjustConfigSize]
+(
+	 @DimPoolId bigint
+	 , @TotalBalance decimal(15,2)
+	 , @IsLogCurrent bit
+   , @DimECID bigint
+	 
+) AS Begin
+
+	SET NOCOUNT ON	
+	
+	Declare @DimTargetId bigint
+	Declare @TargetName varchar(100)
+	Declare @TargetContent varchar(500)
+	Declare @TargetSumQuery nvarchar(4000)
+	Declare @TargetConfigSumQuery nvarchar(4000)
+	Declare @QueryBalanceLoan nvarchar(4000)
+	
+	Declare @SumBalance decimal(15,2)
+	Declare @SumBalanceAmount decimal(15,2)
+	
+	Declare @AdjustTarget decimal(15,4)
+	
+	Declare @SumResult table (SumBalanceAmount decimal(15,2))
+	Declare @TargetConfig Table(DimTargetId bigint, TargetSumQuery nvarchar(4000), TargetConfigSumQuery nvarchar(4000))
+	
+	If @TotalBalance = 0 Begin 
+		RAISERROR(''''Total Balance for Bucket Size Calculation had a zero Balance Amount!'''', 16, 1)
+		Return
+	End
+	
+	Delete @TargetConfig
+	Insert Into @TargetConfig
+	Select	DimTargetId, TargetSumQuery, TargetConfigSumQuery 
+	From	dbo.tblTargetingConfigWorking
+	Where	TargetType = ''''Bucketing'''' 
+	And		DimPoolID = @DimPoolId and DimECID = @DimECID
+	And		LTargetName <> ''''Residual''''
+	
+	DECLARE tableCursor CURSOR FOR 
+		Select DimTargetId, TargetSumQuery, TargetConfigSumQuery From @TargetConfig
+	FOR READ ONLY
+
+	--Open the cursor
+	OPEN tableCursor
+	--Get the first table name from the cursor
+	FETCH NEXT FROM tableCursor INTO @DimTargetId, @TargetSumQuery, @TargetConfigSumQuery
+	--Loop until the cursor was not able to fetch
+	WHILE	(@@Fetch_Status >= 0) Begin
+		
+		If @TargetSumQuery <> '''''''' And @IsLogCurrent = 1 begin
+			Delete From @SumResult
+			Insert Into @SumResult EXEC SP_EXECUTESQL @TargetSumQuery
+			
+			Select  @SumBalanceAmount = SumBalanceAmount From @SumResult
+			
+			Update	dbo.tblTargetingConfigWorking
+			Set		TargetOriginalBalance = @SumBalanceAmount
+					, TargetOriginalValue = @SumBalanceAmount / @TotalBalance
+			Where	DimPoolID		= @DimPoolId and DimECID = @DimECID
+			And		DimTargetId = @DimTargetId
+		End
+		
+		If ISNULL(@TargetConfigSumQuery,'''''''') <> '''''''' begin
+			Delete From @SumResult
+			Insert Into @SumResult EXEC SP_EXECUTESQL @TargetConfigSumQuery
+			
+			Select  @SumBalanceAmount = SumBalanceAmount From @SumResult
+			
+			Update	dbo.tblTargetingConfigWorking
+			Set		AdjustmentConfig = (TargetConfigValue + AdjustmentConfig) - @SumBalanceAmount / @TotalBalance
+			Where	DimPoolID		= @DimPoolId and DimECID = @DimECID
+			And		DimTargetId = @DimTargetId
+		End
+		
+		FETCH NEXT FROM tableCursor INTO @DimTargetId, @TargetSumQuery, @TargetConfigSumQuery
+	END
+
+	--Get rid of the cursor
+	CLOSE tableCursor
+	DEALLOCATE tableCursor
+
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+--PRINT @BigSQL
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

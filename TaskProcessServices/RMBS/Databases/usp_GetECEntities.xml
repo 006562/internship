@@ -1,0 +1,119 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+  <Parameters>
+    <Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+  </Parameters>
+  <Query>
+    <![CDATA[
+Declare @vchSQL varchar(8000)
+Declare @bigsql varchar(8000)
+
+set @vchSQL = 'use [' + @DBName + ']  
+/****** Object:  StoredProcedure [dbo].[usp_GetECEntities]    Script Date: 07/03/2012 13:06:16 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[usp_GetECEntities]'') AND type in (N''P'', N''PC''))
+DROP PROCEDURE [dbo].[usp_GetECEntities]
+'
+exec (@vchSQL)
+
+set @vchSQL ='CREATE PROCEDURE [dbo].[usp_GetECEntities]
+	@PoolId bigint,
+    @PoolCutPurpose nvarchar(200) = ''''Pool Cut''''   
+AS Begin
+	
+	Declare @PoolType nvarchar(200) = '''''''' 
+	Declare @PoolHierarchyType nvarchar(200) = '''''''' 
+	Declare @PoolStatus nvarchar(200) = '''''''' 
+	Declare @PoolCount int
+	Declare @ReadOnlyList table (CriteriaName nvarchar(100) not null)
+	Declare @HideList table (CriteriaName nvarchar(100) not null)
+
+	Select	@PoolType = PoolType
+			, @PoolHierarchyType = PoolHierarchyType
+			, @PoolStatus = Status
+	From	dbo.tblDimPool where DimPoolId = @PoolId 
+	
+	Select	@PoolCount = Count(*)
+	From	dbo.tblDimPool 
+	Where	ISNULL(PoolHierarchyType, '''''''') <> ''''Base''''
+	
+	--Rule 1.0: Can not modify any Archived pool
+	If @PoolStatus = ''''ARCHIVED'''' Begin
+	
+		Insert Into @ReadOnlyList
+		Select	CriteriaName 
+		From	dbo.tblDimEC 
+		Where	DimPoolId = @PoolId
+		Order BY CriteriaName
+	End
+	
+	--Rule 1.1: Only General Criterias of Base Pool which has no Children can be modified
+	Else If ( 
+				@PoolCount >= 1 
+				or @PoolCutPurpose in (''''PoolTargetParent'''', ''''PoolTargetChild'''')
+			)
+			And  @PoolStatus <> ''''ARCHIVED''''
+	Begin
+		Insert Into @ReadOnlyList
+		Select	CriteriaName 
+		From	dbo.tblDimEC 
+		Where	DimPoolId = @PoolId
+		And		CriteriaTypeCode not in (''''IncludeExclude'''', ''''Targeting'''')
+		And		CriteriaName not in 
+		(
+			''''EC601_Linked Loan Scenario 1_NewPoolByUnsoldLoanOnly_Reserve''''
+			, ''''EC604_TopUpByOnlyUnsoldLoans_Reserve''''
+		)
+		Order BY CriteriaName
+	End
+	
+	
+	-- Rule 2: Hide all ''''IncludeExclude'''' and ''''Targeting'''' Criteria
+	Insert Into @HideList
+	Select	CriteriaName 
+	From	dbo.tblDimEC 
+	Where	DimPoolId = @PoolId
+	And		CriteriaTypeCode in 	
+	(
+		''''IncludeExclude''''
+		, ''''Targeting''''
+	)
+	Order BY CriteriaName
+	
+	-- Rule 3: For ''''PoolTargetParent'''', display ''''ECT1_Targeting_Parent''''
+	If ( @PoolType = ''''PoolTargetParent'''' And @PoolCutPurpose <> ''''PoolTargetChild'''') or @PoolCutPurpose = ''''PoolTargetParent'''' Begin
+		Delete From @HideList  Where CriteriaName = ''''ECT1_Targeting_Parent''''
+	End
+	
+	-- Rule 4: For ''''PoolTargetChild'''', display ''''ECT2_Targeting_Size''''
+	If @PoolType = ''''PoolTargetChild''''  or @PoolCutPurpose = ''''PoolTargetChild'''' Begin
+		Delete From @HideList  Where CriteriaName = ''''ECT2_Targeting_Size''''
+	End
+	
+	Select	DimECID as CriteriaId 
+			, ECPassNoCode as ECPassNo 
+			, CriteriaDescription
+			, EC.CriteriaName
+			, CriteriaTypeCode
+			, XMLSqlQueryEC
+			, XMLSqlQueryDrillThrough
+			, CriteriaTableTypeCode
+			, Case	When R.CriteriaName is null Then IsEditable 
+					Else Convert(bit,0) End
+			  As IsEditable  
+			, IsEnabled as IsEnable 
+	From		dbo.tblDimEC EC
+	Left Join	@ReadOnlyList R on R.CriteriaName = EC.CriteriaName
+	Where		DimPoolId = @PoolId 
+	And			EC.CriteriaName not in
+	(
+		Select CriteriaName From @HideList
+	)
+	Order by IsEditable Desc, Case When CriteriaTypeCode = ''''Targeting'''' Then 0 Else 1 End, CriteriaTypeCode, SequenceNo
+End
+'
+SET @BigSQL = 'USE [' + @DBName + ']; EXEC sp_executesql N''' + @vchSQL + '''';
+EXEC (@BigSQL)
+]]>
+  </Query>
+
+</main>

@@ -1,0 +1,1754 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="4/7/2016 5:27:35 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GS2106CNVDV023"
+  DTS:CreatorName="DEV\gslocaladmin"
+  DTS:DTSID="{3B76C205-B0BB-4F8B-9E01-7244910FEC0C}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="LoadCalculationCashFlow"
+  DTS:PackageType="5"
+  DTS:VersionBuild="395"
+  DTS:VersionGUID="{DFD9E6DC-21B1-4220-8415-DE940592543A}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Excel Connection Manager 1]"
+      DTS:CreationName="EXCEL+"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{D0B09B6D-B116-46EA-9B8B-947582524DCD}"
+      DTS:ObjectName="Excel Connection Manager 1">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">"ExcelFilePath="+@[User::SourceFilePath]+ @[User::SourceFileName]+";FormatType=Auto;Recalculate=False;RetainSameConnection=True;"</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <ConnectionManager
+          ConnectionString="ExcelFilePath=E:\TSSWCFServices\TrustManagementService\TrustFiles\8\Asset\中铝租赁计划现金流导入模板.xlsx;FormatType=Auto;Recalculate=False;RetainSameConnection=True;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[Logs]"
+      DTS:CreationName="FILE"
+      DTS:DTSID="{D78FD72F-5953-4F46-861C-2ACB20040788}"
+      DTS:ObjectName="Logs">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::LogsConnection]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:FileUsageType="2"
+          DTS:ConnectionString="E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs\LoadCalculationCashFlow_20170606065526.log" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[MSSQL.SFM_DAL_ConsumerLoan]"
+      DTS:CreationName="OLEDB"
+      DTS:DelayValidation="True"
+      DTS:DTSID="{7E2D5F25-39B1-462D-B215-5C2C952C5084}"
+      DTS:ObjectName="MSSQL.SFM_DAL_ConsumerLoan">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::OLEDBConnString]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=MSSQL;Initial Catalog=TrustManagement ;Provider=SQLNCLI10.1;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:LogProviders>
+    <DTS:LogProvider
+      DTS:ConfigString="Logs"
+      DTS:CreationName="Microsoft.LogProviderSQLProfiler"
+      DTS:Description="Generates SQL traces that may be captured in SQL Server Profiler"
+      DTS:DTSID="{10F114A9-B7EB-4F22-964B-257289FC3E66}"
+      DTS:ObjectName="SSIS log provider for SQL Server Profiler1">
+      <DTS:ObjectData>
+        <InnerObject />
+      </DTS:ObjectData>
+    </DTS:LogProvider>
+  </DTS:LogProviders>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{D3E9FF9C-76B9-4790-A7DD-3DED16E1BAC5}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DAL_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">TrustManagement</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B9D0D3D1-9C5F-42BF-AA28-95214934AE3B}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DAL_Server">
+      <DTS:VariableValue
+        DTS:DataType="8">MSSQL</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{6A1C76AB-7544-409E-9E4A-40026A660472}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DataSourceName">
+      <DTS:VariableValue
+        DTS:DataType="8">Asset Excel File</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{2A035517-D656-4339-97BC-081FD71986B2}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;  select TrustId from SFM_DAL_ConsumerLoan.TrustManagement.Trust&#xA;  where TrustCode =  &quot; + &quot;'&quot; + @[User::TrustCode] + &quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DimTrustID">
+      <DTS:VariableValue
+        DTS:DataType="8">  select TrustId from SFM_DAL_ConsumerLoan.TrustManagement.Trust
+  where TrustCode =  'ZLZL2016-1'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1F2F5941-A4F8-4626-B61C-1181C3188346}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="IsInTrust">
+      <DTS:VariableValue
+        DTS:DataType="8">1</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{3B4D6B44-328E-4BC7-B75C-E0C02219338E}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="IsNotInTrust">
+      <DTS:VariableValue
+        DTS:DataType="8">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{2AB889BC-38A7-4683-9AA9-6463C0EFB8E9}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="LogPath">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs\</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{40B60E82-8656-4B0F-8AE0-4628B9FFA5EE}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::LogPath] + @[System::PackageName] + &quot;_&quot; +  (DT_WSTR, 4)DATEPART(&quot;yyyy&quot;, @[System::StartTime]) + RIGHT(&quot;0&quot; + (DT_WSTR, 2)DATEPART(&quot;mm&quot;, @[System::StartTime]), 2) + RIGHT(&quot;0&quot; + (DT_WSTR, 2)DATEPART(&quot;dd&quot;, @[System::StartTime]), 2) + RIGHT(&quot;0&quot; + (DT_WSTR, 2)DATEPART(&quot;hh&quot;, @[System::StartTime]), 2) + RIGHT(&quot;0&quot; + (DT_WSTR, 2)DATEPART(&quot;mi&quot;, @[System::StartTime]), 2) + RIGHT(&quot;0&quot; + (DT_WSTR, 2)DATEPART(&quot;ss&quot;, @[System::StartTime]), 2)  +  &quot;.log&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="LogsConnection">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\TaskProcessServices\R4.Task\Logs\LoadCalculationCashFlow_20170606065526.log</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4601A04C-C186-43EB-9A62-5CAFE805B1F4}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Data Source=&quot; + @[User::DAL_Server] + &quot;;Initial Catalog=&quot; +@[User::DAL_DB] + &quot; ;Provider=SQLNCLI10.1;Integrated Security=SSPI;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="OLEDBConnString">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=MSSQL;Initial Catalog=TrustManagement ;Provider=SQLNCLI10.1;Integrated Security=SSPI;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{5B5783E3-72E9-427A-AF57-6EB099C4BEB7}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="@[User::SourceFilePath]  + @[User::SourceFileName]"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceConnection">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\TrustManagementService\TrustFiles\8\Asset\中铝租赁计划现金流导入模板.xlsx</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{84B01D9C-C147-402F-BD8A-582D66B03CF8}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceFileName">
+      <DTS:VariableValue
+        DTS:DataType="8">中铝租赁计划现金流导入模板.xlsx</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{7632DDA8-079E-4FEA-99E3-4686C89F28ED}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SourceFilePath">
+      <DTS:VariableValue
+        DTS:DataType="8">E:\TSSWCFServices\TrustManagementService\TrustFiles\8\Asset\</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1E3D56E6-771A-4AB8-896B-802EF850F3D1}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="TrustCode">
+      <DTS:VariableValue
+        DTS:DataType="8">ZLZL2016-1</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{9C0A4B8B-66C2-4059-8F63-A5AECCE14519}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="TrustId">
+      <DTS:VariableValue
+        DTS:DataType="8">23</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{BE2D1DDF-1EB4-4FCF-9691-640C28C696AA}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;delete from [Asset].[PrincipalSchedule] where  TrustID =  (  &quot;+  @[User::TrustId]  + &quot;)&quot;  +&quot; and (IsInTrust=&quot;+ @[User::IsInTrust] +&quot; or IsInTrust = &quot;+ @[User::IsNotInTrust] +&quot;)&quot;&#xA; +&#xA;&quot;delete from [Asset].[InterestSchedule] where  TrustID =  (  &quot;+ @[User::TrustId]  + &quot;)&quot;  +&quot; and (IsInTrust=&quot;+ @[User::IsInTrust] +&quot; or IsInTrust = &quot;+ @[User::IsNotInTrust] +&quot;)&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_DeleteStatement">
+      <DTS:VariableValue
+        DTS:DataType="8">delete from [Asset].[PrincipalSchedule] where  TrustID =  (  23) and (IsInTrust=1 or IsInTrust = 0)delete from [Asset].[InterestSchedule] where  TrustID =  (  23) and (IsInTrust=1 or IsInTrust = 0)</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:LoggingOptions
+    DTS:FilterKind="0"
+    DTS:LoggingMode="1">
+    <DTS:Property
+      DTS:DataType="8"
+      DTS:Name="EventFilter">4,7,OnError,19,OnExecStatusChanged,13,OnInformation,12,OnTaskFailed</DTS:Property>
+    <DTS:Property
+      DTS:EventName="Diagnostic"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="DiagnosticEx"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnError"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnExecStatusChanged"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnInformation"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnPipelinePostComponentCall"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnPipelinePostEndOfRowset"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnPipelinePostPrimeOutput"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnPipelinePreComponentCall"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnPipelinePreEndOfRowset"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnPipelinePrePrimeOutput"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnPipelineRowsSent"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnPostExecute"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnPostValidate"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnPreExecute"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnPreValidate"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnProgress"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnQueryCancel"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnTaskFailed"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnVariableValueChanged"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:Property
+      DTS:EventName="OnWarning"
+      DTS:Name="ColumnFilter">
+      <DTS:Property
+        DTS:Name="Computer">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="Operator">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceName">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="SourceID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="ExecutionID">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="MessageText">-1</DTS:Property>
+      <DTS:Property
+        DTS:Name="DataBytes">-1</DTS:Property>
+    </DTS:Property>
+    <DTS:SelectedLogProviders>
+      <DTS:SelectedLogProvider
+        DTS:InstanceID="{10F114A9-B7EB-4F22-964B-257289FC3E66}" />
+    </DTS:SelectedLogProviders>
+  </DTS:LoggingOptions>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Bag3"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{375FE619-E7BC-407C-8DAE-FD235CAF2A06}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Bag3">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Bag3\Data Flow Task"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:DelayValidation="True"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{15EE20EB-1035-4F5B-91AA-E2EEDAF561A6}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Data Flow Task"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Bag3\Data Flow Task\Derived Column"
+                  componentClassID="Microsoft.DerivedColumn"
+                  contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+                  name="Derived Column"
+                  usesDispositions="true">
+                  <inputs>
+                    <input
+                      refId="Package\Bag3\Data Flow Task\Derived Column.Inputs[Derived Column Input]"
+                      description="Input to the Derived Column Transformation"
+                      name="Derived Column Input">
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Bag3\Data Flow Task\Derived Column.Outputs[Derived Column Output]"
+                      description="Default Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      name="Derived Column Output"
+                      synchronousInputId="Package\Bag3\Data Flow Task\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[TrustId]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          length="2"
+                          lineageId="Package\Bag3\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[TrustId]"
+                          name="TrustId"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::TrustId]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::TrustId]</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Bag3\Data Flow Task\Derived Column.Outputs[Derived Column Error Output]"
+                      description="Error Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Derived Column Error Output"
+                      synchronousInputId="Package\Bag3\Data Flow Task\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Bag3\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Bag3\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Bag3\Data Flow Task\Excel Source Plus"
+                  componentClassID="Microsoft.ManagedComponentHost"
+                  contactInfo="Extracts data from Excel worksheet.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+                  description="Extracts data from Excel worksheet."
+                  name="Excel Source Plus"
+                  usesDispositions="true">
+                  <properties>
+                    <property
+                      dataType="System.Null"
+                      name="ComponentObject"
+                      typeConverter="NOTBROWSABLE" />
+                    <property
+                      dataType="System.String"
+                      description="Source Excel worksheet."
+                      expressionType="Notify"
+                      name="Worksheet"
+                      typeConverter="CozyRoc.SqlServer.SSIS.TableEditor, CozyRoc.SSISPlus.UI.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">Sheet1</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Specifies first row contains column names."
+                      name="FirstRowHasColumnName">true</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies source worksheet region."
+                      expressionType="Notify"
+                      name="Region">1, 1, -1, -1</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies output type."
+                      name="OutputType"
+                      typeConverter="CozyRoc.SqlServer.SSIS.ExcelSource+OutputTypes, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea">0</property>
+                    <property
+                      dataType="System.String"
+                      name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.ExcelSource, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Bag3\Data Flow Task\Excel Source Plus.Connections[EXCEL+]"
+                      connectionManagerID="Package.ConnectionManagers[Excel Connection Manager 1]"
+                      connectionManagerRefId="Package.ConnectionManagers[Excel Connection Manager 1]"
+                      description="COZYROC Excel Connection Manager"
+                      name="EXCEL+" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output]"
+                      name="Excel Source Plus Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TrustId]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[TrustId]"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[TrustId]"
+                          name="TrustId"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[AccountNo]"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]"
+                          name="AccountNo"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PrincipalPayment]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[PrincipalPayment]"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PrincipalPayment]"
+                          name="PrincipalPayment"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[InterestPayment]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[InterestPayment]"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[InterestPayment]"
+                          name="InterestPayment"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[ReturnDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[ReturnDate]"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[ReturnDate]"
+                          name="ReturnDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[StartDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[StartDate]"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[StartDate]"
+                          name="StartDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[EndDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[EndDate]"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[EndDate]"
+                          name="EndDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PayDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[PayDate]"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PayDate]"
+                          name="PayDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PayAmount]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[PayAmount]"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PayAmount]"
+                          name="PayAmount"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[IsInTrust]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[IsInTrust]"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[IsInTrust]"
+                          name="IsInTrust"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LastModifiedTime]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LastModifiedTime]"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LastModifiedTime]"
+                          name="LastModifiedTime"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[TrustId]"
+                          dataType="wstr"
+                          length="250"
+                          name="TrustId" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[AccountNo]"
+                          dataType="wstr"
+                          length="250"
+                          name="AccountNo" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[PrincipalPayment]"
+                          dataType="wstr"
+                          length="250"
+                          name="PrincipalPayment" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[InterestPayment]"
+                          dataType="wstr"
+                          length="250"
+                          name="InterestPayment" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[ReturnDate]"
+                          dataType="wstr"
+                          length="250"
+                          name="ReturnDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[StartDate]"
+                          dataType="wstr"
+                          length="250"
+                          name="StartDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[EndDate]"
+                          dataType="wstr"
+                          length="250"
+                          name="EndDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[PayDate]"
+                          dataType="wstr"
+                          length="250"
+                          name="PayDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[PayAmount]"
+                          dataType="wstr"
+                          length="250"
+                          name="PayAmount" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[IsInTrust]"
+                          dataType="wstr"
+                          length="250"
+                          name="IsInTrust" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].ExternalColumns[LastModifiedTime]"
+                          dataType="wstr"
+                          length="250"
+                          name="LastModifiedTime" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output]"
+                      isErrorOut="true"
+                      name="Excel Source Plus Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[TrustId]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[TrustId]"
+                          name="TrustId"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[AccountNo]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[AccountNo]"
+                          name="AccountNo"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[PrincipalPayment]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[PrincipalPayment]"
+                          name="PrincipalPayment"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[InterestPayment]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[InterestPayment]"
+                          name="InterestPayment"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ReturnDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[ReturnDate]"
+                          name="ReturnDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[StartDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[StartDate]"
+                          name="StartDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[EndDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[EndDate]"
+                          name="EndDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[PayDate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[PayDate]"
+                          name="PayDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[PayAmount]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[PayAmount]"
+                          name="PayAmount"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[IsInTrust]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[IsInTrust]"
+                          name="IsInTrust"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LastModifiedTime]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          length="250"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Error Output].Columns[LastModifiedTime]"
+                          name="LastModifiedTime"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Bag3\Data Flow Task\InterestSchedule"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="InterestSchedule"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[Asset].[InterestSchedule]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Bag3\Data Flow Task\InterestSchedule.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[MSSQL.SFM_DAL_ConsumerLoan]"
+                      connectionManagerRefId="Package.ConnectionManagers[MSSQL.SFM_DAL_ConsumerLoan]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].Columns[AccountNo]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="AccountNo"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[AccountNo]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].Columns[PayDate]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="PayDate"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[PayDate]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PayDate]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].Columns[IsInTrust]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="IsInTrust"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[IsInTrust]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[IsInTrust]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].Columns[InterestPayment]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="InterestPayment"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[PayAmount]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[InterestPayment]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].Columns[StartDate]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="StartDate"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[StartDate]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[StartDate]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].Columns[EndDate]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="EndDate"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[EndDate]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[EndDate]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].Columns[LastModifiedTime]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="LastModifiedTime"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[LastModifiedTime]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LastModifiedTime]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].Columns[TrustId]"
+                          cachedDataType="wstr"
+                          cachedLength="2"
+                          cachedName="TrustId"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[TrustId]"
+                          lineageId="Package\Bag3\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[TrustId]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[Id]"
+                          dataType="i4"
+                          name="Id" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[TrustId]"
+                          dataType="i4"
+                          name="TrustId" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[AccountNo]"
+                          dataType="wstr"
+                          length="100"
+                          name="AccountNo" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[PayDate]"
+                          dataType="dbDate"
+                          name="PayDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[PayAmount]"
+                          dataType="numeric"
+                          name="PayAmount"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[LastModifiedTime]"
+                          dataType="dbDate"
+                          name="LastModifiedTime" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[IsInTrust]"
+                          dataType="i4"
+                          name="IsInTrust" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[StartDate]"
+                          dataType="dbDate"
+                          name="StartDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[EndDate]"
+                          dataType="dbDate"
+                          name="EndDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input].ExternalColumns[BaseNominal]"
+                          dataType="numeric"
+                          name="BaseNominal"
+                          precision="18"
+                          scale="2" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Bag3\Data Flow Task\InterestSchedule.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Bag3\Data Flow Task\InterestSchedule.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\InterestSchedule.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Bag3\Data Flow Task\InterestSchedule.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Bag3\Data Flow Task\Multicast"
+                  componentClassID="Microsoft.Multicast"
+                  contactInfo="Multicast;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Distributes every input row to every row in one or more outputs. For example, branch your data flow to make a copy of data so that some values can be masked before sharing with external partners."
+                  name="Multicast">
+                  <inputs>
+                    <input
+                      refId="Package\Bag3\Data Flow Task\Multicast.Inputs[Multicast Input 1]"
+                      name="Multicast Input 1">
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Bag3\Data Flow Task\Multicast.Outputs[Multicast Output 2]"
+                      deleteOutputOnPathDetached="true"
+                      name="Multicast Output 2"
+                      synchronousInputId="Package\Bag3\Data Flow Task\Multicast.Inputs[Multicast Input 1]">
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Bag3\Data Flow Task\Multicast.Outputs[Multicast Output 1]"
+                      deleteOutputOnPathDetached="true"
+                      name="Multicast Output 1"
+                      synchronousInputId="Package\Bag3\Data Flow Task\Multicast.Inputs[Multicast Input 1]">
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Bag3\Data Flow Task\Multicast.Outputs[Multicast Output 3]"
+                      dangling="true"
+                      deleteOutputOnPathDetached="true"
+                      name="Multicast Output 3"
+                      synchronousInputId="Package\Bag3\Data Flow Task\Multicast.Inputs[Multicast Input 1]">
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Bag3\Data Flow Task\PrincipalSchedule"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="PrincipalSchedule"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[Asset].[PrincipalSchedule]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[MSSQL.SFM_DAL_ConsumerLoan]"
+                      connectionManagerRefId="Package.ConnectionManagers[MSSQL.SFM_DAL_ConsumerLoan]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].Columns[AccountNo]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="AccountNo"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[AccountNo]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[AccountNo]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].Columns[ReturnDate]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="ReturnDate"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[ReturnDate]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[ReturnDate]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].Columns[PayDate]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="PayDate"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[PayDate]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PayDate]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].Columns[IsInTrust]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="IsInTrust"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[IsInTrust]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[IsInTrust]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].Columns[PrincipalPayment]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="PrincipalPayment"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[PayAmount]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[PrincipalPayment]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].Columns[LastModifiedTime]"
+                          cachedDataType="wstr"
+                          cachedLength="250"
+                          cachedName="LastModifiedTime"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[LastModifiedTime]"
+                          lineageId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output].Columns[LastModifiedTime]" />
+                        <inputColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].Columns[TrustId]"
+                          cachedDataType="wstr"
+                          cachedLength="2"
+                          cachedName="TrustId"
+                          externalMetadataColumnId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[TrustId]"
+                          lineageId="Package\Bag3\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[TrustId]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[Id]"
+                          dataType="i4"
+                          name="Id" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[TrustId]"
+                          dataType="i4"
+                          name="TrustId" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[AccountNo]"
+                          dataType="wstr"
+                          length="100"
+                          name="AccountNo" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[ReturnDate]"
+                          dataType="dbDate"
+                          name="ReturnDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[PayDate]"
+                          dataType="dbDate"
+                          name="PayDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[PayAmount]"
+                          dataType="numeric"
+                          name="PayAmount"
+                          precision="18"
+                          scale="2" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[LastModifiedTime]"
+                          dataType="dbDate"
+                          name="LastModifiedTime" />
+                        <externalMetadataColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input].ExternalColumns[IsInTrust]"
+                          dataType="i4"
+                          name="IsInTrust" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Bag3\Data Flow Task\PrincipalSchedule.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Bag3\Data Flow Task\PrincipalSchedule.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Bag3\Data Flow Task\PrincipalSchedule.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Bag3\Data Flow Task.Paths[Derived Column Output]"
+                  endId="Package\Bag3\Data Flow Task\Multicast.Inputs[Multicast Input 1]"
+                  name="Derived Column Output"
+                  startId="Package\Bag3\Data Flow Task\Derived Column.Outputs[Derived Column Output]" />
+                <path
+                  refId="Package\Bag3\Data Flow Task.Paths[Excel Source Plus Output]"
+                  endId="Package\Bag3\Data Flow Task\Derived Column.Inputs[Derived Column Input]"
+                  name="Excel Source Plus Output"
+                  startId="Package\Bag3\Data Flow Task\Excel Source Plus.Outputs[Excel Source Plus Output]" />
+                <path
+                  refId="Package\Bag3\Data Flow Task.Paths[Multicast Output 1]"
+                  endId="Package\Bag3\Data Flow Task\InterestSchedule.Inputs[OLE DB Destination Input]"
+                  name="Multicast Output 1"
+                  startId="Package\Bag3\Data Flow Task\Multicast.Outputs[Multicast Output 1]" />
+                <path
+                  refId="Package\Bag3\Data Flow Task.Paths[Multicast Output 2]"
+                  endId="Package\Bag3\Data Flow Task\PrincipalSchedule.Inputs[OLE DB Destination Input]"
+                  name="Multicast Output 2"
+                  startId="Package\Bag3\Data Flow Task\Multicast.Outputs[Multicast Output 2]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Bag3\Delete existing data from target table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:DelayValidation="True"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{89858B7A-FB75-4AFE-A9AD-8E5E35AE03B7}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Delete existing data from target table"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; Microsoft SQL Server 2008; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{7E2D5F25-39B1-462D-B215-5C2C952C5084}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::V_DeleteStatement" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Bag3.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{12F8676B-D38B-44D7-9385-3F4D4089C3E1}"
+          DTS:From="Package\Bag3\Delete existing data from target table"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Bag3\Data Flow Task" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="151.2,41.6"
+          Id="Package\Bag3\Data Flow Task"
+          TopLeft="50,104" />
+        <NodeLayout
+          Size="236,44"
+          Id="Package\Bag3\Delete existing data from target table"
+          TopLeft="12.5,21" />
+        <EdgeLayout
+          Id="Package\Bag3.PrecedenceConstraints[Constraint]"
+          TopLeft="128,65">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,39"
+              Start="0,0"
+              End="0,31.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,31.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="254.4,200.8"
+          Size="254.4,244"
+          Id="Package\Bag3"
+          TopLeft="174,44.5" />
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Bag3\Data Flow Task">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="160.8,41.6"
+          Id="Package\Bag3\Data Flow Task\PrincipalSchedule"
+          TopLeft="104.722222222222,298.722222222222" />
+        <NodeLayout
+          Size="160.8,41.6"
+          Id="Package\Bag3\Data Flow Task\Excel Source Plus"
+          TopLeft="193.444444444444,21.3333333333333" />
+        <NodeLayout
+          Size="120,41.6"
+          Id="Package\Bag3\Data Flow Task\Multicast"
+          TopLeft="211.666666666667,224.222222222222" />
+        <NodeLayout
+          Size="158.4,41.6"
+          Id="Package\Bag3\Data Flow Task\InterestSchedule"
+          TopLeft="328.944444444444,300.833333333333" />
+        <NodeLayout
+          Size="153.6,41.6"
+          Id="Package\Bag3\Data Flow Task\Derived Column"
+          TopLeft="201,128" />
+        <EdgeLayout
+          Id="Package\Bag3\Data Flow Task.Paths[Multicast Output 2]"
+          TopLeft="253,266.222222222222">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-67.7777777777783,32.5"
+              Start="0,0"
+              End="-67.7777777777783,25">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,9.25657894736842" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,9.25657894736842"
+                    Point2="0,13.2565789473684"
+                    Point3="-4,13.2565789473684" />
+                  <mssgle:LineSegment
+                    End="-63.7777777777783,13.2565789473684" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-63.7777777777783,13.2565789473684"
+                    Point2="-67.7777777777783,13.2565789473684"
+                    Point3="-67.7777777777783,17.2565789473684" />
+                  <mssgle:LineSegment
+                    End="-67.7777777777783,25" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Bag3\Data Flow Task.Paths[Multicast Output 1]"
+          TopLeft="290.333333333334,266.222222222222">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="117.61111111111,34.611111111111"
+              Start="0,0"
+              End="117.61111111111,27.111111111111">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,10.1176900584795" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,10.1176900584795"
+                    Point2="0,14.1176900584795"
+                    Point3="4,14.1176900584795" />
+                  <mssgle:LineSegment
+                    End="113.61111111111,14.1176900584795" />
+                  <mssgle:CubicBezierSegment
+                    Point1="113.61111111111,14.1176900584795"
+                    Point2="117.61111111111,14.1176900584795"
+                    Point3="117.61111111111,18.1176900584795" />
+                  <mssgle:LineSegment
+                    End="117.61111111111,27.111111111111" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Bag3\Data Flow Task.Paths[Excel Source Plus Output]"
+          TopLeft="275.972222222222,63.3333333333333">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,64.6666666666667"
+              Start="0,0"
+              End="0,57.1666666666667">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,57.1666666666667" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Bag3\Data Flow Task.Paths[Derived Column Output]"
+          TopLeft="274.833333333333,170">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,54.222222222222"
+              Start="0,0"
+              End="0,46.722222222222">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,46.722222222222" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Bag3\Data Flow Task\PrincipalSchedule">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Bag3\Data Flow Task\InterestSchedule">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>

@@ -1,0 +1,103 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+    <title>角色权限管理</title>
+    <link rel="stylesheet" href="../Contents/bootstrap.css" />
+    <link rel="stylesheet" href="../Contents/roles.css" />
+    <link href="../Contents/fontello/css/fontello.css" rel="stylesheet" />
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/jquery.cookie.js"></script>
+    <script src="../Scripts/roleOperate.js"></script>
+    <script type="text/javascript">
+        var Pages = {}
+
+        function loginOut()
+        {
+            RoleOperate.cookieNameRemove();
+            window.location.href('./roles.html');
+        }
+    </script>
+</head>
+<body>
+
+    <div class="page">
+        <div class="aside nav">
+            <div class="title">导航</div>
+            <ul class="menu">
+                <li id="UsersManagement" class="menu-item">
+                    <a href="userList.html" title="用户管理">
+                        <i class="icon-user-add"></i>
+                        <span>用户管理</span>
+                    </a>
+                </li>
+                <li id="RolesManagement" class="menu-item">
+                    <a href="roleList.html" title="角色管理">
+                        <i class="icon-users-2"></i>
+                        <span>角色管理</span>
+                    </a>
+                </li>
+                <li id="ApplicationsManagement" class="menu-item">
+                    <a href="appList.html" title="应用管理">
+                        <i class="icon-th-thumb"></i>
+                        <span>应用管理</span>
+                    </a>
+                </li>
+                <li id="ChildMenuManagement" class="menu-item">
+                    <a href="pathList.html" title="子菜单管理">
+                        <i class="icon-th-list-1"></i>
+                        <span>子菜单管理</span>
+                    </a>
+                </li>
+                <li id="ApproveManagement" class="menu-item">
+                    <a href="approvePermission.html" title="审批权限管理">
+                        <i class="icon-id-card-o"></i>
+                        <span>审批权限管理</span>
+                    </a>
+                </li>
+                <li id="BusinessManagement" class="menu-item">
+                    <a href="businessPermission.html" title="业务权限管理">
+                        <i class="icon-clipboard"></i>
+                        <span>业务权限管理</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="work">
+            <iframe src="userList.html" frameborder="0"></iframe>
+        </div>
+    </div>
+    <script>
+        var userName = $.cookie('gs_UserName');
+        if (userName != null) {
+            RoleOperate.checkMenuPermission(userName, 'QuickFrame', function (res) {
+                console.log(res)
+                $.each(res, function (i,v) {
+                    $('#' + v.PathName).show();
+                });
+                var dUrl = $(".aside li:visible").eq(0).addClass("menu-active").find('a').attr('href');
+                var $iframe = $('.work iframe');
+                $iframe.attr('src', dUrl);
+                $iframe.load(function () {
+                    $(this).fadeIn();
+                });
+                $(".aside li").click(function (e) {
+                    e.preventDefault();
+                    if (!$(this).hasClass("menu-active")) {
+                        $(".aside li").removeClass('menu-active');
+                        $(this).addClass("menu-active")
+                        var url = $(this).find('a').attr('href');
+                        $iframe = $('.work iframe');
+                        $iframe.hide();
+                        $iframe.attr('src', url);
+                        $iframe.load(function () {
+                            $(this).fadeIn();
+                        });
+                    }
+                });
+            })
+        }
+    </script>
+</body>
+</html>

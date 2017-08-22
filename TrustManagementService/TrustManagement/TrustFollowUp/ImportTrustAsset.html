@@ -1,0 +1,409 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <title>导入专项计划资产</title>
+    <link href="css/trustFollowUp.css" rel="stylesheet" />
+    <link href="css/pagerlist-style.css" rel="stylesheet" />
+    <link href="css/font/GoogleFontDosis.css" rel="stylesheet" />
+
+    <script src="../Common/Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../../Config/GlobalVariable.js"></script>
+    <script src="../Common/Scripts/common.js"></script>
+    <script src="../Common/Scripts/anyDialog.js"></script>
+
+    <style>
+
+        .checkbox{
+            margin-bottom:5px;
+        }
+        .checkbox label{
+            font-weight:bold;
+            margin-right:10px;
+        }
+        .btn-options{
+            background: #fff;
+            /*background-image: -webkit-gradient(linear, left top, left bottom, from(#f8f8f8), to(#f3f3f3));
+            background-image: -webkit-linear-gradient(top, #f8f8f8, #f3f3f3);
+            background-image: -moz-linear-gradient(top, #f8f8f8, #f3f3f3);
+            background-image: -o-linear-gradient(top, #f8f8f8, #f3f3f3);
+            background-image: linear-gradient(to bottom, #f8f8f8, #f3f3f3);*/
+            border:1px solid #dedede;
+            border-top:none;
+            padding:3px 8px;
+            color:#666;
+            font-size:12px;
+            cursor:pointer;
+            border-radius:0 0 3px 3px;
+            box-shadow:0 2px 4px rgba(0,0,0,.1)
+        }
+        .btn-options:hover{
+            border-color:#ccc;
+        }
+        .btn-options i{
+            font-size:10px;
+            font-style:normal;
+            color:#888;
+            font-weight:300;
+            margin-left:3px;
+        }
+    </style>
+
+</head>
+<body>
+    <div id="more-options" style="border-bottom:1px solid #dedede;background:#f8f8f8;padding:10px 20px;display:none;">
+        <div class="checkbox">
+            <label for="IsBaseOnLoanTerm">请选择本金计算规则:</label>
+            <select id="IsBaseOnLoanTerm">
+                <option value="0" selected>按剩余金额</option>
+                <option value="1">按合同金额</option>
+            </select>
+        </div>
+        <div class="checkbox">
+            <label for="CalculateHeadInterestByDay">请选择头部利息计算规则:</label>
+            <select id="CalculateHeadInterestByDay">
+                <option value="0">按期</option>
+                <option value="1" selected>按天</option>
+            </select>
+        </div>
+        <div class="checkbox">
+            <label for="CalculateInterestByDays">请选择每期利息计算规则:</label>
+            <select id="CalculateInterestByDays">
+                <option value="0">按期</option>
+                <option value="1">按天</option>
+            </select>
+        </div>
+        <div class="checkbox">
+            <label for="CountLastInterestPeriodByDay">请选择尾部利息计算规则:</label>
+            <select id="CountLastInterestPeriodByDay">
+                <option value="0">按期</option>
+                <option value="1">按天</option>
+            </select>
+        </div>
+        <div class="checkbox">
+            <label for="IsBasedOnReportingDate">现金流归集是否从数据日期开始归集:</label>
+            <input type="radio" name="IsBasedOnReportingDate" value="1" id="IsBasedOnReportingDate" checked />是 <input type="radio" name="IsBasedOnReportingDate" value="0" id="IsBasedOnReportingDate" />否
+        </div>
+        <div class="checkbox">
+            <label for="PeriodsCalRule">现金流期限计算方法:</label>
+            <select id="PeriodsCalRule">
+                <option value="0">反向</option>
+                <option value="1">正向</option>
+            </select>
+            <select id="Direction">
+                <option value="1">从资产到期日开始往前推算，资产到期日到前一还款日的区间作为单独一期</option>
+                <option value="2">从资产到期日开始往前推算，资产到期日到前一还款日的区间不作为单独一期</option>
+                <option value="3">从资产到期日开始往前推算，资产到期日所在月的还款日为最后一期还款日</option>
+            </select>
+        </div>
+        <div class="checkbox">
+            <label for="TrailPeriodsCalRule">等本等息的尾差调整规则:</label>
+            <select id="TrailPeriodsCalRule">
+                <option value="0">将尾差计算在最后一个还款期间</option>
+                <option value="1">将尾差计算在下一个还款期间</option>
+            </select>
+        </div>
+        <div class="checkbox">
+            <label for="IsRidPrepaid">是否剔除早偿资产:</label>
+            <select id="IsRidPrepaid">
+                <option value="0">否</option>
+                <option value="1">是</option>
+            </select>
+        </div>
+        <div class="checkbox">
+            <label for="IsNormalAsset">现金流归集资产:</label>
+            <div style="padding:5px 0;border-top:1px solid #ededed;border-bottom:1px solid #ededed;margin-top:5px;margin-bottom:5px;">
+                <p><span style="width:30%;display:inline-block">排除用户状态非正常资产</span><input type="checkbox" name="IsUserStatusNormal" id="IsUserStatusNormal" /></p>
+                <p><span style="width:30%;display:inline-block">排除五级分类非正常资产</span><input type="checkbox" name="IsLoanGradeLevelNormal" id="IsLoanGradeLevelNormal" /></p>
+                <p><span style="width:30%;display:inline-block">排除当期逾期天数非0资产</span><input type="checkbox" name="IsNotInArrears" id="IsNotInArrears" /></p>
+                <p><span style="width:30%;display:inline-block">排除数据日期之前已到期资产</span><input type="checkbox" name="IsNotMatured" id="IsNotMatured" /></p>
+            </div>
+        </div>
+        <div class="checkbox">
+            <label for="CalculateRTBySystem">系统计算剩余期限:</label>
+            <input type="checkbox" id="CalculateRTBySystem"/>
+        </div>
+        <div class="checkbox" id="RTCalculationRule-Options" style="display:none;">
+            <label for="RTCalculationRule">请选择剩余期限计算方式:</label>
+            <p style="margin-top:5px;"><input type="radio" name="RTCalculationRule" value="1" checked/> 资产到期日的后一还款日为最后一期还款日，数据日期的下一个还款日为第一个还款日，从第一个还款日到最后一个还款日的个数为剩余期数</p>
+            <p><input type="radio" name="RTCalculationRule" value="2" /> 资产到期日的前一还款日为最后一期还款日，数据日期的下一个还款日为第一个还款日，从第一个还款日到最后一个还款日的个数为剩余期数</p>
+            <p><input type="radio" name="RTCalculationRule" value="3" /> 资产到期日所在月的还款日为最后一期还款日，数据日期的下一个还款日为第一个还款日，从第一个还款日到最后一个还款日的个数为剩余期数</p>
+        </div>
+    </div>
+    <div style="padding:20px;">
+        <div style="text-align:right;margin-top:-21px;">
+            <button type="button" id="show-options-btn" class="btn-options">拆分规则配置<i>▼</i></button>
+        </div>
+        <div style="margin-bottom:5px;">
+            <strong><label>日期：</label></strong>
+            <select class="form-control" id="ReportingDate"></select>
+        </div>
+        <div style="text-align:right;margin-top:10px;">
+            <button type="button" class="btn btn-primary btn-sm" id="btnSubmit">提交</button>
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    var isOpen = false;
+    $('#show-options-btn').click(function () {
+        var $this = $(this);
+        $('#more-options').slideToggle(200, function () {
+            if ($(this).is(":visible")) {
+                $this.css('background', '#f8f8f8').find('i').text('▲');
+            } else {
+                $this.css('background', '#fff').find('i').text('▼');
+            }
+        });
+    });
+    $('#PeriodsCalRule').on('change', function () {
+        var value = $(this).val(), $Direction = $('#Direction');
+        if (value == 0) {
+            $Direction.html(
+                '<option value="1">从资产到期日开始往前推算，资产到期日到前一还款日的区间作为单独一期</option>'+
+                '<option value="2">从资产到期日开始往前推算，资产到期日到前一还款日的区间不作为单独一期</option>'+
+                '<option value="3">从资产到期日开始往前推算，资产到期日所在月的还款日为最后一期还款日</option>'
+            );
+        } else {
+            $Direction.html(
+                '<option value="1">以导入剩余期数（remaining term）为准，从下一个还款日开始往后推算</option>'
+            );
+        }
+    });
+    $('#CalculateRTBySystem').on('change', function () {
+        var $RTCalculationRuleOptions = $('#RTCalculationRule-Options');
+        if ($(this).is(':checked')) {
+            $RTCalculationRuleOptions.show();
+        } else {
+            $RTCalculationRuleOptions.hide();
+        }
+    });
+    // 缓存拆分规则
+    if (window.localStorage) {
+        var splitOptions = localStorage.getItem('splitOptions');
+        if (splitOptions) {
+            splitOptions = JSON.parse(splitOptions);
+            $.each(splitOptions, function (k, v) {
+                var obj = $('#' + k);
+                if (obj[0]) {
+                    if (obj[0].tagName.toLowerCase() == 'input') {
+                        var type = obj.attr('type');
+                        if (type == 'radio') {
+                            $("input[name='"+k+"'][value='"+v+"']").prop('checked', true);
+                        } else {
+                            obj.prop('checked', (v === '1') ? true : false);
+                            if (k === 'CalculateRTBySystem') {
+                                if (v == '1') {
+                                    obj.trigger('change');
+                                }
+                            }
+                        }
+                    } else {
+                        obj.val(v);
+                        if (k === 'PeriodsCalRule') {
+                            if (v == '1') {
+                                obj.trigger('change');
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    }
+    var svcUrl = GlobalVariable.DataProcessServiceUrl + "CommonExecuteGet?";
+    var TrustId = getQueryString('TrustId');
+        var executeParam = { SPName: 'usp_GetFactLoanDate', SQLParams: [] };
+        executeParam.SQLParams.push({ Name: 'TrustId', Value: TrustId, DBType: 'int' });
+
+        var executeParams = encodeURIComponent(JSON.stringify(executeParam));
+        $.ajax({
+            cache: false,
+            type: "GET",
+            async: false,
+            url: svcUrl + 'appDomain=dbo&executeParams=' + executeParams ,
+            dataType: "json",
+            contentType: "application/xml;charset=utf-8",
+            data: {},
+            success: function (response) {
+                var sourceData;
+                if (typeof response === 'string') { sourceData = JSON.parse(response); }
+                else { sourceData = response; }
+                var options="";
+                $.each(sourceData, function (i, item) {
+                    options += '<option value="' + item.ReportingDate + '">' + item.ReportingDate + '</option>';
+                });
+                $('#ReportingDate').append(options);
+            },
+            error: function (response) { alert('Error occursed while requiring the remote source data!'); }
+        });
+
+        $('#btnSubmit').click(function () {
+            var data = {
+                IsBaseOnLoanTerm : $('#IsBaseOnLoanTerm').val(),
+                CalculateInterestByDays : $('#CalculateInterestByDays').val(),
+                CalculateHeadInterestByDay : $('#CalculateHeadInterestByDay').val(),
+                CountLastInterestPeriodByDay : $('#CountLastInterestPeriodByDay ').val(),
+                IsBasedOnReportingDate : $('input[name="IsBasedOnReportingDate"]:checked').val(),
+                PeriodsCalRule: $('#PeriodsCalRule').val(),
+                TrailPeriodsCalRule: $('#TrailPeriodsCalRule').val(),
+                IsRidPrepaid: $('#IsRidPrepaid').val(),
+                Direction : $('#Direction').val(),
+                IsUserStatusNormal: $('#IsUserStatusNormal').is(':checked') ? '1' : '0',
+                IsLoanGradeLevelNormal: $('#IsLoanGradeLevelNormal').is(':checked') ? '1' : '0',
+                IsNotInArrears: $('#IsNotInArrears').is(':checked') ? '1' : '0',
+                IsNotMatured: $('#IsNotMatured').is(':checked') ? '1' : '0',
+                CalculateRTBySystem : $('#CalculateRTBySystem').is(':checked') ? '1' : '0',
+                RTCalculationRule : $('input[name="RTCalculationRule"]:checked').val()
+            }
+            if(window.localStorage) localStorage.setItem('splitOptions', JSON.stringify(data));
+            var sessionVariables_p = '<SessionVariables>' +
+							 '<SessionVariable>' +
+								 '<Name>TrustId</Name>' +
+								 '<Value>' + TrustId + '</Value>' +
+								 '<DataType>Int</DataType>' +
+								 '<IsConstant>1</IsConstant>' +
+								 '<IsKey>0</IsKey>' +
+								 '<KeyIndex>0</KeyIndex>' +
+							 '</SessionVariable>' +
+							 '<SessionVariable>' +
+								 '<Name>ReportingDate</Name>' +
+								 '<Value>' + $('#ReportingDate').val() + '</Value>' +
+								 '<DataType>String</DataType>' +
+								 '<IsConstant>1</IsConstant>' +
+								 '<IsKey>0</IsKey>' +
+								 '<KeyIndex>0</KeyIndex>' +
+							 '</SessionVariable>' +
+                             '<SessionVariable>' +
+								 '<Name>IsBaseOnLoanTerm</Name>' +
+								 '<Value>' + data.IsBaseOnLoanTerm + '</Value>' +
+								 '<DataType>Int</DataType>' +
+								 '<IsConstant>1</IsConstant>' +
+								 '<IsKey>0</IsKey>' +
+								 '<KeyIndex>0</KeyIndex>' +
+							 '</SessionVariable>' +
+                             '<SessionVariable>' +
+								 '<Name>CalculateInterestByDays</Name>' +
+								 '<Value>' + data.CalculateInterestByDays + '</Value>' +
+								 '<DataType>Int</DataType>' +
+								 '<IsConstant>1</IsConstant>' +
+								 '<IsKey>0</IsKey>' +
+								 '<KeyIndex>0</KeyIndex>' +
+							 '</SessionVariable>' +
+                             '<SessionVariable>' +
+								 '<Name>CalculateHeadInterestByDay</Name>' +
+								 '<Value>' + data.CalculateHeadInterestByDay + '</Value>' +
+								 '<DataType>Int</DataType>' +
+								 '<IsConstant>1</IsConstant>' +
+								 '<IsKey>0</IsKey>' +
+								 '<KeyIndex>0</KeyIndex>' +
+							 '</SessionVariable>' +
+                             '<SessionVariable>' +
+								 '<Name>IncludeAPBFPoolCloseDate</Name>' +
+								 '<Value>0</Value>' +
+								 '<DataType>Int</DataType>' +
+								 '<IsConstant>1</IsConstant>' +
+								 '<IsKey>0</IsKey>' +
+								 '<KeyIndex>0</KeyIndex>' +
+							 '</SessionVariable>' +
+                            '<SessionVariable>' +
+                                '<Name>IsBasedOnReportingDate</Name>' +
+                                '<Value>' + data.IsBasedOnReportingDate + '</Value>' +
+                                '<DataType>Int</DataType>' +
+                                '<IsConstant>1</IsConstant>' +
+                                '<IsKey>0</IsKey>' +
+                                '<KeyIndex>0</KeyIndex>' +
+                            '</SessionVariable>' +
+                            '<SessionVariable>' +
+                                '<Name>CountLastInterestPeriodByDay</Name>' +
+                                '<Value>' + data.CountLastInterestPeriodByDay + '</Value>' +
+                                '<DataType>Int</DataType>' +
+                                '<IsConstant>1</IsConstant>' +
+                                '<IsKey>0</IsKey>' +
+                                '<KeyIndex>0</KeyIndex>' +
+                            '</SessionVariable>' +
+                            '<SessionVariable>' +
+                                '<Name>PeriodsCalRule</Name>' +
+                                '<Value>' + data.PeriodsCalRule + '</Value>' +
+                                '<DataType>Int</DataType>' +
+                                '<IsConstant>1</IsConstant>' +
+                                '<IsKey>0</IsKey>' +
+                                '<KeyIndex>0</KeyIndex>' +
+                            '</SessionVariable>' +
+                            '<SessionVariable>' +
+                                '<Name>TrailPeriodsCalRule</Name>' +
+                                '<Value>' + data.TrailPeriodsCalRule + '</Value>' +
+                                '<DataType>Int</DataType>' +
+                                '<IsConstant>1</IsConstant>' +
+                                '<IsKey>0</IsKey>' +
+                                '<KeyIndex>0</KeyIndex>' +
+                            '</SessionVariable>' +
+                            '<SessionVariable>' +
+                                '<Name>IsRidPrepaid</Name>' +
+                                '<Value>' + data.IsRidPrepaid + '</Value>' +
+                                '<DataType>Int</DataType>' +
+                                '<IsConstant>1</IsConstant>' +
+                                '<IsKey>0</IsKey>' +
+                                '<KeyIndex>0</KeyIndex>' +
+                            '</SessionVariable>' +
+                            '<SessionVariable>' +
+                                '<Name>Direction</Name>' +
+                                '<Value>' + data.Direction + '</Value>' +
+                                '<DataType>Int</DataType>' +
+                                '<IsConstant>1</IsConstant>' +
+                                '<IsKey>0</IsKey>' +
+                                '<KeyIndex>0</KeyIndex>' +
+                            '</SessionVariable>' +
+                            '<SessionVariable>' +
+                                '<Name>IsUserStatusNormal</Name>' +
+                                '<Value>' + data.IsUserStatusNormal + '</Value>' +
+                                '<DataType>Int</DataType>' +
+                                '<IsConstant>1</IsConstant>' +
+                                '<IsKey>0</IsKey>' +
+                                '<KeyIndex>0</KeyIndex>' +
+                            '</SessionVariable>' +
+                            '<SessionVariable>' +
+                                '<Name>IsLoanGradeLevelNormal</Name>' +
+                                '<Value>' + data.IsLoanGradeLevelNormal + '</Value>' +
+                                '<DataType>Int</DataType>' +
+                                '<IsConstant>1</IsConstant>' +
+                                '<IsKey>0</IsKey>' +
+                                '<KeyIndex>0</KeyIndex>' +
+                            '</SessionVariable>' +
+                            '<SessionVariable>' +
+                                '<Name>IsNotInArrears</Name>' +
+                                '<Value>' + data.IsNotInArrears + '</Value>' +
+                                '<DataType>Int</DataType>' +
+                                '<IsConstant>1</IsConstant>' +
+                                '<IsKey>0</IsKey>' +
+                                '<KeyIndex>0</KeyIndex>' +
+                            '</SessionVariable>' +
+                            '<SessionVariable>' +
+                                '<Name>IsNotMatured</Name>' +
+                                '<Value>' + data.IsNotMatured + '</Value>' +
+                                '<DataType>Int</DataType>' +
+                                '<IsConstant>1</IsConstant>' +
+                                '<IsKey>0</IsKey>' +
+                                '<KeyIndex>0</KeyIndex>' +
+                            '</SessionVariable>' +
+                            '<SessionVariable>' +
+                                '<Name>CalculateRTBySystem</Name>' +
+                                '<Value>' + data.CalculateRTBySystem + '</Value>' +
+                                '<DataType>Int</DataType>' +
+                                '<IsConstant>1</IsConstant>' +
+                                '<IsKey>0</IsKey>' +
+                                '<KeyIndex>0</KeyIndex>' +
+                            '</SessionVariable>' +
+                            '<SessionVariable>' +
+                                '<Name>RTCalculationRule</Name>' +
+                                '<Value>' + data.RTCalculationRule + '</Value>' +
+                                '<DataType>Int</DataType>' +
+                                '<IsConstant>1</IsConstant>' +
+                                '<IsKey>0</IsKey>' +
+                                '<KeyIndex>0</KeyIndex>' +
+                            '</SessionVariable>' +
+                        '</SessionVariables>';
+            parent.window.TaskProcessWProxy.CreateSessionShowTask("Task", sessionVariables_p, "ImportTrustAssetByFactLoan");
+        });
+
+</script>

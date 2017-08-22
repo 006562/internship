@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<main>
+	<Parameters>
+		<Parameter Name='DBName'	Type='SqlParameter' Value='DAL_SEC_ALR' SqlDbType='VarChar' TableName='DL'  />
+	</Parameters>
+	<Query>
+    <![CDATA[
+declare @vchSQL  varchar(8000)
+set @vchSQL = 'use [' + @DBName + ']
+
+/****** Object:  Table [dbo].[tblDimPool]    Script Date: 05/03/2012 16:34:22 ******/
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N''[dbo].[tblDimPool]'') AND type in (N''U''))
+DROP TABLE [dbo].[tblDimPool]
+
+/****** Object:  Table [dbo].[tblDimPool]    Script Date: 05/03/2012 16:34:22 ******/
+SET ANSI_NULLS ON
+
+SET QUOTED_IDENTIFIER ON
+
+SET ANSI_PADDING ON
+
+CREATE TABLE [dbo].[tblDimPool](
+	[DimPoolID] [bigint] NOT NULL,
+  [PoolDBName] [nvarchar](200) NOT NULL,
+	[DimOrganisationID] [int] NOT NULL,
+  [OrganisationCode] [varchar](10) NULL,
+	[DimReportingDateID] [int] NOT NULL,
+	[TargetSqlConnection] [nvarchar](200) NOT NULL,
+  [DimSourceTrustID] [bigint] NULL,
+  [DimTargetTrustID] [bigint] NULL,
+  [SoldUnSoldCode] [nvarchar](200) NULL,
+  [DateAsOf] [datetime] NULL,
+  [UpdateECDate] [datetime] NULL,
+  [ApplyECDAte] [datetime] NULL,
+  [Overlap] bit NULL,
+  [ReservedUnreserved] [nvarchar](200) NULL,
+  [Status] [nvarchar](200) NULL,
+  [UploadID] [bigint] NULL,
+  [DimSourcePoolID] [bigint] NULL,
+  [PoolType] [nvarchar](200) NULL,
+  [PoolHierarchyType] [nvarchar](200) NULL,
+  [ECUpdateBy]  [nvarchar](100) NULL 
+ CONSTRAINT [PK_tblDimPool] PRIMARY KEY CLUSTERED 
+(
+	[DimPoolID] ASC
+
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON, FILLFACTOR = 70) ON [PRIMARY]
+) ON [PRIMARY]'
+
+exec (@vchSQL)
+
+]]>
+  </Query>
+
+</main>

@@ -1,0 +1,88 @@
+
+    Declare @CriteriaSetCode varchar(200)
+    Declare @TaskCode varchar(200)
+    Declare @CriteriaSetCodeCategoryId bigint
+    Declare @ProcessActionCodeCategoryId bigint
+    Declare @ProcessTaskCodeCategoryId bigint
+    Declare @CriteriaSetCodeId bigint
+    Declare @CriteriaSetId bigint
+    Declare @ProcessTaskCodeId bigint
+    Declare @ActionCode varchar(200)
+    Select @ProcessActionCodeCategoryId=[CodeCategoryId] From [Cashflow].[CodeCategory] Where [CategoryCode]='ProcessActionType'
+    Select @CriteriaSetCodeCategoryId=[CodeCategoryId] From [Cashflow].[CodeCategory] Where [CategoryCode]='CriteriaSetType'
+    Select @ProcessTaskCodeCategoryId=[CodeCategoryId] From [Cashflow].[CodeCategory] Where [CategoryCode]='ProcessTaskType'
+    SET @CriteriaSetId=NULL
+  
+    SET @ActionCode='PrepareSessionVariables'
+    if (not exists(select 1 from [Cashflow].[CodeDictionary] where CodeDictionaryCode=@ActionCode and CodeCategoryId=@ProcessActionCodeCategoryId))
+    BEGIN
+    INSERT INTO [Cashflow].[CodeDictionary]([CodeCategoryId],[CodeDictionaryCode],[Value],[ValueShort],[SequenceNo],[IsDidplayed])
+    VALUES(@ProcessActionCodeCategoryId,@ActionCode,@ActionCode+' Form CashFlowStudio','',0,1)
+    END
+  
+    SET @ActionCode='Test_ReadSessionContext'
+    if (not exists(select 1 from [Cashflow].[CodeDictionary] where CodeDictionaryCode=@ActionCode and CodeCategoryId=@ProcessActionCodeCategoryId))
+    BEGIN
+    INSERT INTO [Cashflow].[CodeDictionary]([CodeCategoryId],[CodeDictionaryCode],[Value],[ValueShort],[SequenceNo],[IsDidplayed])
+    VALUES(@ProcessActionCodeCategoryId,@ActionCode,@ActionCode+' Form CashFlowStudio','',0,1)
+    END
+  
+    SET @ActionCode='CashFlowExporting'
+    if (not exists(select 1 from [Cashflow].[CodeDictionary] where CodeDictionaryCode=@ActionCode and CodeCategoryId=@ProcessActionCodeCategoryId))
+    BEGIN
+    INSERT INTO [Cashflow].[CodeDictionary]([CodeCategoryId],[CodeDictionaryCode],[Value],[ValueShort],[SequenceNo],[IsDidplayed])
+    VALUES(@ProcessActionCodeCategoryId,@ActionCode,@ActionCode+' Form CashFlowStudio','',0,1)
+    END
+  
+    SET @ActionCode='RBALoadLoans'
+    if (not exists(select 1 from [Cashflow].[CodeDictionary] where CodeDictionaryCode=@ActionCode and CodeCategoryId=@ProcessActionCodeCategoryId))
+    BEGIN
+    INSERT INTO [Cashflow].[CodeDictionary]([CodeCategoryId],[CodeDictionaryCode],[Value],[ValueShort],[SequenceNo],[IsDidplayed])
+    VALUES(@ProcessActionCodeCategoryId,@ActionCode,@ActionCode+' Form CashFlowStudio','',0,1)
+    END
+  
+    SET @TaskCode='CashFlowECVerify'
+
+    if (not exists(select 1 from [Cashflow].[CodeDictionary] where CodeDictionaryCode=@TaskCode and CodeCategoryId=@ProcessTaskCodeCategoryId))
+    BEGIN
+    INSERT INTO [Cashflow].[CodeDictionary]([CodeCategoryId],[CodeDictionaryCode],[Value],[ValueShort],[SequenceNo],[IsDidplayed])
+    VALUES(@ProcessTaskCodeCategoryId,@TaskCode,@TaskCode+' Form CashFlowStudio','',0,1)
+    END
+
+    Set @ProcessTaskCodeId = (select Cashflow.GetDictionaryCodeID('ProcessTaskType',@TaskCode))
+
+    if(exists(select 1 from [Cashflow].[ProcessTask] where [ProcessTaskCodeId]=@ProcessTaskCodeId))
+    BEGIN
+    Update [Cashflow].[ProcessTask] set
+    [XMLProcessTask]=N'<Task><Action ActionCode="PrepareSessionVariables" ActionDisplayName="初始化内存变量" FunctionName="InitializeMemoryObject" SequenceNo="1"><Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" /></Action><Action ActionCode="Test_ReadSessionContext" ActionDisplayName="现金流模型编译" FunctionName="RunManagedMethodByPath" SequenceNo="2"><Parameter Name="AssemblyPath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessEngine\bin\AddIn.CashflowScript.dll" DataType="String" Usage="Task" IsConfigurable="false" /><Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.CashFlowScriptAddIn" DataType="String" Usage="Task" IsConfigurable="false" /><Parameter Name="MethodName" SessionParameterName="" Value="CompileCashFlowEquationDebugPlus" DataType="String" Usage="Task" IsConfigurable="false" /><Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" /><Parameter Name="sSessionId" SessionParameterName="SessionId" Value="" DataType="String" Usage="" IsConfigurable="false" /><Parameter Name="sConnectionString" SessionParameterName="" Value="Server=MSSQL;Database=TaskProcess;Trusted_Connection=True;" DataType="String" Usage="" IsConfigurable="false" /><Parameter Name="sAppDomain" SessionParameterName="" Value="Cashflow" DataType="String" Usage="" IsConfigurable="false" /><Parameter Name="sXMLInput" SessionParameterName="ECXmlScript" Value="" DataType="String" Usage="" IsConfigurable="false" /><Parameter Name="sDLLFilePath" SessionParameterName="" Value="E:\TEMP\" DataType="String" Usage="" IsConfigurable="false" /><Parameter Name="sDLLFileName" SessionParameterName="SessionId" Value="" DataType="String" Usage="" IsConfigurable="false" /><Parameter Name="thirdPartyDllPath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessEngine\bin\AddIn.CashflowScript.dll" DataType="String" Usage="" IsConfigurable="false" /></Action><Action ActionCode="CashFlowExporting" ActionDisplayName="现金流模型测试" FunctionName="RunManagedMethodByPath" SequenceNo="3"><Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="5" /><Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="5" /><Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="5" /><Parameter Name="AssemblyPath" SessionParameterName="GeneratedDllPath" Value="Verification" DataType="String" Usage="Task" IsConfigurable="5" /><Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="5" /><Parameter Name="MethodName" SessionParameterName="ECQueryName" Value="DummyMethod" DataType="String" Usage="Task" IsConfigurable="5" /><Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="5" /><Parameter Name="CashFlowName" SessionParameterName="" Value="CashFlowExporting" DataType="String" Usage="" IsConfigurable="5" /></Action><Action ActionCode="RBALoadLoans" ActionDisplayName="现金流模型测试结果" FunctionName="RunSP" SequenceNo="4"><Parameter Name="InputType" SessionParameterName="" Value="Export" DataType="String" Usage="CashFlow" IsConfigurable="false" /><Parameter Name="ConnectionString" SessionParameterName="" Value="Data Source=MSSQL;Initial Catalog=TaskProcess;Integrated Security=SSPI;" DataType="String" Usage="Task" IsConfigurable="false" /><Parameter Name="SPName" SessionParameterName="" Value="[Cashflow].usp_TestReadSessionContext" DataType="String" Usage="Task" IsConfigurable="false" /><Parameter Name="SessionId" SessionParameterName="SessionId" Value="" DataType="UniqueIdentifier" Usage="SQLParameter" IsConfigurable="false" /><Parameter Name="WaitForDelay" SessionParameterName="" Value="00:00:05" DataType="NVarChar" Usage="SQLParameter" IsConfigurable="false" /><Parameter Name="ActionMessage" SessionParameterName="" Value="" DataType="NVarChar" Usage="SQLParameter" IsConfigurable="false" /></Action></Task>'
+    ,[CriteriaSetId]=@CriteriaSetId
+    where [ProcessTaskCodeId]=@ProcessTaskCodeId
+    END
+    ELSE
+    BEGIN
+    INSERT INTO [Cashflow].[ProcessTask]
+    ([ProcessTaskCodeId]
+    ,[ProcessTaskDescription]
+    ,[XMLProcessTask]
+    ,[ProcessTaskFilePath]
+    ,[IsCurrent]
+    ,[VersionNumber]
+    ,[FileCheckSum]
+    ,[TaskType]
+    ,[IsCheckOut]
+    ,[CriteriaSetId])
+    VALUES
+    (@ProcessTaskCodeId
+    ,@TaskCode+' from cashflow studio UI'
+    ,N'<Task><Action ActionCode="PrepareSessionVariables" ActionDisplayName="初始化内存变量" FunctionName="InitializeMemoryObject" SequenceNo="1"><Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" /></Action><Action ActionCode="Test_ReadSessionContext" ActionDisplayName="现金流模型编译" FunctionName="RunManagedMethodByPath" SequenceNo="2"><Parameter Name="AssemblyPath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessEngine\bin\AddIn.CashflowScript.dll" DataType="String" Usage="Task" IsConfigurable="false" /><Parameter Name="TypeName" SessionParameterName="" Value="AddIn.CashflowScript.CashFlowScriptAddIn" DataType="String" Usage="Task" IsConfigurable="false" /><Parameter Name="MethodName" SessionParameterName="" Value="CompileCashFlowEquationDebugPlus" DataType="String" Usage="Task" IsConfigurable="false" /><Parameter Name="InputType" SessionParameterName="" Value="DirectInput" DataType="String" Usage="CashFlow" IsConfigurable="false" /><Parameter Name="sSessionId" SessionParameterName="SessionId" Value="" DataType="String" Usage="" IsConfigurable="false" /><Parameter Name="sConnectionString" SessionParameterName="" Value="Server=MSSQL;Database=TaskProcess;Trusted_Connection=True;" DataType="String" Usage="" IsConfigurable="false" /><Parameter Name="sAppDomain" SessionParameterName="" Value="Cashflow" DataType="String" Usage="" IsConfigurable="false" /><Parameter Name="sXMLInput" SessionParameterName="ECXmlScript" Value="" DataType="String" Usage="" IsConfigurable="false" /><Parameter Name="sDLLFilePath" SessionParameterName="" Value="E:\TEMP\" DataType="String" Usage="" IsConfigurable="false" /><Parameter Name="sDLLFileName" SessionParameterName="SessionId" Value="" DataType="String" Usage="" IsConfigurable="false" /><Parameter Name="thirdPartyDllPath" SessionParameterName="" Value="E:\TSSWCFServices\TaskProcessEngine\bin\AddIn.CashflowScript.dll" DataType="String" Usage="" IsConfigurable="false" /></Action><Action ActionCode="CashFlowExporting" ActionDisplayName="现金流模型测试" FunctionName="RunManagedMethodByPath" SequenceNo="3"><Parameter Name="IsCashFlowDisplay" SessionParameterName="" Value="true" DataType="String" Usage="CashFlow" IsConfigurable="5" /><Parameter Name="InputType" SessionParameterName="" Value="Calculated" DataType="String" Usage="CashFlow" IsConfigurable="5" /><Parameter Name="ActionType" SessionParameterName="" Value="CashFlow" DataType="String" Usage="CashFlow" IsConfigurable="5" /><Parameter Name="AssemblyPath" SessionParameterName="GeneratedDllPath" Value="Verification" DataType="String" Usage="Task" IsConfigurable="5" /><Parameter Name="TypeName" SessionParameterName="" Value="EquationProvider.CashFlowEquationProvider" DataType="String" Usage="Task" IsConfigurable="5" /><Parameter Name="MethodName" SessionParameterName="ECQueryName" Value="DummyMethod" DataType="String" Usage="Task" IsConfigurable="5" /><Parameter Name="CurrentPosition" SessionParameterName="CurrentPosition" Value="0" DataType="Int16" Usage="" IsConfigurable="5" /><Parameter Name="CashFlowName" SessionParameterName="" Value="CashFlowExporting" DataType="String" Usage="" IsConfigurable="5" /></Action><Action ActionCode="RBALoadLoans" ActionDisplayName="现金流模型测试结果" FunctionName="RunSP" SequenceNo="4"><Parameter Name="InputType" SessionParameterName="" Value="Export" DataType="String" Usage="CashFlow" IsConfigurable="false" /><Parameter Name="ConnectionString" SessionParameterName="" Value="Data Source=MSSQL;Initial Catalog=TaskProcess;Integrated Security=SSPI;" DataType="String" Usage="Task" IsConfigurable="false" /><Parameter Name="SPName" SessionParameterName="" Value="[Cashflow].usp_TestReadSessionContext" DataType="String" Usage="Task" IsConfigurable="false" /><Parameter Name="SessionId" SessionParameterName="SessionId" Value="" DataType="UniqueIdentifier" Usage="SQLParameter" IsConfigurable="false" /><Parameter Name="WaitForDelay" SessionParameterName="" Value="00:00:05" DataType="NVarChar" Usage="SQLParameter" IsConfigurable="false" /><Parameter Name="ActionMessage" SessionParameterName="" Value="" DataType="NVarChar" Usage="SQLParameter" IsConfigurable="false" /></Action></Task>'
+    ,NULL
+    ,1
+    ,NULL
+    ,NULL
+    ,'CashFlow'
+    ,0
+    ,@CriteriaSetId)
+    END
+    DELETE FROM [Cashflow].[ProcessTaskArray] WHERE [ProcessTaskCodeId]=@ProcessTaskCodeId
+    DELETE FROM [Cashflow].[ProcessTaskContext] where [ProcessTaskCodeId]=@ProcessTaskCodeId
+  

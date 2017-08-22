@@ -1,0 +1,61 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="renderer" content="webkit">
+
+    <title data-bind="text: PageTitle"></title>
+
+    <link href="../../Contents/bootstrap.css" rel="stylesheet" />
+    <link href="../../Scripts/jquery-ui.css" rel="stylesheet" />
+    <style type="text/css">
+        .max12k { max-width: 1200px; }
+        .max12k .col-4.control-label { padding-right: 0px; }
+        .max12k .col-8 { padding-left: 0px; }
+    </style>
+</head>
+
+<body>
+    <div id="loading" class="loadpage">
+        <i class="icon icon-setting bigicon am-rotate pa"></i>
+        <i class="icon icon-setting smicon am-rotate pa"></i>
+        <p class="text pa">Configuration Loading...</p>
+    </div>
+
+    <div id="page_main_container" class="main">
+        <div id="divChart3" style="padding-left:50px;padding-right:50px"></div>
+        <div id="divChart1" style="padding-left:50px;padding-right:50px"></div>
+        <div id="divChart2" style="padding-left:50px;padding-right:50px"></div>
+        <div id="divChart4" style="padding-left:50px;padding-right:50px"></div>
+
+
+        <table id="tbLossSample" class="table table-bordered"></table>
+        <table id="tbLossSampleLog" class="table table-bordered"></table>
+        <div class="form-row form-horizontal max12k" data-bind="foreach: ModelParams">
+            <div class="col-3 form-row">
+                <div class="col-4 control-label">
+                    <label data-bind="text:ItemCode"></label>
+                </div>
+                <div class="col-8">
+                    <input type="text" class="form-control" data-bind="value: ItemValue" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="../../Scripts/jquery.min.js"></script>
+    <script src="../../Scripts/jquery-ui.min.js"></script>
+    <script src="../../Scripts/App.Global.js"></script>
+    <script src="../../Scripts/jquery.cookie.js"></script>
+    <script src="../../Scripts/highcharts.js"></script>
+    <script src="../../Scripts/common.js"></script>
+    <script src="../../Scripts/knockout-3.4.0.js"></script>
+    <script src="../../Scripts/knockout.mapping-latest.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../../Scripts/bootstrap/js/bootstrap-table.min.js"></script>
+    <script src="ViewLossDistribution.js"></script>
+</body>
+
+</html>

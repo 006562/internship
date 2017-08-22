@@ -1,0 +1,129 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>文件上传</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+
+    <link href="../Contents/style.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="main">
+        <h3 id="step-title" class="h3"><span class="title">导入资产数据</span></h3>
+        <div class="form" id="AssetPoolCreationForm">
+            <div class="form-body default">
+                <div class="form-panel drop">
+                    <div class="col-12 form-group">
+                        <div class="col-3"><label>上传文件：</label></div>
+                        <div class="col-9">
+                            <input type="file" id="fileUploadFile" class="form-control file" data-valid="required" />
+                        </div>
+                    </div>
+                    <div class="col-12 form-group">
+                        <div class="col-3"><label>日期：</label></div>
+                        <div class="col-9">
+                            <input type="text" id="txtRDate" class="form-control date-plugins" data-valid="required date" />
+                        </div>
+                    </div>
+                    <div class="col-12 form-group">
+                        <div class="col-3"><label>资产类型：</label></div>
+                        <div class="col-9">
+                            <select class="form-control" id="AssetType"></select>
+                        </div>
+                    </div><div class="col-12 form-group">
+                        <div class="col-3"><label>针对机构：</label></div>
+                        <div class="col-9">
+                            <select class="form-control" id="OrganisationCode">
+                                
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-3 buttons pull-right">
+                    <button type="button" class="btn btn-primary" title="上传" onclick="SubmitForm()">上传</button>
+                    <button type="button" class="btn btn-default" title="取消" onclick="Cancel()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../Scripts/jquery-1.7.2.min.js"></script>
+    <script src="../Scripts/common.js"></script>
+    <script src="../Scripts/calendar.min.js"></script>
+    <script src="../UIFrame/js/gs-admin-2.pages.js"></script>
+    <script src="../Scripts/App.Global.js"></script>
+    <script src="../Scripts/PoolCutCommon.js"></script>
+    <script>
+        $(function () {
+            $('.date-plugins').date_input();
+            $('#AssetPoolCreationForm .form-control').change(function () {
+                CommonValidation.ValidControlValue($(this));
+            });
+            //AssetType
+            var executeParam = { SPName: 'dbo.usp_GetDimOrganisationID', SQLParams: [] };
+            var executeParams = encodeURIComponent(JSON.stringify(executeParam));
+            var serviceUrl = GlobalVariable.PoolCutServiceURL + 'CommonGet?connName=PoolCut_Database&exeParams=' + executeParams;
+            CallWCFSvc(serviceUrl, true, 'GET', function (data) {
+                var $sel = $('#OrganisationCode')
+                var options = '';
+                $.each(data, function (i, v) {
+                    options += '<option value="{0}">{1}</options>'.format(v.OrganisationCode, v.OrganisationDesc);
+                });
+                $sel.append(options);
+            });
+            //organisationCode
+            var executeParam = { SPName: 'dbo.usp_GetDimAssetID', SQLParams: [] };
+            var executeParams = encodeURIComponent(JSON.stringify(executeParam));
+            var serviceUrl = GlobalVariable.PoolCutServiceURL + 'CommonGet?connName=PoolCut_Database&exeParams=' + executeParams;
+            CallWCFSvc(serviceUrl, true, 'GET', function (data) {
+                var $sel = $('#AssetType')
+                var options = '';
+                $.each(data, function (i, v) {
+                    options += '<option value="{0}">{1}</options>'.format(v.AssetType, v.AssetTypeDesc);
+                });
+                $sel.append(options);
+            });
+        });
+        function SubmitForm() {
+            var isFormFieldsAllValid = true;
+            $('#AssetPoolCreationForm .form-control').each(function () {
+                if (!CommonValidation.ValidControlValue($(this))) isFormFieldsAllValid = false;
+            });
+
+            if (!isFormFieldsAllValid)
+                return false;
+
+            var filePath = $('#fileUploadFile').val();
+            var fileName = filePath.substring(filePath.lastIndexOf('\\') + 1);
+            //var fileType = fileName.substring(fileName.lastIndexOf('.') + 1);
+
+            UploadFile('fileUploadFile', fileName, 'PoolImportData', function (d) {
+                //alert(d.FileUploadResult);
+                RunTask(d.FileUploadResult);
+                //GSDialog.Close();
+            });
+        }
+        function Cancel() {
+            GSDialog.Close(0);
+        }
+        function RunTask(sourceFilePath) {
+            var AssetType = $('#AssetType').val();
+            var reportingDate = $('#txtRDate').val();
+            var OrganisationCode = $('#OrganisationCode').val();
+
+            var taskCodes = { 'AUTO': 'ConsumerLoanDataLoad_AUTO', 'RMBS': 'ConsumerLoanDataLoad_RMBS', 'CLO': 'ConsumerLoanDataLoad_CLO' };
+            var taskCode = taskCodes[AssetType];
+            console.log(taskCode);
+            
+            var tpi = new top.TaskProcessIndicatorHelper();
+            //tpi.AddVariableItem('SourceFileURL', '', 'String');
+            tpi.AddVariableItem('Reporting_Date', reportingDate, 'String', 1);
+            tpi.AddVariableItem('SourceFileName', sourceFilePath, 'String');
+            tpi.AddVariableItem('Organisation', OrganisationCode, 'String');
+            tpi.AddVariableItem('AssetType', AssetType, 'String');
+            tpi.ShowIndicator('ConsumerLoan', taskCode);
+        }
+    </script>
+</body>
+</html>

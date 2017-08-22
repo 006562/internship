@@ -1,0 +1,297 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <meta name="renderer" content="webkit" />
+    <title>个人工作台</title>
+    <link href="/TrustManagementService/TrustManagement/Common/css/trustWizard.css" rel="stylesheet" />
+    <link href="/TrustManagementService/TrustManagement/TrustFollowUp/css/pagerlist-style.css" rel="stylesheet" />
+    <link href="/TrustManagementService/TrustManagement/Common/Scripts/fullCalendar/fullcalendar.min.css" rel="stylesheet" />
+    <style type="text/css">
+        .wb-content {
+            padding: 10px;
+        }
+
+        .wb-top5 {
+            margin-top: 5px;
+        }
+
+        .fc-left, .fc-right {
+            margin-top: 8px;
+        }
+
+        .form .form-group span {
+            font-weight: normal;
+            line-height: 30px;
+            color: #333;
+            padding: 0 3px;
+            height: 30px;
+            overflow: auto;
+            display: inline;
+            white-space: normal;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+    <div class="body-container">
+        <div class="main">
+            <div class="col-12">
+                <div class="col-7 wb-content">
+                    <h3 class="h3">
+                        <span class="title">存续期待办事项</span>
+                    </h3>
+                    <div id="divDataList" class="list-container wb-top5"></div>
+                </div>
+                <div class="col-5 wb-content">
+                    <h3 class="h3">
+                        <span class="title">我的日程</span>
+                    </h3>
+                    <div id='gsCalendar' class="wb-top5"></div>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="col-7 wb-content">
+                    <h3 class="h3">
+                        <span class="title">承做期待办事项</span>
+                    </h3>
+                </div>
+                <div class="col-5 wb-content">
+                    <h3 class="h3">
+                        <span class="title">我的日程</span>
+                    </h3>
+                    <div id='gsCalendarNextMonth' class="wb-top5"></div>
+                </div>
+            </div>
+            <div class="form">
+                <div class="col-12">
+                    <div class="col-12 wb-content">
+                        <h3 class="h3">
+                            <span class="title">相关参与方</span>
+                        </h3>
+                        <div class="form-panel item" id="divTrustServiceProviderItemList">
+                            <div class="form-panel" data-bind="foreach: ServerProviderItemList">
+                                <div class="form-box form-box-index" data-bind="attr:{boxIndex:$index}">
+                                    <div class="col-12 form-group h3">
+                                        <div class="col-4">
+                                            <span data-bind="text: SPRItemName"></span>
+                                        </div>
+                                        <div class="col-8">
+                                            <div class="col-6 pull-right">
+                                                <span data-bind="text: SPCode"></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="form-panel item">
+                                        <ul id="ulDemo" data-bind="attr:{roleIndex:$index},foreach: ItemList">
+                                            <!--ko if: $index()>0 && $index()%5==0-->
+                                            <li class="col-12" style="height:1px;width:100%;"></li>
+                                            <!--/ko-->
+                                            <li data-bind="attr: {fieldIndex: $index}" class="col-2-4 form-group">
+                                                <div class="col-4">
+                                                    <div class="col-12">
+                                                        <label data-bind="text: ItemAliasValue"></label>
+                                                    </div>
+                                                </div>
+                                                <div class="col-8">
+                                                    <span data-bind="text: ItemValue"></span>
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/jquery-1.7.2.min.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/fullCalendar/moment.min.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/fullCalendar/fullcalendar.min.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/fullCalendar/zh-cn.js"></script>
+    <script src="/TrustManagementService/TrustManagement/TrustFollowUp/js/jquery.datagrid.js"></script>
+    <script src="/TrustManagementService/TrustManagement/TrustFollowUp/js/jquery.datagrid.options.js"></script>
+    <script src="/TrustManagementService/Config/GlobalVariable.js"></script>
+    <script src="/TrustManagementService/TrustManagement/Common/Scripts/common.js"></script>
+    <script>
+        $(function () {
+            $('#gsCalendar').fullCalendar(BuildCalendarSettings());
+            $('#gsCalendarNextMonth').fullCalendar(BuildCalendarSettings(true));
+
+            DataListDataBind();
+
+            GetServerProviderItemList(ControlServerProvider);
+        });
+
+        function BuildCalendarSettings(isNextMonth) {
+            var calendarSettings = {
+                header: {
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'month,basicWeek,basicDay'
+                },
+                editable: false,
+                timezone: 'local',
+                selectable: true,
+                eventOrder: 'start',
+                displayEventTime: false,
+                eventLimit: true,
+                events: function (start, end, timezone, callback) {
+                    var executeParam = {
+                        SPName: 'usp_CalendarGetTrustEvents', SQLParams: [
+                            { Name: 'trustid', value: 0, DBType: 'int' },
+                            { Name: 'start', value: start.format('YYYY-MM-DD'), DBType: 'datetime' },
+                            { Name: 'end', value: end.format('YYYY-MM-DD'), DBType: 'datetime' }
+                        ]
+                    };
+                    var sContent = encodeURIComponent(JSON.stringify(executeParam));
+                    var serviceUrl = GlobalVariable.DataProcessServiceUrl + 'CommonExecuteGet?appDomain=TrustManagement&executeParams=' +
+                        sContent + "&resultType=com";
+
+                    $.ajax({
+                        type: "GET",
+                        cache: false,
+                        url: serviceUrl,
+                        dataType: "jsonp",
+                        crossDomain: true,
+                        contentType: "application/xml;charset=utf-8",
+                        data: {},
+                        success: function (response) {
+                            if (typeof response == "string")
+                                response = JSON.parse(response);
+
+                            callback(response);
+                        },
+                        error: function (response) { alert("error:" + response.text); }
+                    });
+                },
+                dayClick: function (date, jsEvent, view) {
+                    $('#gsCalendar').fullCalendar('changeView', 'basicDay');
+                    $('#gsCalendar').fullCalendar('gotoDate', date);
+                }
+            };
+            if (isNextMonth) {
+                calendarSettings.defaultDate = moment().add(1, 'month');
+            }
+            return calendarSettings;
+        }
+        function DataListDataBind() {
+            var start = moment().format('YYYY-MM-DD');
+            var end = moment().add(1, 'month').format('YYYY-MM-DD');
+            var executeParam = {
+                SPName: 'usp_CalendarGetTrustEvents', SQLParams: [
+                    { Name: 'trustid', value: 0, DBType: 'int' },
+                    { Name: 'start', value: start, DBType: 'datetime' },
+                    { Name: 'end', value: end, DBType: 'datetime' }
+                ]
+            };
+            var executeParams = encodeURIComponent(JSON.stringify(executeParam));
+
+            $.ajax({
+                cache: false,
+                type: "GET",
+                async: false,
+                url: GlobalVariable.DataProcessServiceUrl + 'CommonExecuteGet?appDomain=TrustManagement&executeParams=' + executeParams + '&resultType=cc',
+                dataType: "json",
+                contentType: "application/xml;charset=utf-8",
+                data: {},
+                success: function (response) {
+                    if (typeof response === 'string') { response = JSON.parse(response); }
+
+                    $('#divDataList').datagrid({
+                        data: response,
+                        col: [
+                            { field: "TrustCode", title: "专项计划", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd },
+                            {
+                                field: "title", title: "描述", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd
+                                , render: function (data) {
+                                    return data.value ? data.value.replace(/\(.*?\)/g, '') : '';
+                                }
+                            },
+                            {
+                                field: "start", title: "开始时间", sortable: false, attrHeader: settable.tableTh, attr: settable.tableTd
+                                , render: function (data) {
+                                    return data.value ? getStringDate(data.value).dateFormat('yyyy-MM-dd') : '';
+                                }
+                            }
+                        ],
+                        attr: 'mytable',
+                        paramsDefault: { paging: 17, orderby: 'start', direction: 'asc' },
+                        noData: "<p class='noData'>当前视图没有可显示记录。</p>",
+                        pagerPosition: "bottom",
+                        pager: "mypager",
+                        sorter: "mysorter",
+                        onComplete: function () {
+                            $(".mytable").on("click", ".table-td", function () {
+                                $(".mytable .table-td").removeClass("active");
+                                $(this).addClass("active");
+                            });
+                        }
+                    })
+                },
+                error: function (response) { alert("error:" + response.text); }
+            });
+        }
+
+
+        var trustId_ = getQueryString('tid');
+        var svcUrl = GlobalVariable.DataProcessServiceUrl + "CommonExecuteGet?";
+        function GetServerProviderItemList(callback) {
+            var executeParam = {
+                SPName: 'usp_GetTrustServiceProviderItem', SQLParams: [
+                    { Name: 'TrustId', value: trustId_, DBType: 'string' }
+                ]
+            };
+            ExecuteGetData(true, svcUrl, 'TrustManagement', executeParam, callback);
+        }
+
+
+        var dataModel = {
+            AdjustmentList: [],
+        };
+        var viewModel = {};
+        function ControlServerProvider(listData) {
+            var data = {};
+            $.each(listData, function (i, n) {
+                if ($.inArray(n.SPRItemCode, accountItemCodeArray) < 0) {
+                    if (!data[n.SPRItemCode])
+                        data[n.SPRItemCode] = { SPRItemName: n.SPRItemName, SPCode: n.SPCode, ItemList: [] };
+                    data[n.SPRItemCode].ItemList.push({ ItemCode: n.ItemCode, ItemAliasValue: n.ItemAliasValue, ItemValue: n.ItemValue });
+                }
+            })
+            var result = [];
+            $.each(data, function (i, n) {
+                result.push(n);
+            });
+
+            BindServerProvider(result);
+        }
+        function BindServerProvider(listData) {
+            //var listData = GetSourceData();
+
+            dataModel.ServerProviderItemList = listData;
+
+            var listNode = document.getElementById('divTrustServiceProviderItemList');
+            viewModel = ko.mapping.fromJS(dataModel);
+            ko.applyBindings(viewModel, listNode);
+        }
+
+        var accountItemCodeArray = [
+        "TrusteeBank",
+        "ScrutinyBank",
+        "TrusteeRegistrationPaymentAgent",
+        "ScrutinyAccount",
+        "TrusteeAccount",
+        "ManagementFeeAccount",
+        "AssetProviderServiceFeeAccount",
+        "TrusteeFeeAccount",
+        "ScrutinyFeeAccount"
+        ]
+    </script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+[2017-08-07 21:52:13,116] ERROR Securitisation.Utilities.Common.Log4NetLogService - Run task for 62072cc5-e2e7-41a9-89e2-edcfc9a859ab failed
+System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---> System.ArgumentException: E:\TSSWCFServices\PoolCut\ConsumerLoan\Databases\CreateDatabase.xml has an exception: SQL Server blocked access to procedure 'sys.xp_cmdshell' of component 'xp_cmdshell' because this component is turned off as part of the security configuration for this server. A system administrator can enable the use of 'xp_cmdshell' by using sp_configure. For more information about enabling 'xp_cmdshell', search for 'xp_cmdshell' in SQL Server Books Online.
+SQL Server blocked access to procedure 'sys.xp_cmdshell' of component 'xp_cmdshell' because this component is turned off as part of the security configuration for this server. A system administrator can enable the use of 'xp_cmdshell' by using sp_configure. For more information about enabling 'xp_cmdshell', search for 'xp_cmdshell' in SQL Server Books Online.
+Unable to open the physical file "E:\Databases\Data\Job_2_20170807_128.mdf". Operating system error 2: "2(The system cannot find the file specified.)".
+User does not have permission to alter database 'Job_2_20170807_128', the database does not exist, or the database is not in a state that allows access checks.
+ALTER DATABASE statement failed.
+Database 'Job_2_20170807_128' does not exist. Make sure that the name is entered correctly.
+   at BL.TaskProcessService.OperationProvider.RunXmlQuery(ITaskAction action)
+   --- End of inner exception stack trace ---
+   at BL.TaskEngine.TaskEngine.RunProcessesByTask()
+   at TaskProcessEngine.TaskProcessService.RunTask(Guid sessionId, String applicationDomain) in e:\Dev\SFM\Products\TaskProcessEngine\TaskProcessEngine\TaskProcessService.svc.cs:line 63

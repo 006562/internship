@@ -1,0 +1,1925 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="11/5/2015 9:02:41 AM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="GS2106CNVDV003"
+  DTS:CreatorName="DEV\gslocaladmin"
+  DTS:DTSID="{E8F36945-1C30-4510-A056-7D513C6F878B}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="12.0.4100.1"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="LoanSupplimentary_AUTO"
+  DTS:PackageType="5"
+  DTS:VersionBuild="228"
+  DTS:VersionGUID="{ABEE8234-1602-4278-BFEC-7F73C40AF865}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[MSSQL.SFM_DAL_ConsumerLoan]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{7CAB5A4B-F2E6-4065-9584-041BE6790C10}"
+      DTS:ObjectName="MSSQL.SFM_DAL_ConsumerLoan">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::C_DAL_ConsumerLoan_DB]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=mssql;Initial Catalog=SFM_DAL_ConsumerLoan;Provider=SQLNCLI10.1;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[MSSQL.SFM_Staging]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{12A90F5A-A51E-41C1-ACB4-1B4311426387}"
+      DTS:ObjectName="MSSQL.SFM_Staging">
+      <DTS:PropertyExpression
+        DTS:Name="ConnectionString">@[User::C_STAGING_DB]</DTS:PropertyExpression>
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectionString="Data Source=mssql;Initial Catalog=SFM_STAGING;Provider=SQLNCLI10.1;Integrated Security=SSPI;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{72381815-28B5-4DA0-BC3D-D3DCBCAE4A7C}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="AssetType">
+      <DTS:VariableValue
+        DTS:DataType="8">AUTO</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{3F897866-7EDD-4CD5-B5D3-B128021BAED2}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Data Source=&quot; + @[User::DAL_ConsumerLoan_SERVER] + &quot;;Initial Catalog=&quot;+@[User::DAL_ConsumerLoan_DB] +&quot;;Provider=SQLNCLI10.1;Integrated Security=SSPI;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_DAL_ConsumerLoan_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=mssql;Initial Catalog=SFM_DAL_ConsumerLoan;Provider=SQLNCLI10.1;Integrated Security=SSPI;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1D791C8F-B3A5-471D-B661-10E6A51B3842}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_Organisation">
+      <DTS:VariableValue
+        DTS:DataType="8">CMB</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{656F0258-FA09-464F-8E89-DE9CCB1EBA7D}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_Reporting_Date">
+      <DTS:VariableValue
+        DTS:DataType="8">2016-04-30</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{9A3A86C7-CD07-4A01-83D8-8477D21AB20D}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;Data Source=&quot; + @[User::STAGING_SERVER]  + &quot;;Initial Catalog=&quot;+ @[User::STAGING_DB] +&quot;;Provider=SQLNCLI10.1;Integrated Security=SSPI;&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="C_STAGING_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">Data Source=mssql;Initial Catalog=SFM_STAGING;Provider=SQLNCLI10.1;Integrated Security=SSPI;</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{C3D85529-E930-4BB9-BC1C-E37FDF71C65C}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DAL_ConsumerLoan_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">SFM_DAL_ConsumerLoan</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{03B62389-D047-495B-9360-F4FE2FD85D84}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="DAL_ConsumerLoan_SERVER">
+      <DTS:VariableValue
+        DTS:DataType="8">mssql</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{B9FB8650-74A7-45AC-9E74-B1CEE51C8A7D}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;exec [dbo].[usp_TranToLoanSup_AUTO] &quot;+&quot;'&quot;+ @[User::C_Reporting_Date] +&quot;','&quot;+ @[User::C_Organisation]+&quot;'&quot;+&quot;,&quot;+&quot;'&quot;+ @[User::AssetType] +&quot;'&quot;+&quot;,&quot;+&quot;'&quot;+ @[User::TrustCode] +&quot;'&quot;+&quot;,&quot;+&quot;'&quot;+ @[User::IsInTrust] +&quot;'&quot;+&quot;,&quot;+&quot;'&quot;+ @[User::IsNotInTrust] +&quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="Extract">
+      <DTS:VariableValue
+        DTS:DataType="8">exec [dbo].[usp_TranToLoanSup_AUTO] '2016-04-30','CMB','AUTO','HX2015-2AUTO','1','0'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E1939DA8-44A9-4D21-B458-60F122155502}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;EXEC GetOrganisationIdByCode &quot;+&quot;'&quot;+ @[User::C_Organisation]   +&quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="GetOrganisationId">
+      <DTS:VariableValue
+        DTS:DataType="8">EXEC GetOrganisationIdByCode 'CMB'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{E364CE0B-EFC9-4B82-9B76-34A3A502C11E}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="IsInTrust">
+      <DTS:VariableValue
+        DTS:DataType="8">1</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{6A2F5ED4-1C43-49F4-AEB2-1AF0F262B4D3}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="IsNotInTrust">
+      <DTS:VariableValue
+        DTS:DataType="8">0</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{BA8684E5-1383-4860-8420-08FAC6CB0D96}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="OrganisationId">
+      <DTS:VariableValue
+        DTS:DataType="8">2</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{DAC1883A-E7A6-4434-9520-521F82CC9D26}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="STAGING_DB">
+      <DTS:VariableValue
+        DTS:DataType="8">SFM_STAGING</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{BD95624D-DA47-40DA-81AF-018AAE94E0A0}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="STAGING_SERVER">
+      <DTS:VariableValue
+        DTS:DataType="8">mssql</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{8EC7BA5C-5BF2-461E-92A5-4040255DC105}"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="TrustCode">
+      <DTS:VariableValue
+        DTS:DataType="8">HX2015-2AUTO</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{F9927445-90D2-4C90-BCF8-387F07114169}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;declare @DimTrustID int&#xA;Select @DimTrustID = TrustId from TrustManagement.Trust WHERE TrustCode = '&quot; + @[User::TrustCode] + &quot;'&#xA;delete from [dbo].[tblLoanSupplimentary]  where ReportingDate=cast('&quot;+ @[User::C_Reporting_Date]+&quot;' as date) and DimTrustID = @DimTrustID and DimOrganisationID=&quot;+ @[User::OrganisationId]+&quot; and AssetType= &quot;+&quot;'&quot;+ @[User::AssetType] +&quot;'&quot;+&quot; and IsInTrust =  &quot;+&quot;'&quot;+ @[User::IsInTrust] +&quot;'&quot;+&#xA;&quot;&#xA;delete from [dbo].[tblLoanSupplimentary]  where ReportingDate=cast('&quot;+ @[User::C_Reporting_Date]+&quot;' as date) and DimTrustID = @DimTrustID and DimOrganisationID=&quot;+ @[User::OrganisationId]+&quot; and AssetType= &quot;+&quot;'&quot;+ @[User::AssetType] +&quot;'&quot;+&quot; and IsInTrust =  &quot;+&quot;'&quot;+ @[User::IsNotInTrust] +&quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_Delete">
+      <DTS:VariableValue
+        DTS:DataType="8">declare @DimTrustID int
+Select @DimTrustID = TrustId from TrustManagement.Trust WHERE TrustCode = 'HX2015-2AUTO'
+delete from [dbo].[tblLoanSupplimentary]  where ReportingDate=cast('2016-04-30' as date) and DimTrustID = @DimTrustID and DimOrganisationID=2 and AssetType= 'AUTO' and IsInTrust =  '1'
+delete from [dbo].[tblLoanSupplimentary]  where ReportingDate=cast('2016-04-30' as date) and DimTrustID = @DimTrustID and DimOrganisationID=2 and AssetType= 'AUTO' and IsInTrust =  '0'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{4AFCE859-BFF6-401D-924F-D135E47B0F94}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;exec [dbo].[usp_Delete_LoanSup_AUTO]  &quot;+&quot;'&quot;+  @[User::C_Reporting_Date] +&quot;'&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_DeleteLoanSupplimentary">
+      <DTS:VariableValue
+        DTS:DataType="8">exec [dbo].[usp_Delete_LoanSup_AUTO]  '2016-04-30'</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{1983BCE9-60E2-4AAF-AE6A-C2823A68DD26}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="V_Rowcount_SourceBag2">
+      <DTS:VariableValue
+        DTS:DataType="3">0</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Bag2"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{BC3FEE5C-4EBB-4F68-BE2C-25D7326982FE}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Bag2">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Bag2\Data Flow Task"
+          DTS:CreationName="Microsoft.Pipeline"
+          DTS:Description="Data Flow Task"
+          DTS:DTSID="{D09C33F6-3A41-4DC4-BCE9-14125A34DD5E}"
+          DTS:ExecutableType="Microsoft.Pipeline"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Data Flow Task"
+          DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <pipeline
+              version="1">
+              <components>
+                <component
+                  refId="Package\Bag2\Data Flow Task\Derived Column"
+                  componentClassID="Microsoft.DerivedColumn"
+                  contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+                  name="Derived Column"
+                  usesDispositions="true">
+                  <inputs>
+                    <input
+                      refId="Package\Bag2\Data Flow Task\Derived Column.Inputs[Derived Column Input]"
+                      description="Input to the Derived Column Transformation"
+                      name="Derived Column Input">
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Output]"
+                      description="Default Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      name="Derived Column Output"
+                      synchronousInputId="Package\Bag2\Data Flow Task\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          length="20"
+                          lineageId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]"
+                          name="OrganisationCode"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::C_Organisation]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::C_Organisation]</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationID]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          length="1"
+                          lineageId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationID]"
+                          name="DimOrganisationID"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::OrganisationId]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::OrganisationId]</property>
+                          </properties>
+                        </outputColumn>
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[TrustCode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Computation"
+                          errorRowDisposition="FailComponent"
+                          length="50"
+                          lineageId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[TrustCode]"
+                          name="TrustCode"
+                          truncationRowDisposition="FailComponent">
+                          <properties>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Expression"
+                              name="Expression">@[User::TrustCode]</property>
+                            <property
+                              containsID="true"
+                              dataType="System.String"
+                              description="Derived Column Friendly Expression"
+                              expressionType="Notify"
+                              name="FriendlyExpression">@[User::TrustCode]</property>
+                          </properties>
+                        </outputColumn>
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                    <output
+                      refId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Error Output]"
+                      description="Error Output of the Derived Column Transformation"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="Derived Column Error Output"
+                      synchronousInputId="Package\Bag2\Data Flow Task\Derived Column.Inputs[Derived Column Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Bag2\Data Flow Task\Lookup Plus"
+                  componentClassID="Microsoft.ManagedComponentHost"
+                  contactInfo="Lookup multiple values in a reference dataset by using exact matching.;COZYROC LLC; SSIS+; © 2006-2013 COZYROC LLC; All Rights Reserved; http://www.cozyroc.com/;0"
+                  description="Lookup multiple values in a reference dataset by using exact matching."
+                  name="Lookup Plus">
+                  <properties>
+                    <property
+                      dataType="System.String"
+                      name="LookupMetadataXml"
+                      typeConverter="NOTBROWSABLE">&lt;lookups&gt;&lt;lookup inputColumn="AccountNo" onNull="0" noMatch="-1"&gt;&lt;result name="DimLoanID" /&gt;&lt;reference connectionType="OLEDB" runtimeConnectionName="Connection1" sourceType="Query" source="&amp;quot;select AccountNo,DimLoanID &amp;#xD;&amp;#xA;from [dbo].[tblDimLoan]&amp;quot;" keyColumn="AccountNo" valueColumn="DimLoanID" /&gt;&lt;/lookup&gt;&lt;lookup inputColumn="TrustCode" onNull="0" noMatch="-1"&gt;&lt;result name="TrustId" /&gt;&lt;reference connectionType="OLEDB" runtimeConnectionName="Connection1" sourceType="Query" source="&amp;quot;select TrustCode, TrustId&amp;#xD;&amp;#xA;from TrustManagement.Trust&amp;quot;" keyColumn="TrustCode" valueColumn="TrustId" /&gt;&lt;/lookup&gt;&lt;lookup inputColumn="AssetType" onNull="0" noMatch="-1"&gt;&lt;result name="DimAssetTypeID" /&gt;&lt;reference connectionType="OLEDB" runtimeConnectionName="Connection1" sourceType="Query" source="&amp;quot;select AssetType,DimAssetTypeID from dbo.tblAssetType&amp;quot;" keyColumn="AssetType" valueColumn="DimAssetTypeID" /&gt;&lt;/lookup&gt;&lt;/lookups&gt;</property>
+                    <property
+                      dataType="System.String"
+                      name="UserComponentTypeName">CozyRoc.SqlServer.SSIS.LookupPlus, CozyRoc.SSISPlus.2014, Version=1.0.0.0, Culture=neutral, PublicKeyToken=16cf490bb80c34ea</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Bag2\Data Flow Task\Lookup Plus.Connections[Connection1]"
+                      connectionManagerID="Package.ConnectionManagers[MSSQL.SFM_DAL_ConsumerLoan]"
+                      connectionManagerRefId="Package.ConnectionManagers[MSSQL.SFM_DAL_ConsumerLoan]"
+                      description="MSSQL.SFM_DAL_ConsumerLoan"
+                      name="Connection1" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Bag2\Data Flow Task\Lookup Plus.Inputs[Input]"
+                      name="Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\Lookup Plus.Inputs[Input].Columns[AccountNo]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="AccountNo"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[AccountNo]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\Lookup Plus.Inputs[Input].Columns[TrustCode]"
+                          cachedDataType="wstr"
+                          cachedLength="11"
+                          cachedName="TrustCode"
+                          lineageId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[TrustCode]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\Lookup Plus.Inputs[Input].Columns[AssetType]"
+                          cachedDataType="wstr"
+                          cachedLength="50"
+                          cachedName="AssetType"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[AssetType]" />
+                      </inputColumns>
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Bag2\Data Flow Task\Lookup Plus.Outputs[Output]"
+                      name="Output"
+                      synchronousInputId="Package\Bag2\Data Flow Task\Lookup Plus.Inputs[Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\Lookup Plus.Outputs[Output].Columns[DimLoanID]"
+                          dataType="i4"
+                          lineageId="Package\Bag2\Data Flow Task\Lookup Plus.Outputs[Output].Columns[DimLoanID]"
+                          name="DimLoanID" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\Lookup Plus.Outputs[Output].Columns[TrustId]"
+                          dataType="i4"
+                          lineageId="Package\Bag2\Data Flow Task\Lookup Plus.Outputs[Output].Columns[TrustId]"
+                          name="TrustId" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\Lookup Plus.Outputs[Output].Columns[DimAssetTypeID]"
+                          dataType="i4"
+                          lineageId="Package\Bag2\Data Flow Task\Lookup Plus.Outputs[Output].Columns[DimAssetTypeID]"
+                          name="DimAssetTypeID" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Bag2\Data Flow Task\OLE DB Destination"
+                  componentClassID="Microsoft.OLEDBDestination"
+                  contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+                  description="OLE DB Destination"
+                  name="OLE DB Destination"
+                  usesDispositions="true"
+                  version="4">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset">[dbo].[tblLoanSupplimentary]</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepIdentity">false</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                      name="FastLoadKeepNulls">false</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                      name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                      name="FastLoadMaxInsertCommitSize">2147483647</property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Bag2\Data Flow Task\OLE DB Destination.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[MSSQL.SFM_DAL_ConsumerLoan]"
+                      connectionManagerRefId="Package.ConnectionManagers[MSSQL.SFM_DAL_ConsumerLoan]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <inputs>
+                    <input
+                      refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                      errorOrTruncationOperation="Insert"
+                      errorRowDisposition="FailComponent"
+                      hasSideEffects="true"
+                      name="OLE DB Destination Input">
+                      <inputColumns>
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[SequenceNo]"
+                          cachedDataType="i4"
+                          cachedName="SequenceNo"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SequenceNo]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[SequenceNo]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[BranchName]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="BranchName"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BranchName]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[BranchName]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ContractNo]"
+                          cachedDataType="wstr"
+                          cachedLength="255"
+                          cachedName="ContractNo"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ContractNo]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[ContractNo]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CardNo]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="CardNo"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CardNo]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[CardNo]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CurrencyType]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="CurrencyType"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CurrencyType]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[CurrencyType]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[BaseRate]"
+                          cachedDataType="numeric"
+                          cachedName="BaseRate"
+                          cachedPrecision="15"
+                          cachedScale="4"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BaseRate]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[BaseRate]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[FloatRange]"
+                          cachedDataType="numeric"
+                          cachedName="FloatRange"
+                          cachedPrecision="15"
+                          cachedScale="4"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FloatRange]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[FloatRange]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[RateAdjustInterval]"
+                          cachedDataType="numeric"
+                          cachedName="RateAdjustInterval"
+                          cachedPrecision="15"
+                          cachedScale="4"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RateAdjustInterval]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[RateAdjustInterval]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[EnableAutoChannel]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="EnableAutoChannel"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[EnableAutoChannel]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[EnableAutoChannel]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[CreditRateAdjustMode]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="CreditRateAdjustMode"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CreditRateAdjustMode]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[CreditRateAdjustMode]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[RateAdjustMode]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="RateAdjustMode"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RateAdjustMode]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[RateAdjustMode]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[LoanGradeLevel]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="LoanGradeLevel"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanGradeLevel]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanGradeLevel]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[EverPrepay]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="EverPrepay"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[EverPrepay]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[EverPrepay]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[IsCurrentArrears]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="IsCurrentArrears"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IsCurrentArrears]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[IsCurrentArrears]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[ContractType]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="ContractType"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ContractType]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[ContractType]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[GuaranteeName1]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="GuaranteeName1"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[GuaranteeName1]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[GuaranteeName1]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[GuaranteeName2]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="GuaranteeName2"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[GuaranteeName2]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[GuaranteeName2]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[GuaranteeName3]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="GuaranteeName3"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[GuaranteeName3]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[GuaranteeName3]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[InitialReportingDate]"
+                          cachedDataType="dbDate"
+                          cachedName="InitialReportingDate"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InitialReportingDate]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[InitialReportingDate]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DimLoanID]"
+                          cachedDataType="i4"
+                          cachedName="DimLoanID"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimLoanID]"
+                          lineageId="Package\Bag2\Data Flow Task\Lookup Plus.Outputs[Output].Columns[DimLoanID]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[AccountNo]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="AccountNo"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Account]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[AccountNo]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[BusinessDate]"
+                          cachedDataType="dbDate"
+                          cachedName="BusinessDate"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ReportingDate]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[BusinessDate]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[InterestType]"
+                          cachedDataType="wstr"
+                          cachedLength="100"
+                          cachedName="InterestType"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InterestType]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[InterestType]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[OrganisationCode]"
+                          cachedDataType="wstr"
+                          cachedLength="3"
+                          cachedName="OrganisationCode"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OrganisationCode]"
+                          lineageId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[OrganisationCode]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DimOrganisationID]"
+                          cachedDataType="wstr"
+                          cachedLength="1"
+                          cachedName="DimOrganisationID"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimOrganisationID]"
+                          lineageId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Output].Columns[DimOrganisationID]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[TrustId]"
+                          cachedDataType="i4"
+                          cachedName="TrustId"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimTrustID]"
+                          lineageId="Package\Bag2\Data Flow Task\Lookup Plus.Outputs[Output].Columns[TrustId]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[DimAssetTypeID]"
+                          cachedDataType="i4"
+                          cachedName="DimAssetTypeID"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimAssetTypeID]"
+                          lineageId="Package\Bag2\Data Flow Task\Lookup Plus.Outputs[Output].Columns[DimAssetTypeID]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[AssetType]"
+                          cachedDataType="wstr"
+                          cachedLength="50"
+                          cachedName="AssetType"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AssetType]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[AssetType]" />
+                        <inputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].Columns[IsInTrust]"
+                          cachedDataType="i4"
+                          cachedName="IsInTrust"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IsInTrust]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[IsInTrust]" />
+                      </inputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimLoanID]"
+                          dataType="i4"
+                          name="DimLoanID" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SequenceNo]"
+                          dataType="i4"
+                          name="SequenceNo" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BranchName]"
+                          dataType="wstr"
+                          length="255"
+                          name="BranchName" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ContractNo]"
+                          dataType="wstr"
+                          length="255"
+                          name="ContractNo" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CardNo]"
+                          dataType="wstr"
+                          length="100"
+                          name="CardNo" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CurrencyType]"
+                          dataType="wstr"
+                          length="100"
+                          name="CurrencyType" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InterestType]"
+                          dataType="wstr"
+                          length="100"
+                          name="InterestType" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[BaseRate]"
+                          dataType="numeric"
+                          name="BaseRate"
+                          precision="15"
+                          scale="4" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[FloatRange]"
+                          dataType="numeric"
+                          name="FloatRange"
+                          precision="15"
+                          scale="4" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RateAdjustInterval]"
+                          dataType="numeric"
+                          name="RateAdjustInterval"
+                          precision="15"
+                          scale="4" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[EnableAutoChannel]"
+                          dataType="wstr"
+                          length="100"
+                          name="EnableAutoChannel" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[CreditRateAdjustMode]"
+                          dataType="wstr"
+                          length="100"
+                          name="CreditRateAdjustMode" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[RateAdjustMode]"
+                          dataType="wstr"
+                          length="100"
+                          name="RateAdjustMode" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[LoanGradeLevel]"
+                          dataType="wstr"
+                          length="100"
+                          name="LoanGradeLevel" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[EverPrepay]"
+                          dataType="wstr"
+                          length="100"
+                          name="EverPrepay" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IsCurrentArrears]"
+                          dataType="wstr"
+                          length="100"
+                          name="IsCurrentArrears" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ContractType]"
+                          dataType="wstr"
+                          length="100"
+                          name="ContractType" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[GuaranteeName1]"
+                          dataType="wstr"
+                          length="100"
+                          name="GuaranteeName1" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[GuaranteeName2]"
+                          dataType="wstr"
+                          length="100"
+                          name="GuaranteeName2" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[GuaranteeName3]"
+                          dataType="wstr"
+                          length="100"
+                          name="GuaranteeName3" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[Account]"
+                          dataType="wstr"
+                          length="100"
+                          name="Account" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[ReportingDate]"
+                          dataType="dbDate"
+                          name="ReportingDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[InitialReportingDate]"
+                          dataType="wstr"
+                          length="100"
+                          name="InitialReportingDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[SecurityType]"
+                          dataType="wstr"
+                          length="100"
+                          name="SecurityType" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[OrganisationCode]"
+                          dataType="wstr"
+                          length="10"
+                          name="OrganisationCode" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimOrganisationID]"
+                          dataType="i4"
+                          name="DimOrganisationID" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimTrustID]"
+                          dataType="i4"
+                          name="DimTrustID" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[DimAssetTypeID]"
+                          dataType="i4"
+                          name="DimAssetTypeID" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[AssetType]"
+                          dataType="wstr"
+                          length="50"
+                          name="AssetType" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input].ExternalColumns[IsInTrust]"
+                          dataType="bool"
+                          name="IsInTrust" />
+                      </externalMetadataColumns>
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Bag2\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output]"
+                      exclusionGroup="1"
+                      isErrorOut="true"
+                      name="OLE DB Destination Error Output"
+                      synchronousInputId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Destination.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Bag2\Data Flow Task\OLE DB Source"
+                  componentClassID="Microsoft.OLEDBSource"
+                  contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+                  description="OLE DB Source"
+                  name="OLE DB Source"
+                  usesDispositions="true"
+                  version="7">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                      name="CommandTimeout">0</property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the name of the database object used to open a rowset."
+                      name="OpenRowset"></property>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable that contains the name of the database object used to open a rowset."
+                      name="OpenRowsetVariable"></property>
+                    <property
+                      dataType="System.String"
+                      description="The SQL command to be executed."
+                      name="SqlCommand"
+                      UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">exec [dbo].[usp_TranToLoanSup]</property>
+                    <property
+                      dataType="System.String"
+                      description="The variable that contains the SQL command to be executed."
+                      name="SqlCommandVariable">User::Extract</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the column code page to use when code page information is unavailable from the data source."
+                      name="DefaultCodePage">1252</property>
+                    <property
+                      dataType="System.Boolean"
+                      description="Forces the use of the DefaultCodePage property value when describing character data."
+                      name="AlwaysUseDefaultCodePage">false</property>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the mode used to access the database."
+                      name="AccessMode"
+                      typeConverter="AccessMode">3</property>
+                    <property
+                      dataType="System.String"
+                      description="The mappings between the parameters in the SQL command and variables."
+                      name="ParameterMapping"></property>
+                  </properties>
+                  <connections>
+                    <connection
+                      refId="Package\Bag2\Data Flow Task\OLE DB Source.Connections[OleDbConnection]"
+                      connectionManagerID="Package.ConnectionManagers[MSSQL.SFM_Staging]"
+                      connectionManagerRefId="Package.ConnectionManagers[MSSQL.SFM_Staging]"
+                      description="The OLE DB runtime connection used to access the database."
+                      name="OleDbConnection" />
+                  </connections>
+                  <outputs>
+                    <output
+                      refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output]"
+                      name="OLE DB Source Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[SequenceNo]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[SequenceNo]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[SequenceNo]"
+                          name="SequenceNo"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[BranchName]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[BranchName]"
+                          length="255"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[BranchName]"
+                          name="BranchName"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[ContractNo]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ContractNo]"
+                          length="255"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[ContractNo]"
+                          name="ContractNo"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[CardNo]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[CardNo]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[CardNo]"
+                          name="CardNo"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[CurrencyType]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[CurrencyType]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[CurrencyType]"
+                          name="CurrencyType"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[BaseRate]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[BaseRate]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[BaseRate]"
+                          name="BaseRate"
+                          precision="15"
+                          scale="4"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[FloatRange]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[FloatRange]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[FloatRange]"
+                          name="FloatRange"
+                          precision="15"
+                          scale="4"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[RateAdjustInterval]"
+                          dataType="numeric"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[RateAdjustInterval]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[RateAdjustInterval]"
+                          name="RateAdjustInterval"
+                          precision="15"
+                          scale="4"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[EnableAutoChannel]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[EnableAutoChannel]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[EnableAutoChannel]"
+                          name="EnableAutoChannel"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[CreditRateAdjustMode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[CreditRateAdjustMode]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[CreditRateAdjustMode]"
+                          name="CreditRateAdjustMode"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[RateAdjustMode]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[RateAdjustMode]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[RateAdjustMode]"
+                          name="RateAdjustMode"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanGradeLevel]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanGradeLevel]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[LoanGradeLevel]"
+                          name="LoanGradeLevel"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[EverPrepay]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[EverPrepay]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[EverPrepay]"
+                          name="EverPrepay"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[IsCurrentArrears]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[IsCurrentArrears]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[IsCurrentArrears]"
+                          name="IsCurrentArrears"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[ContractType]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ContractType]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[ContractType]"
+                          name="ContractType"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[AccountNo]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[AccountNo]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[AccountNo]"
+                          name="AccountNo"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[GuaranteeName1]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[GuaranteeName1]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[GuaranteeName1]"
+                          name="GuaranteeName1"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[GuaranteeName2]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[GuaranteeName2]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[GuaranteeName2]"
+                          name="GuaranteeName2"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[GuaranteeName3]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[GuaranteeName3]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[GuaranteeName3]"
+                          name="GuaranteeName3"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[InitialReportingDate]"
+                          dataType="dbDate"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[InitialReportingDate]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[InitialReportingDate]"
+                          name="InitialReportingDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[BusinessDate]"
+                          dataType="dbDate"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[BusinessDate]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[BusinessDate]"
+                          name="BusinessDate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[IsFixRate]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[IsFixRate]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[IsFixRate]"
+                          name="IsFixRate"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[InterestType]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[InterestType]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[InterestType]"
+                          name="InterestType"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[SecurityType]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[SecurityType]"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[SecurityType]"
+                          name="SecurityType"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[AssetType]"
+                          dataType="wstr"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[AssetType]"
+                          length="50"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[AssetType]"
+                          name="AssetType"
+                          truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[IsInTrust]"
+                          dataType="i4"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[IsInTrust]"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].Columns[IsInTrust]"
+                          name="IsInTrust"
+                          truncationRowDisposition="FailComponent" />
+                      </outputColumns>
+                      <externalMetadataColumns
+                        isUsed="True">
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[SequenceNo]"
+                          dataType="i4"
+                          name="SequenceNo" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[BranchName]"
+                          dataType="wstr"
+                          length="255"
+                          name="BranchName" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ContractNo]"
+                          dataType="wstr"
+                          length="255"
+                          name="ContractNo" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[CardNo]"
+                          dataType="wstr"
+                          length="100"
+                          name="CardNo" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[CurrencyType]"
+                          dataType="wstr"
+                          length="100"
+                          name="CurrencyType" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[BaseRate]"
+                          dataType="numeric"
+                          name="BaseRate"
+                          precision="15"
+                          scale="4" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[FloatRange]"
+                          dataType="numeric"
+                          name="FloatRange"
+                          precision="15"
+                          scale="4" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[RateAdjustInterval]"
+                          dataType="numeric"
+                          name="RateAdjustInterval"
+                          precision="15"
+                          scale="4" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[EnableAutoChannel]"
+                          dataType="wstr"
+                          length="100"
+                          name="EnableAutoChannel" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[CreditRateAdjustMode]"
+                          dataType="wstr"
+                          length="100"
+                          name="CreditRateAdjustMode" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[RateAdjustMode]"
+                          dataType="wstr"
+                          length="100"
+                          name="RateAdjustMode" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[LoanGradeLevel]"
+                          dataType="wstr"
+                          length="100"
+                          name="LoanGradeLevel" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[EverPrepay]"
+                          dataType="wstr"
+                          length="100"
+                          name="EverPrepay" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[IsCurrentArrears]"
+                          dataType="wstr"
+                          length="100"
+                          name="IsCurrentArrears" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[ContractType]"
+                          dataType="wstr"
+                          length="100"
+                          name="ContractType" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[AccountNo]"
+                          dataType="wstr"
+                          length="100"
+                          name="AccountNo" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[GuaranteeName1]"
+                          dataType="wstr"
+                          length="100"
+                          name="GuaranteeName1" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[GuaranteeName2]"
+                          dataType="wstr"
+                          length="100"
+                          name="GuaranteeName2" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[GuaranteeName3]"
+                          dataType="wstr"
+                          length="100"
+                          name="GuaranteeName3" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[InitialReportingDate]"
+                          dataType="dbDate"
+                          name="InitialReportingDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[BusinessDate]"
+                          dataType="dbDate"
+                          name="BusinessDate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[IsFixRate]"
+                          dataType="wstr"
+                          length="100"
+                          name="IsFixRate" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[InterestType]"
+                          dataType="wstr"
+                          length="100"
+                          name="InterestType" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[SecurityType]"
+                          dataType="wstr"
+                          length="100"
+                          name="SecurityType" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[AssetType]"
+                          dataType="wstr"
+                          length="50"
+                          name="AssetType" />
+                        <externalMetadataColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output].ExternalColumns[IsInTrust]"
+                          dataType="i4"
+                          name="IsInTrust" />
+                      </externalMetadataColumns>
+                    </output>
+                    <output
+                      refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output]"
+                      isErrorOut="true"
+                      name="OLE DB Source Error Output">
+                      <outputColumns>
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[AccountNo]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[AccountNo]"
+                          name="AccountNo" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[InitialReportingDate]"
+                          dataType="dbDate"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[InitialReportingDate]"
+                          name="InitialReportingDate" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[SequenceNo]"
+                          dataType="i4"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[SequenceNo]"
+                          name="SequenceNo" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[BranchName]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[BranchName]"
+                          name="BranchName" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ContractNo]"
+                          dataType="wstr"
+                          length="255"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ContractNo]"
+                          name="ContractNo" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[CardNo]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[CardNo]"
+                          name="CardNo" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[CurrencyType]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[CurrencyType]"
+                          name="CurrencyType" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[BaseRate]"
+                          dataType="numeric"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[BaseRate]"
+                          name="BaseRate"
+                          precision="15"
+                          scale="4" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[IsFixRate]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[IsFixRate]"
+                          name="IsFixRate" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[FloatRange]"
+                          dataType="numeric"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[FloatRange]"
+                          name="FloatRange"
+                          precision="15"
+                          scale="4" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[RateAdjustInterval]"
+                          dataType="numeric"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[RateAdjustInterval]"
+                          name="RateAdjustInterval"
+                          precision="15"
+                          scale="4" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[EnableAutoChannel]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[EnableAutoChannel]"
+                          name="EnableAutoChannel" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[CreditRateAdjustMode]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[CreditRateAdjustMode]"
+                          name="CreditRateAdjustMode" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[RateAdjustMode]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[RateAdjustMode]"
+                          name="RateAdjustMode" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanGradeLevel]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[LoanGradeLevel]"
+                          name="LoanGradeLevel" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[EverPrepay]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[EverPrepay]"
+                          name="EverPrepay" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[IsCurrentArrears]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[IsCurrentArrears]"
+                          name="IsCurrentArrears" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ContractType]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ContractType]"
+                          name="ContractType" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[SecurityType]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[SecurityType]"
+                          name="SecurityType" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[GuaranteeName1]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[GuaranteeName1]"
+                          name="GuaranteeName1" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[GuaranteeName2]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[GuaranteeName2]"
+                          name="GuaranteeName2" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[GuaranteeName3]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[GuaranteeName3]"
+                          name="GuaranteeName3" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[InterestType]"
+                          dataType="wstr"
+                          length="100"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[InterestType]"
+                          name="InterestType" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[BusinessDate]"
+                          dataType="dbDate"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[BusinessDate]"
+                          name="BusinessDate" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[AssetType]"
+                          dataType="wstr"
+                          length="50"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[AssetType]"
+                          name="AssetType" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[IsInTrust]"
+                          dataType="i4"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[IsInTrust]"
+                          name="IsInTrust" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          dataType="i4"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                          name="ErrorCode"
+                          specialFlags="1" />
+                        <outputColumn
+                          refId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          dataType="i4"
+                          lineageId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                          name="ErrorColumn"
+                          specialFlags="2" />
+                      </outputColumns>
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+                <component
+                  refId="Package\Bag2\Data Flow Task\Row Count"
+                  componentClassID="Microsoft.RowCount"
+                  contactInfo="Row Count;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+                  description="Counts rows as they pass through a data flow. For example, use the number of rows processed to determine whether or not to perform cleanup operations, or update text in an e-mail message to communicate processing status."
+                  name="Row Count">
+                  <properties>
+                    <property
+                      dataType="System.String"
+                      description="Specifies the variable to hold the row count."
+                      name="VariableName">User::V_Rowcount_SourceBag2</property>
+                  </properties>
+                  <inputs>
+                    <input
+                      refId="Package\Bag2\Data Flow Task\Row Count.Inputs[Row Count Input 1]"
+                      hasSideEffects="true"
+                      name="Row Count Input 1">
+                      <externalMetadataColumns />
+                    </input>
+                  </inputs>
+                  <outputs>
+                    <output
+                      refId="Package\Bag2\Data Flow Task\Row Count.Outputs[Row Count Output 1]"
+                      name="Row Count Output 1"
+                      synchronousInputId="Package\Bag2\Data Flow Task\Row Count.Inputs[Row Count Input 1]">
+                      <externalMetadataColumns />
+                    </output>
+                  </outputs>
+                </component>
+              </components>
+              <paths>
+                <path
+                  refId="Package\Bag2\Data Flow Task.Paths[Derived Column Output]"
+                  endId="Package\Bag2\Data Flow Task\Lookup Plus.Inputs[Input]"
+                  name="Derived Column Output"
+                  startId="Package\Bag2\Data Flow Task\Derived Column.Outputs[Derived Column Output]" />
+                <path
+                  refId="Package\Bag2\Data Flow Task.Paths[OLE DB Source Output]"
+                  endId="Package\Bag2\Data Flow Task\Derived Column.Inputs[Derived Column Input]"
+                  name="OLE DB Source Output"
+                  startId="Package\Bag2\Data Flow Task\OLE DB Source.Outputs[OLE DB Source Output]" />
+                <path
+                  refId="Package\Bag2\Data Flow Task.Paths[Output]"
+                  endId="Package\Bag2\Data Flow Task\Row Count.Inputs[Row Count Input 1]"
+                  name="Output"
+                  startId="Package\Bag2\Data Flow Task\Lookup Plus.Outputs[Output]" />
+                <path
+                  refId="Package\Bag2\Data Flow Task.Paths[Row Count Output 1]"
+                  endId="Package\Bag2\Data Flow Task\OLE DB Destination.Inputs[OLE DB Destination Input]"
+                  name="Row Count Output 1"
+                  startId="Package\Bag2\Data Flow Task\Row Count.Outputs[Row Count Output 1]" />
+              </paths>
+            </pipeline>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Delete existing data"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Delete existing data"
+      DTS:DTSID="{22E1FF84-401D-44B9-9BC4-5FCD83C85BAD}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Delete existing data">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Delete existing data\Delete existing data from target table"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{EDC2BD60-DE73-4DBD-8C23-89DE9E71580E}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Delete existing data from target table"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; Microsoft SQL Server 2008; © 2007 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{7CAB5A4B-F2E6-4065-9584-041BE6790C10}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::V_Delete" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Delete existing data\Get OrganisationId by code"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{98C417E1-8F53-4DB7-A1D4-5C319692FB38}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Get OrganisationId by code"
+          DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2014; © 2014 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{7CAB5A4B-F2E6-4065-9584-041BE6790C10}"
+              SQLTask:SqlStmtSourceType="Variable"
+              SQLTask:SqlStatementSource="User::GetOrganisationId"
+              SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+              <SQLTask:ResultBinding
+                SQLTask:ResultName="DimOrganisationID"
+                SQLTask:DtsVariableName="User::OrganisationId" />
+            </SQLTask:SqlTaskData>
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Delete existing data.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{CFFEE86C-142A-4865-A160-6DEAE6F4CB68}"
+          DTS:From="Package\Delete existing data\Get OrganisationId by code"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Delete existing data\Delete existing data from target table" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{EBF7BD75-2209-4715-985C-E81092F07222}"
+      DTS:From="Package\Delete existing data"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Bag2" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="sql12">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="151,42"
+          Id="Package\Bag2\Data Flow Task"
+          TopLeft="128,54" />
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="368,164"
+          Size="368,207"
+          Id="Package\Bag2"
+          TopLeft="220,433" />
+        <NodeLayout
+          Size="256,42"
+          Id="Package\Delete existing data\Delete existing data from target table"
+          TopLeft="59.5,120" />
+        <NodeLayout
+          Size="208,42"
+          Id="Package\Delete existing data\Get OrganisationId by code"
+          TopLeft="78.5,28" />
+        <EdgeLayout
+          Id="Package\Delete existing data.PrecedenceConstraints[Constraint]"
+          TopLeft="185,70">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50"
+              Start="0,0"
+              End="0,42.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,42.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43.924528301886795"
+          IsExpanded="True"
+          PanelSize="362,219"
+          Size="362,263"
+          Id="Package\Delete existing data"
+          TopLeft="213,109" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="394,372">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="10,61"
+              Start="0,0"
+              End="10,53.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,26.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,26.5"
+                    Point2="0,30.5"
+                    Point3="4,30.5" />
+                  <mssgle:LineSegment
+                    End="6,30.5" />
+                  <mssgle:CubicBezierSegment
+                    Point1="6,30.5"
+                    Point2="10,30.5"
+                    Point3="10,34.5" />
+                  <mssgle:LineSegment
+                    End="10,53.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\Bag2\Data Flow Task">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="171,42"
+          Id="Package\Bag2\Data Flow Task\OLE DB Destination"
+          TopLeft="599,236" />
+        <NodeLayout
+          Size="130,42"
+          Id="Package\Bag2\Data Flow Task\Row Count"
+          TopLeft="354,187" />
+        <NodeLayout
+          Size="150,42"
+          Id="Package\Bag2\Data Flow Task\OLE DB Source"
+          TopLeft="145,0" />
+        <NodeLayout
+          Size="154,42"
+          Id="Package\Bag2\Data Flow Task\Derived Column"
+          TopLeft="141,99" />
+        <NodeLayout
+          Size="135,42"
+          Id="Package\Bag2\Data Flow Task\Lookup Plus"
+          TopLeft="97,209" />
+        <EdgeLayout
+          Id="Package\Bag2\Data Flow Task.Paths[Derived Column Output]"
+          TopLeft="218,141">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-53.5,68"
+              Start="0,0"
+              End="-53.5,60.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,30"
+                    Point2="0,34"
+                    Point3="-4,34" />
+                  <mssgle:LineSegment
+                    End="-49.5,34" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-49.5,34"
+                    Point2="-53.5,34"
+                    Point3="-53.5,38" />
+                  <mssgle:LineSegment
+                    End="-53.5,60.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Bag2\Data Flow Task.Paths[Row Count Output 1]"
+          TopLeft="484,208">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="115,49"
+              Start="0,0"
+              End="107.5,49">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="53.5,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="53.5,0"
+                    Point2="57.5,0"
+                    Point3="57.5,4" />
+                  <mssgle:LineSegment
+                    End="57.5,45" />
+                  <mssgle:CubicBezierSegment
+                    Point1="57.5,45"
+                    Point2="57.5,49"
+                    Point3="61.5,49" />
+                  <mssgle:LineSegment
+                    End="107.5,49" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Bag2\Data Flow Task.Paths[Output]"
+          TopLeft="232,230">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="122,-22"
+              Start="0,0"
+              End="114.5,-22">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="57,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="57,0"
+                    Point2="61,0"
+                    Point3="61,-4" />
+                  <mssgle:LineSegment
+                    End="61,-18" />
+                  <mssgle:CubicBezierSegment
+                    Point1="61,-18"
+                    Point2="61,-22"
+                    Point3="65,-22" />
+                  <mssgle:LineSegment
+                    End="114.5,-22" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\Bag2\Data Flow Task.Paths[OLE DB Source Output]"
+          TopLeft="219,42">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,57"
+              Start="0,0"
+              End="0,49.5">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,49.5" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\Bag2\Data Flow Task\OLE DB Destination">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\Bag2\Data Flow Task\OLE DB Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
